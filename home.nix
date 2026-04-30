@@ -71,8 +71,17 @@ in
     LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   };
+
+  systemd.user.sessionVariables = config.home.sessionVariables;
+
   # Applications & Workflows
   home.packages = with pkgs; [
+    # basedevel
+    gcc automake autoconf automake pkg-config
+    binutils glibc gdb cmake strace ltrace 
+    gperf patch diffutils findutils gawk
+    gnugrep gnutar gzip coreutils
+
     # Personal & Custom applications (non-)
     aionui
     krita
@@ -161,6 +170,7 @@ in
     tor
     micro
     fastfetch
+    cryptsetup
     htop
     psmisc
     direnv
@@ -236,10 +246,14 @@ in
   # Git 
   programs.git = {
   	enable = true;
-  	userName = "lowcache";
-  	userEmail = "drawpdeadredd@gmail.com";
-  	extraConfig = {
-  	  init.defaultBranch = "main";
+  	settings = {
+  	  user = {
+  	    name = "lowcache";
+  	    email = "drawpdeadredd@gmail.com";
+  	  };
+  	  init = {
+  	    defaultBranch = "main";
+  	  };
   	};
   	signing = {
   	  signByDefault = true;
@@ -501,8 +515,8 @@ in
   home.stateVersion = "24.11";
 
   home.pointerCursor = {
-    package = pkgs.bibata-cursors;
-    name = "Bibata-Modern-Classic";
+    package = pkgs.bibata-cursors-translucent;
+    name = "Bibata-Modern-Translucent";
     size = 24;
     gtk.enable = true;
     x11.enable = true;
@@ -518,8 +532,8 @@ in
       theme = null;
     };
     cursorTheme = {
-      name = "Bibata-Modern-Classic";
-      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Translucent";
+      package = pkgs.bibata-cursors-translucent;
       size = 24;
     };
   };

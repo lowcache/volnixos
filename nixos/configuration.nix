@@ -42,7 +42,7 @@
         serviceConfig = {
           Type = "oneshot";
           DefaultDependencies = false;
-          ExecStart = "${pkgs.coreutils}/bin/umount -f -l /run/user/1000/doc";
+          ExecStart = "${pkgs.coreutils}/bin/umount -f -l /run/user/1000/doc || true";
           ExecStopPost = "${pkgs.psmisc}/bin/killall -9 xdg-document-portal fusermount3";
         };
       };
@@ -94,7 +94,7 @@
       enable = true;
       settings = {
       	default_session = {
-      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'uwsm start hyprland-uwsm.desktop'";
+      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'uwsm start hyprland.desktop'";
       	  user = "greeter";
       	};
       };	
@@ -104,10 +104,31 @@
   	enable = true;
   	extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
-  # Snap support is typically handled via appimage or flatpak in pure NixOS
-  
+  # Snap support is typically handled via appimage or flatpak in pure NixOS  
   environment.systemPackages = with pkgs; [
+  	gcc 
+  	automake 
+  	autoconf 
+  	automake 
+  	pkg-config
+  	binutils 
+  	glibc 
+  	gdb 
+  	cmake 
+  	strace 
+  	ltrace 
+  	gperf 
+  	patch 
+  	diffutils 
+  	findutils 
+  	gawk
+  	gnugrep 
+  	gnutar 
+  	gzip
     sbctl
+    coreutils
+    fish
+    cryptsetup
     wireguard-tools
     tor
     git

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # From strikeoncmputrz/LLM_Scripts
 # License: Apache-2.0, can be found in the same folder as this script

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Log file for debugging
 LOG_FILE="/tmp/quake_toggle.log"
 exec 2>>"$LOG_FILE"
@@ -59,7 +59,7 @@ WINDOW=$(hyprctl clients -j | jq -r ".[] | select(.class == \"quake\")")
 if [ -z "$WINDOW" ]; then
     echo "Quake terminal not found, launching..." >> "$LOG_FILE"
     # Not running, launch it
-    hyprctl dispatch exec "[workspace special:quake] kitty --single-instance --class quake"
+    hyprctl dispatch exec "[workspace special:quake] uwsm app -- kitty --single-instance --class quake"
     exit 0
 fi
 

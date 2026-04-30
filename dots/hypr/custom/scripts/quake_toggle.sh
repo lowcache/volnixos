@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 TARGET_MON="eDP-2"
 MON_INFO=$(hyprctl monitors -j)
 TARGET_DATA=$(echo "$MON_INFO" | jq -r --arg name "$TARGET_MON" ".[] | select(.name == \$name)")
