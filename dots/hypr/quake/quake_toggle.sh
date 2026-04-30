@@ -1,4 +1,8 @@
 #!/bin/bash
+# Log file for debugging
+LOG_FILE="/tmp/quake_toggle.log"
+exec 2>>"$LOG_FILE"
+echo "--- $(date) ---" >> "$LOG_FILE"
 
 # Target Monitor Name (Focused)
 MON_INFO=$(hyprctl monitors -j)
@@ -8,6 +12,7 @@ TARGET_DATA=$(echo "$MON_INFO" | jq -r ".[] | select(.focused == true)")
 [ -z "$TARGET_DATA" ] && TARGET_DATA=$(echo "$MON_INFO" | jq -r ".[] | select(.id == 0)")
 
 if [ -z "$TARGET_DATA" ]; then
+    echo "Error: Could not find monitor data" >> "$LOG_FILE"
     exit 1
 fi
 
@@ -52,6 +57,7 @@ FULL_H=$VIEW_H
 WINDOW=$(hyprctl clients -j | jq -r ".[] | select(.class == \"quake\")")
 
 if [ -z "$WINDOW" ]; then
+    echo "Quake terminal not found, launching..." >> "$LOG_FILE"
     # Not running, launch it
     hyprctl dispatch exec "[workspace special:quake] kitty --single-instance --class quake"
     exit 0
@@ -62,6 +68,8 @@ CUR_WORKSPACE=$(echo "$WINDOW" | jq -r ".workspace.name")
 ACTIVE_WORKSPACE=$(hyprctl activeworkspace -j | jq -r ".name")
 CUR_H=$(echo "$WINDOW" | jq -r ".size[1]")
 CUR_Y=$(echo "$WINDOW" | jq -r ".at[1]")
+
+echo "Quake found at $ADDR on workspace $CUR_WORKSPACE. Active is $ACTIVE_WORKSPACE." >> "$LOG_FILE"
 
 ACTION=$1
 
@@ -74,7 +82,6 @@ case $ACTION in
             hyprctl dispatch resizewindowpixel exact $TOP_W $TOP_H,address:$ADDR
         else
             # Currently Top or Bottom, make Full
-            # Force size first then move
             hyprctl dispatch resizewindowpixel exact $FULL_W $FULL_H,address:$ADDR
             hyprctl dispatch movewindowpixel exact $FULL_X $FULL_Y,address:$ADDR
         fi
@@ -95,13 +102,15 @@ case $ACTION in
         # Default: Toggle visibility (Show/Hide)
         if [ "$CUR_WORKSPACE" == "$ACTIVE_WORKSPACE" ]; then
             # Visible here, hide it
+            echo "Hiding quake terminal..." >> "$LOG_FILE"
             hyprctl dispatch movetoworkspacesilent special:quake,address:$ADDR
         else
             # Hidden, bring it here
+            echo "Showing quake terminal on $ACTIVE_WORKSPACE..." >> "$LOG_FILE"
             hyprctl dispatch movetoworkspacesilent "$ACTIVE_WORKSPACE",address:$ADDR
             hyprctl dispatch focuswindow address:$ADDR
             
-            # Always ensure it is positioned at TOP when first shown
+            # Always ensure it is positioned at TOP when first shown on this monitor
             hyprctl dispatch movewindowpixel exact $TOP_X $TOP_Y,address:$ADDR
             hyprctl dispatch resizewindowpixel exact $TOP_W $TOP_H,address:$ADDR
         fi
