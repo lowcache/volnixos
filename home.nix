@@ -514,6 +514,9 @@ in
       name = "adw-gtk3-dark";
       package = pkgs.adw-gtk3;
     };
+    gtk4 = {
+      theme = null;
+    };
     cursorTheme = {
       name = "Bibata-Modern-Classic";
       package = pkgs.bibata-cursors;
