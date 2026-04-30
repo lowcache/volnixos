@@ -20,6 +20,7 @@
       "/var/lib/bluetooth"
       "/var/lib/networkmanager"
       "/var/lib/docker"
+      "/var/lib/greetd"
       "/var/logs"
       "/var/lib/flatpak"
       "/etc/secureboot"

@@ -66,11 +66,14 @@
   	hashedPassword = "$6$TC4VPrCqV64Jitm3$2yZL1T8LhyMHM7rU7wLcKxQqhtdhhWrsRSPIOaJ7t4u2ML8pI53kBSpe/KYWx8B7xrEfLMGsKX5xp8.Oo1qTo.";
   	extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];
   };
-  programs.hyprland.enable = true;
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+  };
   programs.kdeconnect.enable = true;
   programs.fish.enable = true;
   virtualisation.docker = {
-    enable = false;
+    enable = true;
     autoPrune.enable = true;
     liveRestore = false;
   };
@@ -90,7 +93,7 @@
       enable = true;
       settings = {
       	default_session = {
-      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'fish -l -c Hyprland'";
+      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd 'uwsm start hyprland-uwsm.desktop'";
       	  user = "greeter";
       	};
       };	
@@ -107,6 +110,7 @@
     wireguard-tools
     tor
     git
+    pkgs.uwsm
     android-studio
     android-tools
     psmisc
