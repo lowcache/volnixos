@@ -15,20 +15,6 @@
             end
 
             set -g fish_greeting
-
-            alias clear "printf '\033[2J\033[3J\033[1;1H'"
-            alias celar "clear"
-            alias claer "clear"
-            alias q "qs -c ii"
-			
-            alias c='clear'
-            alias nf='fastfetch'
-            alias pf='fastfetch'
-            alias ff='fastfetch'
-            alias shutdown='systemctl poweroff'
-            alias ts='snapshot.sh'
-            alias wifi='nmtui'
-            alias ascii='figlet.sh'
             # Navigation 	
             alias ..='cd ..'
             alias ...='cd ../..'
@@ -53,8 +39,7 @@
                 end
             end
         end
-              
-
+      
         function cd --description "Change directory with file handling"
             if test (count $argv) -eq 0
                 builtin cd
@@ -73,14 +58,24 @@
         clear = "printf '\033[2J\033[3J\033[1;1H'";
         celar = "clear";
         claer = "clear";
-        pamcan = "pacman";
+        c = "clear";
         qii = "qs -c ii";
         edit = "$EDITOR";
+        nf = "fastfetch";
+        pf = "fastfetch";
+        ff = "fastfetch";
+        shutdown = "systemctl poweroff";
+        bootbios = "systemctl reboot --firmware"
+        wifi = "nmtui";
+        mkbann = "figlet.sh";
+        wifilistalias nf='fastfetch'
+        alias pf='fastfetch'
+        alias ff='fastfetch' = "nmcli device wifi list"
         nx = "nix";
         nxs = "nix-shell";
         nxr = "nix-rebuild";
-        nxrb = "sudo nixos-rebuild switch --flake /persist/home/nondeus/.nix-config/#nondeus ";
-        nxfd = "nix --extra-experimental-features 'nix-command flakes' search nixpkgs";
+        nxrb = "sudo nixos-rebuild switch --flake /persist/home/nondeus/.nix-config/#nondeus";
+        nxfd = "nix --extra-experimental-features 'nix-command flakes' search nixpkgs ";
         nxrn = "nix-shell --extra-experimental-features 'nix-command flakes' -p ";	
       };
       functions = {
@@ -218,10 +213,9 @@
         '';
       };
     };
-
     git = {
       enable = true;
-      serttings = {
+	  settings = {
         user = {
           name = "lowcache";
           email = "drawpdeadredd@gmail.com";
@@ -256,3 +250,4 @@
     };
   };
 }
+
