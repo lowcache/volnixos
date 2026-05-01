@@ -11,7 +11,7 @@
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
     impermanence.url = "github:nix-community/impermanence";
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.1";
+      url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     microvm.url = "github:astro/microvm.nix";

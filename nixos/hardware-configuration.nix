@@ -23,6 +23,7 @@
       "/var/lib/greetd"
       "/var/logs"
       "/var/lib/flatpak"
+      "/var/lib/sbctl"
       "/etc/secureboot"
       "/etc/asusd"
       "/etc/NetworkManager/system-connections"

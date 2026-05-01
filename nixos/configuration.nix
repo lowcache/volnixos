@@ -1,13 +1,33 @@
-{ config, pkgs, inputs, ... }: {
+{ config, pkgs, inputs, lib, ... }: {
   # Kernel & Performance
   boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/etc/secureboot";
+    generations = 3;
+  };
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=0" ];
+  boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=1" ];
   hardware.enableRedistributableFirmware = true;
   hardware.nvidia-container-toolkit.enable = true;  
-  # Asus Hardware Support
-  imports = [ inputs.nixos-hardware.nixosModules.asus-zephyrus-ga401 ]; # Adjust model as needed [cite: 118]
+  # Asus TUF A16 (2024) Hardware Support
+  imports = [ 
+    inputs.nixos-hardware.nixosModules.common-cpu-amd
+    inputs.nixos-hardware.nixosModules.common-gpu-nvidia
+    inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
+  ];
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = true;
+    open = true; # Use the open-source kernel module for 40-series cards
+    prime = {
+      offload.enable = true;
+      amdgpuBusId = "PCI:102:0:0"; # 66:00.0 in decimal (6*16+6=102)
+      nvidiaBusId = "PCI:1:0:0";   # 01:00.0
+    };
+  };
   # Security & Anonymity
   networking = {
     networkmanager = {
@@ -15,13 +35,6 @@
       wifi.scanRandMacAddress = true;
     };
   };
-# dependency build error cascade kills build (dependency:rust) 
-#  boot.lanzaboote = {
-#    enable = true;
-#    pkiBundle = "/etc/secureboot";
-#  };
-# BootLoader - will be unnecessary when secureboot/lanzaboote is fixed
-  
   systemd = {
     tmpfiles.rules = [ "d /home/nondeus 0700 nondeus users-" ];
     services = { 
