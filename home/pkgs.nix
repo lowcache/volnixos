@@ -60,7 +60,7 @@ in
 		nerd-fonts.atkynson-mono
 	  ];
 	  terminal = with pkgs; [
-	    fish git fzf eva tgpt hdrop bat ripgrep flatpak
+	    fish git fzf eza tgpt hdrop bat ripgrep flatpak
 	    feh fd jq bc tor micro fastfetch cryptsetup htop
 		psmisc direnv playerctl brightnessctl socat gawk
 		acpi upower ddcutil gemini-cli ollama-cuda

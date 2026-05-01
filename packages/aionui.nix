@@ -1,49 +1,30 @@
-{ lib, stdenv, fetchurl, dpkg, makeWrapper
-, gtk3, nss, cups, alsa-lib, mesa
-}:
+{ lib, appimageTools, fetchurl, p7zip }:
 
-stdenv.mkDerivation rec {
-  pname = "aionui-bin";
-  version = "1.9.18";
-
+let
+  pname = "aionui";
+  version = "1.8.26";
+  
   src = fetchurl {
-    url = "https://github.com/iOfficeAI/AionUi/releases/download/v${version}/AionUi-${version}-linux-amd64.deb";
-    sha256 = "939f48133b3c436425b8f08be403a7a911e7b2030baf5e7b3735e754fd0af6e7";
+    url = "https://github.com/iOfficeAI/AionUi/releases/download/v${version}/AionUi-${version}-linux-x86_64.AppImage";
+    hash = "sha256-ce+d/YmLh5WBxn3FgcfxzEcnwFiWktw5UHhB/WHqR8k=";
   };
 
-  nativeBuildInputs = [ dpkg makeWrapper ];
+  appimageContents = appimageTools.extract { inherit pname version src; };
+in
+appimageTools.wrapType2 {
+  inherit pname version src;
 
-  # Runtime dependencies from the PKGBUILD
-  buildInputs = [ gtk3 nss cups alsa-lib mesa ];
-
-  dontUnpack = true;
-
-  installPhase = ''
-    # Extract the .deb archive
-    dpkg -x $src .
-
-    # Copy the extracted contents to the Nix store output path and make it executable
-	mkdir -p $out
-    cp -r opt usr $out/ 2>/dev/null || cp -r "*" $out/
-    BINARY_PATH=$(find $out/opt -type f -iname "aionui" | head -n 1) 
-    chmod +x "$BINARY_PATH"
-    # Wrap binary
-  	wrapProgram "$BINARY_PATH" \
-  	 --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath buildInputs}"
-
-  	# Locate and patch desktop file
-  	DESKTOP_FILE=$(find $out -type f -iname "*.desktop" | head -n 1)
-  	if [ -n "$DESKTOP_FILE" ]; then
-  		substituteInPlace "$DESKTOP_FILE" \
-  		 --replace "icon=aionui" "icon=$out/share/icons/hicolor/1024x1024/apps/AionUi.png" || true
-  	fi 
+  extraInstallPhase = ''
+    install -m 444 -D ${appimageContents}/${pname}.desktop -t $out/share/applications
+    substituteInPlace $out/share/applications/${pname}.desktop \
+      --replace 'Exec=AppRun' 'Exec=${pname}'
+    cp -r ${appimageContents}/usr/share/icons $out/share/ || true
   '';
 
   meta = with lib; {
-    description = "AionUi - Packaged for NixOS";
+    description = "AionUi - Packaged for NixOS using AppImage";
     homepage = "https://github.com/iOfficeAI/AionUi";
-    license = licenses.unfree; # The license is marked 'unknown' in the PKGBUILD
-    platforms = platforms.linux;
-    maintainers = [ maintainers.nondeus ]; # You are the maintainer now
+    license = licenses.unfree;
+    platforms = [ "x86_64-linux" ];
   };
 }

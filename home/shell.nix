@@ -20,9 +20,9 @@
             alias ...='cd ../..'
             alias ....='cd ../../..'
 
-            if command -v exa > /dev/null
+            if command -v eza > /dev/null
                  set -g lo -axG@ --icons --group-directories-first --color=always --octal-permissions
-                alias ls="exa $lo"
+                alias ls="eza $lo"
                 alias ll='ls -1l'
                 alias lr='ls -R'
                 alias lt='ls -T'
