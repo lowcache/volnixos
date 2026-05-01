@@ -2,10 +2,10 @@
   # Kernel & Performance
   boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
   boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.loader.systemd-boot.configurationLimit = 3;
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/etc/secureboot";
-    generations = 3;
   };
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=1" ];
@@ -107,7 +107,7 @@
       enable = true;
       settings = {
       	default_session = {
-      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'uwsm start hyprland.desktop'";
+      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd '${pkgs.dbus}/bin/dbus-run-session uwsm start hyprland.desktop'";
       	  user = "greeter";
       	};
       };	
