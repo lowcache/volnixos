@@ -36,7 +36,7 @@
     };
   };
   systemd = {
-    tmpfiles.rules = [ "d /home/nondeus 0700 nondeus users-" ];
+    tmpfiles.rules = [ "d /home/nondeus 0700 nondeus users" ];
     services = { 
       greetd.serviceConfig = {
         type = "idle";
@@ -107,7 +107,7 @@
       enable = true;
       settings = {
       	default_session = {
-      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd '${pkgs.dbus}/bin/dbus-run-session uwsm start hyprland.desktop'";
+      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'uwsm start hyprland.desktop'";
       	  user = "greeter";
       	};
       };	
