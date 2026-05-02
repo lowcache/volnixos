@@ -49,14 +49,14 @@ set_per_monitor_wallpaper_path() {
     local monitor="$1"
     local path="$2"
     if [ -f "$SHELL_CONFIG_FILE" ]; then
-        jq --arg monitor "$monitor" --arg path "$path" '.background.perMonitorWallpaper[$monitor] = $path' "$SHELL_CONFIG_FILE" > "$SHELL_CONFIG_FILE.tmp" && mv "$SHELL_CONFIG_FILE.tmp" "$SHELL_CONFIG_FILE"
+        jq --arg monitor "$monitor" --arg path "$path" '.background.perMonitorWallpaper[$monitor] = $path' "$SHELL_CONFIG_FILE" > "$SHELL_CONFIG_FILE.tmp" && cp "$SHELL_CONFIG_FILE.tmp" "$SHELL_CONFIG_FILE" && rm "$SHELL_CONFIG_FILE.tmp"
     fi
 }
 
 set_wallpaper_path() {
     local path="$1"
     if [ -f "$SHELL_CONFIG_FILE" ]; then
-        jq --arg path "$path" '.background.wallpaperPath = $path' "$SHELL_CONFIG_FILE" > "$SHELL_CONFIG_FILE.tmp" && mv "$SHELL_CONFIG_FILE.tmp" "$SHELL_CONFIG_FILE"
+        jq --arg path "$path" '.background.wallpaperPath = $path' "$SHELL_CONFIG_FILE" > "$SHELL_CONFIG_FILE.tmp" && cp "$SHELL_CONFIG_FILE.tmp" "$SHELL_CONFIG_FILE" && rm "$SHELL_CONFIG_FILE.tmp"
     fi
 }
 
