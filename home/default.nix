@@ -8,7 +8,6 @@
   ];
 	
 
-  nixpkgs.config.allowUnfree = true;
   home = { 
     username = "nondeus";
     homeDirectory = "/home/nondeus";
