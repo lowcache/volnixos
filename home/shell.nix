@@ -7,6 +7,8 @@
       shellInit = ''
         set -gx EDITOR micro
         set -gx BROWSER brave
+        set -gx PATH $HOME/.local/share/npm-global/bin $PATH
+        set -gx NODE_PATH $HOME/.local/share/npm-global/lib/node_modules
       '';
       interactiveShellInit = ''
         if status is-interactive
