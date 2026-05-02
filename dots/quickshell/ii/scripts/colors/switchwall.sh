@@ -102,7 +102,11 @@ switch() {
     fi
 
     if [[ -z "$mode_flag" ]]; then
-        mode_flag=$(gsettings get org.gnome.desktop.interface color-scheme | tr -d "'" | cut -d- -f2)
+        if command -v gsettings >/dev/null 2>&1; then
+            mode_flag=$(gsettings get org.gnome.desktop.interface color-scheme | tr -d "'" | cut -d- -f2)
+        else
+            mode_flag="dark"
+        fi
     fi
     
     matugen_cmd=(matugen)
@@ -113,11 +117,18 @@ switch() {
     pre_process "$mode_flag"
     
     # Material colors for python script
-    source "$(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)/bin/activate"
-    python3 "$SCRIPT_DIR/generate_colors_material.py" --path "$imgpath" --mode "$mode_flag" \
-        > "$STATE_DIR"/user/generated/material_colors.scss
-    "$SCRIPT_DIR"/applycolor.sh
-    deactivate
+    VENV_PATH=$(eval echo $ILLOGICAL_IMPULSE_VIRTUAL_ENV)
+    if [ -d "$VENV_PATH" ]; then
+        source "$VENV_PATH/bin/activate"
+        python3 "$SCRIPT_DIR/generate_colors_material.py" --path "$imgpath" --mode "$mode_flag" \
+            > "$STATE_DIR"/user/generated/material_colors.scss
+        "$SCRIPT_DIR"/applycolor.sh
+        deactivate
+    else
+        echo "Warning: Virtual environment not found at $VENV_PATH. Skipping material colors generation via python."
+        # Fallback: if material_colors.scss doesn't exist, we might have issues. 
+        # But matugen already applied some themes.
+    fi
 
     ~/.config/illogical-impulse/scripts/apply_theme.py petrified_spittoon
     post_process

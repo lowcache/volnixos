@@ -13,7 +13,14 @@ in
 	    gcc automake autoconf automake pkg-config binutils glibc 
 	    gdb cmake strace ltrace gperf patch diffutils findutils 
 	    gawk gnugrep gnutar gzip coreutils go dart-sass python3
-	    python311Packages.material-color-utilities
+	    python3Packages.pillow
+	    python3Packages.click
+	    python3Packages.loguru
+	    python3Packages.tqdm
+	    python3Packages.pygobject3
+	    python3Packages.requests
+	    python3Packages.material-color-utilities
+        glib
 	  ];
 	  quickshell = with pkgs; [
 	    inputs.quickshell.packages."x86_64-linux".default
