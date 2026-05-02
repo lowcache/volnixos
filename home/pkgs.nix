@@ -20,7 +20,7 @@ in
 	    python3Packages.pygobject3
 	    python3Packages.requests
 	    python3Packages.material-color-utilities
-        glib nodejs corepack
+        glib nodejs
 	  ];
 	  quickshell = with pkgs; [
 	    inputs.quickshell.packages."x86_64-linux".default

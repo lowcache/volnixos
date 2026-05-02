@@ -15,9 +15,9 @@
   home.persistence."/persist" = {
     directories = [
       ".gemini"
-      ".local/share/npm-global",
-      ".npm",
-      ".local/share/fish",
+      ".local/share/npm-global"
+      ".npm"
+      ".local/share/fish"
       ".local/share/direnv"
       ".local/share/krita" # Persist Krita settings & brushes
       ".local/share/fonts"
