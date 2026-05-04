@@ -7,7 +7,14 @@
       shellInit = ''
         set -gx EDITOR micro
         set -gx BROWSER brave
-        set -gx PATH $HOME/.local/share/npm-global/bin $PATH
+        
+        # Toolchain Paths & Persistence
+        set -gx GOPATH $HOME/.local/share/go
+        set -gx CARGO_HOME $HOME/.cargo
+        set -gx RUSTUP_HOME $HOME/.rustup
+        set -gx GEM_HOME $HOME/.local/share/gem
+        
+        set -gx PATH $HOME/.local/share/npm-global/bin $GOPATH/bin $CARGO_HOME/bin $GEM_HOME/bin $PATH
         set -gx NODE_PATH $HOME/.local/share/npm-global/lib/node_modules
       '';
       interactiveShellInit = ''

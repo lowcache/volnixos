@@ -1,7 +1,7 @@
 { lib, appimageTools, fetchurl }:
 
 let
-  pname = "aionui";
+  pname = "AionUi";
   version = "1.8.26";
   
   src = fetchurl {
@@ -15,10 +15,18 @@ appimageTools.wrapType2 {
   inherit pname version src;
 
   extraInstallPhase = ''
-    install -m 444 -D ${appimageContents}/${pname}.desktop -t $out/share/applications
-    substituteInPlace $out/share/applications/${pname}.desktop \
-      --replace 'Exec=AppRun' 'Exec=${pname}'
-    cp -r ${appimageContents}/usr/share/icons $out/share/ || true
+    mkdir -p $out/share/applications
+    cp -r ${appimageContents}/*.desktop $out/share/applications/
+    chmod +w $out/share/applications/*.desktop
+    sed -i "s|Exec=.*|Exec=${pname}|g" $out/share/applications/*.desktop
+    sed -i "s|Icon=.*|Icon=${pname}|g" $out/share/applications/*.desktop
+    sed -i "/NoDisplay=/d" $out/share/applications/*.desktop
+    
+    # Try to install icons from various possible locations in the AppImage
+    mkdir -p $out/share/icons/hicolor/512x512/apps
+    cp -r ${appimageContents}/usr/share/icons $out/share/ 2>/dev/null || \
+    cp -r ${appimageContents}/share/icons $out/share/ 2>/dev/null || \
+    find ${appimageContents} -maxdepth 1 -name "*.png" -exec cp {} $out/share/icons/hicolor/512x512/apps/${pname}.png \; || true
   '';
 
   meta = with lib; {

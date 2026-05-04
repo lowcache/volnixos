@@ -18,10 +18,10 @@
     directories = [
       "/var/lib/nixos"
       "/var/lib/bluetooth"
-      "/var/lib/networkmanager"
+      "/var/lib/NetworkManager"
       "/var/lib/docker"
       "/var/lib/greetd"
-      "/var/logs"
+      "/var/log"
       "/var/lib/flatpak"
       "/var/lib/sbctl"
       "/etc/secureboot"

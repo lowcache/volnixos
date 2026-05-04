@@ -2,9 +2,9 @@
 
   imports = [
     ./shell.nix
-	./pkgs.nix
-	./session.nix
-	./persist.nix
+	  ./pkgs.nix
+	  ./session.nix
+	  ./persist.nix
   ];
 	
 
@@ -24,7 +24,7 @@
       theme = null;
     };
     cursorTheme = {
-      name = "Bibata-Modern-Translucent";
+      name = "Bibata-Modern-Classic-Translucent";
       package = pkgs.bibata-cursors-translucent;
       size = 24;
     };

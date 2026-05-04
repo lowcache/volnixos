@@ -122,7 +122,6 @@
   	gcc 
   	automake 
   	autoconf 
-  	automake 
   	pkg-config
   	binutils 
   	glibc 
@@ -145,11 +144,17 @@
     wireguard-tools
     tor
     git
-    pkgs.uwsm
+    fd
+    micro
+    python3
+    uwsm
     android-studio
     android-tools
     psmisc
   ];
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    cudaSupport = true;
+  };
   system.stateVersion = "24.11";
 }
