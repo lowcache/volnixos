@@ -1,33 +1,48 @@
 { config, pkgs, inputs, lib, ... }: {
-  # Kernel & Performance
-  boot.kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.loader.systemd-boot.configurationLimit = 3;
-  boot.lanzaboote = {
-    enable = true;
-    pkiBundle = "/etc/secureboot";
-  };
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=1" ];
-  hardware.enableRedistributableFirmware = true;
-  hardware.nvidia-container-toolkit.enable = true;  
-  # Asus TUF A16 (2024) Hardware Support
-  imports = [ 
-    inputs.nixos-hardware.nixosModules.common-cpu-amd
-    inputs.nixos-hardware.nixosModules.common-gpu-nvidia
-    inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
-  ];
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = true;
-    open = true; # Use the open-source kernel module for 40-series cards
-    prime = {
-      offload.enable = true;
-      amdgpuBusId = "PCI:102:0:0"; # 66:00.0 in decimal (6*16+6=102)
-      nvidiaBusId = "PCI:1:0:0";   # 01:00.0
+
+
+  # Kernel & Performance
+  boot = {
+    kernelParams = [ 
+      "nvidia.NVreg_EnableGpuFirmware=1"
+      "nvidia_drm.modeset=1"
+      "nvidia_drm.fbdev=1"
+      "preempt=full"
+      "threadirqs"
+    ];
+    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
+    kernel.sysctl = {
+      # Memory Management
+      "vm.max_map_count" = 2147483642;
+      "vm.swappiness" = 180;
+      "vm.page-cluster" = 0;
+      "vm.vfs_cache_pressure" = 50;
+      
+      # Scheduling
+      "kernel.sched_cfs_bandwidth_slice_us" = 3000;
+
+      # Network
+      "net.core.netdev_max_backlog" = 16384;
+      "net.core.somaxconn" = 8192;
+      "net.ipv4.tcp_fastopen" = 3;
+      "net.ipv4.tcp_slow_start_after_idle" = 0;
+    };
+    loader = {
+      systemd-boot = {
+        enable = lib.mkForce false;
+        configurationLimit = 3;
+      };
+      efi.canTouchEfiVariables = true;
+    };
+    lanzaboote = {
+      enable = true;
+      pkiBundle = "/etc/secureboot";
     };
   };
+
+
+
   # Security & Anonymity
   networking = {
     networkmanager = {
@@ -35,7 +50,9 @@
       wifi.scanRandMacAddress = true;
     };
   };
+
   systemd = {
+    oomd.enable = false;
     tmpfiles.rules = [ 
       "d /home/nondeus 0700 nondeus users"
       "d /home/nondeus/AppImage 0755 nondeus users"
@@ -68,23 +85,9 @@
       DefaultRestartSec = "1s";
     };
     user.extraConfig = "DefaultTimeoutStopSec=5s";
-    mounts = [
-      {
-      	what = "/dev/disk/by-local/nixos";
-      	where = "/nix";
-      	options = "x-systemd.mount-timeout=1s";
-      }
-    ];
   };
-  nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    max-jobs = 4;
-  };
+  
 
-  swapDevices = [ {
-    device = "/persist/swapfile";
-    size = 16 * 1024; # 16GB
-  } ];
 
   # Android & Connectivity
   users.users.nondeus = {
@@ -92,25 +95,33 @@
   	hashedPassword = "$6$TC4VPrCqV64Jitm3$2yZL1T8LhyMHM7rU7wLcKxQqhtdhhWrsRSPIOaJ7t4u2ML8pI53kBSpe/KYWx8B7xrEfLMGsKX5xp8.Oo1qTo.";
   	extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];
   };
-  programs.hyprland = {
-    enable = true;
-    withUWSM = true;
+  
+  programs = { 
+    hyprland = {
+      enable = true;
+      withUWSM = true;
+    };
+    appimage = {
+      enable = true;
+      binfmt = true;
+    };
+    kdeconnect.enable = true;
+    fish.enable = true;
   };
-  programs.appimage = {
-    enable = true;
-    binfmt = true;
-  };
-  programs.kdeconnect.enable = true;
-  programs.fish.enable = true;
+
   virtualisation.docker = {
     enable = true;
     autoPrune.enable = true;
     liveRestore = false;
   };
+
   # Application Support
   services = {
     geoclue2.enable = true;
-    scx.enable = true;
+    scx = {
+      enable = true;
+      scheduler = "scx_lavd";
+    };
     flatpak.enable = true;
     asusd.enable = true;
     supergfxd.enable = true;
@@ -130,10 +141,12 @@
       };	
     };
   };
+
   xdg.portal = {
   	enable = true;
   	extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
+
   # Snap support is typically handled via appimage or flatpak in pure NixOS  
   environment.systemPackages = with pkgs; [
   	gcc 
@@ -170,9 +183,19 @@
     psmisc
     appimage-run
   ];
-  nixpkgs.config = {
-    allowUnfree = true;
-    cudaSupport = true;
+  
+  nix = {
+    settings = {
+      experimental-features = [ "nix-command" "flakes" ];
+    };
   };
+    
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      cudaSupport = true;
+    };
+  };
+  
   system.stateVersion = "24.11";
 }

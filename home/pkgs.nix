@@ -25,7 +25,7 @@
 		  hypridle hyprlock hyprcursor hyprland-qt-support pamixer
 		  pavucontrol xwayland awww waypaper hyprpaper adw-gtk3
 	    cliphist hyprpicker fuzzel kitty krita-plugin-gmic krita
-	    imagemagick chromium librewolf spacedrive papirus-icon-theme
+	    imagemagick chromium spacedrive papirus-icon-theme
 	    gsettings-desktop-schemas brave vscodium gedit cava swappy
 	    wl-clipboard grim slurp matugen networkmanagerapplet
 	  ];

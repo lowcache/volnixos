@@ -1,4 +1,38 @@
-{ config, lib, pkgs, modulesPath, ... }: {
+{ config, lib, pkgs, modulesPath, inputs, ... }: {
+
+  imports = [ 
+    inputs.nixos-hardware.nixosModules.common-cpu-amd
+    inputs.nixos-hardware.nixosModules.common-gpu-nvidia
+    inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
+  ];
+  
+  hardware = {
+    enableRedistributableFirmware = true;
+    nvidia-container-toolkit.enable = true;  
+    nvidia = {
+      modesetting.enable = true;
+      powerManagement.enable = true;
+      open = true; # Use the open-source kernel module for 40-series cards
+      prime = {
+        offload.enable = true;
+        amdgpuBusId = "PCI:102:0:0"; # 66:00.0 in decimal (6*16+6=102)
+        nvidiaBusId = "PCI:1:0:0";   # 01:00.0
+      };
+    };
+  };
+  
+  swapDevices = [ 
+    {
+      device = "/persist/swapfile";
+      size = 16 * 1024; # 16GB physical backup
+    } 
+  ];
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50; # Use up to 50% of RAM as compressed swap
+  };
+  
   fileSystems."/" = {
     device = "none";
     fsType = "tmpfs";

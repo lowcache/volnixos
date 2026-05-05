@@ -84,6 +84,7 @@
         nxrb = "sudo nixos-rebuild switch --flake /persist/home/nondeus/.nix-config/#nondeus";
         nxfd = "nix --extra-experimental-features 'nix-command flakes' search nixpkgs ";
         nxrn = "nix-shell --extra-experimental-features 'nix-command flakes' -p ";	
+        nvrun = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ";
       };
       functions = {
         better_cd = ''
