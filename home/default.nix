@@ -2,18 +2,17 @@
 
   imports = [
     ./shell.nix
-	  ./pkgs.nix
-	  ./session.nix
-	  ./persist.nix
+	./pkgs.nix
+	./session.nix
+	./persist.nix
   ];
 	
-
-  xdg.enable = true;
   home = { 
     username = "nondeus";
     homeDirectory = "/home/nondeus";
     stateVersion = "24.11";
   };
+  
   gtk = {
     enable = true;
     theme = {
@@ -29,4 +28,5 @@
       size = 24;
     };
   };
+  
 }

@@ -4,6 +4,8 @@
 
   # Kernel & Performance
   boot = {
+    initrd.systemd.enable = true;
+    kernelModules = [ "nvidia_uvm" "amdgpu" ];
     kernelParams = [ 
       "nvidia.NVreg_EnableGpuFirmware=1"
       "nvidia_drm.modeset=1"
@@ -117,6 +119,7 @@
 
   # Application Support
   services = {
+    xserver.videoDrivers = [ "nvidia" "amdgpu" ];
     geoclue2.enable = true;
     scx = {
       enable = true;

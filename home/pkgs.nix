@@ -57,7 +57,7 @@
 	    fish git fzf eza tgpt hdrop bat ripgrep flatpak
 	    feh fd jq bc tor micro fastfetch cryptsetup htop
 		psmisc direnv playerctl brightnessctl socat gawk
-		acpi upower ddcutil gemini-cli jan (ollama.override { acceleration = "cuda"; })
+		acpi upower ddcutil gemini-cli jan clinfo libva-utils vulkan-tools (ollama.override { acceleration = "cuda"; })
       ];	
     in
 	  terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;

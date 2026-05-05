@@ -8,13 +8,29 @@
   
   hardware = {
     enableRedistributableFirmware = true;
+    amdgpu.opencl.enable = true;
+    graphics = {
+      enable = true;
+      enable32Bit = true;
+      extraPackages = with pkgs; [
+        nvidia-vaapi-driver
+        libva-vdpau-driver
+        libvdpau-va-gl
+      ];
+    };
     nvidia-container-toolkit.enable = true;  
     nvidia = {
       modesetting.enable = true;
-      powerManagement.enable = true;
+      powerManagement = {
+        enable = true;
+        finegrained = true;
+      };
       open = true; # Use the open-source kernel module for 40-series cards
       prime = {
-        offload.enable = true;
+        offload = {
+          enable = true;
+          enableOffloadCmd = true;
+        };
         amdgpuBusId = "PCI:102:0:0"; # 66:00.0 in decimal (6*16+6=102)
         nvidiaBusId = "PCI:1:0:0";   # 01:00.0
       };
