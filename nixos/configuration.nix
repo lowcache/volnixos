@@ -6,7 +6,7 @@
   boot = {
     initrd.systemd.enable = true;
     kernelModules = [ "nvidia_uvm" "amdgpu" ];
-    kernelParams = [ 
+    kernelParams = [
       "nvidia.NVreg_EnableGpuFirmware=1"
       "nvidia_drm.modeset=1"
       "nvidia_drm.fbdev=1"
@@ -20,10 +20,8 @@
       "vm.swappiness" = 180;
       "vm.page-cluster" = 0;
       "vm.vfs_cache_pressure" = 50;
-      
       # Scheduling
       "kernel.sched_cfs_bandwidth_slice_us" = 3000;
-
       # Network
       "net.core.netdev_max_backlog" = 16384;
       "net.core.somaxconn" = 8192;
@@ -43,9 +41,6 @@
     };
   };
 
-
-
-  # Security & Anonymity
   networking = {
     networkmanager = {
       enable = true;
@@ -55,11 +50,11 @@
 
   systemd = {
     oomd.enable = false;
-    tmpfiles.rules = [ 
+    tmpfiles.rules = [
       "d /home/nondeus 0700 nondeus users"
       "d /home/nondeus/AppImage 0755 nondeus users"
     ];
-    services = { 
+    services = {
       greetd.serviceConfig = {
         type = "idle";
         StandardInput = "tty";
@@ -88,17 +83,14 @@
     };
     user.extraConfig = "DefaultTimeoutStopSec=5s";
   };
-  
 
-
-  # Android & Connectivity
   users.users.nondeus = {
-  	isNormalUser = true;
-  	hashedPassword = "$6$TC4VPrCqV64Jitm3$2yZL1T8LhyMHM7rU7wLcKxQqhtdhhWrsRSPIOaJ7t4u2ML8pI53kBSpe/KYWx8B7xrEfLMGsKX5xp8.Oo1qTo.";
-  	extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];
+    isNormalUser = true;
+    hashedPassword = "$6$TC4VPrCqV64Jitm3$2yZL1T8LhyMHM7rU7wLcKxQqhtdhhWrsRSPIOaJ7t4u2ML8pI53kBSpe/KYWx8B7xrEfLMGsKX5xp8.Oo1qTo.";
+    extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];
   };
-  
-  programs = { 
+
+  programs = {
     hyprland = {
       enable = true;
       withUWSM = true;
@@ -133,43 +125,44 @@
       Login = {
         KillUserProcesses = true;
       };
-    }; 
+    };
     greetd = {
       enable = true;
       settings = {
-      	default_session = {
-      	  command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'uwsm start hyprland.desktop'";
-      	  user = "greeter";
-      	};
-      };	
+        default_session = {
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'uwsm start hyprland.desktop'";
+          user = "greeter";
+        };
+      };
     };
   };
 
-  xdg.portal = {
-  	enable = true;
-  	extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  xdg =
+    portal = {
+      enable = true;
+      extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    };
   };
 
-  # Snap support is typically handled via appimage or flatpak in pure NixOS  
   environment.systemPackages = with pkgs; [
-  	gcc 
-  	automake 
-  	autoconf 
-  	pkg-config
-  	binutils 
-  	glibc 
-  	gdb 
-  	cmake 
-  	strace 
-  	ltrace 
-  	gperf 
-  	patch 
-  	diffutils 
-  	findutils 
-  	gawk
-  	gnugrep 
-  	gnutar 
-  	gzip
+    gcc
+    automake
+    autoconf
+    pkg-config
+    binutils
+    glibc
+    gdb
+    cmake
+    strace
+    ltrace
+    gperf
+    patch
+    diffutils
+    findutils
+    gawk
+    gnugrep
+    gnutar
+    gzip
     sbctl
     coreutils
     fish
@@ -186,19 +179,19 @@
     psmisc
     appimage-run
   ];
-  
+
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
     };
   };
-    
+
   nixpkgs = {
     config = {
       allowUnfree = true;
       cudaSupport = true;
     };
   };
-  
+
   system.stateVersion = "24.11";
 }

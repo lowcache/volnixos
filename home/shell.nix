@@ -7,13 +7,13 @@
       shellInit = ''
         set -gx EDITOR micro
         set -gx BROWSER brave
-        
+
         # Toolchain Paths & Persistence
         set -gx GOPATH $HOME/.local/share/go
         set -gx CARGO_HOME $HOME/.cargo
         set -gx RUSTUP_HOME $HOME/.rustup
         set -gx GEM_HOME $HOME/.local/share/gem
-        
+
         set -gx PATH $HOME/.local/share/npm-global/bin $GOPATH/bin $CARGO_HOME/bin $GEM_HOME/bin $PATH
         set -gx NODE_PATH $HOME/.local/share/npm-global/lib/node_modules
       '';
@@ -24,13 +24,13 @@
             end
 
             set -g fish_greeting
-            # Navigation 	
+            # Navigation
             alias ..='cd ..'
             alias ...='cd ../..'
             alias ....='cd ../../..'
 
             if command -v eza > /dev/null
-                 set -g lo -axG@ --icons --group-directories-first --color=always --octal-permissions
+                set -g lo -axG@ --icons --group-directories-first --color=always --octal-permissions
                 alias ls="eza $lo"
                 alias ll='ls -1l'
                 alias lr='ls -R'
@@ -48,7 +48,7 @@
                 end
             end
         end
-      
+
         function cd --description "Change directory with file handling"
             if test (count $argv) -eq 0
                 builtin cd
@@ -223,7 +223,7 @@
     };
     git = {
       enable = true;
-	  settings = {
+      settings = {
         user = {
           name = "lowcache";
           email = "drawpdeadredd@gmail.com";
@@ -244,12 +244,14 @@
     micro = {
       enable = true;
       settings = {
+        tabsize = 2;
+        tabstospaces = true;
         autosu = true;
         colorscheme = "dracula-tc";
         fastdirty = true;
         filemanager = false;
         linter = false;
-        multitab = "hsplit";
+        multitab = "vsplit";
         parsecursor = true;
         saveundo = true;
         scrollbar = true;

@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }: {
 
   xdg = {
-	enable = true; 
+	enable = true;
     configFile = {
       "quickshell".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/quickshell/";
       "hypr".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/hypr";
@@ -14,12 +14,12 @@
       "starship.toml".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/starship/starship.toml";
     };
   };
-  
+
   home.persistence."/persist" = {
     directories = let
       dotfiles = [
         ".gemini"
-	    ".npm"
+        ".npm"
         ".cargo"
         ".rustup"
         ".ssh"
@@ -30,7 +30,7 @@
         ".ZAP"
       ];
       config = [
-        ".config/dconf" 
+        ".config/dconf"
         ".config/VSCodium"
         ".config/Google"
         ".config/BraveSoftware"
@@ -57,7 +57,7 @@
         ".local/share/flatpak"
         ".local/share/Jan/data"
         ".local/state/quickshell"
-        ".local/state/illogical-impulse" 
+        ".local/state/illogical-impulse"
         ".local/state/wireplumber"
       ];
       flatpak-var = [

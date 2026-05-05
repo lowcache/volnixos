@@ -1,11 +1,11 @@
 { config, lib, pkgs, modulesPath, inputs, ... }: {
 
-  imports = [ 
+  imports = [
     inputs.nixos-hardware.nixosModules.common-cpu-amd
     inputs.nixos-hardware.nixosModules.common-gpu-nvidia
     inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
-  
+  # Hardware GPU
   hardware = {
     enableRedistributableFirmware = true;
     amdgpu.opencl.enable = true;
@@ -18,7 +18,7 @@
         libvdpau-va-gl
       ];
     };
-    nvidia-container-toolkit.enable = true;  
+    nvidia-container-toolkit.enable = true;
     nvidia = {
       modesetting.enable = true;
       powerManagement = {
@@ -36,33 +36,32 @@
       };
     };
   };
-  
-  swapDevices = [ 
-    {
-      device = "/persist/swapfile";
-      size = 16 * 1024; # 16GB physical backup
-    } 
-  ];
+
+  # Swap
+  swapDevices = lib.singleton {
+    device = "/persist/swapfile";
+    size = 16 * 1024; # 16GB physical backup
+  };
   zramSwap = {
     enable = true;
     algorithm = "zstd";
     memoryPercent = 50; # Use up to 50% of RAM as compressed swap
   };
-  
+
+  # Impermanence
   fileSystems."/" = {
     device = "none";
     fsType = "tmpfs";
     options = [ "defaults" "size=4G" "mode=755" ];
   };
-
   fileSystems."/boot" = { device = "/dev/disk/by-label/BOOT"; fsType = "vfat"; };
   fileSystems."/nix" = { device = "/dev/disk/by-label/NIX"; fsType = "ext4"; };
-  fileSystems."/persist" = { 
-    device = "/dev/disk/by-label/PERSIST"; 
-    fsType = "ext4"; 
-    neededForBoot = true; 
+  fileSystems."/persist" = {
+    device = "/dev/disk/by-label/PERSIST";
+    fsType = "ext4";
+    neededForBoot = true;
   };
-
+  # Persistence
   environment.persistence."/persist" = {
     hideMounts = true;
     directories = [
@@ -78,7 +77,7 @@
       "/etc/asusd"
       "/etc/NetworkManager/system-connections"
     ];
-    files = [ 
+    files = [
       "/etc/machine-id"
     ];
   };
