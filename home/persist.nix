@@ -41,6 +41,8 @@
         ".cache/quickshell"
         ".cache/illogical-impulse"
         ".cache/nvidia"
+        ".cache/Jan"
+        ".cache/jan.ai.app"
       ];
       local = [
         ".local/share/npm-global"
@@ -55,7 +57,8 @@
         ".local/share/illogical-impulse"
         ".local/share/Google"
         ".local/share/flatpak"
-        ".local/share/Jan/data"
+        ".local/share/Jan"
+        ".local/share/jan.ai.app"
         ".local/state/quickshell"
         ".local/state/illogical-impulse"
         ".local/state/wireplumber"

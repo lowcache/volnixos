@@ -86,7 +86,7 @@
 
   users.users.nondeus = {
     isNormalUser = true;
-    hashedPassword = "$6$TC4VPrCqV64Jitm3$2yZL1T8LhyMHM7rU7wLcKxQqhtdhhWrsRSPIOaJ7t4u2ML8pI53kBSpe/KYWx8B7xrEfLMGsKX5xp8.Oo1qTo.";
+    hashedPasswordFile = "/home/nondeus/.nix-config/password";
     extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];
   };
 
@@ -143,44 +143,30 @@
   };
 
   environment.systemPackages = with pkgs; [
-    gcc
-    automake
-    autoconf
-    pkg-config
-    binutils
-    glibc
-    gdb
-    cmake
-    strace
-    ltrace
-    gperf
-    patch
-    diffutils
-    findutils
-    gawk
-    gnugrep
-    gnutar
-    gzip
     sbctl
-    coreutils
-    fish
     cryptsetup
     wireguard-tools
     tor
-    git
-    fd
-    micro
-    python3
     uwsm
     android-studio
     android-tools
-    psmisc
     appimage-run
   ];
 
   nix = {
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
+      auto-optimise-store = true;
+      substituters = [ "https://hyprland.cachix.org" "https://nix-community.cachix.org" ];
+      trusted-public-keys = [ 
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" 
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" 
+      ];
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
     };
   };
 
