@@ -1,4 +1,0 @@
-[] fix setwall
-[] fix/update shell init (current: fastfetch)
-[] integrae usage of ~/Storage more effectively
-[] ensure Jan config persistence and system integration (ie gpu, sysprompt, mcp, etc)
