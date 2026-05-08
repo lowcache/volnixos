@@ -27,6 +27,8 @@
       "net.core.somaxconn" = 8192;
       "net.ipv4.tcp_fastopen" = 3;
       "net.ipv4.tcp_slow_start_after_idle" = 0;
+      "net.core.default_qdisc" = "fq";
+      "net.ipv4.tcp_congestion_control" = "bbr";
     };
     loader = {
       systemd-boot = {
@@ -162,12 +164,15 @@
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" 
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" 
       ];
+      min-free = 536870912; # 512MB
+      max-free = 1073741824; # 1GB
     };
     gc = {
       automatic = true;
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
+    optimise.automatic = true;
   };
 
   nixpkgs = {

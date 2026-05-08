@@ -60,8 +60,6 @@
             end
             builtin cd "$t"
         end
-
-        direnv hook fish | source
       '';
       shellAliases = {
         clear = "printf '\033[2J\033[3J\033[1;1H'";
@@ -87,19 +85,6 @@
         nvrun = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ";
       };
       functions = {
-        better_cd = ''
-          function better_cd
-            set -l t $argv[1]
-            if test -z "$t"
-              builtin cd
-              return
-            end
-            if test -f "$t"
-              set t (dirname "$t")
-            end
-            builtin cd "$t"
-          end
-        '';
         extract = ''
           function extract --description "Expand/extract archives"
             for file in $argv

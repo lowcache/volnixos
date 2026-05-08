@@ -79,6 +79,7 @@
       "/var/lib/sbctl"
       "/etc/secureboot"
       "/etc/asusd"
+      "/etc/ssh"
       "/etc/NetworkManager/system-connections"
     ];
     files = [
