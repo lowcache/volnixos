@@ -81,7 +81,6 @@
       "/etc/asusd"
       "/etc/ssh"
       "/etc/NetworkManager/system-connections"
-      "/etc/localtime"
     ];
     files = [
       "/etc/machine-id"
