@@ -147,20 +147,21 @@
           path_loras = "/content/data/models/loras/";
           path_outputs = "/content/data/outputs/";
         };
-        extraOptions = [ "--gpus=all" ];
+        extraOptions = [ "--gpus" "device=0" ];
       };
       "forge" = {
-        image = "syubuyari/sd-webui-forge:latest";
+        image = "ghcr.io/jim60105/stable-diffusion-webui:forge";
         autoStart = false;
         ports = [ "7866:7860" ];
-        volumes = [ "/home/nondeus/Storage/ai-generation/forge:/app/stable-diffusion-webui" ];
-        extraOptions = [ "--gpus=all" ];
+        volumes = [ "/home/nondeus/Storage/ai-generation/forge:/data" ];
+        extraOptions = [ "--gpus" "device=0" ];
       };
     };
   };
 
   # Application Support
   services = {
+    timesyncd.enable = true;
     xserver.videoDrivers = [ "nvidia" "amdgpu" ];
     geoclue2.enable = true;
     scx = {
