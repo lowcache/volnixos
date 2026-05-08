@@ -150,10 +150,17 @@
         extraOptions = [ "--device" "nvidia.com/gpu=0" ];
       };
       "forge" = {
-        image = "ghcr.io/jim60105/stable-diffusion-webui:forge";
+        image = "ghcr.io/ai-dock/stable-diffusion-webui-forge:latest-cuda";
         autoStart = false;
-        ports = [ "7866:7860" ];
-        volumes = [ "/home/nondeus/Storage/ai-generation/forge:/data" ];
+        ports = [ "7866:17860" ];
+        volumes = [ "/home/nondeus/Storage/ai-generation/forge:/workspace" ];
+        environment = {
+          # AI-Dock Specific Vars
+          BASE_PORT = "17860";
+          WORKSPACE = "/workspace";
+          # WebUI Specific Vars
+          FORGE_ARGS = "--listen --port 17860";
+        };
         extraOptions = [ "--device" "nvidia.com/gpu=0" ];
       };
     };
