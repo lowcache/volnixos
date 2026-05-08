@@ -109,7 +109,6 @@
       };
     };
   };
-
   programs = {
     hyprland = {
       enable = true;
