@@ -45,7 +45,8 @@
         psmisc direnv playerctl brightnessctl socat gawk
         acpi upower ddcutil gemini-cli jan clinfo libva-utils
         vulkan-tools (ollama.override { acceleration = "cuda"; })
-        mcp-nixos git-lfs nil nixpkgs-fmt
+        mcp-nixos git-lfs nil nixpkgs-fmt python314packages.pyqt5
+        python314packages.pyqt6
       ];
     in
       terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
