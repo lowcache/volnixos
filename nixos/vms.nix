@@ -5,9 +5,7 @@
     inputs.microvm.nixosModules.host
   ];
 
-  microvm.vms."net-gate" = {
-    flake = inputs.self;
-    updateFlake = "git+file:///persist/home/nondeus/.nix-config";
+  microvm.vms.net-gate = {
     autostart = true;
     config = {
       # Use the same inputs
@@ -88,8 +86,6 @@
   # We use systemd-networkd BUT we must ensure it doesn't touch your main interfaces
   systemd.network = {
     enable = true;
-    # Tell networkd to ignore everything except the VM tap
-    config.networkConfig.ManageTemporaryAddress = false;
     
     networks."10-microvm-tap" = {
       matchConfig.Name = "vm-netgate";
