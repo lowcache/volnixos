@@ -56,5 +56,15 @@
 
     # Add this to allow building/running the VM package
     packages.x86_64-linux.net-gate = self.nixosConfigurations.nondeus.config.microvm.vms.net-gate.config.microvm.declaredRunner;
+    packages.x86_64-linux.infernalinit = self.nixosConfigurations.nondeus.pkgs.buildNimPackage {
+      pname = "infernalinit";
+      version = "0.1.0";
+      src = ./packages/infernalinit;
+      buildInputs = with self.nixosConfigurations.nondeus.pkgs; [ nim ];
+      postPatch = ''
+        mkdir -p assets
+        cp ${./tbann} assets/tbann
+      '';
+    };
   };
 }

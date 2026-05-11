@@ -31,6 +31,8 @@
         hypervisor = "cloud-hypervisor";
         mem = 512;
         vcpu = 1;
+        #cloud-hypervisor supports systemd-notify via vsock, but `microvm.vsock.cid` must be set to enable this.
+        vsock.cid = true;
         interfaces = [ {
           type = "tap";
           id = "vm-netgate";
@@ -86,7 +88,7 @@
   # We use systemd-networkd BUT we must ensure it doesn't touch your main interfaces
   systemd.network = {
     enable = true;
-    
+    wait-online.enable = false;
     networks."10-microvm-tap" = {
       matchConfig.Name = "vm-netgate";
       networkConfig = {

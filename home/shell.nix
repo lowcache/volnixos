@@ -83,7 +83,9 @@ rules:
                 alias la='ls --absolute'
             end
 
-            if command -v fastfetch > /dev/null
+            if command -v infernalinit > /dev/null
+                infernalinit
+            else if command -v fastfetch > /dev/null
                 fastfetch
             end
 
@@ -116,6 +118,7 @@ rules:
         nf = "fastfetch";
         pf = "fastfetch";
         ff = "fastfetch";
+        infernal = "infernalinit";
         shutdown = "systemctl poweroff";
         bootbios = "systemctl reboot --firmware";
         wifi = "nmtui";
