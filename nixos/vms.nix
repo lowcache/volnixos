@@ -32,7 +32,7 @@
         mem = 512;
         vcpu = 1;
         #cloud-hypervisor supports systemd-notify via vsock, but `microvm.vsock.cid` must be set to enable this.
-        vsock.cid = true;
+        vsock.cid = 10;
         interfaces = [ {
           type = "tap";
           id = "vm-netgate";
