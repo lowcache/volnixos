@@ -5,7 +5,7 @@
     inputs.nixos-hardware.nixosModules.common-gpu-nvidia
     inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
   ];
-  
+
   # Hardware GPU
   hardware = {
     enableRedistributableFirmware = true;

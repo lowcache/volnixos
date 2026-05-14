@@ -87,7 +87,7 @@
     };
     settings.Manager = {
       DefaultTimeoutStopSec = "10s";
-      DefaultRestartSec = "1s";   
+      DefaultRestartSec = "1s";
     };
     user.extraConfig = "DefaultTimeoutStopSec=5s";
   };
@@ -219,9 +219,9 @@
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
       substituters = [ "https://hyprland.cachix.org" "https://nix-community.cachix.org" ];
-      trusted-public-keys = [ 
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc=" 
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" 
+      trusted-public-keys = [
+        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       ];
       min-free = 536870912; # 512MB
       max-free = 1073741824; # 1GB

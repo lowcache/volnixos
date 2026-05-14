@@ -25,8 +25,8 @@ let
       kdePackages.qqc2-desktop-style
       kdePackages.syntax-highlighting
     ];
-  in 
-   {
+  in
+  {
       QML2_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml") qtDependencies + ":/home/nondeus/.config/quickshell/ii";
       QML_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml") qtDependencies + ":/home/nondeus/.config/quickshell/ii";
       QT_PLUGIN_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/plugins:${pkg}/lib/plugins") qtDependencies;

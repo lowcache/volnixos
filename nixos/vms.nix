@@ -66,7 +66,6 @@
       };
 
       environment.systemPackages = [ pkgs.ssh-to-age ];
-      
       # networking.wg-quick.interfaces.wg0 = {
       #   address = [ "10.0.0.2/32" ];
       #   privateKeyFile = config.sops.secrets.wg_private_key.path;
