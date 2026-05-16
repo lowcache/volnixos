@@ -212,6 +212,8 @@
     android-studio
     android-tools
     appimage-run
+    vulkan-tools
+    libva-utils
   ];
 
   nix = {

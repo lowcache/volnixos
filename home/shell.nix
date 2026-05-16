@@ -10,10 +10,10 @@
     rules:
         # Brackets and Operators
         - special: "(\\{|\\}|\\(|\\)|\\;|\\(|\\]|\\[|`|\\\\|\\$|<|>|!|=|&|\\|)"
-    
+
         # Reserved words / Keywords
         - statement: "\\b(assert|else|if|in|inherit|let|rec|then|with|isNull)\\b"
-    
+
         # Built-in functions/constants
         - identifier: "\\b(true|false|null|import|abort|throw|baseNameOf|dirOf|fetchTarball|map|removeAttrs|scopedImport|toString|derivation)\\b"
 
@@ -131,7 +131,7 @@
         nxrbb = "sudo nixos-rebuild build --flake /persist/home/nondeus/.nix-config/#nondeus";
         nxfu = "nix flake update";
         nxfd = "nix search nixpkgs ";
-        nxrn = "nix-shell -p ";	
+        nxrn = "nix-shell -p ";
         nvrun = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ";
         fooogo = "sudo systemctl start docker-fooocus";
         fooostp = "sudo systemctl stop docker-fooocus";
@@ -305,7 +305,7 @@
       signing = {
         signByDefault = true;
         format = "ssh";
-        key = "~/.ssh/id_ed25519.pub";
+        key = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
       };
     };
 

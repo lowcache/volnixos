@@ -27,10 +27,10 @@ let
     ];
   in
   {
-      QML2_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml") qtDependencies + ":/home/nondeus/.config/quickshell/ii";
-      QML_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml") qtDependencies + ":/home/nondeus/.config/quickshell/ii";
+      QML2_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml") qtDependencies + ":${config.home.homeDirectory}/.config/quickshell/ii";
+      QML_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml") qtDependencies + ":${config.home.homeDirectory}/.config/quickshell/ii";
       QT_PLUGIN_PATH = pkgs.lib.concatMapStringsSep ":" (pkg: "${pkg}/lib/qt-6/plugins:${pkg}/lib/plugins") qtDependencies;
-      # ENV VARS
+      # wayland/hyprland/quickshell variables
       XDG_CURRENT_DESKTOP = "Hyprland";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "Hyprland";
@@ -42,6 +42,11 @@ let
       CLUTTER_BACKEND = "wayland";
       # Wayland support for Electron/Chromium
       NIXOS_OZONE_WL = "1";
+      # nvidia specific 
+      LIBVA_DRIVER_NAME = "nvidia";
+      GBM_BACKEND = "nvidia-drm";
+      __NV_PRIME_RENDER_OFFLOAD = "1";
+      __GLX_VENDER_LIBRARY_NAME = "nvidia";
     };
 
 in

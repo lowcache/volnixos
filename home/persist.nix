@@ -3,25 +3,25 @@
   xdg = {
 	enable = true;
     configFile = {
-      "quickshell".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/quickshell/";
-      "hypr".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/hypr";
-      "illogical-impulse".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/illogical-impulse";
-      "kitty".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/kitty";
-      "fastfetch".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/fastfetch";
-      "cava".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/cava";
-      "fuzzel".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/fuzzel";
-      "wlogout".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/wlogout";
-      "starship.toml".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/dots/starship/starship.toml";
-      # "Pictures" (Handled by repo symlink).source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/priv.bkup/Pictures";
-      # "Documents" (Handled by repo symlink).source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/priv.bkup/Documents";
-      "fonts".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/.nix-config/priv.bkup/fonts";
-      "kritarc".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/krita-master/kritarc";
-      "kritadisplayrc".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/krita-master/kritadisplayrc";
+      "quickshell".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/quickshell/";
+      "hypr".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/hypr";
+      "illogical-impulse".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/illogical-impulse";
+      "kitty".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/kitty";
+      "fastfetch".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/fastfetch";
+      "cava".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/cava";
+      "fuzzel".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/fuzzel";
+      "wlogout".source = config.lib.file.mkOutOfStoreSymlink "persst${config.home.homeDirectory}/.nix-config/dots/wlogout";
+      "starship.toml".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/dots/starship/starship.toml";
+      # "Pictures" (Handled by repo symlink).source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.nix-config/priv.bkup/Pictures";
+      # "Documents" (Handled by repo symlink).source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.nix-config/priv.bkup/Documents";
+      "fonts".source = config.lib.file.mkOutOfStoreSymlink "persist${config.home.homeDirectory}/.nix-config/priv.bkup/fonts";
+      "kritarc".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/kritarc";
+      "kritadisplayrc".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/kritadisplayrc";
     };
   };
 
   home.file = {
-    ".local/share/krita".source = config.lib.file.mkOutOfStoreSymlink "/persist/home/nondeus/krita-master/krita";
+    ".local/share/krita".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/krita";
   };
 
   home.persistence."/persist" = {

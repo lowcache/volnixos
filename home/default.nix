@@ -6,13 +6,13 @@
 	  ./session.nix
 	  ./persist.nix
   ];
-	
-  home = { 
+
+  home = {
     username = "nondeus";
     homeDirectory = "/home/nondeus";
     stateVersion = "24.11";
   };
-  
+
   gtk = {
     enable = true;
     theme = {
@@ -22,11 +22,6 @@
     gtk4 = {
       theme = null;
     };
-    cursorTheme = {
-      name = "Bibata-Modern-Classic-Translucent";
-      package = pkgs.bibata-cursors-translucent;
-      size = 24;
-    };
   };
-  
+
 }

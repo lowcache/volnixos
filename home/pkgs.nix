@@ -44,8 +44,7 @@
         fish git fzf eza tgpt hdrop bat ripgrep flatpak
         feh fd jq bc tor micro cryptsetup htop
         psmisc direnv playerctl brightnessctl socat gawk
-        acpi upower ddcutil gemini-cli jan clinfo libva-utils
-        vulkan-tools (ollama.override { acceleration = "cuda"; })
+        acpi upower ddcutil gemini-cli jan clinfo (ollama.override { acceleration = "cuda"; })
         mcp-nixos git-lfs nil nixpkgs-fmt spotatui
         inputs.infernal-init.packages.${pkgs.system}.default
       ];
