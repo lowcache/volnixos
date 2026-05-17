@@ -14,17 +14,18 @@
       enable = true;
       enable32Bit = true;
       extraPackages = with pkgs; [
-        # nvidia-vaapoi-driver # using open kernel module
+        nvidia-vaapi-driver
         libva-vdpau-driver
         libvdpau-va-gl
       ];
     };
     nvidia-container-toolkit.enable = true;
     nvidia = {
+      package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       powerManagement = {
         enable = true;
-        finegrained = true;
+        finegrained = false;
       };
       open = true; # Use the open-source kernel module for 40-series cards
       prime = {

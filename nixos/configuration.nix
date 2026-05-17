@@ -9,8 +9,9 @@
   # Kernel & Performance
   boot = {
     initrd.systemd.enable = true;
-    kernelModules = [ "amdgpu" ];
+    kernelModules = [ "amdgpu" "nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm" ];
     kernelParams = [
+      "nvidia-drm.modeset=1"
       "nvidia.NVreg_EnableGpuFirmware=1"
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "preempt=full"
