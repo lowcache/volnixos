@@ -116,6 +116,27 @@
     };
   };
   programs = {
+    nix-ld = {
+      enable = true;
+      libraries = with pkgs; [
+        stdenv.cc.cc
+        zlib
+        fuse3
+        icu
+        nss
+        openssl
+        curl
+        expat
+        # GPU / Graphics
+        libvdpau
+        libva
+        vulkan-loader
+        libGL
+        egl-wayland
+        wayland
+        libxkbcommon
+      ];
+    };
     hyprland = {
       enable = true;
       withUWSM = true;
