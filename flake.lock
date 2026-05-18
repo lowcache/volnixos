@@ -238,11 +238,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778734065,
-        "narHash": "sha256-kfbjDtGtbua2fltP/uyREy7JIsCA54MSdsfbhQTVBKE=",
+        "lastModified": 1779062537,
+        "narHash": "sha256-2RwGx6Jko3Ax7E/efnl79jfOPTh2/WilYtHeJlkzTqQ=",
         "owner": "lowcache",
         "repo": "infernal-init",
-        "rev": "598637afd31d8ecc0c29f4c67de34fbab7455550",
+        "rev": "54d74efd54a421942ea0d9a7855ce63e9f630cd1",
         "type": "github"
       },
       "original": {
