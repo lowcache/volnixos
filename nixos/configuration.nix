@@ -138,7 +138,9 @@
         wayland
         libxkbcommon
         linuxPackages.nvidia_x11.out
-        cudaPackages.cuda_merged
+        cudaPackages.cuda_cudart
+        cudaPackages.libcublas
+        libglvnd
         mesa
       ];
     };
