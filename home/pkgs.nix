@@ -160,7 +160,7 @@
           mcp-gateway
           github-mcp-server
           markitdown-mcp
-          docling-mcp
+          python314Packages.docling-mcp
           playwright-mcp
         ];
       in
