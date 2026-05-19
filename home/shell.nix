@@ -59,7 +59,7 @@
         set -gx RUSTUP_HOME $HOME/.rustup
         set -gx GEM_HOME $HOME/.local/share/gem
 
-        set -gx PATH $HOME/.local/bin $HOME/.local/share/npm-global/bin $GOPATH/bin $CARGO_HOME/bin $GEM_HOME/bin $PATH
+        set -gx PATH $HOME/.bin $HOME/.local/bin $HOME/.local/share/npm-global/bin $GOPATH/bin $CARGO_HOME/bin $GEM_HOME/bin $PATH
         set -gx NODE_PATH $HOME/.local/share/npm-global/lib/node_modules
       '';
       interactiveShellInit = ''
@@ -118,7 +118,7 @@
         nf = "fastfetch";
         pf = "fastfetch";
         ff = "fastfetch";
-        jan = "jan-nix";
+        jan = "$HOME/.bin/jan-nix";
         infernal = "infernalinit";
         shutdown = "systemctl poweroff";
         bootbios = "systemctl reboot --firmware";

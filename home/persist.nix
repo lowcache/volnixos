@@ -69,6 +69,8 @@
           ".local/share/flatpak"
           ".local/share/Jan"
           ".local/share/jan.ai.app"
+          ".local/share/applications"
+          ".local/bin"
           ".local/state/quickshell"
           ".local/state/illogical-impulse"
           ".local/state/wireplumber"
