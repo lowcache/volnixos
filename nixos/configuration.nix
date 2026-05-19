@@ -140,6 +140,7 @@
         linuxPackages.nvidia_x11.out
         cudaPackages.cuda_cudart
         cudaPackages.libcublas
+        cudaPackages.nccl
         libglvnd
         mesa
       ];
