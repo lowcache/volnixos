@@ -52,7 +52,6 @@
 
       # Fix Entropy and VSOCK early load
       boot.kernelParams = [ "random.trust_cpu=on" ];
-      boot.initrd.kernelModules = [ "virtio_vsock" ];
 
       # Tor Anonymity Layer - Transparent Proxy
       services.tor = {
