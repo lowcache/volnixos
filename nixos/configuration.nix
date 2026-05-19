@@ -135,7 +135,7 @@
         egl-wayland
         wayland
         libxkbcommon
-        config.boot.kernelPackages.nvidiaPackages.stable
+        linuxPackages.nvidia_x11.out
         mesa
       ];
     };
