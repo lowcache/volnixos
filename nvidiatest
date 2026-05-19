@@ -1,0 +1,3 @@
+1 LD_LIBRARY_PATH="/home/nondeus/.local/share/Jan/data/llamacpp/backends/b8892/linux-cuda-13-common_cpus-x64/build/bin"
+     /home/nondeus/.local/share/Jan/data/llamacpp/backends/b8892/linux-cuda-13-common_cpus-x64/build/bin/llama-server --list-devices
+  If that command shows your RTX 4050, then the wrapper is working and Jan will see it too.

@@ -121,10 +121,12 @@
       libraries = with pkgs; [
         stdenv.cc.cc.lib
         zlib
+        libgcc.lib
+        libxcrypt-legacy
+        openssl.out
         fuse3
         icu
         nss
-        openssl
         curl
         expat
         # GPU / Graphics
@@ -136,6 +138,7 @@
         wayland
         libxkbcommon
         linuxPackages.nvidia_x11.out
+        cudaPackages.cuda_merged
         mesa
       ];
     };
