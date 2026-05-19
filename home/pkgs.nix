@@ -147,14 +147,23 @@
           jan
           clinfo
           (ollama.override { acceleration = "cuda"; })
-          mcp-nixos
           git-lfs
           nil
           nixpkgs-fmt
           spotatui
           inputs.infernal-init.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
+        mcp-servers = with pkgs; [
+          mcp-nixos
+          mcp-server-filesystem
+          mcp-server-sequential-thinking
+          mcp-gateway
+          github-mcp-server
+          markitdown-mcp
+          docling-mcp
+          playwright-mcp
+        ];
       in
-      terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
+      mcp-servers ++ terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
   };
 }
