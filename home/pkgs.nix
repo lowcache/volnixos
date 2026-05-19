@@ -155,8 +155,6 @@
         ];
         mcp-servers = with pkgs; [
           mcp-nixos
-          mcp-server-filesystem
-          mcp-server-sequential-thinking
           mcp-gateway
           github-mcp-server
           markitdown-mcp

@@ -252,10 +252,17 @@
     settings = {
       experimental-features = [ "nix-command" "flakes" ];
       auto-optimise-store = true;
-      substituters = [ "https://hyprland.cachix.org" "https://nix-community.cachix.org" ];
+      substituters = [ 
+        "https://hyprland.cachix.org" 
+        "https://nix-community.cachix.org"
+        "https://cache.lix.systems"
+        "https://cuda-maintainers.cachix.org"
+      ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "cache.lix.systems:aBnZU3F19808R5N0sczBmsWwI5YI+433R9M2iS2Hcy4="
+        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
       ];
       min-free = 536870912; # 512MB
       max-free = 1073741824; # 1GB
@@ -271,7 +278,6 @@
   nixpkgs = {
     config = {
       allowUnfree = true;
-      cudaSupport = true;
     };
   };
 

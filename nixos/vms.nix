@@ -5,6 +5,10 @@
     inputs.microvm.nixosModules.host
   ];
 
+  # Host-side overrides for fast shutdown
+  systemd.services."microvm@net-gate".serviceConfig.TimeoutStopSec = "10s";
+  systemd.services."microvm-virtiofsd@net-gate".serviceConfig.TimeoutStopSec = "5s";
+
   microvm.vms.net-gate = {
     autostart = true;
     config = {
@@ -46,6 +50,10 @@
         }];
       };
 
+      # Fix Entropy and VSOCK early load
+      boot.kernelParams = [ "random.trust_cpu=on" ];
+      boot.initrd.kernelModules = [ "virtio_vsock" ];
+
       # Tor Anonymity Layer - Transparent Proxy
       services.tor = {
         enable = true;
@@ -57,6 +65,9 @@
           AutomapHostsOnResolve = true;
         };
       };
+
+      # Fast Tor Shutdown
+      systemd.services.tor.serviceConfig.TimeoutStopSec = "2s";
 
       # Sops Configuration
       sops = {

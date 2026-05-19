@@ -46,6 +46,8 @@
           ".config/BraveSoftware"
           ".config/Jan"
           ".config/micro"
+          ".config/mcp-gateway"
+          ".config/systemd/user"
         ];
         cache = [
           ".cache/pip"
