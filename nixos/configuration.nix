@@ -225,7 +225,7 @@
     flatpak.enable = true;
     asusd.enable = true;
     supergfxd.enable = true;
-    power-profiles-daemon.enable = true;
+    power-profiles-daemon.enable = false;
     logind.settings = {
       Login = {
         KillUserProcesses = true;
