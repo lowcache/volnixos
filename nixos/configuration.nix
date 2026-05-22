@@ -28,6 +28,7 @@
       # Panic Recovery
       "kernel.panic" = 10;
       "kernel.panic_on_oops" = 1;
+      "kernel.sysrq" = lib.mkForce 502;
       # Scheduling
       "kernel.sched_cfs_bandwidth_slice_us" = 3000;
       # Network
@@ -96,7 +97,7 @@
         Environment = [
           "OLLAMA_ORIGINS=*"
           "OLLAMA_FLASH_ATTENTION=1"
-          "OLLAMA_NUM_PARALLEL=2"
+          "OLLAMA_NUM_PARALLEL=1"
           "CUDA_VISIBLE_DEVICES=0"
         ];
       };
