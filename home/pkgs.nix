@@ -79,7 +79,6 @@
           spacedrive
           papirus-icon-theme
           gsettings-desktop-schemas
-          brave
           vscodium
           gedit
           cava
@@ -144,7 +143,6 @@
           upower
           ddcutil
           gemini-cli
-          jan
           clinfo
           git-lfs
           nil

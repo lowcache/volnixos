@@ -44,7 +44,6 @@
           ".config/VSCodium"
           ".config/Google"
           ".config/BraveSoftware"
-          ".config/Jan"
           ".config/micro"
           ".config/mcp-gateway"
           ".config/systemd/user"
@@ -54,8 +53,6 @@
           ".cache/quickshell"
           ".cache/illogical-impulse"
           ".cache/nvidia"
-          ".cache/Jan"
-          ".cache/jan.ai.app"
         ];
         local = [
           ".local/share/npm-global"
@@ -69,8 +66,6 @@
           ".local/share/illogical-impulse"
           ".local/share/Google"
           ".local/share/flatpak"
-          ".local/share/Jan"
-          ".local/share/jan.ai.app"
           ".local/share/applications"
           ".local/bin"
           ".local/state/quickshell"

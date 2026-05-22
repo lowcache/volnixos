@@ -31,6 +31,14 @@
         };
       };
 
+      systemd.network = {
+        enable = true;
+        networks."10-lan" = {
+          matchConfig.Name = "en* eth*";
+          networkConfig.DHCP = "ipv4";
+        };
+      };
+
       microvm = {
         hypervisor = "cloud-hypervisor";
         mem = 512;
@@ -42,12 +50,20 @@
           id = "vm-netgate";
           mac = "02:00:00:00:00:01";
         }];
-        shares = [{
-          source = "/persist/etc/ssh";
-          mountPoint = "/etc/ssh";
-          tag = "ssh-keys";
-          proto = "virtiofs";
-        }];
+        shares = [
+          {
+            source = "/persist/etc/ssh";
+            mountPoint = "/etc/ssh";
+            tag = "ssh-keys";
+            proto = "virtiofs";
+          }
+          {
+            source = "/persist/var/lib/tor";
+            mountPoint = "/var/lib/tor";
+            tag = "tor-data";
+            proto = "virtiofs";
+          }
+        ];
       };
 
       # Fix Entropy and VSOCK early load
@@ -101,7 +117,7 @@
     networks."10-microvm-tap" = {
       matchConfig.Name = "vm-netgate";
       networkConfig = {
-        Address = [ "10.0.0.1/24" ];
+        Address = [ "192.168.100.1/24" ];
         DHCPServer = true;
         IPv4Forwarding = true;
       };

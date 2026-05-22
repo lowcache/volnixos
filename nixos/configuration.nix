@@ -16,6 +16,7 @@
       "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
       "preempt=full"
       "threadirqs"
+      "sysrq_always_enabled=1"
     ];
     kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;
     kernel.sysctl = {
@@ -24,6 +25,9 @@
       "vm.swappiness" = 180;
       "vm.page-cluster" = 0;
       "vm.vfs_cache_pressure" = 50;
+      # Panic Recovery
+      "kernel.panic" = 10;
+      "kernel.panic_on_oops" = 1;
       # Scheduling
       "kernel.sched_cfs_bandwidth_slice_us" = 3000;
       # Network
@@ -89,7 +93,12 @@
         User = "nondeus";
         Group = "users";
         ProtectHome = lib.mkForce false;
-        Environment = "OLLAMA_ORIGINS=*";
+        Environment = [
+          "OLLAMA_ORIGINS=*"
+          "OLLAMA_FLASH_ATTENTION=1"
+          "OLLAMA_NUM_PARALLEL=2"
+          "CUDA_VISIBLE_DEVICES=0"
+        ];
       };
     };
     settings.Manager = {
@@ -219,6 +228,15 @@
 
   # Application Support
   services = {
+    # Open WebUI Service
+    open-webui = {
+      enable = true;
+      port = 8080;
+      environment = {
+        OLLAMA_API_BASE_URL = "http://127.0.0.1:11434";
+      };
+    };
+
     # Ollama Service
     ollama = {
       enable = true;
@@ -232,7 +250,7 @@
     geoclue2.enable = true;
     scx = {
       enable = true;
-      scheduler = "scx_lavd";
+      scheduler = "scx_bpfland";
     };
     flatpak.enable = true;
     asusd.enable = true;

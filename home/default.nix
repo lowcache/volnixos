@@ -5,6 +5,7 @@
     ./pkgs.nix
     ./session.nix
     ./persist.nix
+    ./brave.nix
   ];
 
   home = {
