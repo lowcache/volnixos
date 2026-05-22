@@ -100,6 +100,8 @@
           "CUDA_VISIBLE_DEVICES=0"
         ];
       };
+      # Inject ffmpeg into open-webui's PATH environment for dynamic user execution
+      open-webui.path = [ pkgs.ffmpeg ];
     };
     settings.Manager = {
       DefaultTimeoutStopSec = "10s";
@@ -291,6 +293,7 @@
     nvd
     nvtopPackages.nvidia
     nvidia-vaapi-driver
+    ffmpeg
   ];
 
   nix = {
