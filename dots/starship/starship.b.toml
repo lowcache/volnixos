@@ -1,0 +1,71 @@
+palette = "current"
+add_newline = false
+format = """
+${custom.sol-nix}$memory_usage$directory$git_branch$cmd_duration
+$character"""
+
+[character]
+success_symbol = "[   ](bold fg:red)"
+error_symbol = "[   ](bold fg:red)"
+
+[package]
+disabled = true
+
+[git_branch]
+style = "bg:yellow"
+symbol = "󰘬"
+truncation_length = 12
+format = " [](bold fg:yellow)[$symbol $branch](fg:black bg:yellow)[░▒▓](bold fg:yellow)"
+
+[hostname]
+ssh_only = false
+format =  "[•$hostname](bg:green bold fg:black)[░▒](bold fg:green)"
+disabled = false
+
+[username]
+style_user = "bold bg:green fg:black"
+format = "[](bold fg:green)[$user]($style)"
+disabled = false
+show_always = true
+
+[memory_usage]
+symbol = "󰘚"
+threshold = -1
+style = "bg:yellow fg:black"
+format = "[](bold fg:yellow)[ ($symbol:$ram_pct) ]($style)[░▒](bold fg:yellow)"
+disabled = false
+
+[directory]
+home_symbol = "  "
+style = "bg:red fg:black"
+format = "[](bold fg:red)[󰉋 $path]($style)[░▒](bold fg:red)"
+
+[cmd_duration]
+min_time = 500
+format = "[](bold fg:blue)[󰪢 $duration](bold bg:blue fg:black)[](bold fg:blue)"
+
+[custom.sol-nix]
+when = 'env SOL-NIX-ENV'
+command = """
+CONTRACT_COUNT=$(find . -name "*.sol" 2>/dev/null | wc -l)
+if (( CONTRACT_COUNT < 1 )); then
+  CONTRACT_COUNT="Null"
+fi
+SOLC_VER="ERROR"
+if command -v solc &>/dev/null; then
+  SOLC_VER=$(solc --version | grep -oE '[0-9.]+' | head -n 1)
+  echo "◇ ⟠ solc:$SOLC_VER | contracts: $CONTRACT_COUNT ⟠ ◇"
+fi
+"""
+style = "bg:yellow fg:black"
+format = "[](bold fg:yellow)[$output]($style)[[░▒](bold fg:yellow)"
+
+[palettes.current]
+black = "#111314"
+red = "#8B3E2F"
+green = "#9CA84E"
+yellow = "#FC826A"
+blue = "#D9AB77"
+magenta = "#8B4EA8"
+cyan = "#4EA8A8"
+white = "#798581"
