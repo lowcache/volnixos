@@ -180,6 +180,7 @@
         cudaPackages.nccl
         libglvnd
         mesa
+        cups
       ];
     };
     hyprland = {
