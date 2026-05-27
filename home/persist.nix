@@ -35,11 +35,15 @@
             ".gnupg"
             ".nix-config"
             ".vscode-oss"
+            ".antigravity"
+            ".antigravity-ide"
             ".ZAP"
           ];
           config = [
             ".config/dconf"
             ".config/VSCodium"
+            ".config/Antigravity"
+            ".config/Antigravity IDE"
             ".config/Google"
             ".config/BraveSoftware"
             ".config/micro"

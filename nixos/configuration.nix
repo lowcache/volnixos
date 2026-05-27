@@ -1,3 +1,4 @@
+
 { config, pkgs, inputs, lib, ... }: {
 
   imports = [
@@ -148,12 +149,22 @@
         zlib
         libgcc.lib
         libxcrypt-legacy
+        libx11
+        libxcomposite
+        libxdamage
+        libxext
+        libxfixes
+        libxrandr
+        libxrender
+        libxv
+        libxcb
         openssl.out
         fuse3
         icu
         nss
         nspr
         atk
+        gtk3
         at-spi2-atk
         at-spi2-core
         libdrm
