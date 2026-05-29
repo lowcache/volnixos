@@ -29,6 +29,7 @@ When processing tasks inside this directory (~/.nix-config), directories that co
 3. **Preserve Layouts:** Maintain existing codebase patterns. Do not refactor modular configuration profiles or split file layouts into massive single-file expressions.
 4. **Error Handling:** Treat evaluation errors as strict compilation failures. Trace the error back to the exact file layout, scoping binding (let/in), or inheritence statement. 
 5. **Enforce Syntax Checks:** Produce clean, idiomatic Nix code. Immediately after generating or modifying any `.nix` expression, you must invoke the `/format_nix_file` skill command to run `nixpkgs-fmt` or `nixfmt` inline over the modified path.
+6. **Git Commits:** Always perform git commits inside this repository with the `--no-gpg-sign` flag to prevent non-interactive shell hangs from GPG pinentry prompts.
 
 ### Other Important Directories/Repos
 The Infernal Init terminal sysinfo fetch and ascii graphic banner included as an input in the flake.nix can be found at the following path:
