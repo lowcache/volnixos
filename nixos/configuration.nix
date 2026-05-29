@@ -57,6 +57,7 @@
   };
 
   networking = {
+    hostName = "infernalnix";
     networkmanager = {
       enable = true;
       wifi.scanRandMacAddress = true;

@@ -128,8 +128,8 @@
         nx = "nix";
         nxs = "nix-shell";
         nxr = "nix-rebuild";
-        nxrbs = "sudo nixos-rebuild switch --flake /persist/home/nondeus/.nix-config/#nondeus";
-        nxrbb = "sudo nixos-rebuild build --flake /persist/home/nondeus/.nix-config/#nondeus";
+        nxrbs = "sudo nixos-rebuild switch --flake /persist/home/nondeus/.nix-config/#infernalnix";
+        nxrbb = "sudo nixos-rebuild build --flake /persist/home/nondeus/.nix-config/#infernalnix";
         nxfu = "nix flake update";
         nxfd = "nix search nixpkgs ";
         nxrn = "nix-shell -p ";

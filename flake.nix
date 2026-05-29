@@ -43,7 +43,7 @@
   };
 
   outputs = { self, nixpkgs, home-manager, microvm, infernal-init, ... }@inputs: {
-    nixosConfigurations.nondeus = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.infernalnix = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
       modules = [
         { nixpkgs.hostPlatform = "x86_64-linux"; }
@@ -65,6 +65,6 @@
     };
 
     # Add this to allow building/running the VM package
-    packages.x86_64-linux.net-gate = self.nixosConfigurations.nondeus.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
+    packages.x86_64-linux.net-gate = self.nixosConfigurations.infernalnix.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
   };
 }

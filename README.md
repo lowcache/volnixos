@@ -138,11 +138,11 @@ To facilitate fast operations, the shell is loaded with precise, specialized Fis
 ### 4.1 System Rebuilding
 * **`nxrbs`**: Runs a full NixOS system rebuild and applies changes on-the-fly from the local flake:
   ```bash
-  sudo nixos-rebuild switch --flake /persist$HOME/.nix-config/#nondeus
+  sudo nixos-rebuild switch --flake /persist$HOME/.nix-config/#infernalnix
   ```
 * **`nxrbb`**: Dry-builds the system configuration to test for compilations and evaluation failures:
   ```bash
-  sudo nixos-rebuild build --flake /persist$HOME/.nix-config/#nondeus
+  sudo nixos-rebuild build --flake /persist$HOME/.nix-config/#infernalnix
   ```
 
 ### 4.2 Workspace Operations
