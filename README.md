@@ -14,6 +14,8 @@ A declarative, highly optimized, and ephemeral NixOS system configuration based 
 > 4. **Impermanence Disk Mapping:** Hardcoded directory bounds mapping user files to the unprivileged user's home directory (e.g., `/persist/home/<username>`). Update the username and user directories under `home/persist.nix` and `nixos/configuration.nix` to match your target `$HOME`.
 > 5. **SOPS-Nix Secrets:** System password hashes inside `secrets.yaml` decrypted by the SSH host keys `/persist/etc/ssh/ssh_host_ed25519_key`. You must replace `secrets.yaml` with your own age-encrypted credentials.
 > 6. **UEFI Lanzaboote PKI:** Hardcoded path `/etc/secureboot` for boot signature bundles.
+>
+> **💡 Need a hardware-independent build?** You can skip these modifications entirely by using the pre-configured **`limbo`** profile, a clean, generic version of this system designed to run on any standard x86_64 hardware. See [Section 5](#5-limbo-hardware-independent--clean-replicable-config) for details.
 
 ---
 
@@ -158,3 +160,64 @@ To facilitate fast operations, the shell is loaded with precise, specialized Fis
 * **`extract`**: Universal archive extraction helper handling complex compressed profiles (.tar.zst, .tar.xz, .zip, etc.).
 * **`fooogo` / `fooostp`**: Starts or stops the containerized Fooocus stable diffusion environment.
 * **`forggo` / `forgstp`**: Starts or stops the containerized Forge stable diffusion UI environment.
+
+---
+
+## 5. Limbo: Hardware-Independent & Clean Replicable Config
+
+The **`limbo`** configuration profile provides a generic, non-opinionated, hardware-independent version of this NixOS system that is highly portable and runs cleanly out of the box on standard x86_64 systems (including physical machines and virtual machines). 
+
+It is completely decoupled from all proprietary features of `infernalnix`, meaning it excludes:
+* Lanzaboote Secure Boot (reverts to standard **`systemd-boot`**)
+* Impermanence and root on RAM (uses a standard, reliable persistent filesystem partition scheme)
+* SOPS-Nix encrypted secrets (uses declarative initial passwords)
+* Hybrid AMD/Nvidia GPU drivers and Ryzen parameters (runs on generic CPU and open display drivers)
+* Specialized hardware services like ASUS daemons and cachyos kernel packages
+
+### 5.1 Directory Layout
+The Limbo configuration files are completely isolated under the [nixos/limbo](file:///home/lowcache/.nix-config/nixos/limbo) directory:
+* **[nixos/limbo/configuration.nix](file:///home/lowcache/.nix-config/nixos/limbo/configuration.nix)**: Stripped-down base services, including desktop environment (Hyprland), clean Nix-LD unpatched libraries, Docker engine, Fish shell, and CPU-only services for Ollama and Open-WebUI.
+* **[nixos/limbo/hardware-configuration.nix](file:///home/lowcache/.nix-config/nixos/limbo/hardware-configuration.nix)**: Standard physical disk maps for typical Linux installations.
+
+### 5.2 Disk Partitioning & Labeling
+To install and run Limbo successfully, partition your target drive using a standard layout and assign the exact labels listed below (e.g., using `parted` / `gparted` / `fdisk` / `mkfs`):
+
+| Mount Point | File System | Target Partition Label | Description |
+| :--- | :--- | :--- | :--- |
+| `/boot` | `vfat` (FAT32) | `boot` | EFI System Partition |
+| `/` | `ext4` | `nixos` | Root Partition |
+
+### 5.3 Installation Walkthrough
+1. **Boot from a NixOS Installer:** Insert a standard minimal or graphical NixOS Live ISO.
+2. **Mount partitions:** Label your partitions and mount them onto `/mnt`:
+   ```bash
+   # Mount root partition
+   mount -t ext4 /dev/disk/by-label/nixos /mnt
+   
+   # Mount boot partition
+   mkdir -p /mnt/boot
+   mount -t vfat /dev/disk/by-label/boot /mnt/boot
+   ```
+3. **Clone the Configuration:** Clone this repository directly to the target system:
+   ```bash
+   git clone https://github.com/lowcache/infernalnixos.git /mnt/home/lowcache/.nix-config
+   ```
+4. **Run Installation:** Install the system specifying the `limbo` profile:
+   ```bash
+   nixos-install --flake /mnt/home/lowcache/.nix-config#limbo
+   ```
+5. **Reboot and Login:**
+   * **Root user initial password:** `root`
+   * **Standard user (`lowcache`) initial password:** `nixos`
+   * *⚠️ Set custom passwords immediately after logging in using the `passwd` command.*
+
+### 5.4 Rebuilding & Managing Limbo
+To build or switch configurations on an active Limbo system, use standard Nix flake rebuild commands:
+* **Switch system configuration:**
+  ```fish
+  sudo nixos-rebuild switch --flake ~/.nix-config#limbo
+  ```
+* **Dry-build system configuration:**
+  ```fish
+  nixos-rebuild build --flake ~/.nix-config#limbo
+  ```

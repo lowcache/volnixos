@@ -64,6 +64,45 @@
       ];
     };
 
+    nixosConfigurations.limbo = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit inputs; };
+      modules = [
+        { nixpkgs.hostPlatform = "x86_64-linux"; }
+        ./nixos/limbo/configuration.nix
+        ./nixos/limbo/hardware-configuration.nix
+        inputs.lix-module.nixosModules.default
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.users.lowcache = { config, pkgs, lib, ... }: {
+            imports = [
+              ./home/shell.nix
+              ./home/pkgs.nix
+              ./home/session.nix
+              ./home/browsers.nix
+            ];
+            home = {
+              username = "lowcache";
+              homeDirectory = "/home/lowcache";
+              stateVersion = "24.11";
+            };
+            gtk = {
+              enable = true;
+              theme = {
+                name = "adw-gtk3-dark";
+                package = pkgs.adw-gtk3;
+              };
+              gtk4 = {
+                theme = null;
+              };
+            };
+          };
+        }
+      ];
+    };
+
     # Add this to allow building/running the VM package
     packages.x86_64-linux.net-gate = self.nixosConfigurations.infernalnix.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
   };
