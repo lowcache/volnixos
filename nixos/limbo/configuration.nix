@@ -45,8 +45,8 @@
   systemd = {
     oomd.enable = false;
     tmpfiles.rules = [
-      "d /home/lowcache 0700 lowcache users"
-      "d /home/lowcache/AppImage 0755 lowcache users"
+      "d /home/inlimbo 0700 inlimbo users"
+      "d /home/inlimbo/AppImage 0755 inlimbo users"
     ];
     settings.Manager = {
       DefaultTimeoutStopSec = "10s";
@@ -60,7 +60,7 @@
       root = {
         initialPassword = "root";
       };
-      lowcache = {
+      inlimbo = {
         isNormalUser = true;
         initialPassword = "nixos";
         extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];

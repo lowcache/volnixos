@@ -200,15 +200,15 @@ To install and run Limbo successfully, partition your target drive using a stand
    ```
 3. **Clone the Configuration:** Clone this repository directly to the target system:
    ```bash
-   git clone https://github.com/lowcache/infernalnixos.git /mnt/home/lowcache/.nix-config
+   git clone https://github.com/lowcache/infernalnixos.git /mnt/home/inlimbo/.nix-config
    ```
 4. **Run Installation:** Install the system specifying the `limbo` profile:
    ```bash
-   nixos-install --flake /mnt/home/lowcache/.nix-config#limbo
+   nixos-install --flake /mnt/home/inlimbo/.nix-config#limbo
    ```
 5. **Reboot and Login:**
    * **Root user initial password:** `root`
-   * **Standard user (`lowcache`) initial password:** `nixos`
+   * **Standard user (`inlimbo`) initial password:** `nixos`
    * *⚠️ Set custom passwords immediately after logging in using the `passwd` command.*
 
 ### 5.4 Rebuilding & Managing Limbo

@@ -76,7 +76,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.lowcache = { config, pkgs, lib, ... }: {
+          home-manager.users.inlimbo = { config, pkgs, lib, ... }: {
             imports = [
               ./home/shell.nix
               ./home/pkgs.nix
@@ -84,8 +84,8 @@
               ./home/browsers.nix
             ];
             home = {
-              username = "lowcache";
-              homeDirectory = "/home/lowcache";
+              username = "inlimbo";
+              homeDirectory = "/home/inlimbo";
               stateVersion = "24.11";
             };
             gtk = {
