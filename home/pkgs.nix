@@ -149,7 +149,6 @@
           acpi
           upower
           ddcutil
-          gemini-cli
           clinfo
           git-lfs
           nil
@@ -167,6 +166,8 @@
           codex
           claude-code
           claude-code-router
+          gemini-cli
+          github-copilot-cli
         ];
       in
       mcp-servers ++ terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
