@@ -122,7 +122,7 @@
           tgpt
           hdrop
           bat
-          gnugp1
+          gnupg
           gpg-tui
           ripgrep-all
           flatpak
@@ -148,6 +148,7 @@
           clinfo
           git-lfs
           nil
+          android-tools
           nixpkgs-fmt
           spotatui
           inputs.infernal-init.packages.${pkgs.stdenv.hostPlatform.system}.default

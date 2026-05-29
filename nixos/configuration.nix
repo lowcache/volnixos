@@ -312,6 +312,7 @@
     vulkan-tools
     libva-utils
     nvd
+    gnupg
     nvtopPackages.nvidia
     nvidia-vaapi-driver
     ffmpeg
