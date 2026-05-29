@@ -164,6 +164,9 @@
           github-mcp-server
           markitdown-mcp
           playwright-mcp
+          codex
+          claude-code
+          claude-code-router
         ];
       in
       mcp-servers ++ terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
