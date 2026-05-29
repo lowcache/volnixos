@@ -67,11 +67,11 @@
   systemd = {
     oomd.enable = false;
     tmpfiles.rules = [
-      "d /home/nondeus 0700 nondeus users"
-      "d /home/nondeus/AppImage 0755 nondeus users"
-      "d /home/nondeus/Storage/ai-generation 0755 nondeus users"
-      "d /home/nondeus/Storage/ai-generation/fooocus 0755 nondeus users"
-      "d /home/nondeus/Storage/ai-generation/forge 0755 nondeus users"
+      "d /home/lowcache 0700 lowcache users"
+      "d /home/lowcache/AppImage 0755 lowcache users"
+      "d /home/lowcache/Storage/ai-generation 0755 lowcache users"
+      "d /home/lowcache/Storage/ai-generation/fooocus 0755 lowcache users"
+      "d /home/lowcache/Storage/ai-generation/forge 0755 lowcache users"
     ];
     services = {
       #greetd.serviceConfig = {
@@ -96,7 +96,7 @@
       };
       # Run Ollama as your user to avoid permission issues in ~/Storage
       ollama.serviceConfig = {
-        User = "nondeus";
+        User = "lowcache";
         Group = "users";
         ProtectHome = lib.mkForce false;
         Environment = [
@@ -121,7 +121,7 @@
       root = {
         hashedPasswordFile = config.sops.secrets.root_password.path;
       };
-      nondeus = {
+      lowcache = {
         isNormalUser = true;
         hashedPasswordFile = config.sops.secrets.user_password.path;
         extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];
@@ -220,7 +220,7 @@
           image = "ghcr.io/lllyasviel/fooocus:latest";
           autoStart = false;
           ports = [ "7865:7865" ];
-          volumes = [ "/home/nondeus/Storage/ai-generation/fooocus:/content/data" ];
+          volumes = [ "/home/lowcache/Storage/ai-generation/fooocus:/content/data" ];
           environment = {
             CMDARGS = "--listen";
             DATADIR = "/content/data";
@@ -235,7 +235,7 @@
           image = "ghcr.io/ai-dock/stable-diffusion-webui-forge:latest-cuda";
           autoStart = false;
           ports = [ "7866:17860" ];
-          volumes = [ "/home/nondeus/Storage/ai-generation/forge:/workspace" ];
+          volumes = [ "/home/lowcache/Storage/ai-generation/forge:/workspace" ];
           environment = {
             # AI-Dock Specific Vars
             BASE_PORT = "17860";
@@ -264,8 +264,8 @@
     ollama = {
       enable = true;
       package = pkgs.ollama-cuda;
-      home = "/home/nondeus";
-      models = "/home/nondeus/Storage/ollama/models";
+      home = "/home/lowcache";
+      models = "/home/lowcache/Storage/ollama/models";
     };
 
     timesyncd.enable = true;

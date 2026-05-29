@@ -128,8 +128,8 @@
         nx = "nix";
         nxs = "nix-shell";
         nxr = "nix-rebuild";
-        nxrbs = "sudo nixos-rebuild switch --flake /persist/home/nondeus/.nix-config/#infernalnix";
-        nxrbb = "sudo nixos-rebuild build --flake /persist/home/nondeus/.nix-config/#infernalnix";
+        nxrbs = "sudo nixos-rebuild switch --flake /persist/home/lowcache/.nix-config/#infernalnix";
+        nxrbb = "sudo nixos-rebuild build --flake /persist/home/lowcache/.nix-config/#infernalnix";
         nxfu = "nix flake update";
         nxfd = "nix search nixpkgs ";
         nxrn = "nix-shell -p ";
@@ -264,8 +264,8 @@
         '';
         priv-sync = ''
           function priv-sync --description "Safely sync live persistent data to priv.bkup"
-            set -l REPO_DIR /home/nondeus/Storage/priv.bkup
-            set -l LIVE_HOME /persist/home/nondeus
+            set -l REPO_DIR /home/lowcache/Storage/priv.bkup
+            set -l LIVE_HOME /persist/home/lowcache
 
             echo "Starting Safe Sync to priv.bkup..."
 

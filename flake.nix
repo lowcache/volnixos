@@ -59,7 +59,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.nondeus = import ./home;
+          home-manager.users.lowcache = import ./home;
         }
       ];
     };

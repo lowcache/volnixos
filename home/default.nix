@@ -9,8 +9,8 @@
   ];
 
   home = {
-    username = "nondeus";
-    homeDirectory = "/home/nondeus";
+    username = "lowcache";
+    homeDirectory = "/home/lowcache";
     stateVersion = "24.11";
   };
 

@@ -86,7 +86,7 @@
     },
     "perMonitorWallpaper": {},
     "thumbnailPath": "",
-    "wallpaperPath": "/persist/home/nondeus/Pictures/Wallpapers/nkgmsingle.png",
+    "wallpaperPath": "/persist/home/lowcache/Pictures/Wallpapers/nkgmsingle.png",
     "widgets": {
       "clock": {
         "cookie": {
@@ -383,10 +383,10 @@
     "updateInterval": 2500
   },
   "screenRecord": {
-    "savePath": "/home/nondeus/Videos"
+    "savePath": "/home/lowcache/Videos"
   },
   "screenSnip": {
-    "savePath": "/home/nondeus/Pictures/screenshots"
+    "savePath": "/home/lowcache/Pictures/screenshots"
   },
   "search": {
     "engineBaseUrl": "https://www.google.com/search?q=",

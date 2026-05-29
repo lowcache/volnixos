@@ -3,8 +3,8 @@
 # priv-sync.sh: Safely sync live persistent data to priv.bkup
 # Mandate: Never overwrite live data from the repo. Sync is ONE-WAY (Live -> Repo).
 
-set REPO_DIR /persist/home/nondeus/.nix-config/priv.bkup
-set LIVE_HOME /persist/home/nondeus
+set REPO_DIR /persist/home/lowcache/.nix-config/priv.bkup
+set LIVE_HOME /persist/home/lowcache
 
 echo "Starting Safe Sync to priv.bkup..."
 
