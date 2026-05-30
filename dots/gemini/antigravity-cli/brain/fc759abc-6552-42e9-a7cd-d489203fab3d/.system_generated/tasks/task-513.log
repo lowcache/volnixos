@@ -1,0 +1,180 @@
+warning: Git tree '/home/nondeus/CodeRepo/kalinix' is dirty
+warning: input 'nixos-fhs-compat' has an override for a non-existent input 'nixp
+kgs'
+warning: 'utillinux' has been renamed to/replaced by 'util-linux'
+warning: 'utillinux' has been renamed to/replaced by 'util-linux'
+warning: The xorg package set has been deprecated, 'xorg.xrandr' has been rename
+d to 'xrandr'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libSM' has been renamed
+ to 'libsm'
+warning: The xorg package set has been deprecated, 'xorg.libICE' has been rename
+d to 'libice'
+warning: The xorg package set has been deprecated, 'xorg.libXt' has been renamed
+ to 'libxt'
+warning: The xorg package set has been deprecated, 'xorg.libXft' has been rename
+d to 'libxft'
+warning: The xorg package set has been deprecated, 'xorg.libXrender' has been re
+named to 'libxrender'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXtst' has been renam
+ed to 'libxtst'
+warning: The xorg package set has been deprecated, 'xorg.libXcursor' has been re
+named to 'libxcursor'
+warning: The xorg package set has been deprecated, 'xorg.libXcomposite' has been
+ renamed to 'libxcomposite'
+warning: The xorg package set has been deprecated, 'xorg.libXfixes' has been ren
+amed to 'libxfixes'
+warning: The xorg package set has been deprecated, 'xorg.libXdamage' has been re
+named to 'libxdamage'
+warning: The xorg package set has been deprecated, 'xorg.libXrandr' has been ren
+amed to 'libxrandr'
+warning: The xorg package set has been deprecated, 'xorg.libXScrnSaver' has been
+ renamed to 'libxscrnsaver'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libSM' has been renamed
+ to 'libsm'
+warning: The xorg package set has been deprecated, 'xorg.libICE' has been rename
+d to 'libice'
+warning: The xorg package set has been deprecated, 'xorg.libXt' has been renamed
+ to 'libxt'
+warning: The xorg package set has been deprecated, 'xorg.libXft' has been rename
+d to 'libxft'
+warning: The xorg package set has been deprecated, 'xorg.libXrender' has been re
+named to 'libxrender'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXtst' has been renam
+ed to 'libxtst'
+warning: The xorg package set has been deprecated, 'xorg.libXcursor' has been re
+named to 'libxcursor'
+warning: The xorg package set has been deprecated, 'xorg.libXcomposite' has been
+ renamed to 'libxcomposite'
+warning: The xorg package set has been deprecated, 'xorg.libXfixes' has been ren
+amed to 'libxfixes'
+warning: The xorg package set has been deprecated, 'xorg.libXdamage' has been re
+named to 'libxdamage'
+warning: The xorg package set has been deprecated, 'xorg.libXrandr' has been ren
+amed to 'libxrandr'
+warning: The xorg package set has been deprecated, 'xorg.libXScrnSaver' has been
+ renamed to 'libxscrnsaver'
+warning: The xorg package set has been deprecated, 'xorg.xeyes' has been renamed
+ to 'xeyes'
+initrd-linux> structuredAttrs is enabled
+initrd-linux> /bin -> /nix/store/x3isz41ydwgp1f0narw9dd197qyl0729-initrd-bin-env
+/bin
+initrd-linux> /etc/dbus-1 -> /nix/store/dbcyk0m4r64g2r49sgh83vsikdcszzvb-dbus-1
+initrd-linux> /etc/group -> /nix/store/awdp7w3y3fcvagxvdv22by7yy9fczbkp-initrd-g
+roup
+initrd-linux> /etc/hostid -> /nix/store/28f99yq0pnw7grhizar63hwinvmbkag7-gen-hos
+tid
+initrd-linux> /etc/hostname -> /nix/store/1pdv8kmmy7ggbi0pzqyz9n53xq3dfnr0-initr
+d-hostname
+initrd-linux> /etc/initrd-release -> /nix/store/9db0ry9qrniqbrf3z1vhcwdxmp3ddn67
+-initrd-release
+initrd-linux> /etc/kbd/keymaps -> /nix/store/wj1jz6a6sw0ncd1lnx0lxmhsfr5yxkq4-co
+nsole-env/share/keymaps
+initrd-linux> /etc/modprobe.d/debian.conf -> /nix/store/0aawfsng759999zya07298f2
+wa3jphpa-kmod-debian-aliases.conf-30+20230601-2
+initrd-linux> /etc/modprobe.d/nixos.conf -> /nix/store/58bi3yaihisbrwqrrvx8rg5da
+ry92xw2-etc-modprobe.d-nixos.conf
+initrd-linux> /etc/modprobe.d/systemd.conf -> /nix/store/9rpism89x6lyjcwzzkp6kan
+a25rs03nn-systemd-260.1/lib/modprobe.d/systemd.conf
+initrd-linux> /etc/modprobe.d/ubuntu.conf -> /nix/store/i1iql8gjs7dijrsaz3j458hr
+0s7a0dfs-kmod-blacklist-31+20240202-2ubuntu8/modprobe.conf
+initrd-linux> /etc/modules-load.d/nixos.conf -> /nix/store/vb777qckh64phnw0wz2cb
+72wlf54s9yp-initrd-nixos.conf
+initrd-linux> /etc/os-release -> /nix/store/9db0ry9qrniqbrf3z1vhcwdxmp3ddn67-ini
+trd-release
+initrd-linux> /etc/passwd -> /nix/store/yid83pzmfmg7qj98hddy3sdmmhhq3gyv-initrd-
+passwd
+initrd-linux> /etc/shadow -> /nix/store/d3rh5qvcrqda150vhasmwgrbxwlj4vyy-initrd-
+shadow
+initrd-linux> /etc/shells -> /nix/store/sjdcc1sfzn5r76zk7sjma4488fnrjikr-initrd-
+shells
+initrd-linux> /etc/sysctl.d/nixos.conf -> /nix/store/v0c4wkij4s0jdxcvm5s1m8jb29m
+8ahgf-initrd-nixos.conf
+initrd-linux> /etc/systemd/system -> /nix/store/fzawiz04gq6dcxww20l30wm9qwm042xy
+-initrd-units
+initrd-linux> /etc/systemd/system.conf -> /nix/store/nsyzgrkvr4bgm3i20nsa2qdrcj0
+x8qqp-initrd-system.conf
+initrd-linux> /etc/terminfo/l/linux -> /nix/store/2iaawa9vbqas51lgpn4cjnnfdv74x8
+fn-ncurses-6.6/share/terminfo/l/linux
+initrd-linux> /etc/terminfo/v/vt100 -> /nix/store/2iaawa9vbqas51lgpn4cjnnfdv74x8
+fn-ncurses-6.6/share/terminfo/v/vt100
+initrd-linux> /etc/terminfo/v/vt102 -> /nix/store/2iaawa9vbqas51lgpn4cjnnfdv74x8
+fn-ncurses-6.6/share/terminfo/v/vt102
+initrd-linux> /etc/terminfo/v/vt220 -> /nix/store/2iaawa9vbqas51lgpn4cjnnfdv74x8
+fn-ncurses-6.6/share/terminfo/v/vt220
+initrd-linux> /etc/udev/rules.d -> /nix/store/1z8r1j29na5lman99smxvalb1q9dl160-i
+nitrd-udev-rules
+initrd-linux> /etc/vconsole.conf -> /nix/store/dj0iq86hkm18w5cikaqvhijhgf44b64q-
+vconsole.conf
+initrd-linux> /init -> /nix/store/9rpism89x6lyjcwzzkp6kana25rs03nn-systemd-260.1
+/lib/systemd/systemd
+initrd-linux> /lib -> /nix/store/6b98bfrv6k5w6b68h7rl4hgaw1lh7990-linux-6.18.31-
+modules-shrunk/lib
+initrd-linux> /sbin -> /nix/store/x3isz41ydwgp1f0narw9dd197qyl0729-initrd-bin-en
+v/sbin
+initrd-linux> /usr/bin -> /nix/store/x3isz41ydwgp1f0narw9dd197qyl0729-initrd-bin
+-env/bin
+initrd-linux> /usr/sbin -> /nix/store/x3isz41ydwgp1f0narw9dd197qyl0729-initrd-bi
+n-env/sbin
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/fjk
+x1l5cnskzrqacf08z7i8z17256w0j-glibc-2.42-61/lib/libnss_files.so.2"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/6zv
+nkhqk669qn4srr8q6rgcx4pmy7iby-kbd-2.9.0/bin/setfont"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/6zv
+nkhqk669qn4srr8q6rgcx4pmy7iby-kbd-2.9.0/bin/loadkeys"
+initrd-linux> Warning: Couldn't satisfy dependency libcrypt.so.1 for "/nix/store
+/9rpism89x6lyjcwzzkp6kana25rs03nn-systemd-260.1/lib/systemd/libsystemd-shared-26
+0.so"
+initrd-linux> Warning: Couldn't satisfy dependency libcrypt.so.1.1 for "/nix/sto
+re/9rpism89x6lyjcwzzkp6kana25rs03nn-systemd-260.1/lib/systemd/libsystemd-shared-
+260.so"
+initrd-linux> Warning: Couldn't satisfy dependency ld-linux-x86-64.so.2 for "/ni
+x/store/fjkx1l5cnskzrqacf08z7i8z17256w0j-glibc-2.42-61/lib/libc.so.6"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/fjk
+x1l5cnskzrqacf08z7i8z17256w0j-glibc-2.42-61/lib/libdl.so.2"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/fjk
+x1l5cnskzrqacf08z7i8z17256w0j-glibc-2.42-61/lib/libm.so.6"
+initrd-linux> Warning: Couldn't satisfy dependency ld-linux-x86-64.so.2 for "/ni
+x/store/fjkx1l5cnskzrqacf08z7i8z17256w0j-glibc-2.42-61/lib/libm.so.6"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/6zv
+nkhqk669qn4srr8q6rgcx4pmy7iby-kbd-2.9.0/lib/libkbdfile.so.1.0.0"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/6zv
+nkhqk669qn4srr8q6rgcx4pmy7iby-kbd-2.9.0/lib/libkeymap.so.1.0.0"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/fjk
+x1l5cnskzrqacf08z7i8z17256w0j-glibc-2.42-61/lib/libpthread.so.0"
+initrd-linux> Warning: Couldn't satisfy dependency libc.so.6 for "/nix/store/wrx
+yd3k2f4bmh52pr5rpdjxxsm5r2qxm-gcc-15.2.0-libgcc/lib/libgcc_s.so.1"
+initrd-linux> Warning: Couldn't satisfy dependency ld-linux-x86-64.so.2 for "/ni
+x/store/wrxyd3k2f4bmh52pr5rpdjxxsm5r2qxm-gcc-15.2.0-libgcc/lib/libgcc_s.so.1"
+closure-info> structuredAttrs is enabled

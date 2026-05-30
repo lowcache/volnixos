@@ -1,0 +1,1 @@
+{"name":"gateway_kill_server","description":"Immediately disable routing to a backend server (operator kill switch). The server's tools remain visible in search/list but are marked as disabled.","parameters":{"properties":{"server":{"description":"Name of the backend server to disable","type":"string"}},"required":["server"],"type":"object"}}

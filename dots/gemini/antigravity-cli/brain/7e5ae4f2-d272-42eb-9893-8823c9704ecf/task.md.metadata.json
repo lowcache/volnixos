@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_TASK",
+  "summary": "Task checklist to track the migration of the mcp-box CLI wrapper from Bash to Go. Tracks legacy preservation, Go modules creation, main entry point, flake refactoring, and strict isolation verification.",
+  "updatedAt": "2026-05-24T19:07:57.718121054Z"
+}

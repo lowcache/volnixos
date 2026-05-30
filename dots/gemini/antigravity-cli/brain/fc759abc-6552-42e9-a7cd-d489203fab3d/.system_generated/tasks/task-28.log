@@ -1,0 +1,5 @@
+Successfully scheduled one-shot timer.
+Expected to fire at: 2026-05-27T23:58:51-05:00
+Prompt: Checking on nix flake check background task
+
+[2026-05-27T23:58:51-05:00] Timer fired.

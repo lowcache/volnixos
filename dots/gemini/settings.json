@@ -1,0 +1,22 @@
+{
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "model": {
+    "name": "auto-gemini-3"
+  },
+  "ui": {
+    "showMemoryUsage": true
+  },
+  "mcpServers": {
+    "gateway": {
+      "url": "http://127.0.0.1:39400/mcp"
+    }
+  },
+  "experimental": {
+    "gemma": true
+  },
+  "general": {}
+}

@@ -1,0 +1,27 @@
+warning: Git tree '/home/nondeus/Projects/mcp-box' is dirty
+mcp-box> Running phase: unpackPhase
+mcp-box> unpacking source archive /nix/store/ibfwgarsbb61bjsaxq5aiq0fj0y34llf-go
+mcp-box> source root is go
+mcp-box> Running phase: patchPhase
+mcp-box> Running phase: updateAutotoolsGnuConfigScriptsPhase
+mcp-box> Running phase: configurePhase
+mcp-box> Running phase: buildPhase
+mcp-box> Building subPackage .
+mcp-box> go: warning: ignoring go.mod in $GOPATH /build/go
+mcp-box> Running phase: checkPhase
+mcp-box> Running phase: installPhase
+mcp-box> Running phase: fixupPhase
+mcp-box> shrinking RPATHs of ELF executables and libraries in /nix/store/796yq3y
+cvqhhvdihrvclab80qpqakhqn-mcp-box-1.0.0
+mcp-box> shrinking /nix/store/796yq3ycvqhhvdihrvclab80qpqakhqn-mcp-box-1.0.0/bin
+/mcp-box
+mcp-box> patchelf: cannot find section '.dynamic'. The input file is most likely
+ statically linked
+mcp-box> checking for references to /build/ in /nix/store/796yq3ycvqhhvdihrvclab
+80qpqakhqn-mcp-box-1.0.0...
+mcp-box> patchelf: cannot find section '.dynamic'. The input file is most likely
+ statically linked
+mcp-box> patching script interpreter paths in /nix/store/796yq3ycvqhhvdihrvclab8
+0qpqakhqn-mcp-box-1.0.0
+mcp-box> stripping (with command strip and flags -S -p) in  /nix/store/796yq3ycv
+qhhvdihrvclab80qpqakhqn-mcp-box-1.0.0/bin

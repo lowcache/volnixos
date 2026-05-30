@@ -1,0 +1,19 @@
+{
+  "id": "outside-of-project",
+  "name": "Outside of Project",
+  "permissionGrants": {
+    "permissionGrants": {
+      "allow": [
+        "read_file(/home/nondeus/.nix-config/home)",
+        "read_file(/home/nondeus/.nix-config/flake.nix)",
+        "read_file(/home/nondeus/.nix-config/nixos/configuration.nix)",
+        "read_file(/home/nondeus/.nix-config/nixos/hardware-configuration.nix)",
+        "command(ls)",
+        "command(head)",
+        "command(cat)",
+        "command(which)",
+        "write_file(/home/nondeus/.nix-config)"
+      ]
+    }
+  }
+}

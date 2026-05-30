@@ -1,0 +1,21 @@
+{
+  "name": "chrome-devtools-plugin",
+  "version": "0.21.0",
+  "description": "Reliable automation, in-depth debugging, and performance analysis in Chrome using Chrome DevTools and Puppeteer",
+  "author": {
+    "name": "Chrome DevTools Team",
+    "email": "devtools-dev@chromium.org"
+  },
+  "repository": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+  "license": "Apache-2.0",
+  "keywords": [
+    "chrome",
+    "devtools",
+    "mcp",
+    "puppeteer",
+    "debugging",
+    "automation",
+    "performance",
+    "lighthouse"
+  ]
+}

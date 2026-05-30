@@ -1,0 +1,2 @@
+#!/bin/sh
+exec "/home/nondeus/.local/share/Antigravity-x64/resources/bin/language_server" agentapi "$@"

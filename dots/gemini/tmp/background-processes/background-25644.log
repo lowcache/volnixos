@@ -1,0 +1,67 @@
+2026-05-19T16:13:51.020101Z  INFO mcp_gateway: Starting MCP Gateway version="2.11.0" port=39400 backends=6 meta_mcp=false
+2026-05-19T16:13:51.020240Z  INFO mcp_gateway::gateway::server: Registered backend backend=github transport=stdio
+2026-05-19T16:13:51.020255Z  INFO mcp_gateway::gateway::server: Registered backend backend=nixos transport=stdio
+2026-05-19T16:13:51.020263Z  INFO mcp_gateway::gateway::server: Registered backend backend=filesystem transport=stdio
+2026-05-19T16:13:51.020268Z  INFO mcp_gateway::gateway::server: Registered backend backend=playwright transport=stdio
+2026-05-19T16:13:51.020274Z  INFO mcp_gateway::gateway::server: Registered backend backend=markitdown transport=stdio
+2026-05-19T16:13:51.020280Z  INFO mcp_gateway::gateway::server: Registered backend backend=sequential-thinking transport=stdio
+2026-05-19T16:13:51.020943Z  INFO mcp_gateway::metrics: Prometheus metrics recorder installed; scrape at /metrics
+2026-05-19T16:13:51.020993Z  INFO mcp_gateway::gateway::server::persistence: Loaded search ranking usage data
+2026-05-19T16:13:51.021015Z  INFO mcp_gateway::gateway::server::persistence: Loaded transition tracking data
+2026-05-19T16:13:51.021049Z  INFO mcp_gateway::gateway::server: Tool security policy enabled
+2026-05-19T16:13:51.021055Z  INFO mcp_gateway::gateway::server: Usage statistics tracking enabled
+2026-05-19T16:13:51.021060Z  INFO mcp_gateway::gateway::server: Response cache initialized enabled=true default_ttl=60s max_entries=10000
+2026-05-19T16:13:51.021239Z  INFO mcp_gateway::gateway::server: Config hot-reload enabled path=/home/nondeus/.config/mcp-gateway/gateway.yaml
+2026-05-19T16:13:51.021331Z  INFO mcp_gateway::gateway::server: Gateway RSA key pair generated (JWKS available at /.well-known/jwks.json) kid=48be7ef4-fe2e-4ac8-a189-f036e6741d91
+2026-05-19T16:13:51.029685Z  INFO mcp_gateway::gateway::server: Security firewall enabled (RFC-0071)
+2026-05-19T16:13:51.029896Z  INFO mcp_gateway::gateway::server: Webhook receiver enabled enabled=true base_path=/webhooks
+2026-05-19T16:13:51.029969Z  INFO mcp_gateway::gateway::server::support: ============================================================
+2026-05-19T16:13:51.029976Z  INFO mcp_gateway::gateway::server::support: MCP GATEWAY v2.11.0
+2026-05-19T16:13:51.029985Z  INFO mcp_gateway::gateway::server::support: ============================================================
+2026-05-19T16:13:51.029990Z  INFO mcp_gateway::gateway::server::support: Listening host=127.0.0.1 port=39400
+2026-05-19T16:13:51.030011Z  INFO mcp_gateway::gateway::server::support: Backends registered backends=6
+2026-05-19T16:13:51.030022Z  WARN mcp_gateway::gateway::server::support: AUTHENTICATION disabled - gateway is open to all requests
+2026-05-19T16:13:51.030028Z  INFO mcp_gateway::gateway::server::support: STREAMING (real-time notifications):
+2026-05-19T16:13:51.030035Z  INFO mcp_gateway::gateway::server::support:   GET  http://127.0.0.1:39400/mcp  (SSE stream)
+2026-05-19T16:13:51.030043Z  INFO mcp_gateway::gateway::server::support: Direct backend access:
+2026-05-19T16:13:51.030050Z  INFO mcp_gateway::gateway::server::support:   /mcp/sequential-thinking
+2026-05-19T16:13:51.030055Z  INFO mcp_gateway::gateway::server::support:   /mcp/markitdown
+2026-05-19T16:13:51.030060Z  INFO mcp_gateway::gateway::server::support:   /mcp/nixos
+2026-05-19T16:13:51.030064Z  INFO mcp_gateway::gateway::server::support:   /mcp/playwright
+2026-05-19T16:13:51.030079Z  INFO mcp_gateway::gateway::server::support:   /mcp/filesystem
+2026-05-19T16:13:51.030084Z  INFO mcp_gateway::gateway::server::support:   /mcp/github
+2026-05-19T16:13:51.030089Z  INFO mcp_gateway::gateway::server::support: ============================================================
+2026-05-19T16:13:51.030098Z  INFO mcp_gateway::gateway::server::warmstart: Warm-starting ALL 6 backends (tool prefetch)
+2026-05-19T16:13:51.030169Z  INFO mcp_gateway::backend: Starting backend backend=sequential-thinking
+2026-05-19T16:13:51.418326Z  INFO mcp_gateway::transport::stdio: Stdio transport initialized command=/nix/store/k9lhrbpnmr5974b1xrsv2sf5x7knj9qc-mcp-server-sequential-thinking-2026.1.26/bin/mcp-server-sequential-thinking version="2025-11-25"
+2026-05-19T16:13:51.421821Z  INFO mcp_gateway::gateway::server::warmstart: Warm-started + tools cached backend=sequential-thinking tools=1
+2026-05-19T16:13:51.421847Z  INFO mcp_gateway::backend: Starting backend backend=markitdown
+2026-05-19T16:13:52.537198Z  INFO mcp_gateway::transport::stdio: Stdio transport initialized command=markitdown-mcp version="2025-11-25"
+2026-05-19T16:13:52.539501Z  INFO mcp_gateway::gateway::server::warmstart: Warm-started + tools cached backend=markitdown tools=1
+2026-05-19T16:13:52.539512Z  INFO mcp_gateway::backend: Starting backend backend=nixos
+2026-05-19T16:13:53.420044Z  INFO mcp_gateway::gateway::streaming: Created new streaming session session_id=gw-05d5356e-a349-413c-8f40-c835fa878c2d
+2026-05-19T16:13:53.420071Z  INFO mcp_gateway::gateway::router::handlers: Client connected to SSE stream session_id=gw-05d5356e-a349-413c-8f40-c835fa878c2d
+2026-05-19T16:13:53.539701Z  INFO mcp_gateway::transport::stdio: Stdio transport initialized command=mcp-nixos version="2025-11-25"
+2026-05-19T16:13:53.542301Z  INFO mcp_gateway::gateway::server::warmstart: Warm-started + tools cached backend=nixos tools=2
+2026-05-19T16:13:53.542318Z  INFO mcp_gateway::backend: Starting backend backend=playwright
+2026-05-19T16:13:54.096411Z  INFO mcp_gateway::transport::stdio: Stdio transport initialized command=playwright-mcp version="2025-11-25"
+2026-05-19T16:13:54.101173Z  INFO mcp_gateway::gateway::server::warmstart: Warm-started + tools cached backend=playwright tools=21
+2026-05-19T16:13:54.101199Z  INFO mcp_gateway::backend: Starting backend backend=filesystem
+2026-05-19T16:13:54.510064Z  INFO mcp_gateway::transport::stdio: Stdio transport initialized command=/nix/store/vskixzzs37mga82ymn42yr3wh0g7lcz5-mcp-server-filesystem-2026.1.26/bin/mcp-server-filesystem /home/nondeus version="2025-11-25"
+2026-05-19T16:13:54.514570Z  INFO mcp_gateway::gateway::server::warmstart: Warm-started + tools cached backend=filesystem tools=14
+2026-05-19T16:13:54.514581Z  INFO mcp_gateway::backend: Starting backend backend=github
+2026-05-19T16:13:55.223539Z  INFO mcp_gateway::transport::stdio: Stdio transport initialized command=github-mcp-server stdio version="2025-11-25"
+2026-05-19T16:13:55.227441Z  INFO mcp_gateway::gateway::server::warmstart: Warm-started + tools cached backend=github tools=41
+2026-05-19T16:14:21.033335Z  INFO request{backend=sequential-thinking method=ping request_id=c9741eff-57c3-41a3-9751-23543a72a127}: mcp_gateway::backend: Request completed successfully latency_ms=1
+2026-05-19T16:14:21.034870Z  INFO request{backend=markitdown method=ping request_id=d09d42fe-1567-4c7b-8498-b0cbd3affcc6}: mcp_gateway::backend: Request completed successfully latency_ms=1
+2026-05-19T16:14:21.035805Z  INFO request{backend=nixos method=ping request_id=4cce7ddb-75cc-4c65-8786-2e88cd00493d}: mcp_gateway::backend: Request completed successfully latency_ms=0
+2026-05-19T16:14:21.036416Z  INFO request{backend=playwright method=ping request_id=84a2159e-2557-42dd-b51a-ee93c3032399}: mcp_gateway::backend: Request completed successfully latency_ms=0
+2026-05-19T16:14:21.036978Z  INFO request{backend=filesystem method=ping request_id=41d870ae-8e1b-4cc7-8888-df6b7136e47e}: mcp_gateway::backend: Request completed successfully latency_ms=0
+2026-05-19T16:14:21.037183Z  INFO request{backend=github method=ping request_id=3668b038-5997-4d29-8e5e-d1778e85bd3a}: mcp_gateway::backend: Request completed successfully latency_ms=0
+2026-05-19T16:14:51.032078Z  INFO request{backend=sequential-thinking method=ping request_id=f5839bb0-a0ab-44d9-bce2-2f7d9de83556}: mcp_gateway::backend: Request completed successfully latency_ms=1
+2026-05-19T16:14:51.033760Z  INFO request{backend=markitdown method=ping request_id=b0dc8009-addc-4dbe-9500-de766154cfd8}: mcp_gateway::backend: Request completed successfully latency_ms=1
+2026-05-19T16:14:51.035209Z  INFO request{backend=nixos method=ping request_id=0484dbfe-8ea9-4b1f-8a91-c62d129e5861}: mcp_gateway::backend: Request completed successfully latency_ms=1
+2026-05-19T16:14:51.035959Z  INFO request{backend=playwright method=ping request_id=737989f5-d432-4076-b898-34c5cf8a3ef3}: mcp_gateway::backend: Request completed successfully latency_ms=0
+2026-05-19T16:14:51.036597Z  INFO request{backend=filesystem method=ping request_id=06340051-f2a4-438c-b9c6-9bd6c07253f6}: mcp_gateway::backend: Request completed successfully latency_ms=0
+2026-05-19T16:14:51.036870Z  INFO request{backend=github method=ping request_id=f943349a-f604-4440-a2f8-85d7e98c7bcb}: mcp_gateway::backend: Request completed successfully latency_ms=0
+2026-05-19T16:14:57.021613Z  INFO mcp_gateway::config_reload: Config watcher: config file changed, triggering reload

@@ -1,0 +1,15 @@
+{
+  "id": "6091b5f1-463e-4445-9cda-228fd9990759",
+  "name": "/home/nondeus/.nix-config",
+  "projectResources": {
+    "resources": [
+      {
+        "gitFolder": {
+          "folderUri": "file:///home/nondeus/.nix-config",
+          "defaultBranch": "main",
+          "allowWrite": true
+        }
+      }
+    ]
+  }
+}

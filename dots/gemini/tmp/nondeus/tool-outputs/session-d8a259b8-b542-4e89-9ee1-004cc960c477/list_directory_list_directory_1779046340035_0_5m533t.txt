@@ -1,0 +1,3 @@
+{
+  "output": "Directory listing for /home/nondeus/.nix-config/nixos:\n.sops.yaml (260 bytes)\nconfiguration.nix (6600 bytes)\nhardware-configuration.nix (2503 bytes)\nsecrets.yaml (2209 bytes)\nvms.nix (3080 bytes)"
+}

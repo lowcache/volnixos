@@ -1,0 +1,5 @@
+{
+  "artifactType":  "ARTIFACT_TYPE_WALKTHROUGH",
+  "summary":  "Updated walkthrough for the finalized security-hardened container and MicroVM, including precise alignment with the host NixOS channel and version.",
+  "updatedAt":  "2026-05-28T06:34:22.018386592Z"
+}

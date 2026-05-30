@@ -1,0 +1,51 @@
+warning: Git tree '/home/lowcache/.nix-config' is dirty
+warning: updating lock file '/home/lowcache/.nix-config/flake.lock':
+• Added input 'llm-agents':
+    'github:numtide/llm-agents.nix/e1d1790509643d37e66496668262b8a553b54b01' (20
+26-05-30)
+• Added input 'llm-agents/blueprint':
+    'github:numtide/blueprint/56131e8628f173d24a27f6d27c0215eff57e40dd' (2026-04
+-15)
+• Added input 'llm-agents/blueprint/nixpkgs':
+    follows 'llm-agents/nixpkgs'
+• Added input 'llm-agents/blueprint/systems':
+    follows 'llm-agents/systems'
+• Added input 'llm-agents/bun2nix':
+    'github:nix-community/bun2nix/f2bc12af1a6369648aac41041ceeaa0b866599c6' (202
+6-05-10)
+• Added input 'llm-agents/bun2nix/flake-parts':
+    follows 'llm-agents/flake-parts'
+• Added input 'llm-agents/bun2nix/nixpkgs':
+    follows 'llm-agents/nixpkgs'
+• Added input 'llm-agents/bun2nix/systems':
+    follows 'llm-agents/systems'
+• Added input 'llm-agents/bun2nix/treefmt-nix':
+    follows 'llm-agents/treefmt-nix'
+• Added input 'llm-agents/flake-parts':
+    'github:hercules-ci/flake-parts/f7c1a2d347e4c52d5fb8d10cb4d94b5884e546fb' (2
+026-05-13)
+• Added input 'llm-agents/flake-parts/nixpkgs-lib':
+    follows 'llm-agents/nixpkgs'
+• Added input 'llm-agents/nixpkgs':
+    follows 'nixpkgs'
+• Added input 'llm-agents/systems':
+    'github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba5b49a27e' (2023-
+04-09)
+• Added input 'llm-agents/treefmt-nix':
+    'github:numtide/treefmt-nix/790751ff7fd3801feeaf96d7dc416a8d581265ba' (2026-
+04-08)
+• Added input 'llm-agents/treefmt-nix/nixpkgs':
+    follows 'llm-agents/nixpkgs'
+• Added input 'nur':
+    'github:nix-community/NUR/f63a4dce8140d4075a1baa2e90839e1fde0a8189' (2026-05
+-30)
+• Added input 'nur/flake-parts':
+    'github:hercules-ci/flake-parts/205b12d8b7cd4802fbcb8e8ef6a0f1408781a4f9' (2
+024-12-04)
+• Added input 'nur/flake-parts/nixpkgs-lib':
+    follows 'nur/nixpkgs'
+• Added input 'nur/nixpkgs':
+    'github:nixos/nixpkgs/64c08a7ca051951c8eae34e3e3cb1e202fe36786' (2026-05-23)
+warning: Git tree '/home/lowcache/.nix-config' is dirty
+"/nix/store/l7lhqgq3071c5snhl968r221c8b929sm-nixos-system-infernalnix-26.05.2026
+0515.d233902.drv"

@@ -1,0 +1,50 @@
+{"time":"2026-05-24T21:22:31.132733105-05:00","level":"INFO","msg":"initializing
+ modular automation core bootstrap","component":"bootstrap","pid":139598}
+{"time":"2026-05-24T21:22:31.132792683-05:00","level":"INFO","msg":"worker pool
+started successfully","max_workers":4,"queue_depth_limit":10}
+{"time":"2026-05-24T21:22:31.132797533-05:00","level":"INFO","msg":"bot orchestr
+ator initialized with registered profiles","profiles":["aggregator","triage"]}
+{"time":"2026-05-24T21:22:31.132860047-05:00","level":"INFO","msg":"starting tel
+emetry server","addr":":8085"}
+{"time":"2026-05-24T21:22:31.714148792-05:00","level":"INFO","msg":"task executi
+on completed successfully","task_id":"news-task-0001","prediction_output":"{\"ca
+tegory\": \"world_news\", \"urgency\": \"medium\", \"sentiment\": \"neutral\", \
+"summary\": \"Simulated extraction for prompt context.\"}","tokens_predicted":28
+,"eval_tokens":64,"tokens_per_second":"199.54","predict_latency_ms":"140.32","lo
+ad_latency_ms":"10.16"}
+{"time":"2026-05-24T21:22:32.144048109-05:00","level":"INFO","msg":"task executi
+on completed successfully","task_id":"news-task-0002","prediction_output":"{\"ca
+tegory\": \"world_news\", \"urgency\": \"medium\", \"sentiment\": \"neutral\", \
+"summary\": \"Simulated extraction for prompt context.\"}","tokens_predicted":34
+,"eval_tokens":55,"tokens_per_second":"199.67","predict_latency_ms":"170.28","lo
+ad_latency_ms":"10.17"}
+{"time":"2026-05-24T21:22:32.514062927-05:00","level":"INFO","msg":"task executi
+on completed successfully","task_id":"news-task-0003","prediction_output":"{\"ca
+tegory\": \"world_news\", \"urgency\": \"medium\", \"sentiment\": \"neutral\", \
+"summary\": \"Simulated extraction for prompt context.\"}","tokens_predicted":28
+,"eval_tokens":54,"tokens_per_second":"199.64","predict_latency_ms":"140.25","lo
+ad_latency_ms":"10.17"}
+{"time":"2026-05-24T21:22:32.919047663-05:00","level":"INFO","msg":"task executi
+on completed successfully","task_id":"news-task-0004","prediction_output":"{\"ca
+tegory\": \"world_news\", \"urgency\": \"medium\", \"sentiment\": \"neutral\", \
+"summary\": \"Simulated extraction for prompt context.\"}","tokens_predicted":29
+,"eval_tokens":54,"tokens_per_second":"199.68","predict_latency_ms":"145.23","lo
+ad_latency_ms":"10.17"}
+{"time":"2026-05-24T21:22:33.329006318-05:00","level":"INFO","msg":"task executi
+on completed successfully","task_id":"news-task-0005","prediction_output":"{\"ca
+tegory\": \"world_news\", \"urgency\": \"medium\", \"sentiment\": \"neutral\", \
+"summary\": \"Simulated extraction for prompt context.\"}","tokens_predicted":31
+,"eval_tokens":64,"tokens_per_second":"199.68","predict_latency_ms":"155.25","lo
+ad_latency_ms":"10.15"}
+{"time":"2026-05-24T21:22:33.708999624-05:00","level":"INFO","msg":"task executi
+on completed successfully","task_id":"news-task-0006","prediction_output":"{\"ca
+tegory\": \"world_news\", \"urgency\": \"medium\", \"sentiment\": \"neutral\", \
+"summary\": \"Simulated extraction for prompt context.\"}","tokens_predicted":27
+,"eval_tokens":55,"tokens_per_second":"199.64","predict_latency_ms":"135.24","lo
+ad_latency_ms":"10.15"}
+{"time":"2026-05-24T21:22:34.118983727-05:00","level":"INFO","msg":"task executi
+on completed successfully","task_id":"news-task-0007","prediction_output":"{\"ca
+tegory\": \"world_news\", \"urgency\": \"medium\", \"sentiment\": \"neutral\", \
+"summary\": \"Simulated extraction for prompt context.\"}","tokens_predicted":29
+,"eval_tokens":54,"tokens_per_second":"199.62","predict_latency_ms":"145.27","lo
+ad_latency_ms":"10.14"}

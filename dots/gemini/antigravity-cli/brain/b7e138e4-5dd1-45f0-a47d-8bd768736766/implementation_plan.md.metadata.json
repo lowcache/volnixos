@@ -1,0 +1,6 @@
+{
+  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary": "Implementation plan to resolve system freezes on NixOS, keep Brave, remove standard Chromium, add Floorp, and consolidate all browser configurations into a single browsers.nix file (deleting brave.nix) to avoid creating extra files in the modular configuration.",
+  "updatedAt": "2026-05-22T04:21:29.812743127Z",
+  "requestFeedback": true
+}

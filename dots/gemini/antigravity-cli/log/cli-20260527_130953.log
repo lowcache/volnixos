@@ -1,0 +1,252 @@
+I0527 13:09:53.517346 41279 server.go:1303] Starting language server process with pid 41279
+I0527 13:09:53.518535 41279 server.go:473] Language server will attempt to listen on host localhost
+I0527 13:09:53.520757 41279 server.go:487] Language server listening on random port at 34687 for HTTPS (gRPC)
+I0527 13:09:53.521206 41279 server.go:494] Language server listening on random port at 43097 for HTTP
+W0527 13:09:53.853997 41279 launchmanager.go:69] Entering local chrome mode! This is WRONG unless you are running tests or in eval mode on Linux.
+E0527 13:09:53.859257 41279 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0527 13:09:53.860355 41279 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0527 13:09:53.860379 41279 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0527 13:09:53.860416 41279 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0527 13:09:53.861663 41279 server.go:2271] Auth succeeded, refreshing features and managers
+E0527 13:09:53.861904 41279 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0527 13:09:53.862672 41279 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0527 13:09:53.862681 41279 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0527 13:09:53.862697 41279 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0527 13:09:53.862950 41279 server.go:2277] State refresh took 1ms
+I0527 13:09:53.876392 41279 server.go:1935] initialized server successfully in 358.685292ms
+W0527 13:09:53.877404 41279 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0527 13:09:53.877436 41279 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0527 13:09:53.877462 41279 server.go:606] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0527 13:09:53.877659 41279 client.go:81] failed to set auth token
+I0527 13:09:53.878165 41279 auto_updater.go:253] Spawned background update process with PID 41307
+I0527 13:09:53.878304 41279 common.go:103] Launching CLI mode
+I0527 13:09:53.878350 41279 project.go:162] project: no project found from /home/nondeus/Downloads, creating new project
+I0527 13:09:53.880152 41279 project.go:141] project: created project "/home/nondeus/Downloads" (id=5b3ff4d8-8684-4db2-a2f5-d40194f88c8a) at /home/nondeus/.gemini/config/projects/5b3ff4d8-8684-4db2-a2f5-d40194f88c8a.json, symlinked from /home/nondeus/Downloads/.antigravitycli/5b3ff4d8-8684-4db2-a2f5-d40194f88c8a.json
+I0527 13:09:53.880167 41279 common.go:156] project: using project "/home/nondeus/Downloads" (id=5b3ff4d8-8684-4db2-a2f5-d40194f88c8a) at /home/nondeus/.gemini/config/projects/5b3ff4d8-8684-4db2-a2f5-d40194f88c8a.json
+E0527 13:09:53.880182 41279 common.go:188] Failed to resolve GeminiDir ".gemini": .gemini must be an absolute path: path is not absolute, falling back to default
+I0527 13:09:53.880194 41279 common.go:197] CLI app data directory: /home/nondeus/.gemini/antigravity-cli
+I0527 13:09:53.880209 41279 server.go:200] Creating CLI server backend: product=antigravity workspaceDirs=[] appDataDir=/home/nondeus/.gemini/antigravity-cli cascadeManager=true codeAssist=true
+I0527 13:09:53.881394 41279 manager.go:249] Initializing CLI store manager for workspace /home/nondeus/Downloads
+I0527 13:09:53.882587 41279 cli_setting_manager.go:612] Skipping telemetry propagation because user is not logged in
+I0527 13:09:53.882640 41279 cli_setting_manager.go:66] CLI settings initialized: permissions=&{Allow:[command(git) command(ls) command(journalctl) command(find) command(nix) command(nix-shell) command(grep) command(rg) command(dmesg) command(npm) command(nvidia-smi) command(lspci) command(tail) command(systemctl status) command(coredumpctl) command(head) command(printenv) command(type)] Deny:[command(rm -rf) command(nixos-rebuild)] Ask:[]}, toolPermission=request-review
+I0527 13:09:53.883075 41279 manager.go:312] CLI store manager initialized successfully
+I0527 13:09:53.883094 41279 common.go:312] CLI store manager created successfully
+I0527 13:09:53.888091 41279 common.go:402] Starting CLI program
+CLI ready for user input (startup took 9.769506ms)
+ERROR: logging before google.Init: I0527 13:09:53.893143     139 terminal_info_manager.go:160] Terminal detection: TERM="xterm-kitty" altScreen=true ssh=false
+I0527 13:09:53.894167 41279 gemini_extensions.go:28] Detecting Gemini extensions in /home/nondeus/.gemini/extensions
+I0527 13:09:53.894197 41279 gemini_extensions.go:49] No extensions found
+W0527 13:09:53.894501 41279 token_storage.go:113] Failed to load token from keyring, falling back to file: The name is not activatable
+I0527 13:09:53.945242 41279 manager.go:542] Full redraw completed (rerenderAll) for conversation  (epoch 0, items 1)
+W0527 13:09:54.098827 41279 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0527 13:09:54.380523 41279 auth.go:114] ChainedAuth: authenticated via keyring (effective: keyring)
+I0527 13:09:54.380556 41279 server_oauth.go:212] applyAuthResult: email=drawpdeadredd@gmail.com, authMethod=consumer, quotaProject=
+I0527 13:09:54.380565 41279 server_oauth.go:217] OAuth: authenticated successfully as drawpdeadredd@gmail.com
+I0527 13:09:54.380572 41279 server_oauth.go:223] b.codeAssistClient.AuthProvider (0x200fd6ec0b00) is same as b.cliAuth (0x200fd6ec0b00)
+I0527 13:09:55.140880 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xa6f1d8ef391426e8
+I0527 13:09:55.591241 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x8708152e37f19651
+I0527 13:09:55.592669 41279 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0527 13:09:55.690140 41279 input_loop.go:499] Auth done received, triggering experiment refresh
+I0527 13:09:55.690205 41279 experiment_manager.go:35] Starting experiment refresh after login
+I0527 13:09:55.903904 41279 experiment_manager.go:39] Experiments refreshed after login
+I0527 13:09:55.904009 41279 manager.go:932] Reloading system slash commands
+I0527 13:09:56.291091 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x2a5911002fa05bcb
+I0527 13:09:56.905322 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xa6b194d22a2560a4
+I0527 13:09:57.029770 41279 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0527 13:09:57.029962 41279 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0527 13:09:57.123485 41279 input_loop.go:499] Auth done received, triggering experiment refresh
+I0527 13:09:57.123531 41279 experiment_manager.go:35] Starting experiment refresh after login
+I0527 13:09:57.125408 41279 input_loop.go:499] Auth done received, triggering experiment refresh
+I0527 13:09:57.125421 41279 experiment_manager.go:35] Starting experiment refresh after login
+I0527 13:09:57.198269 41279 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0527 13:09:57.307474 41279 input_loop.go:499] Auth done received, triggering experiment refresh
+I0527 13:09:57.307533 41279 experiment_manager.go:35] Starting experiment refresh after login
+I0527 13:09:57.420032 41279 experiment_manager.go:39] Experiments refreshed after login
+I0527 13:09:57.420154 41279 manager.go:932] Reloading system slash commands
+I0527 13:09:57.420736 41279 experiment_manager.go:39] Experiments refreshed after login
+I0527 13:09:57.420861 41279 manager.go:932] Reloading system slash commands
+I0527 13:09:57.423063 41279 manager.go:936] Slash commands unchanged, skipping update
+I0527 13:09:57.423223 41279 manager.go:936] Slash commands unchanged, skipping update
+I0527 13:09:57.434043 41279 experiment_manager.go:39] Experiments refreshed after login
+I0527 13:09:57.434158 41279 manager.go:932] Reloading system slash commands
+I0527 13:09:57.436133 41279 manager.go:936] Slash commands unchanged, skipping update
+I0527 13:09:57.728680 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xace0b84cc518e444
+I0527 13:10:39.409880 41279 input_loop.go:34] HandleUserInput called with text: "I need help installing the Anitigraity.tar.gz and 'Antigravity IDE.tar.gz'"
+I0527 13:10:39.409912 41279 conversation_manager.go:284] Starting new conversation (agent=false)
+I0527 13:10:39.409921 41279 server.go:718] Creating new cascade trajectory (agentScript=false)
+I0527 13:10:39.409928 41279 server.go:726] Conversation using project ID: 5b3ff4d8-8684-4db2-a2f5-d40194f88c8a
+I0527 13:10:39.428415 41279 server.go:747] Created conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26
+I0527 13:10:39.428986 41279 conversation_manager.go:378] Streaming conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26
+I0527 13:10:39.429237 41279 server.go:766] Starting conversation update stream for 3a29a340-d0ea-4961-82ce-449b22ecaa26
+I0527 13:10:39.429264 41279 conversation_manager.go:321] Forwarding user message to conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 (items=1, media=0)
+I0527 13:10:39.429271 41279 server.go:1072] Sending user message to conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 (items=1, media=0)
+E0527 13:10:39.436580 41279 discovery.go:351] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0527 13:10:40.630987 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe6fceabf31489ab4
+I0527 13:10:41.655082 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x59124373ee18565d
+I0527 13:10:42.781635 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe96c826d19892c59
+I0527 13:10:44.112990 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe0018676b12d1e88
+I0527 13:10:44.129212 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 8
+I0527 13:10:45.201257 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=8, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:10:45.201389 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 8 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:10:46.792396 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x79abd6136f439b53
+I0527 13:10:46.928844 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 10
+I0527 13:10:47.774735 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=10, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:10:47.774776 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 10 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:10:48.925352 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf54552c19839e8a1
+I0527 13:10:48.928861 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 12
+I0527 13:10:50.153101 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=12, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:10:50.153149 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 12 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:10:52.321909 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x16b6d617c2666c36
+I0527 13:10:53.095070 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x2d960849bae6aa2d
+I0527 13:10:54.660312 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x6c4a5b1e51b7b631
+I0527 13:10:54.679133 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 18
+I0527 13:10:55.492913 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=18, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:10:55.493054 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 18 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:10:55.530202 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 18
+I0527 13:10:56.159215 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=18, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:10:56.159301 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 18 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:10:58.858263 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x7c131d27fe9a0ea8
+I0527 13:10:58.879383 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 20
+I0527 13:10:59.592730 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=20, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:10:59.592767 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 20 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:01.725523 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbdd40d84d01de40c
+I0527 13:11:01.728687 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 22
+I0527 13:11:02.352993 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=22, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:02.353058 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 22 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:05.205028 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x4ae826a27916976
+I0527 13:11:05.228622 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 24
+I0527 13:11:05.957963 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=24, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:05.958038 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 24 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:09.194700 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1e2dcd435d80cc25
+I0527 13:11:10.136901 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x574d6c0a05bc663
+I0527 13:11:10.178907 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 29
+I0527 13:11:10.814712 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=29, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:10.814780 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 29 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:13.092611 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x4c7b1ced0fb5c3c3
+I0527 13:11:13.128948 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 31
+I0527 13:11:13.707024 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=31, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:13.707099 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 31 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:16.792950 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x81d23d7c089346b3
+I0527 13:11:16.828768 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 34
+I0527 13:11:19.384348 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=34, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:19.384503 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 34 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:22.018847 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x9084e5a8670daf31
+I0527 13:11:22.178305 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 36
+I0527 13:11:23.043588 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=36, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:23.043670 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 36 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:25.921145 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1ce7c1e0b05305b9
+I0527 13:11:27.120238 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x91beb6aa321eb68
+I0527 13:11:27.128801 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 40
+I0527 13:11:27.924423 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=40, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:27.924498 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 40 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:29.169151 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1de2f3aec6eaa518
+I0527 13:11:32.343843 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xedc06ff0302a4b1c
+I0527 13:11:34.187011 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x101ce728710bb3e4
+I0527 13:11:34.229018 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 46
+I0527 13:11:35.138542 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=46, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:35.138649 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 46 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:35.179286 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 46
+I0527 13:11:36.137074 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=46, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:36.137139 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 46 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:40.433745 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe474f1b145794cab
+I0527 13:11:41.266909 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8460e4837cb68a1d
+I0527 13:11:41.279300 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 50
+I0527 13:11:42.410891 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=50, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:11:42.411021 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 50 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:11:44.043484 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x676665ceefe1aec5
+I0527 13:11:44.328138 41279 text_drip.go:173] Drip stopped: lastStepIdx=51, charIdx=216, length=1040
+I0527 13:13:03.298299 41279 input_loop.go:34] HandleUserInput called with text: "im getting libcups.so.2 errors remermber this is a NixOS system"
+I0527 13:13:03.298551 41279 conversation_manager.go:321] Forwarding user message to conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 (items=1, media=0)
+I0527 13:13:03.298583 41279 server.go:1072] Sending user message to conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 (items=1, media=0)
+E0527 13:13:03.303825 41279 discovery.go:351] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0527 13:13:05.180208 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x2139d7aa696fef74
+I0527 13:13:06.378612 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x510576508d13586c
+I0527 13:13:07.675306 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xdf797c724ccbca2e
+I0527 13:13:07.728793 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 58
+I0527 13:13:10.068819 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=58, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:13:10.068957 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 58 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:13:14.452780 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x6be31b02a1f3c8b9
+I0527 13:13:19.147756 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x14637d60f8fbf4c0
+I0527 13:13:20.715015 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xabfddd437573a1c8
+I0527 13:13:22.429368 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xfff0c2e57c23c530
+I0527 13:13:23.073709 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x66edbe91135b009b
+I0527 13:13:23.073833 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd8565e94ae003b2b
+I0527 13:13:23.091965 41279 text_drip.go:173] Drip stopped: lastStepIdx=67, charIdx=12, length=141
+E0527 13:13:35.726098 41279 discovery.go:351] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0527 13:13:36.815106 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe4b7d5477131c70f
+I0527 13:13:37.614736 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x15dc4bb6d58e3bb0
+I0527 13:13:38.383800 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x55c25b575aa9fc99
+I0527 13:13:39.934416 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf5f9cb812b766589
+I0527 13:13:39.979332 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 77
+I0527 13:13:40.844687 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=77, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:13:40.844757 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 77 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:13:42.187955 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc825f0f94b0fbdc5
+I0527 13:13:43.724248 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x6f328b27116aa25f
+I0527 13:13:44.751883 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x95ba8ac74599e1d0
+I0527 13:13:45.672180 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc47fa2ec8e7ad7b1
+I0527 13:13:46.995029 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5e127c04008d79d3
+I0527 13:13:48.126499 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x34a335e814186bb1
+I0527 13:13:49.158363 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x611edca5f6799e8d
+I0527 13:13:50.457575 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x99ed313bb393e07a
+I0527 13:13:53.252960 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa36890dfd0f60956
+I0527 13:13:53.780457 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 95
+I0527 13:13:56.878458 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=95, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:13:56.878626 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 95 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:13:58.060372 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd679211e66342430
+I0527 13:13:59.186166 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8e6da9926a80d261
+I0527 13:14:00.824180 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe9cbf3780830794f
+I0527 13:14:00.928676 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 101
+I0527 13:14:04.142750 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=101, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:14:04.143041 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 101 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:14:05.074443 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x7fa6ab7c942c3e72
+I0527 13:14:06.844401 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf0860befa3d1c0c3
+I0527 13:14:11.680067 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x84381c480216f754
+I0527 13:14:14.444350 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x9120a3f44a921070
+E0527 13:14:15.120860 41279 log.go:398] error executing cascade step: CORTEX_STEP_TYPE_CODE_ACTION: while decoding file, failed to detect charset with sufficient confidence
+I0527 13:14:16.185190 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x9da91bba568d680b
+I0527 13:14:16.229070 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 112
+I0527 13:14:21.975298 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=112, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:14:21.975469 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 112 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:14:23.104491 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x365e27dced153f75
+I0527 13:14:24.598677 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x7ae106b6a1a9c8e0
+I0527 13:14:25.715651 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf2e3fa354d66fb6c
+I0527 13:14:25.828911 41279 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 118
+I0527 13:14:27.030019 41279 input_loop.go:436] Responding to tool confirmation: convID=3a29a340-d0ea-4961-82ce-449b22ecaa26, stepIdx=118, approved=true, sandboxOverride=false, turnGrants=[]
+I0527 13:14:27.030157 41279 server.go:1537] Tool confirmation for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 step 118 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0527 13:14:28.488357 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x7a64623e68d1b469
+I0527 13:14:29.311806 41279 text_drip.go:173] Drip stopped: lastStepIdx=119, charIdx=672, length=1826
+I0527 13:15:36.549991 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xac4e50b1e7f5e829
+I0527 13:15:36.704423 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xb1216299525cac06
+I0527 13:17:21.134077 41279 manager.go:542] Full redraw completed (rerenderAll) for conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 (epoch 0, items 76)
+I0527 13:18:42.961110 41279 input_loop.go:34] HandleUserInput called with text: "explain how nix-ld works so if i run into a situation where i need to install a normal linux app that requires /lib /lib64 i can take care o it quickly"
+I0527 13:18:42.961211 41279 conversation_manager.go:321] Forwarding user message to conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 (items=1, media=0)
+I0527 13:18:42.961228 41279 server.go:1072] Sending user message to conversation 3a29a340-d0ea-4961-82ce-449b22ecaa26 (items=1, media=0)
+E0527 13:18:42.974722 41279 discovery.go:351] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0527 13:18:45.603752 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1129e5cd242a858
+I0527 13:18:46.736955 41279 text_drip.go:173] Drip stopped: lastStepIdx=121, charIdx=873, length=2251
+I0527 13:20:54.626976 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xb7cb48f31c533754
+I0527 13:20:54.728979 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xd33445c21b4e62
+I0527 13:26:54.771204 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x1beb9f264a352673
+I0527 13:26:54.867976 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x41faebbe8777915d
+I0527 13:32:54.507093 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xae94e334b696b103
+I0527 13:32:55.031908 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x8fff7f4083c29bf0
+E0527 14:20:27.494029 41279 log.go:398] Failed to poll ListExperiments: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:listExperiments": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0527 14:20:27.496699 41279 log_context.go:117] Cache(availableModels): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0527 14:20:27.496731 41279 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0527 14:20:27.498166 41279 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0527 14:20:27.498190 41279 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0527 14:20:54.258328 41279 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0527 14:20:55.258009 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xa1c1d3fd99906670
+I0527 14:20:55.670717 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xfcaeec20782caa9a
+I0527 14:26:54.525636 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xa07c5d77902d6187
+I0527 14:26:55.096678 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xf668d261f146e5c4
+I0527 14:32:54.648912 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xcc434c00800e1420
+I0527 14:32:54.965408 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x847440126902f439
+I0527 14:38:54.502134 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xd94c0d9a5412b9bc
+I0527 14:38:55.094533 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x6d58ee8b5f8ac1eb
+I0527 14:44:54.527691 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x1f5ceef23e555b01
+I0527 14:44:54.980301 41279 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x939289d55d1879f1
+I0527 14:46:48.639649 41279 common.go:407] CLI program exited, shutting down
+I0527 14:46:48.641377 41279 manager.go:450] CLI store manager shutting down
+I0527 14:46:48.643223 41279 conversation_manager.go:346] Stopping conversation stream
+I0527 14:46:48.646489 41279 server.go:2183] Language server shutting down

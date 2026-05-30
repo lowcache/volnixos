@@ -1,0 +1,3 @@
+{
+  "output": "Found 1 match for pattern \"seperated\" in path \"/home/nondeus/.nix-config/dots/quickshell/ii/scripts/thumbnails\":\n---\nFile: thumbgen.py\nL98:     \"-d\", \"--img_dirs\", required=True, help='directories to generate thumbnails seperated by space, eg: \"dir1/dir2 dir3\"'\n---"
+}

@@ -1,0 +1,1 @@
+{"name":"gateway_get_stats","description":"Get usage statistics including invocations, cache hits, token savings, and top tools","parameters":{"properties":{"price_per_million":{"default":15,"description":"Token price per million for cost calculations (default 15.0 for Opus 4.6)","type":"number"}},"required":[],"type":"object"}}

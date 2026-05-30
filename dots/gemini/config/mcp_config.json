@@ -1,0 +1,39 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "google-developer-knowledge": {
+      "serverUrl": "https://developerknowledge.googleapis.com/mcp",
+      "authProviderType": "google_credentials"
+    },
+    "google-compute-engine": {
+      "serverUrl": "https://compute.googleapis.com/mcp",
+      "authProviderType": "google_credentials"
+    },
+    "chrome-devtools-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ]
+    },
+    "figma-dev-mode-mcp-server": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "http://127.0.0.1:3845/sse"
+      ]
+    },
+    "dart-mcp-server": {
+      "command": "dart",
+      "args": [
+        "mcp-server"
+      ]
+    }
+  }
+}

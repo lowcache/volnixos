@@ -1,0 +1,1 @@
+{"name":"gateway_reload_config","description":"Trigger an immediate reload of config.yaml from disk without restarting the gateway. Returns a summary plus explicit restart-required fields when some changes stay pending. Server host/port changes require a restart and are reported but not applied.","parameters":{"properties":{},"required":[],"type":"object"}}

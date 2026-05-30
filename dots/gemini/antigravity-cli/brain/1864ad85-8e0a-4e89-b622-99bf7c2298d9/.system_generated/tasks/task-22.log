@@ -1,0 +1,108 @@
+Resolved URL:  git+file:///home/nondeus/.nix-config
+Locked URL:    git+file:///home/nondeus/.nix-config?ref=refs/heads/main&rev=cd7d
+b0b673f3356a08c2eff4032651bcf51d2748
+Description:   Infernal NixOS - Imprecation & Impermanence. [github.com/lowcache
+/infernalnixos.git]
+Path:          /nix/store/md287cfnrf9515va5rmzfh57kznw1r4f-source
+Revision:      cd7db0b673f3356a08c2eff4032651bcf51d2748
+Revisions:     116
+Last modified: 2026-05-21 23:29:48
+Inputs:
+├───home-manager: github:nix-community/home-manager/bd868f769a69d3b6091a1da68a75
+cb83a181033c
+│   Last modified: 2026-05-19 12:52:29
+│   └───nixpkgs follows input 'nixpkgs'
+├───impermanence: github:nix-community/impermanence/7b1d382faf603b6d264f58627330
+f9faa5cba149
+│   Last modified: 2026-01-27 15:09:29
+│   ├───home-manager: github:nix-community/home-manager/c47b2cc64a629f8e075de52e
+4742de688f930dc6
+│   │   Last modified: 2026-01-16 15:16:50
+│   │   └───nixpkgs follows input 'impermanence/nixpkgs'
+│   └───nixpkgs: github:nixos/nixpkgs/e4bae1bd10c9c57b2cf517953ab70060a828ee6f
+│       Last modified: 2026-01-16 06:01:49
+├───infernal-init: github:lowcache/infernal-init/54d74efd54a421942ea0d9a7855ce63
+e9f630cd1
+│   Last modified: 2026-05-17 19:02:17
+│   ├───flake-utils: github:numtide/flake-utils/11707dc2f618dd54ca8739b309ec4fc0
+24de578b
+│   │   Last modified: 2024-11-13 15:27:16
+│   │   └───systems: github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba
+5b49a27e
+│   │       Last modified: 2023-04-09 03:27:08
+│   └───nixpkgs follows input 'nixpkgs'
+├───lanzaboote: github:nix-community/lanzaboote/b7e492b90bcae5e9d9cb0a1d4d1e6100
+305de2c5
+│   Last modified: 2026-05-18 15:26:06
+│   ├───crane: github:ipetkov/crane/10e6e3cb966f7cfcc789fe5eee7a85f3188ce08b
+│   │   Last modified: 2026-05-17 13:05:05
+│   ├───nixpkgs follows input 'nixpkgs'
+│   ├───pre-commit: github:cachix/pre-commit-hooks.nix/61ab0e80d9c7ab14c256b5b45
+3d8b3fb0189ba0a
+│   │   Last modified: 2026-05-11 08:53:22
+│   │   ├───flake-compat: github:NixOS/flake-compat/5edf11c44bc78a0d334f6334cdaf
+7d60d732daab
+│   │   │   Last modified: 2025-12-29 14:24:17
+│   │   ├───gitignore: github:hercules-ci/gitignore.nix/637db329424fd7e46cf41852
+93b9cc8c88c95394
+│   │   │   Last modified: 2024-02-27 20:28:52
+│   │   │   └───nixpkgs follows input 'lanzaboote/pre-commit/nixpkgs'
+│   │   └───nixpkgs follows input 'lanzaboote/nixpkgs'
+│   └───rust-overlay: github:oxalica/rust-overlay/2a77b5b1dc952f214e8102acdef162
+2b68515560
+│       Last modified: 2026-05-17 22:20:09
+│       └───nixpkgs follows input 'lanzaboote/nixpkgs'
+├───lix-module: git+https://git.lix.systems/lix-project/nixos-module?ref=refs/he
+ads/main&rev=5e56f5a973e24292b125dca9e9d506b0a91d6903
+│   Last modified: 2026-03-13 22:59:23
+│   ├───flake-utils: github:numtide/flake-utils/11707dc2f618dd54ca8739b309ec4fc0
+24de578b
+│   │   Last modified: 2024-11-13 15:27:16
+│   │   └───systems: github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba
+5b49a27e
+│   │       Last modified: 2023-04-09 03:27:08
+│   ├───flakey-profile: github:lf-/flakey-profile/243c903fd8eadc0f63d205665a92d4
+df91d42d9d
+│   │   Last modified: 2024-04-12 00:09:50
+│   ├───lix: git+https://git.lix.systems/lix-project/lix?ref=refs/heads/main&rev
+=1f100371d742335a167aa561b0826550b14080a9
+│   │   Last modified: 2026-05-18 11:13:47
+│   └───nixpkgs follows input 'nixpkgs'
+├───microvm: github:astro/microvm.nix/9755fd345bd64d1c75ba12b63089c926dd5d886e
+│   Last modified: 2026-05-20 13:05:50
+│   ├───nixpkgs follows input 'nixpkgs'
+│   └───spectrum: git+https://spectrum-os.org/git/spectrum?ref=refs/heads/main&r
+ev=367dd227f539267eae2b62770b4c17b88ac8c1f1
+│       Last modified: 2026-05-16 09:10:03
+├───nix-cachyos-kernel: github:xddxdd/nix-cachyos-kernel/ac9f02824490d781e39e252
+d1fab0114fed1d9c7
+│   Last modified: 2026-05-20 14:52:09
+│   ├───cachyos-kernel: github:CachyOS/linux-cachyos/391e1e35d62d30dccd14ec3af01
+d58e5310b7d80
+│   │   Last modified: 2026-05-18 01:19:41
+│   ├───cachyos-kernel-patches: github:CachyOS/kernel-patches/65cbbfc17bb7e172cb
+06ef69037be5b0d517b2cd
+│   │   Last modified: 2026-05-19 06:59:20
+│   ├───flake-compat: github:NixOS/flake-compat/5edf11c44bc78a0d334f6334cdaf7d60
+d732daab
+│   │   Last modified: 2025-12-29 14:24:17
+│   ├───flake-parts: github:hercules-ci/flake-parts/f7c1a2d347e4c52d5fb8d10cb4d9
+4b5884e546fb
+│   │   Last modified: 2026-05-13 18:57:42
+│   │   └───nixpkgs-lib: github:nix-community/nixpkgs.lib/f5901329dade4a6ea039af
+1433fb087bd9c1fe14
+│   │       Last modified: 2026-04-25 21:03:02
+│   └───nixpkgs: github:NixOS/nixpkgs/8e72e9888e67ce593df16546cd31e0d75544ad0d
+│       Last modified: 2026-05-20 05:39:21
+├───nixos-hardware: github:NixOS/nixos-hardware/c97bc4d15bd3473dd095e8e8ba57330a
+b1943a77
+│   Last modified: 2026-05-20 01:26:11
+├───nixpkgs: github:nixos/nixpkgs/d233902339c02a9c334e7e593de68855ad26c4cb
+│   Last modified: 2026-05-15 13:21:44
+├───quickshell: git+https://git.outfoxxed.me/outfoxxed/quickshell?ref=refs/heads
+/master&rev=7d1c9a9c6721606b129829134d6f614f015621e2
+│   Last modified: 2026-05-11 03:38:16
+│   └───nixpkgs follows input 'nixpkgs'
+└───sops-nix: github:Mic92/sops-nix/c591bf665727040c6cc5cb409079acb22dcce33c
+    Last modified: 2026-05-04 20:36:12
+    └───nixpkgs follows input 'nixpkgs'

@@ -1,0 +1,1 @@
+{"name":"gateway_webhook_status","description":"List registered webhook endpoints and their delivery statistics (received, delivered, failures, last event)","parameters":{"properties":{},"required":[],"type":"object"}}

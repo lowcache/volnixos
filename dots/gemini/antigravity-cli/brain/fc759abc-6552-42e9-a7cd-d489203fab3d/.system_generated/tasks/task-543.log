@@ -1,0 +1,8 @@
+warning: Git tree '/home/nondeus/CodeRepo/kalinix' is dirty
+warning: input 'nixos-fhs-compat' has an override for a non-existent input 'nixp
+kgs'
+warning: The xorg package set has been deprecated, 'xorg.xeyes' has been renamed
+ to 'xeyes'
+system-path> structuredAttrs is enabled
+system-path> created 2764 symlinks in user environment
+closure-info> structuredAttrs is enabled

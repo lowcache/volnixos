@@ -1,0 +1,1263 @@
+warning: Git tree '/home/nondeus/CodeRepo/kalinix' is dirty
+warning: input 'nixos-fhs-compat' has an override for a non-existent input 'nixp
+kgs'
+warning: 'utillinux' has been renamed to/replaced by 'util-linux'
+warning: 'utillinux' has been renamed to/replaced by 'util-linux'
+warning: The xorg package set has been deprecated, 'xorg.xrandr' has been rename
+d to 'xrandr'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libSM' has been renamed
+ to 'libsm'
+warning: The xorg package set has been deprecated, 'xorg.libICE' has been rename
+d to 'libice'
+warning: The xorg package set has been deprecated, 'xorg.libXt' has been renamed
+ to 'libxt'
+warning: The xorg package set has been deprecated, 'xorg.libXft' has been rename
+d to 'libxft'
+warning: The xorg package set has been deprecated, 'xorg.libXrender' has been re
+named to 'libxrender'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXtst' has been renam
+ed to 'libxtst'
+warning: The xorg package set has been deprecated, 'xorg.libXcursor' has been re
+named to 'libxcursor'
+warning: The xorg package set has been deprecated, 'xorg.libXcomposite' has been
+ renamed to 'libxcomposite'
+warning: The xorg package set has been deprecated, 'xorg.libXfixes' has been ren
+amed to 'libxfixes'
+warning: The xorg package set has been deprecated, 'xorg.libXdamage' has been re
+named to 'libxdamage'
+warning: The xorg package set has been deprecated, 'xorg.libXrandr' has been ren
+amed to 'libxrandr'
+warning: The xorg package set has been deprecated, 'xorg.libXScrnSaver' has been
+ renamed to 'libxscrnsaver'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libX11' has been rename
+d to 'libx11'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libxcb' has been rename
+d to 'libxcb'
+warning: The xorg package set has been deprecated, 'xorg.libSM' has been renamed
+ to 'libsm'
+warning: The xorg package set has been deprecated, 'xorg.libICE' has been rename
+d to 'libice'
+warning: The xorg package set has been deprecated, 'xorg.libXt' has been renamed
+ to 'libxt'
+warning: The xorg package set has been deprecated, 'xorg.libXft' has been rename
+d to 'libxft'
+warning: The xorg package set has been deprecated, 'xorg.libXrender' has been re
+named to 'libxrender'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXext' has been renam
+ed to 'libxext'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed
+ to 'libxi'
+warning: The xorg package set has been deprecated, 'xorg.libXtst' has been renam
+ed to 'libxtst'
+warning: The xorg package set has been deprecated, 'xorg.libXcursor' has been re
+named to 'libxcursor'
+warning: The xorg package set has been deprecated, 'xorg.libXcomposite' has been
+ renamed to 'libxcomposite'
+warning: The xorg package set has been deprecated, 'xorg.libXfixes' has been ren
+amed to 'libxfixes'
+warning: The xorg package set has been deprecated, 'xorg.libXdamage' has been re
+named to 'libxdamage'
+warning: The xorg package set has been deprecated, 'xorg.libXrandr' has been ren
+amed to 'libxrandr'
+warning: The xorg package set has been deprecated, 'xorg.libXScrnSaver' has been
+ renamed to 'libxscrnsaver'
+warning: The xorg package set has been deprecated, 'xorg.xeyes' has been renamed
+ to 'xeyes'
+john-rolling> Running phase: unpackPhase
+john-rolling> unpacking source archive /nix/store/v92avl84b2fva3iwkq33ac1n57rh4y
+qd-source
+retdec> Running phase: unpackPhase
+retdec> unpacking source archive /nix/store/992k9x4mwczgsaj24hgk5l8yimv4fami-sou
+rce
+john-rolling> source root is source
+john-rolling> Running phase: patchPhase
+john-rolling> applying patch /nix/store/gksz3hv5la62kvhx6aiw9ydclab6ni3n-opencl.
+patch
+john-rolling> patching file src/opencl_generate_dynamic_loader.py
+john-rolling> Running phase: updateAutotoolsGnuConfigScriptsPhase
+john-rolling> Updating Autotools / GNU config script to a newer upstream version
+: ./src/config.sub
+john-rolling> Updating Autotools / GNU config script to a newer upstream version
+: ./src/config.guess
+john-rolling> Running phase: configurePhase
+john-rolling> /build/source/src/./opencl_generate_dynamic_loader.py:63: SyntaxWa
+rning: invalid escape sequence '\*'
+john-rolling>   f"extern CL_API_ENTRY (CL_API_PREFIX__VERSION_[1-9]_[0-9]_DEPREC
+ATED )?({REGEX_C_ID}[ \*]*) CL_API_CALL{REGEX_SPACES_ONE_OR_MORE}({REGEX_C_ID})\
+(([_a-zA-Z0-9, \t\r\n\*\(\)]*)\) CL_API_SUFFIX__VERSION_([0-9_]+)(_DEPRECATED)?;
+",
+john-rolling> /build/source/src/./opencl_generate_dynamic_loader.py:63: SyntaxWa
+rning: invalid escape sequence '\('
+john-rolling>   f"extern CL_API_ENTRY (CL_API_PREFIX__VERSION_[1-9]_[0-9]_DEPREC
+ATED )?({REGEX_C_ID}[ \*]*) CL_API_CALL{REGEX_SPACES_ONE_OR_MORE}({REGEX_C_ID})\
+(([_a-zA-Z0-9, \t\r\n\*\(\)]*)\) CL_API_SUFFIX__VERSION_([0-9_]+)(_DEPRECATED)?;
+",
+john-rolling> /build/source/src/./opencl_generate_dynamic_loader.py:108: SyntaxW
+arning: invalid escape sequence '\('
+john-rolling>   function_params = "".join(re.split('\(CL_CALLBACK *', function_p
+arams))
+john-rolling> /build/source/src/./opencl_generate_dynamic_loader.py:109: SyntaxW
+arning: invalid escape sequence '\)'
+john-rolling>   function_params = "".join(re.split('\)\([_a-zA-Z0-9 \*,]+\)', fu
+nction_params))
+john-rolling> /build/source/src/./opencl_generate_dynamic_loader.py:110: SyntaxW
+arning: invalid escape sequence '\*'
+john-rolling>   param_names = re.findall(f'(const )?(unsigned )?{REGEX_C_ID}[ \*
+]+({REGEX_C_ID})', function_params)
+john-rolling> Function 'clSetDefaultDeviceCommandQueue' skipped, API 2_1
+john-rolling> Function 'clGetDeviceAndHostTimer' skipped, API 2_1
+john-rolling> Function 'clGetHostTimer' skipped, API 2_1
+john-rolling> Function 'clSetContextDestructorCallback' skipped, API 3_0
+john-rolling> Function 'clCreateCommandQueueWithProperties' skipped, API 2_0
+john-rolling> Function 'clCreatePipe' skipped, API 2_0
+john-rolling> Function 'clCreateBufferWithProperties' skipped, API 3_0
+john-rolling> Function 'clGetPipeInfo' skipped, API 2_0
+john-rolling> Function 'clSVMAlloc' skipped, API 2_0
+john-rolling> Function 'clSVMFree' skipped, API 2_0
+john-rolling> Function 'clCreateSamplerWithProperties' skipped, API 2_0
+john-rolling> Function 'clCreateProgramWithIL' skipped, API 2_1
+john-rolling> Function 'clSetProgramReleaseCallback' skipped, API 2_2
+john-rolling> Function 'clSetProgramSpecializationConstant' skipped, API 2_2
+john-rolling> Function 'clCloneKernel' skipped, API 2_1
+john-rolling> Function 'clSetKernelArgSVMPointer' skipped, API 2_0
+john-rolling> Function 'clSetKernelExecInfo' skipped, API 2_0
+john-rolling> Function 'clGetKernelSubGroupInfo' skipped, API 2_1
+john-rolling> Function 'clEnqueueSVMMemcpy' skipped, API 2_0
+john-rolling> Function 'clEnqueueSVMMemFill' skipped, API 2_0
+john-rolling> Function 'clEnqueueSVMMap' skipped, API 2_0
+john-rolling> Function 'clEnqueueSVMUnmap' skipped, API 2_0
+john-rolling> Function 'clEnqueueSVMMigrateMem' skipped, API 2_1
+john-rolling> patching script interpreter paths in ./configure
+john-rolling> ./configure: interpreter directive changed from "#! /bin/sh" to "/
+nix/store/i27rhb3nr65rkrwz36bchkwmav6ggsmn-bash-5.3p9/bin/sh"
+john-rolling> configure flags: --prefix=/nix/store/yrj7dl8j3lw1in2nm77hnwq6d7pq7
+jyw-john-rolling-2604 --disable-native-tests --with-systemwide --without-unrar
+john-rolling> checking build system type... x86_64-pc-linux-gnu
+john-rolling> checking host system type... x86_64-pc-linux-gnu
+john-rolling> checking whether to compile using MPI... no
+john-rolling> checking for gcc... gcc
+retdec> source root is source
+retdec> Running phase: patchPhase
+retdec> applying patch /nix/store/qrl0syp8kw87hvbc026g4m7dzp4s023q-dbaab2c3d17b1
+eae22c581e8ab6bfefadf4ef6ae.patch
+retdec> patching file cmake/deps.cmake
+retdec> patching file include/retdec/ctypes/enum_type.h
+retdec> patching file include/retdec/fileformat/types/dotnet_headers/metadata_he
+ader.h
+retdec> patching file include/retdec/fileformat/types/dotnet_headers/metadata_ta
+ble.h
+retdec> patching file include/retdec/fileformat/types/export_table/export.h
+retdec> patching file include/retdec/fileformat/types/import_table/import.h
+retdec> patching file include/retdec/fileformat/types/note_section/elf_core.h
+retdec> patching file include/retdec/fileformat/types/relocation_table/relocatio
+n.h
+retdec> patching file include/retdec/fileformat/types/rich_header/linker_info.h
+retdec> patching file include/retdec/fileformat/types/rich_header/rich_header.h
+retdec> patching file include/retdec/fileformat/types/strings/string.h
+retdec> patching file include/retdec/fileformat/types/tls_info/tls_info.h
+retdec> patching file include/retdec/fileformat/utils/byte_array_buffer.h
+retdec> patching file include/retdec/pdbparser/pdb_utils.h
+retdec> patching file include/retdec/utils/conversion.h
+retdec> patching file include/retdec/utils/file_io.h
+retdec> patching file include/retdec/utils/string.h
+retdec> patching file include/retdec/yaracpp/yara_meta.h
+retdec> patching file src/fileformat/types/tls_info/tls_info.cpp
+retdec> patching file src/fileinfo/file_information/file_information_types/elf_c
+ore.h
+retdec> patching file src/pat2yara/logic.h
+retdec> patching file src/unpackertool/arg_handler.h
+retdec> Running phase: updateAutotoolsGnuConfigScriptsPhase
+retdec> Running phase: configurePhase
+retdec> checking CAPSTONE dependency matches deps.cmake...
+retdec> checking KEYSTONE dependency matches deps.cmake...
+retdec> checking LLVM dependency matches deps.cmake...
+retdec> checking SUPPORT_PKG dependency matches deps.cmake...
+retdec> checking YARA dependency matches deps.cmake...
+retdec> checking YARAMOD dependency matches deps.cmake...
+retdec> '/nix/store/17q1gpk3xwm9np44shcig4s9dfkjrqcm-install-share.py' -> './sup
+port/install-share.py'
+john-rolling> checking whether the C compiler works... yes
+john-rolling> checking for C compiler default output file name... a.out
+retdec> cmake flags: -DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF -DCMAKE_FIND_U
+SE_PACKAGE_REGISTRY=OFF -DCMAKE_EXPORT_NO_PACKAGE_REGISTRY=ON -DCMAKE_BUILD_TYPE
+=Release -DBUILD_TESTING=OFF -DCMAKE_INSTALL_LOCALEDIR=/nix/store/dyl4bf7gsr3b8a
+11d416kb2ns75cv0x0-retdec-5.0/share/locale -DCMAKE_INSTALL_LIBEXECDIR=/nix/store
+/dyl4bf7gsr3b8a11d416kb2ns75cv0x0-retdec-5.0/libexec -DCMAKE_INSTALL_LIBDIR=/nix
+/store/dyl4bf7gsr3b8a11d416kb2ns75cv0x0-retdec-5.0/lib -DCMAKE_INSTALL_DOCDIR=/n
+ix/store/dyl4bf7gsr3b8a11d416kb2ns75cv0x0-retdec-5.0/share/doc/retdec -DCMAKE_IN
+STALL_INFODIR=/nix/store/dyl4bf7gsr3b8a11d416kb2ns75cv0x0-retdec-5.0/share/info
+-DCMAKE_INSTALL_MANDIR=/nix/store/dyl4bf7gsr3b8a11d416kb2ns75cv0x0-retdec-5.0/sh
+are/man -DCMAKE_INSTALL_INCLUDEDIR=/nix/store/dyl4bf7gsr3b8a11d416kb2ns75cv0x0-r
+etdec-5.0/include -DCMAKE_INSTALL_SBINDIR=/nix/store/dyl4bf7gsr3b8a11d416kb2ns75
+cv0x0-retdec-5.0/sbin -DCMAKE_INSTALL_BINDIR=/nix/store/dyl4bf7gsr3b8a11d416kb2n
+s75cv0x0-retdec-5.0/bin -DCMAKE_INSTALL_NAME_DIR=/nix/store/dyl4bf7gsr3b8a11d416
+kb2ns75cv0x0-retdec-5.0/lib -DCMAKE_STRIP=/nix/store/qd70v8g0561vm8m33kmnp79z00c
+gyi5n-gcc-wrapper-15.2.0/bin/strip -DCMAKE_RANLIB=/nix/store/qd70v8g0561vm8m33km
+np79z00cgyi5n-gcc-wrapper-15.2.0/bin/ranlib -DCMAKE_AR=/nix/store/qd70v8g0561vm8
+m33kmnp79z00cgyi5n-gcc-wrapper-15.2.0/bin/ar -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_
+COMPILER=g++ -DCMAKE_INSTALL_PREFIX=/nix/store/dyl4bf7gsr3b8a11d416kb2ns75cv0x0-
+retdec-5.0 -DRETDEC_TESTS:BOOL=TRUE -DRETDEC_DEV_TOOLS:BOOL=TRUE -DRETDEC_COMPIL
+E_YARA:BOOL=TRUE -DCAPSTONE_URL:STRING=/nix/store/gang9svhkvzvzv8dnqpyjyakggmqnr
+xg-source -DKEYSTONE_URL:STRING=/nix/store/aa8zpvpchp7haj3zy18zkrrjyinbf478-sour
+ce -DLLVM_URL:STRING=/nix/store/hjkflmddwc7x5rix7qsni0n55dxmbns3-source -DSUPPOR
+T_PKG_URL:STRING=/nix/store/vnp5r6jzmwc8k4in98lg26lsr2gmbp5x-source -DYARA_URL:S
+TRING=/nix/store/z1jz22b6hx2j7vsd3lh9a1rygnywbryd-source -DYARAMOD_URL:STRING=/n
+ix/store/ar891z02zs12nxfhjjmma7d76v0646qk-source
+john-rolling> checking for suffix of executables...
+retdec> -- The C compiler identification is GNU 15.2.0
+john-rolling> checking whether we are cross compiling... no
+john-rolling> checking for suffix of object files... o
+john-rolling> checking whether we are using the GNU C compiler... yes
+retdec> -- The CXX compiler identification is GNU 15.2.0
+john-rolling> checking whether gcc accepts -g... yes
+retdec> -- Detecting C compiler ABI info
+john-rolling> checking for gcc option to accept ISO C89... none needed
+john-rolling> checking whether gcc understands -c and -o together... yes
+john-rolling> checking whether we are using the GNU C compiler... (cached) yes
+john-rolling> checking whether gcc accepts -g... (cached) yes
+john-rolling> checking for gcc option to accept ISO C89... (cached) none needed
+john-rolling> checking whether gcc understands -c and -o together... (cached) ye
+s
+john-rolling> checking additional paths... none
+retdec> -- Detecting C compiler ABI info - done
+john-rolling> checking arg check macro for -m with gcc... yes
+retdec> -- Check for working C compiler: /nix/store/qd70v8g0561vm8m33kmnp79z00cg
+yi5n-gcc-wrapper-15.2.0/bin/gcc - skipped
+john-rolling> checking arg check macro for -Q with gcc... yes
+retdec> -- Detecting C compile features
+retdec> -- Detecting C compile features - done
+john-rolling> checking if gcc supports -funroll-loops... yes
+john-rolling> checking if gcc supports -Os... yes
+john-rolling> checking if gcc supports -finline-functions... yes
+john-rolling> checking if gcc supports -Og... yes
+retdec> -- Detecting CXX compiler ABI info
+john-rolling> checking if gcc supports -MMD -MP -MF conftest.d... yes
+john-rolling> checking if gcc supports -Wall... yes
+john-rolling> checking if gcc supports -std=gnu99... yes
+john-rolling> checking if gcc supports -Wno-stringop-truncation... yes
+john-rolling> checking if gcc supports -Wno-format-overflow... yes
+retdec> -- Detecting CXX compiler ABI info - done
+john-rolling> checking if gcc supports -Wno-format-truncation... yes
+john-rolling> checking if gcc supports -Wno-tautological-constant-out-of-range-c
+ompare... no
+john-rolling> checking if gcc supports -fno-omit-frame-pointer... yes
+retdec> -- Check for working CXX compiler: /nix/store/qd70v8g0561vm8m33kmnp79z00
+cgyi5n-gcc-wrapper-15.2.0/bin/g++ - skipped
+retdec> -- Detecting CXX compile features
+retdec> -- Detecting CXX compile features - done
+john-rolling> checking if gcc supports --param allow-store-data-races=0... no
+john-rolling> checking if gcc supports -Wno-deprecated-declarations... yes
+john-rolling> checking if gcc supports -Wformat-extra-args... yes
+john-rolling> checking if gcc supports -Wunused-but-set-variable... yes
+john-rolling> checking if gcc supports -Qunused-arguments... no
+john-rolling> checking if gcc supports -Wdate-time... yes
+john-rolling> checking if gcc supports -m64... skipped
+john-rolling> checking for 32/64 bit... 64-bit
+john-rolling> checking additional paths (64 bit)... none
+john-rolling> checking whether ln -s works... yes
+john-rolling> checking for grep that handles long lines and -e... /nix/store/wf7
+lr2hf43546jc5kwqh3dbxnpcnw1mn-gnugrep-3.12/bin/grep
+john-rolling> checking for a sed that does not truncate output... /nix/store/af4
+a8i43kc2ss4rnmf0swkk2mprsw6xq-gnused-4.9/bin/sed
+john-rolling> checking for GNU make... make
+john-rolling> checking whether make sets $(MAKE)... yes
+retdec> -- Found Python3: /nix/store/0r6k8xa2kgqyp3r4v2w7yrb80ma2iawm-python3-3.
+13.12/bin/python3.13 (found suitable version "3.13.12", minimum required is "3.4
+") found components: Interpreter
+retdec> -- Performing Test SUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG
+john-rolling> checking how to run the C preprocessor... gcc -E
+john-rolling> checking for a thread-safe mkdir -p... /nix/store/jjxngswsb214vb58
+qx485jhmilf0kxxy-coreutils-9.10/bin/mkdir -p
+john-rolling> checking for sort... /nix/store/jjxngswsb214vb58qx485jhmilf0kxxy-c
+oreutils-9.10/bin/sort
+john-rolling> checking for find... /nix/store/vhsirn9m1ifmnw5g1qczzhvqkx6lw1if-f
+indutils-4.10.0/bin/find
+john-rolling> checking for perl... /nix/store/xc6nj52vhg4ndmyxw7c5q6iqm8jzrwdm-p
+erl-5.42.0/bin/perl
+john-rolling> checking for pkg-config... no
+john-rolling> checking if pkg-config will be used... no
+john-rolling> checking for egrep... /nix/store/wf7lr2hf43546jc5kwqh3dbxnpcnw1mn-
+gnugrep-3.12/bin/grep -E
+retdec> -- Performing Test SUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG - Success
+retdec> -- Found OpenSSL: /nix/store/wbyqkb1vpm41s4jb8pv0i9h4jv08xdrv-openssl-3.
+6.1/lib/libcrypto.so (found suitable version "3.6.1", minimum required is "1.1.1
+")
+retdec> -- Capstone: using remote Capstone revision.
+john-rolling> checking for ANSI C header files... yes
+john-rolling> checking for sys/types.h... yes
+john-rolling> checking for sys/stat.h... yes
+john-rolling> checking for stdlib.h... yes
+retdec> -- Found GTest: /nix/store/gqppczyxdhmlhwd729qvs2rfv1dn7rx5-gtest-1.17.0
+-dev/lib/cmake/GTest/GTestConfig.cmake (found version "1.17.0")
+retdec> -- Found Threads: TRUE
+retdec> -- Googletest: using remote Googletest revision.
+retdec> -- Keystone: using remote Keystone revision.
+retdec> -- Found ZLIB: /nix/store/ixhlv41i2wpl84xgjcks061dz4yssbg3-zlib-1.3.2/li
+b/libz.so (found version "1.3.2")
+retdec> -- LLVM: using remote LLVM revision.
+retdec> -- YARA: using remote YARA revision.
+john-rolling> checking for string.h... yes
+retdec> -- YaraMod: using remote YaraMod revision.
+retdec> -- Found OpenSSL: /nix/store/wbyqkb1vpm41s4jb8pv0i9h4jv08xdrv-openssl-3.
+6.1/lib/libcrypto.so (found suitable version "3.6.1", minimum required is "1.0.1
+")
+john-rolling> checking for memory.h... yes
+retdec> -- -- Library stdc++fs NOT found & Linux+GCC -> Linking with stdc++fs
+retdec> -- Configuring done (1.8s)
+john-rolling> checking for strings.h... yes
+john-rolling> checking for inttypes.h... yes
+john-rolling> checking for stdint.h... yes
+john-rolling> checking for unistd.h... yes
+retdec> -- Generating done (0.2s)
+retdec> CMake Warning:
+retdec>   Manually-specified variables were not used by the project:
+retdec>     BUILD_TESTING
+retdec>     CMAKE_EXPORT_NO_PACKAGE_REGISTRY
+retdec>
+retdec> -- Build files have been written to: /build/source/build
+retdec> cmake: enabled parallel building
+retdec> cmake: enabled parallel installing
+retdec> Running phase: buildPhase
+retdec> build flags: -j12 SHELL=/nix/store/i27rhb3nr65rkrwz36bchkwmav6ggsmn-bash
+-5.3p9/bin/bash
+retdec> [  0%] Creating directories for 'llvm-project'
+retdec> [  0%] Building C object deps/stb/CMakeFiles/stb.dir/stb_image.c.o
+retdec> [  0%] Building C object deps/authenticode-parser/CMakeFiles/authenticod
+e.dir/src/authenticode.c.o
+retdec> [  1%] Creating directories for 'capstone-project'
+retdec> [  1%] Creating directories for 'yara'
+retdec> [  1%] Creating directories for 'yaramod-project'
+retdec> [  1%] Creating directories for 'keystone-project'
+retdec> [  1%] Building CXX object deps/tlsh/CMakeFiles/tlsh.dir/tlsh.cpp.o
+retdec> [  1%] Building CXX object src/pdbparser/CMakeFiles/pdbparser.dir/pdb_fi
+le.cpp.o
+retdec> [  1%] Building CXX object deps/tinyxml2/CMakeFiles/tinyxml2.dir/tinyxml
+2.cpp.o
+retdec> [  1%] Building CXX object src/utils/CMakeFiles/utils.dir/io/log.cpp.o
+retdec> [  1%] Building CXX object src/pelib/CMakeFiles/pelib.dir/BoundImportDir
+ectory.cpp.o
+retdec> [  1%] Performing download step (DIR copy) for 'llvm-project'
+retdec> [  1%] Performing download step (DIR copy) for 'keystone-project'
+retdec> [  1%] Performing download step (DIR copy) for 'capstone-project'
+retdec> [  1%] Performing download step (DIR copy) for 'yara'
+retdec> [  1%] Performing download step (DIR copy) for 'yaramod-project'
+retdec> [  2%] Building CXX object deps/tlsh/CMakeFiles/tlsh.dir/tlsh_impl.cpp.o
+retdec> -- yaramod-project download command succeeded.  See also /build/source/b
+uild/external/src/yaramod-project-stamp/yaramod-project-download-*.log
+retdec> [  2%] Performing chmod step for 'yara'
+retdec> [  3%] No update step for 'yaramod-project'
+john-rolling> checking size of short... 2
+retdec> [  3%] No update step for 'yara'
+retdec> [  3%] No patch step for 'yaramod-project'
+retdec> [  3%] Performing patch step for 'yara'
+retdec> [  3%] Performing configure step for 'yaramod-project'
+retdec> -- -- Patching: /build/source/build/deps/yara/yara/src/yara/windows/vs20
+15/libyara/libyara.vcxproj patched
+retdec> -- -- Patching: /build/source/build/deps/yara/yara/src/yara/windows/vs20
+15/libyara/libyara.vcxproj skipped
+retdec> -- -- Patching: /build/source/build/deps/yara/yara/src/yara/libyara/modu
+les/dotnet/dotnet.c patched
+retdec> -- -- Patching: /build/source/build/deps/yara/yara/src/yara/configure.ac
+ skipped
+retdec> [  3%] No configure step for 'yara'
+retdec> -- keystone-project download command succeeded.  See also /build/source/
+build/external/src/keystone-project-stamp/keystone-project-download-*.log
+retdec> [  3%] No update step for 'keystone-project'
+retdec> [  3%] Building C object deps/authenticode-parser/CMakeFiles/authenticod
+e.dir/src/helper.c.o
+retdec> [  3%] Performing configure-linux step for 'yara'
+retdec> [  3%] No patch step for 'keystone-project'
+retdec> -- capstone-project download command succeeded.  See also /build/source/
+build/external/src/capstone-project-stamp/capstone-project-download-*.log
+retdec> [  3%] Building CXX object src/utils/CMakeFiles/utils.dir/io/logger.cpp.
+o
+retdec> [  3%] No update step for 'capstone-project'
+retdec> [  4%] Performing configure step for 'keystone-project'
+retdec> CMake Error at /build/source/build/external/src/keystone-project-stamp/k
+eystone-project-configure-Release.cmake:49 (message):
+retdec>   Command failed: 1
+retdec>    '/nix/store/v2i1hgv567g3v91im5x4g5bff52143i0-cmake-4.1.2/bin/cmake' '
+-DCMAKE_INSTALL_PREFIX=/build/source/build/deps/install/keystone' '-DCMAKE_BUILD
+_TYPE=Release' '-DPYTHON_EXECUTABLE=/nix/store/0r6k8xa2kgqyp3r4v2w7yrb80ma2iawm-
+python3-3.13.12/bin/python3.13' '-DKEYSTONE_BUILD_STATIC_RUNTIME=OFF' '-DCMAKE_C
+_COMPILER=/nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.2.0/bin/gcc
+' '-DCMAKE_CXX_COMPILER=/nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-
+15.2.0/bin/g++' '-DCMAKE_POSITION_INDEPENDENT_CODE=ON' '-DCMAKE_LIBTOOL=' '-GUni
+x Makefiles' '-S' '/build/source/build/external/src/keystone-project' '-B' '/bui
+ld/source/build/external/src/keystone-project-build'
+retdec>   See also
+retdec>     /build/source/build/external/src/keystone-project-stamp/keystone-pro
+ject-configure-*.log
+retdec>
+retdec> make[2]: *** [deps/keystone/CMakeFiles/keystone-project.dir/build.make:9
+2: external/src/keystone-project-stamp/keystone-project-configure] Error 1
+retdec> make[1]: *** [CMakeFiles/Makefile2:1734: deps/keystone/CMakeFiles/keysto
+ne-project.dir/all] Error 2
+retdec> make[1]: *** Waiting for unfinished jobs....
+retdec> [  4%] Building CXX object deps/tlsh/CMakeFiles/tlsh.dir/tlsh_util.cpp.o
+john-rolling> checking size of int... 4
+retdec> [  4%] No patch step for 'capstone-project'
+retdec> [  4%] Building CXX object src/pdbparser/CMakeFiles/pdbparser.dir/pdb_sy
+mbols.cpp.o
+retdec> [  4%] Building C object deps/authenticode-parser/CMakeFiles/authenticod
+e.dir/src/structs.c.o
+retdec> [  4%] Performing configure step for 'capstone-project'
+retdec> [  4%] Building C object deps/authenticode-parser/CMakeFiles/authenticod
+e.dir/src/countersignature.c.o
+john-rolling> checking size of long... 8
+retdec> [  4%] Building CXX object src/pdbparser/CMakeFiles/pdbparser.dir/pdb_ty
+pes.cpp.o
+retdec> [  4%] Building C object deps/authenticode-parser/CMakeFiles/authenticod
+e.dir/src/certificate.c.o
+retdec> [  4%] Building CXX object src/utils/CMakeFiles/utils.dir/alignment.cpp.
+o
+john-rolling> checking size of long long... 8
+retdec> [  4%] Linking CXX static library libretdec-tlsh.a
+retdec> [  4%] Building CXX object src/utils/CMakeFiles/utils.dir/byte_value_sto
+rage.cpp.o
+retdec> [  4%] Built target tlsh
+retdec> [  4%] Building CXX object src/pelib/CMakeFiles/pelib.dir/CoffSymbolTabl
+e.cpp.o
+retdec> [  4%] Linking C static library libretdec-authenticode.a
+john-rolling> checking size of wchar_t... 4
+retdec> [  4%] Built target authenticode
+retdec> [  4%] Building CXX object src/utils/CMakeFiles/utils.dir/binary_path.cp
+p.o
+john-rolling> checking size of int *... 8
+retdec> [  4%] Linking CXX static library libretdec-tinyxml2.a
+john-rolling> checking size of void *... 8
+retdec> [  4%] Built target tinyxml2
+retdec> [  4%] Building CXX object src/pdbparser/CMakeFiles/pdbparser.dir/pdb_ut
+ils.cpp.o
+retdec> [  4%] Building CXX object src/pelib/CMakeFiles/pelib.dir/ComHeaderDirec
+tory.cpp.o
+john-rolling> checking for extra ASFLAGS... None needed
+john-rolling> checking for X32 ABI... no
+john-rolling> checking special compiler flags... Intel x86
+john-rolling> configure: Testing tool-chain's CPU support with given options
+retdec> [  4%] Building CXX object src/utils/CMakeFiles/utils.dir/conversion.cpp
+.o
+john-rolling> checking for MMX... yes
+retdec> [  4%] Building CXX object src/pelib/CMakeFiles/pelib.dir/DebugDirectory
+.cpp.o
+retdec> [  4%] Building CXX object src/pelib/CMakeFiles/pelib.dir/ExportDirector
+y.cpp.o
+retdec> -- yaramod-project configure command succeeded.  See also /build/source/
+build/external/src/yaramod-project-stamp/yaramod-project-configure-*.log
+retdec> [  4%] Performing build step for 'yaramod-project'
+john-rolling> checking for SSE2... yes
+john-rolling> checking for SSSE3... no
+john-rolling> checking if gcc supports -maes -mpclmul... yes
+john-rolling> checking for arch.h alternative... x86-64.h
+john-rolling> checking for byte ordering according to target triple... little
+john-rolling> checking supplied paths for OpenSSL...
+john-rolling> checking additional paths for OpenSSL... none
+john-rolling> checking openssl/opensslv.h usability... yes
+john-rolling> checking openssl/opensslv.h presence... yes
+john-rolling> checking for openssl/opensslv.h... yes
+retdec> -- capstone-project configure command succeeded.  See also /build/source
+/build/external/src/capstone-project-stamp/capstone-project-configure-*.log
+retdec> [  4%] Performing build step for 'capstone-project'
+retdec> [  4%] Building CXX object src/utils/CMakeFiles/utils.dir/crc32.cpp.o
+retdec> [  4%] Linking CXX static library libretdec-pdbparser.a
+retdec> [  4%] Built target pdbparser
+retdec> [  5%] Building CXX object src/utils/CMakeFiles/utils.dir/dynamic_buffer
+.cpp.o
+retdec> libtoolize: putting auxiliary files in AC_CONFIG_AUX_DIR, 'build-aux'.
+retdec> libtoolize: copying file 'build-aux/ltmain.sh'
+john-rolling> checking for SSL_CTX_new in -lssl... yes
+retdec> libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+retdec> libtoolize: copying file 'm4/libtool.m4'
+retdec> libtoolize: copying file 'm4/ltoptions.m4'
+retdec> libtoolize: copying file 'm4/ltsugar.m4'
+retdec> libtoolize: copying file 'm4/ltversion.m4'
+retdec> libtoolize: copying file 'm4/lt~obsolete.m4'
+john-rolling> checking for MD5_Update in -lcrypto... yes
+john-rolling> checking for (non-free) ClamAV unrar code... disabled
+retdec> [  5%] Building CXX object src/utils/CMakeFiles/utils.dir/file_io.cpp.o
+retdec> [  6%] Building CXX object src/pelib/CMakeFiles/pelib.dir/IatDirectory.c
+pp.o
+john-rolling> checking for sqrt in -lm... yes
+retdec> [  6%] Building CXX object src/utils/CMakeFiles/utils.dir/math.cpp.o
+retdec> [  6%] Building CXX object src/utils/CMakeFiles/utils.dir/memory.cpp.o
+retdec> [  6%] Building CXX object src/pelib/CMakeFiles/pelib.dir/ImageLoader.cp
+p.o
+retdec> [  6%] Building CXX object src/utils/CMakeFiles/utils.dir/ord_lookup.cpp
+.o
+retdec> [  6%] Building CXX object src/utils/CMakeFiles/utils.dir/string.cpp.o
+john-rolling> checking for clock_gettime in -lrt... yes
+john-rolling> checking for deflate in -lz... yes
+retdec> [  6%] Building CXX object src/utils/CMakeFiles/utils.dir/system.cpp.o
+retdec> [  6%] Building CXX object src/pelib/CMakeFiles/pelib.dir/InputBuffer.cp
+p.o
+retdec> [  6%] Building CXX object src/utils/CMakeFiles/utils.dir/time.cpp.o
+retdec> [  6%] Building CXX object src/pelib/CMakeFiles/pelib.dir/OutputBuffer.c
+pp.o
+john-rolling> checking for library containing crypt... -lcrypt
+john-rolling> checking gmp.h usability... yes
+john-rolling> checking gmp.h presence... yes
+john-rolling> checking for gmp.h... yes
+john-rolling> checking for __gmpz_init in -lgmp... yes
+john-rolling> checking skey.h usability... no
+john-rolling> checking skey.h presence... no
+john-rolling> checking for skey.h... no
+john-rolling> checking for S/Key... using our own code
+john-rolling> checking bzlib.h usability... no
+john-rolling> checking bzlib.h presence... no
+john-rolling> checking for bzlib.h... no
+retdec> [  6%] Building CXX object src/pelib/CMakeFiles/pelib.dir/PeFile.cpp.o
+retdec> configure.ac:23: warning: The macro 'AC_PROG_CC_C99' is obsolete.
+retdec> configure.ac:23: You should run autoupdate.
+retdec> ./lib/autoconf/c.m4:1788: AC_PROG_CC_C99 is expanded from...
+retdec> configure.ac:23: the top level
+retdec> configure.ac:25: warning: AC_PROG_LEX without either yywrap or noyywrap
+is obsolete
+retdec> ./lib/autoconf/programs.m4:744: _AC_PROG_LEX is expanded from...
+retdec> ./lib/autoconf/programs.m4:737: AC_PROG_LEX is expanded from...
+retdec> aclocal.m4:969: AM_PROG_LEX is expanded from...
+retdec> configure.ac:25: the top level
+retdec> configure.ac:79: warning: The macro 'AC_LANG_C' is obsolete.
+retdec> configure.ac:79: You should run autoupdate.
+retdec> ./lib/autoconf/c.m4:73: AC_LANG_C is expanded from...
+retdec> m4/acx_pthread.m4:63: ACX_PTHREAD is expanded from...
+retdec> configure.ac:79: the top level
+retdec> configure.ac:79: warning: The macro 'AC_TRY_LINK' is obsolete.
+retdec> configure.ac:79: You should run autoupdate.
+retdec> ./lib/autoconf/general.m4:2976: AC_TRY_LINK is expanded from...
+retdec> m4/acx_pthread.m4:63: ACX_PTHREAD is expanded from...
+retdec> configure.ac:79: the top level
+retdec> configure.ac:355: warning: AC_C_BIGENDIAN should be used with AC_CONFIG_
+HEADERS
+john-rolling> checking for main in -lkernel32... no
+retdec> [  6%] Building CXX object src/utils/CMakeFiles/utils.dir/version.cpp.o
+john-rolling> checking for dlopen in -ldl... yes
+john-rolling> checking intrin.h usability... no
+john-rolling> checking intrin.h presence... no
+john-rolling> checking for intrin.h... no
+john-rolling> checking openssl/cmac.h usability... yes
+john-rolling> checking openssl/cmac.h presence... yes
+john-rolling> checking for openssl/cmac.h... yes
+john-rolling> configure: rexgen check not enabled
+retdec> [  6%] Building C object src/utils/CMakeFiles/utils.dir/__/__/deps/where
+ami/whereami/whereami.c.o
+john-rolling> checking pcap.h usability... yes
+retdec> [  6%] Building CXX object src/pelib/CMakeFiles/pelib.dir/PeLibAux.cpp.o
+john-rolling> checking pcap.h presence... yes
+john-rolling> checking for pcap.h... yes
+retdec> [  6%] Building CXX object src/pelib/CMakeFiles/pelib.dir/RelocationsDir
+ectory.cpp.o
+john-rolling> checking for pcap_compile in -lpcap... yes
+john-rolling> checking for pcap.h... (cached) yes
+john-rolling> checking for pcap_compile in -lwpcap... no
+retdec> configure.ac:20: installing 'build-aux/ar-lib'
+retdec> configure.ac:20: installing 'build-aux/compile'
+retdec> configure.ac:38: installing 'build-aux/config.guess'
+retdec> configure.ac:38: installing 'build-aux/config.sub'
+retdec> configure.ac:8: installing 'build-aux/install-sh'
+retdec> configure.ac:8: installing 'build-aux/missing'
+john-rolling> checking whether time.h and sys/time.h may both be included... yes
+john-rolling> checking whether string.h and strings.h may both be included... ye
+s
+retdec> Makefile.am: installing 'build-aux/depcomp'
+retdec> parallel-tests: installing 'build-aux/test-driver'
+john-rolling> checking for SHA256... yes
+retdec> configure.ac: installing 'build-aux/ylwrap'
+john-rolling> checking for WHIRLPOOL... yes
+retdec> checking whether /nix/store/yvrwcs1a45rj8142n0l2w9q9s6akamjr-gnumake-4.4
+.1/bin/make supports nested variables... yes
+retdec> checking for a BSD-compatible install... /nix/store/jjxngswsb214vb58qx48
+5jhmilf0kxxy-coreutils-9.10/bin/install -c
+retdec> checking whether sleep supports fractional seconds... yes
+retdec> checking filesystem timestamp resolution... 0.01
+retdec> checking whether build environment is sane... yes
+retdec> checking for a race-free mkdir -p... /nix/store/jjxngswsb214vb58qx485jhm
+ilf0kxxy-coreutils-9.10/bin/mkdir -p
+retdec> checking for gawk... gawk
+retdec> checking whether /nix/store/yvrwcs1a45rj8142n0l2w9q9s6akamjr-gnumake-4.4
+.1/bin/make sets $(MAKE)... yes
+retdec> checking xargs -n works... yes
+retdec> checking whether UID '1000' is supported by ustar format... yes
+retdec> checking whether GID '100' is supported by ustar format... yes
+john-rolling> checking for RIPEMD160... yes
+retdec> checking how to create a ustar tar archive... gnutar
+retdec> checking whether /nix/store/yvrwcs1a45rj8142n0l2w9q9s6akamjr-gnumake-4.4
+.1/bin/make supports the include directive... [  6%] Building CXX object src/pel
+ib/CMakeFiles/pelib.dir/ResourceDirectory.cpp.o
+retdec> yes (GNU style)
+retdec> checking for gcc... /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrap
+per-15.2.0/bin/gcc
+john-rolling> checking for AES_encrypt... yes
+retdec> checking whether the C compiler works... yes
+retdec> checking for C compiler default output file name... a.out
+retdec> checking for suffix of executables...
+john-rolling> checking for DSA_get0_pqg... yes
+retdec> checking whether we are cross compiling... no
+retdec> checking for suffix of object files... o
+retdec> checking whether the compiler supports GNU C... yes
+retdec> checking whether /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper
+-15.2.0/bin/gcc accepts -g... yes
+retdec> checking for /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.
+2.0/bin/gcc option to enable C23 features... none needed
+john-rolling> checking for gcc option to support OpenMP... -fopenmp
+john-rolling> checking additional paths for OpenCL... none
+retdec> checking whether /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper
+-15.2.0/bin/gcc understands -c and -o together... yes
+john-rolling> checking if compiler needs -Werror to reject unknown flags... no
+retdec> checking dependency style of /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n
+-gcc-wrapper-15.2.0/bin/gcc... gcc3
+retdec> checking the archiver (ar) interface... ar
+retdec> checking for gcc... (cached) /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n
+-gcc-wrapper-15.2.0/bin/gcc
+retdec> checking whether the compiler supports GNU C... (cached) yes
+retdec> checking whether /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper
+-15.2.0/bin/gcc accepts -g... (cached) yes
+retdec> checking for /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.
+2.0/bin/gcc option to enable C23 features... (cached) none needed
+retdec> checking whether /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper
+-15.2.0/bin/gcc understands -c and -o together... (cached) yes
+retdec> checking dependency style of /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n
+-gcc-wrapper-15.2.0/bin/gcc... (cached) gcc3
+retdec> checking for flex... flex
+retdec> checking for lex output file root... lex.yy
+john-rolling> checking for the pthreads library -lpthreads... no
+retdec> checking for lex library... [  6%] No update step for 'llvm-project'
+retdec> [  7%] No patch step for 'llvm-project'
+retdec> [  7%] Performing configure step for 'llvm-project'
+retdec> CMake Error at CMakeLists.txt:3 (cmake_minimum_required):
+retdec>   Compatibility with CMake < 3.5 has been removed from CMake.
+retdec>   Update the VERSION argument <min> value.  Or, use the <min>...<max> sy
+ntax
+retdec>   to tell CMake that the project requires at least <min> but has been up
+dated
+retdec>   to work with policies introduced by <max> or earlier.
+retdec>   Or, add -DCMAKE_POLICY_VERSION_MINIMUM=3.5 to try configuring anyway.
+retdec>
+retdec> -- Configuring incomplete, errors occurred!
+retdec> make[2]: *** [deps/llvm/CMakeFiles/llvm-project.dir/build.make:92: exter
+nal/src/llvm-project-stamp/llvm-project-configure] Error 1
+retdec> make[1]: *** [CMakeFiles/Makefile2:1766: deps/llvm/CMakeFiles/llvm-proje
+ct.dir/all] Error 2
+john-rolling> checking whether pthreads work without any flags... yes
+john-rolling> checking for joinable pthread attribute... PTHREAD_CREATE_JOINABLE
+john-rolling> checking if more special flags are required for pthreads... no
+retdec> none needed
+retdec> checking for library containing yywrap... [  7%] Building CXX object src
+/pelib/CMakeFiles/pelib.dir/RichHeader.cpp.o
+john-rolling> checking for PTHREAD_PRIO_INHERIT... yes
+john-rolling> checking whether we are using the Microsoft C compiler... no
+john-rolling> checking windows.h usability... no
+john-rolling> checking windows.h presence... no
+john-rolling> checking for windows.h... no
+john-rolling> checking for OpenCL library... -lOpenCL
+retdec> no
+john-rolling> checking arpa/inet.h usability... yes
+john-rolling> checking arpa/inet.h presence... yes
+john-rolling> checking for arpa/inet.h... yes
+john-rolling> checking crypt.h usability... yes
+john-rolling> checking crypt.h presence... yes
+john-rolling> checking for crypt.h... yes
+retdec> checking whether yytext is a pointer... yes
+retdec> checking for bison... bison -y
+john-rolling> checking dirent.h usability... yes
+retdec> checking for inline... inline
+john-rolling> checking dirent.h presence... yes
+john-rolling> checking for dirent.h... yes
+retdec> checking for stdio.h... yes
+retdec> checking for stdlib.h... yes
+john-rolling> checking limits.h usability... yes
+retdec> checking for string.h... yes
+john-rolling> checking limits.h presence... yes
+john-rolling> checking for limits.h... yes
+retdec> checking for inttypes.h... yes
+retdec> checking for stdint.h... yes
+retdec> checking for strings.h... [  7%] Building CXX object src/pelib/CMakeFile
+s/pelib.dir/SecurityDirectory.cpp.o
+john-rolling> checking locale.h usability... yes
+retdec> yes
+john-rolling> checking locale.h presence... yes
+john-rolling> checking for locale.h... yes
+retdec> checking for sys/stat.h... yes
+retdec> checking for sys/types.h... yes
+john-rolling> checking malloc.h usability... yes
+retdec> checking for unistd.h... yes
+john-rolling> checking malloc.h presence... yes
+john-rolling> checking for malloc.h... yes
+john-rolling> checking net/ethernet.h usability... yes
+john-rolling> checking net/ethernet.h presence... yes
+john-rolling> checking for net/ethernet.h... yes
+retdec> checking whether byte ordering is bigendian... no
+john-rolling> checking netdb.h usability... yes
+john-rolling> checking netdb.h presence... yes
+john-rolling> checking for netdb.h... yes
+retdec> checking for /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.
+2.0/bin/gcc option to support large files... none needed
+john-rolling> checking netinet/in.h usability... yes
+john-rolling> checking netinet/in.h presence... yes
+john-rolling> checking for netinet/in.h... yes
+retdec> checking build system type... x86_64-pc-linux-gnu
+retdec> checking host system type... x86_64-pc-linux-gnu
+retdec> checking how to print strings... printf
+retdec> checking for a sed that does not truncate output... /nix/store/af4a8i43k
+c2ss4rnmf0swkk2mprsw6xq-gnused-4.9/bin/sed
+retdec> checking for grep that handles long lines and -e... /nix/store/wf7lr2hf4
+3546jc5kwqh3dbxnpcnw1mn-gnugrep-3.12/bin/grep
+retdec> checking for egrep... /nix/store/wf7lr2hf43546jc5kwqh3dbxnpcnw1mn-gnugre
+p-3.12/bin/grep -E
+retdec> checking for fgrep... /nix/store/wf7lr2hf43546jc5kwqh3dbxnpcnw1mn-gnugre
+p-3.12/bin/grep -F
+retdec> checking for ld used by /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-
+wrapper-15.2.0/bin/gcc... ld
+john-rolling> checking netinet/in_systm.h usability... yes
+john-rolling> checking netinet/in_systm.h presence... yes
+john-rolling> checking for netinet/in_systm.h... yes
+retdec> checking if the linker (ld) is GNU ld... yes
+retdec> checking for BSD- or MS-compatible name lister (nm)... nm
+john-rolling> checking for string.h... (cached) yes
+john-rolling> checking for strings.h... (cached) yes
+retdec> checking the name lister (nm) interface... BSD nm
+retdec> checking whether ln -s works... yes
+retdec> checking the maximum length of command line arguments... 1572864
+retdec> checking how to convert x86_64-pc-linux-gnu file names to x86_64-pc-linu
+x-gnu format... func_convert_file_noop
+retdec> checking how to convert x86_64-pc-linux-gnu file names to toolchain form
+at... func_convert_file_noop
+retdec> checking for ld option to reload object files... -r
+retdec> checking for file... file
+retdec> checking for objdump... objdump
+retdec> checking how to recognize dependent libraries... pass_all
+retdec> checking for dlltool... no
+retdec> checking how to associate runtime and link libraries... printf %s\n
+retdec> checking for ranlib... ranlib
+retdec> checking for archiver @FILE support... @
+retdec> checking for strip... strip
+john-rolling> checking sys/ethernet.h usability... no
+john-rolling> checking sys/ethernet.h presence... no
+john-rolling> checking for sys/ethernet.h... no
+john-rolling> checking sys/file.h usability... yes
+john-rolling> checking sys/file.h presence... yes
+john-rolling> checking for sys/file.h... yes
+retdec> checking command to parse nm output from /nix/store/qd70v8g0561vm8m33kmn
+p79z00cgyi5n-gcc-wrapper-15.2.0/bin/gcc object... ok
+retdec> checking for sysroot... no
+retdec> checking for a working dd... [  7%] Building CXX object src/pelib/CMakeF
+iles/pelib.dir/ConfigDirectory.cpp.o
+john-rolling> checking sys/param.h usability... yes
+retdec> /nix/store/jjxngswsb214vb58qx485jhmilf0kxxy-coreutils-9.10/bin/dd
+retdec> checking how to truncate binary pipes... /nix/store/jjxngswsb214vb58qx48
+5jhmilf0kxxy-coreutils-9.10/bin/dd bs=4096 count=1
+john-rolling> checking sys/param.h presence... yes
+john-rolling> checking for sys/param.h... yes
+retdec> checking for mt... no
+retdec> checking if : is a manifest tool... no
+john-rolling> checking sys/socket.h usability... yes
+retdec> checking for dlfcn.h... yes
+retdec> checking for objdir... .libs
+retdec> [  7%] Linking C static library libretdec-stb.a
+john-rolling> checking sys/socket.h presence... yes
+john-rolling> checking for sys/socket.h... yes
+retdec> [  7%] Built target stb
+john-rolling> checking sys/time.h usability... yes
+john-rolling> checking sys/time.h presence... yes
+john-rolling> checking for sys/time.h... yes
+john-rolling> checking sys/times.h usability... yes
+retdec> checking if /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.2
+.0/bin/gcc supports -fno-rtti -fno-exceptions... no
+retdec> checking for /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.
+2.0/bin/gcc option to produce PIC... -fPIC -DPIC
+john-rolling> checking sys/times.h presence... yes
+john-rolling> checking for sys/times.h... yes
+john-rolling> checking for sys/types.h... (cached) yes
+retdec> checking if /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.2
+.0/bin/gcc PIC flag -fPIC -DPIC works... yes
+john-rolling> checking termios.h usability... yes
+john-rolling> checking termios.h presence... yes
+john-rolling> checking for termios.h... yes
+john-rolling> checking for unistd.h... (cached) yes
+retdec> checking if /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.2
+.0/bin/gcc static flag -static works... no
+retdec> checking if /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.2
+.0/bin/gcc supports -c -o file.o... yes
+retdec> checking if /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wrapper-15.2
+.0/bin/gcc supports -c -o file.o... (cached) yes
+john-rolling> checking unixlib/local.h usability... no
+john-rolling> checking unixlib/local.h presence... no
+john-rolling> checking for unixlib/local.h... no
+john-rolling> checking for windows.h... (cached) no
+john-rolling> checking for net/if.h... yes
+john-rolling> checking for net/if_arp.h... yes
+john-rolling> checking for netinet/if_ether.h... yes
+retdec> checking whether the /nix/store/qd70v8g0561vm8m33kmnp79z00cgyi5n-gcc-wra
+pper-15.2.0/bin/gcc linker (ld -m elf_x86_64) supports shared libraries... CMake
+ Error at /build/source/build/external/src/yaramod-project-stamp/yaramod-project
+-build-Release.cmake:49 (message):
+retdec>   Command failed: 2
+retdec>    'make'
+retdec>   See also
+retdec>     /build/source/build/external/src/yaramod-project-stamp/yaramod-proje
+ct-build-*.log
+retdec>
+john-rolling> checking for netinet/ip.h... yes
+retdec> make[2]: *** [deps/yaramod/CMakeFiles/yaramod-project.dir/build.make:86:
+ external/src/yaramod-project-stamp/yaramod-project-build] Error 1
+retdec> yes
+retdec> checking dynamic linker characteristics... make[1]: *** [CMakeFiles/Make
+file2:1862: deps/yaramod/CMakeFiles/yaramod-project.dir/all] Error 2
+john-rolling> checking for stdbool.h that conforms to C99... yes
+john-rolling> checking for _Bool... yes
+retdec> GNU/Linux ld.so
+retdec> checking how to hardcode library paths into programs... immediate
+retdec> checking whether stripping libraries is possible... yes
+retdec> checking if libtool supports shared libraries... yes
+retdec> checking whether to build shared libraries... no
+retdec> checking whether to build static libraries... yes
+john-rolling> checking for inline... inline
+john-rolling> checking for int32_t... yes
+retdec> checking for the pthreads library -lpthreads... no
+john-rolling> checking for int64_t... yes
+john-rolling> checking for off_t... yes
+retdec> checking whether pthreads work without any flags... yes
+john-rolling> checking for size_t... yes
+john-rolling> checking for ssize_t... yes
+retdec> checking for joinable pthread attribute... PTHREAD_CREATE_JOINABLE
+retdec> checking if more special flags are required for pthreads... no
+john-rolling> checking for uint16_t... yes
+john-rolling> checking for uint32_t... yes
+retdec> checking whether to check for GCC pthread/shared inconsistencies... yes
+john-rolling> checking for uint64_t... yes
+john-rolling> checking for uint8_t... yes
+retdec> checking whether -pthread is sufficient with -shared... yes
+john-rolling> checking for ptrdiff_t... yes
+retdec> checking for isnan in -lm... yes
+john-rolling> checking for int128... no
+john-rolling> checking for __int128... yes
+retdec> checking for log2 in -lm... yes
+john-rolling> checking for __int128_t... yes
+retdec> checking for strlcpy... yes
+retdec> checking for strlcat... [  7%] Linking CXX static library libretdec-util
+s.a
+retdec> [  7%] Built target utils
+retdec> yes
+john-rolling> checking for error_at_line... yes
+john-rolling> checking for pid_t... yes
+retdec> checking for memmem... yes
+john-rolling> checking vfork.h usability... no
+john-rolling> checking vfork.h presence... no
+john-rolling> checking for vfork.h... no
+retdec> checking for timegm... yes
+john-rolling> checking for fork... yes
+retdec> checking for _mkgmtime... no
+retdec> checking for clock_gettime... [  8%] Linking CXX static library libretde
+c-pelib.a
+retdec> [  8%] Built target pelib
+john-rolling> checking for vfork... yes
+retdec> yes
+retdec> checking for stdbool.h... yes
+retdec> checking pkg-config is at least version 0.9.0... yes
+retdec> configure: WARNING:
+retdec> *****************************************************************
+retdec>   Could not find OpenSSL library. Some features in "pe" module
+retdec>   have been disabled. If you want to enable all features please
+retdec>   install OpenSSL and run this script again.
+retdec> *****************************************************************
+retdec> checking for Microsoft Crypto API... checking for wincrypt.h... no
+retdec> checking for MacOSX Common Crypto API... checking for CommonCrypto/Commo
+nCrypto.h... no
+retdec> configure: WARNING:
+retdec> *****************************************************************
+retdec>   Could not find alternative APIs for hash functions. The "hash"
+retdec>   module has been disabled.
+retdec> *****************************************************************
+retdec> checking that generated files are newer than configure... done
+retdec> configure: creating ./config.status
+john-rolling> checking for working fork... yes
+john-rolling> checking for working vfork... (cached) yes
+john-rolling> checking for fseek64... no
+john-rolling> checking for fseeko... yes
+john-rolling> checking for fseeko64... yes
+retdec> config.status: creating Makefile
+retdec> config.status: creating libyara/Makefile
+retdec> config.status: creating libyara/yara.pc
+retdec> config.status: executing depfiles commands
+john-rolling> checking for _fseeki64... no
+john-rolling> checking for lseek64... yes
+retdec> config.status: executing libtool commands
+john-rolling> checking for lseek... yes
+retdec> [  8%] Performing build step for 'yara'
+retdec> Making clean in libyara
+retdec> rm -f ./so_locations
+john-rolling> checking for ftell64... no
+retdec> make[3]: warning: -j12 forced in submake: resetting jobserver mode.
+retdec> Making all in libyara
+retdec>   LEX      lexer.c
+retdec>   LEX      hex_lexer.c
+retdec>   YACC     hex_grammar.c
+retdec> flex version 2.6.4 usage statistics:
+retdec>   scanner options: ---reentrant--bison-bridgevB8 -Cem -olex.yy.c -Phex_y
+y
+retdec>   84/2000 NFA states
+retdec>   32/1000 DFA states (113 words)
+retdec>   18 rules
+retdec>   Compressed tables always back-up
+retdec>   3/40 start conditions
+retdec>   56 epsilon states, 27 double epsilon states
+retdec>   11/100 character classes needed 112/500 words of storage, 0 reused
+retdec>   105 state/nextstate pairs created
+retdec>   45/60 unique/duplicate transitions
+retdec>   37/1000 base-def entries created
+retdec>   54/2000 (peak 75) nxt-chk entries created
+retdec>   15/2500 (peak 60) template nxt-chk entries created
+retdec>   0 empty table entries
+retdec>   7 protos created
+retdec>   5 templates created, 6 uses
+retdec>   12/256 equivalence classes created
+retdec>   3/256 meta-equivalence classes created
+retdec>   0 (2 saved) hash collisions, 20 DFAs equal
+retdec>   0 sets of reallocations needed
+retdec>   450 total table entries needed
+retdec> flex version 2.6.4 usage statistics:
+retdec>   scanner options: ---reentrant--bison-bridgevB8 -Cem -olex.yy.c -Pyara_
+yy
+retdec>   677/2000 NFA states
+retdec>   312/1000 DFA states (2971 words)
+retdec>   87 rules
+retdec>   Compressed tables always back-up
+retdec>   5/40 start conditions
+retdec>   317 epsilon states, 154 double epsilon states
+retdec>   34/100 character classes needed 670/750 words of storage, 0 reused
+retdec>   11092 state/nextstate pairs created
+retdec>   1318/9774 unique/duplicate transitions
+retdec>   336/1000 base-def entries created
+retdec>   931/2000 (peak 1996) nxt-chk entries created
+retdec>   312/2500 (peak 1392) template nxt-chk entries created
+retdec>   19 empty table entries
+retdec>   28 protos created
+retdec>   24 templates created, 246 uses
+retdec>   58/256 equivalence classes created
+retdec>   13/256 meta-equivalence classes created
+retdec>   3 (24 saved) hash collisions, 1017 DFAs equal
+retdec>   1 sets of reallocations needed
+retdec>   2848 total table entries needed
+retdec> /build/source/build/deps/yara/yara/src/yara/libyara/hex_grammar.y:69.1-2
+1: warning: deprecated directive: '%name-prefix "hex_yy"', use '%define api.pref
+ix {hex_yy}' [-Wdeprecated]
+retdec>    69 | %name-prefix "hex_yy"
+retdec>       | ^~~~~~~~~~~~~~~~~~~~~
+retdec>       | %define api.prefix {hex_yy}
+retdec> /build/source/build/deps/yara/yara/src/yara/libyara/hex_grammar.y:70.1-1
+2: warning: deprecated directive: '%pure-parser', use '%define api.pure' [-Wdepr
+ecated]
+retdec>    70 | %pure-parser
+retdec>       | ^~~~~~~~~~~~
+retdec>       | %define api.pure
+retdec> /build/source/build/deps/yara/yara/src/yara/libyara/hex_grammar.y: warni
+ng: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+retdec> updating hex_grammar.h
+retdec>   CC       grammar.lo
+retdec>   CC       arena.lo
+retdec>   CC       ahocorasick.lo
+retdec>   CC       atoms.lo
+retdec>   CC       base64.lo
+retdec>   CC       bitmask.lo
+retdec>   CC       compiler.lo
+retdec>   CC       endian.lo
+retdec>   CC       exec.lo
+retdec>   CC       exefiles.lo
+retdec>   CC       filemap.lo
+retdec>   CC       hash.lo
+john-rolling> checking for ftello... yes
+retdec>   CC       hex_grammar.lo
+retdec>   CC       hex_lexer.lo
+retdec>   CC       lexer.lo
+retdec>   CC       libyara.lo
+retdec>   CC       modules.lo
+retdec>   CC       mem.lo
+john-rolling> checking for ftello64... yes
+retdec>   CC       notebook.lo
+retdec>   CC       object.lo
+retdec>   CC       parser.lo
+retdec>   CC       proc.lo
+retdec>   CC       re.lo
+retdec>   CC       re_grammar.lo
+retdec>   CC       re_lexer.lo
+john-rolling> checking for _ftelli64... no
+retdec>   CC       rules.lo
+retdec>   CC       scan.lo
+retdec>   CC       scanner.lo
+retdec>   CC       sizedstr.lo
+john-rolling> checking for fopen64... yes
+retdec>   CC       stack.lo
+retdec>   CC       stopwatch.lo
+retdec>   CC       strutils.lo
+retdec>   CC       stream.lo
+retdec>   CC       threading.lo
+retdec>   CC       modules/tests/tests.lo
+retdec>   CC       modules/elf/elf.lo
+john-rolling> checking for _fopen64... no
+retdec>   CC       modules/math/math.lo
+retdec>   CC       modules/time/time.lo
+retdec>   CC       modules/pe/pe.lo
+retdec>   CC       modules/pe/pe_utils.lo
+retdec>   CC       modules/console/console.lo
+retdec>   CC       modules/dotnet/dotnet.lo
+retdec>   CC       modules/macho/macho.lo
+john-rolling> checking for memmem... yes
+retdec>   CC       proc/linux.lo
+john-rolling> checking for mmap... yes
+john-rolling> checking for sleep... yes
+john-rolling> checking for setenv... yes
+john-rolling> checking for putenv... yes
+john-rolling> checking for strcasecmp... yes
+john-rolling> checking for strncasecmp... yes
+john-rolling> checking for stricmp... no
+john-rolling> checking for strcmpi... no
+john-rolling> checking for _stricmp... no
+retdec>   CCLD     libyara.la
+john-rolling> checking for _strcmpi... no
+retdec>   CC       cli/args.o
+retdec>   CC       cli/common.o
+retdec>   CC       cli/threading.o
+retdec>   CC       cli/yara.o
+retdec>   CC       cli/yarac.o
+retdec>   CCLD     yarac
+john-rolling> checking for strnicmp... no
+retdec>   CCLD     yara
+john-rolling> checking for strncmpi... no
+john-rolling> checking for _strnicmp... no
+retdec> [  8%] No install step for 'yara'
+retdec> [  8%] Performing move-install step for 'yara'
+retdec> [  9%] Completed 'yara'
+retdec> [  9%] Built target yara
+john-rolling> checking for _strncmpi... no
+john-rolling> checking for strnlen... yes
+john-rolling> checking for strlwr... no
+john-rolling> checking for strupr... no
+john-rolling> checking for strrev... no
+john-rolling> checking for atoll... yes
+john-rolling> checking for _atoi64... no
+john-rolling> checking for snprintf... yes
+john-rolling> checking for sprintf_s... no
+john-rolling> checking for strcasestr... yes
+john-rolling> checking for clGetKernelArgInfo... no
+john-rolling> checking for posix_memalign... yes
+john-rolling> checking for OS-specific feature macros needed...  -D_POSIX_SOURCE
+ -D_GNU_SOURCE -D_XOPEN_SOURCE=600
+john-rolling> checking size of size_t... 8
+john-rolling> checking size of off_t... 8
+john-rolling> configure: Fuzz check disabled
+john-rolling> configure: Fuzzing (using libFuzzer) check disabled
+john-rolling> configure: creating ./john_build_rule.h
+john-rolling> configure: creating ./config.status
+john-rolling> config.status: creating Makefile
+john-rolling> config.status: creating mbedtls/Makefile
+john-rolling> config.status: creating secp256k1/Makefile
+john-rolling> config.status: creating ed25519-donna/Makefile
+john-rolling> config.status: creating poly1305-donna/Makefile
+john-rolling> config.status: creating autoconfig.h
+john-rolling> config.status: linking x86-64.h to arch.h
+john-rolling> config.status: executing default commands
+retdec> -- capstone-project build command succeeded.  See also /build/source/bui
+ld/external/src/capstone-project-stamp/capstone-project-build-*.log
+john-rolling> Configured for building John the Ripper jumbo:
+john-rolling> Target CPU ......................................... x86_64 SSE2,
+64-bit LE
+john-rolling> Target OS .......................................... linux-gnu
+john-rolling> Cross compiling .................................... no
+john-rolling> Legacy arch header ................................. x86-64.h
+john-rolling> Optional libraries/features found:
+john-rolling> Memory map (share/page large files) ................ yes
+john-rolling> Fork support ....................................... yes
+john-rolling> OpenMP support ..................................... yes (not for
+fast formats)
+john-rolling> OpenCL support ..................................... yes
+john-rolling> Generic crypt(3) format ............................ yes
+john-rolling> OpenSSL (many additional formats) .................. yes
+john-rolling> libgmp (PRINCE mode and faster SRP formats) ........ yes
+john-rolling> 128-bit integer (faster PRINCE mode) ............... yes
+john-rolling> libz (7z, pkzip and some other formats) ............ yes
+john-rolling> libbz2 (7z and gpg2john bz2 support) ............... no
+john-rolling> libpcap (vncpcap2john and SIPdump) ................. yes
+john-rolling> Non-free unrar code (complete RAR support) ......... no (disabled)
+john-rolling> librexgen (regex mode, see doc/README.librexgen) ... no
+john-rolling> OpenMPI support (default disabled) ................. no
+john-rolling> Experimental code (default disabled) ............... no
+john-rolling> ZTEX USB-FPGA module 1.15y support ................. no
+john-rolling> Install missing libraries to get any needed features that were omi
+tted.
+john-rolling> Configure finished.  Now "make -s clean && make -sj12" to compile.
+retdec> [  9%] Performing install step for 'capstone-project'
+john-rolling> configurePhase completed in 30 seconds
+john-rolling> Running phase: buildPhase
+john-rolling> build flags: SHELL=/nix/store/i27rhb3nr65rkrwz36bchkwmav6ggsmn-bas
+h-5.3p9/bin/bash
+john-rolling> make[1]: Entering directory '/build/source/src'
+john-rolling> gcc -msse2  -maes -mpclmul -DJOHN_SSE2 -c -g -O2 -DARCH_LITTLE_END
+IAN=1 -DJOHN_SYSTEMWIDE -DJOHN_SYSTEMWIDE_EXEC='"/nix/store/yrj7dl8j3lw1in2nm77h
+nwq6d7pq7jyw-john-rolling-2604/bin"' -DJOHN_SYSTEMWIDE_HOME='"/nix/store/yrj7dl8
+j3lw1in2nm77hnwq6d7pq7jyw-john-rolling-2604/share/john"' -DPREFER_FLOCK -DAC_BUI
+LT  -Wall -std=gnu99 -Wno-stringop-truncation -Wno-format-overflow -Wno-format-t
+runcation -fno-omit-frame-pointer -Wno-deprecated-declarations -Wformat-extra-ar
+gs -Wunused-but-set-variable -Wdate-time -D_POSIX_SOURCE -D_GNU_SOURCE -D_XOPEN_
+SOURCE=600  -fopenmp   -MMD -MP -MF .deps/jumbo.d -DCL_SILENCE_DEPRECATION -DHAV
+E_OPENCL  -DHAVE_OPENCL  -funroll-loops -c jumbo.c -o jumbo.o
+retdec> [ 72%] Built target capstone
+retdec> [100%] Built target cstool
+retdec> Install the project...
+retdec> -- Install configuration: "Release"
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/arm64.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/arm.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/capstone.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/evm.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/wasm.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/mips.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/ppc.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/x86.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/sparc.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/systemz.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/xcore.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/m68k.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/tms320c64x.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/m680x.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/mos65xx.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/bpf.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/riscv.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/include/capston
+e/platform.h
+retdec> -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/cap
+stone/capstone-config.cmake
+retdec> -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/cap
+stone/capstone-config-version.cmake
+retdec> -- Installing: /build/source/build/deps/install/capstone/lib64/libcapsto
+ne.a
+retdec> -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/cap
+stone/capstone-targets.cmake
+retdec> -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/cap
+stone/capstone-targets-release.cmake
+retdec> -- Installing: /build/source/build/deps/install/capstone/bin/cstool
+retdec> -- Installing: /build/source/build/deps/install/capstone/lib64/pkgconfig
+/capstone.pc
+retdec> [  9%] Performing movelib64 step for 'capstone-project'
+retdec> [  9%] Completed 'capstone-project'
+john-rolling> gcc -msse2  -maes -mpclmul -DJOHN_SSE2 -c -g -O2 -DARCH_LITTLE_END
+IAN=1 -DJOHN_SYSTEMWIDE -DJOHN_SYSTEMWIDE_EXEC='"/nix/store/yrj7dl8j3lw1in2nm77h
+nwq6d7pq7jyw-john-rolling-2604/bin"' -DJOHN_SYSTEMWIDE_HOME='"/nix/store/yrj7dl8
+j3lw1in2nm77hnwq6d7pq7jyw-john-rolling-2604/share/john"' -DPREFER_FLOCK -DAC_BUI
+LT  -Wall -std=gnu99 -Wno-stringop-truncation -Wno-format-overflow -Wno-format-t
+runcation -fno-omit-frame-pointer -Wno-deprecated-declarations -Wformat-extra-ar
+gs -Wunused-but-set-variable -Wdate-time -D_POSIX_SOURCE -D_GNU_SOURCE -D_XOPEN_
+SOURCE=600  -fopenmp   -MMD -MP -MF .deps/john_mpi.d -DCL_SILENCE_DEPRECATION -D
+HAVE_OPENCL  -DHAVE_OPENCL  -funroll-loops -c john_mpi.c -o john_mpi.o
+retdec> [  9%] Built target capstone-project
+retdec> make: *** [Makefile:136: all] Error 2
+error: builder for '/nix/store/p2qc5jmgrfx4i2cgwmqlsvccndm41zd3-retdec-5.0.drv'
+failed with exit code 2;
+       last 25 log lines:
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/wasm.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/mips.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/ppc.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/x86.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/sparc.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/systemz.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/xcore.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/m68k.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/tms320c64x.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/m680x.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/mos65xx.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/bpf.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/riscv.h
+       > -- Installing: /build/source/build/deps/install/capstone/include/capsto
+ne/platform.h
+       > -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/ca
+pstone/capstone-config.cmake
+       > -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/ca
+pstone/capstone-config-version.cmake
+       > -- Installing: /build/source/build/deps/install/capstone/lib64/libcapst
+one.a
+       > -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/ca
+pstone/capstone-targets.cmake
+       > -- Installing: /build/source/build/deps/install/capstone/lib64/cmake/ca
+pstone/capstone-targets-release.cmake
+       > -- Installing: /build/source/build/deps/install/capstone/bin/cstool
+       > -- Installing: /build/source/build/deps/install/capstone/lib64/pkgconfi
+g/capstone.pc
+       > [  9%] Performing movelib64 step for 'capstone-project'
+       > [  9%] Completed 'capstone-project'
+       > [  9%] Built target capstone-project
+       > make: *** [Makefile:136: all] Error 2
+       For full logs, run:
+           nix log /nix/store/p2qc5jmgrfx4i2cgwmqlsvccndm41zd3-retdec-5.0.drv
+error: 1 dependencies of derivation '/nix/store/ai91cggpsy2c9hhx43l6plvw04w9rh45
+-system-path.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/g4zgq44n5vln9kyz11jv4cv56fpyd00p
+-nixos-system-kalinix-26.05.20260515.d233902.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/6mbgs4i0cariz9g2xs6jkiylq0bgnb27
+-etc.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/im0p6hhcbvrgpijnn1yw5jphwlhiia64
+-dbus-1.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/41ciqpswhbj0d5z57g54fmhb5pf3vcd8
+-X-Restart-Triggers-polkit.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/bg3kab6fawjcwx6qkknqa1jvqjd7ga70
+-microvm-kalinix-microvm-run.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/g81ljipzhxr5l5s01rahsmih7fz183p0
+-closure-info.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/b1bhpiklda52yd8kx4fiq0fy3jjibw0p
+-activate.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/g9csjd8c8rrnhcakqazga3k71d4xfh02
+-X-Restart-Triggers-dbus-broker.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/9mrfn0089q0jgb1qh95vcjc2yx3b2zpv
+-unit-polkit.service.drv' failed to build
+error: 1 dependencies of derivation '/nix/store/znqqkybygp6g4padjwqnphkd9ikjwqsy
+-microvm-qemu-kalinix.drv' failed to build

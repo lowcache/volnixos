@@ -1,0 +1,10 @@
+post_onboarding: {
+  completed_steps: POST_ONBOARDING_STEP_TYPE_MANAGER_WELCOME
+  completed_steps: POST_ONBOARDING_STEP_TYPE_USAGE_MODE
+  completed_steps: POST_ONBOARDING_STEP_TYPE_AGENT_CONFIGURATION
+  completed_steps: POST_ONBOARDING_STEP_TYPE_ADD_WORKSPACE
+}
+agent_onboarding_completed: AGENT_ONBOARDING_STATE_COMPLETED
+last_selected_agent_model: MODEL_PLACEHOLDER_M26
+migrate_convos_into_projects: MIGRATION_STATUS_COMPLETED
+installation_uuid: "c70813c1-883b-44b5-9429-72ce8c2fa8c7"

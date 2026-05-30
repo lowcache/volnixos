@@ -1,0 +1,3 @@
+{
+  "output": "Directory listing for /home/nondeus/.nix-config:\n[DIR] .git\n[DIR] dots\n[DIR] home\n[DIR] nixos\n[DIR] packages\n[DIR] result\n[DIR] scripts\n.gitignore (11 bytes)\n.gitmodules (87 bytes)\n.redundant (22 bytes)\nflake.lock (15970 bytes)\nflake.nix (2331 bytes)"
+}

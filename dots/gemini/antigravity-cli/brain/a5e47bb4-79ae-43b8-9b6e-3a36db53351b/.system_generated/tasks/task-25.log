@@ -1,0 +1,17 @@
+warning: Git tree '/home/nondeus/.gemini/antigravity-cli/brain/fc759abc-6552-42e
+9-a7cd-d489203fab3d/.system_generated/worktrees/subagent-Nix-Channel-Upgrader---
+Refactorer-nix-upgrader-fec22d11' is dirty
+warning: updating lock file '/home/nondeus/.gemini/antigravity-cli/brain/fc759ab
+c-6552-42e9-a7cd-d489203fab3d/.system_generated/worktrees/subagent-Nix-Channel-U
+pgrader---Refactorer-nix-upgrader-fec22d11/flake.lock':
+• Updated input 'nixos-fhs-compat':
+    'github:balsoft/nixos-fhs-compat/950882321fce2e5cd9b96c8e71624c173fd3ad6d' (
+2021-02-26)
+  → 'github:balsoft/nixos-fhs-compat/9f6a67af9c8b63111dc6b277ec313097b6278472' (
+2024-03-07)
+• Updated input 'nixpkgs':
+    'github:NixOS/nixpkgs/6d7128414cf2763ab14f31365c21c6cec3547dac' (2021-02-26)
+  → 'github:NixOS/nixpkgs/64c08a7ca051951c8eae34e3e3cb1e202fe36786' (2026-05-23)
+warning: Git tree '/home/nondeus/.gemini/antigravity-cli/brain/fc759abc-6552-42e
+9-a7cd-d489203fab3d/.system_generated/worktrees/subagent-Nix-Channel-Upgrader---
+Refactorer-nix-upgrader-fec22d11' is dirty

@@ -1,0 +1,11 @@
+{"legacyPackages.x86_64-linux.floorp-bin":{"description":"Fork of Firefox that s
+eeks balance between versatility, privacy and web openness","pname":"floorp-bin"
+,"version":"12.14.0"},"legacyPackages.x86_64-linux.floorp-bin-unwrapped":{"descr
+iption":"Fork of Firefox that seeks balance between versatility, privacy and web
+ openness","pname":"floorp-bin-unwrapped","version":"12.14.0"},"legacyPackages.x
+86_64-linux.python313Packages.netbox-floorplan-plugin":{"description":"Netbox pl
+ugin providing floorplan mapping capability for locations and sites","pname":"py
+thon3.13-netbox-floorplan-plugin","version":"0.9.1"},"legacyPackages.x86_64-linu
+x.python314Packages.netbox-floorplan-plugin":{"description":"Netbox plugin provi
+ding floorplan mapping capability for locations and sites","pname":"python3.14-n
+etbox-floorplan-plugin","version":"0.9.1"}}

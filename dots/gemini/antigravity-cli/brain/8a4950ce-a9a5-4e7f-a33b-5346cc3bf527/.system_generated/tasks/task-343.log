@@ -1,0 +1,24 @@
+warning: Git tree '/home/nondeus/.nix-config' is dirty
+these 18 derivations will be built:
+  /nix/store/1xmfpb08ipkm0c8fc6bgjl0dnmxg2ca1-system-path.drv
+  /nix/store/3l80ddl6wgx0zv0ccx4g85aikpd7c0yq-unit-open-webui.service.drv
+  /nix/store/3vm3qczk8dy7748zcna833qcyq6f18fc-dbus-1.drv
+  /nix/store/c5ypibn775bwfyyn0cg5vh2bh34qdm73-X-Restart-Triggers-dbus-broker.drv
+  /nix/store/4c9x9i5gp6pcwaxpvxkqal08kpp16pr6-unit-dbus-broker.service.drv
+  /nix/store/f96512vz6zz3p5rxzj4dfza28bgi23lw-X-Restart-Triggers-polkit.drv
+  /nix/store/84xkhllc0ccik2myfnqfwixk3irsbfg7-unit-polkit.service.drv
+  /nix/store/pki3bc7hdr73sqlw1na8abw6bxd9jhly-unit-dbus-broker.service.drv
+  /nix/store/hpd889pr8b79zghn4pwfj2q8sz4jwf2w-user-units.drv
+  /nix/store/fh11ahfhy071j7n9395mmx075dxld7q4-man-paths.drv
+  /nix/store/l7i2kayfa5gx4gmlsxkbmp895qimvpmv-unit-script-mandb-start.drv
+  /nix/store/ay8gh8xs6wk557jvaw2zbr1p9z483zah-unit-mandb.service.drv
+  /nix/store/p4inz3n2lx0x32w5vvdpzf85gf0cmghz-system-units.drv
+  /nix/store/xqqf51bj77lcrv6hb2x4clihhip5vjyx-ffmpeg-8.0.1_fish-completions.drv
+  /nix/store/yyyhmj4dxxs4mrvjlv0ws95ig8kvrpl4-system_fish-completions.drv
+  /nix/store/cg8v5bkmj5qjg8v3i0acn0x15kkmyhnv-etc.drv
+  /nix/store/lwa4gjzh4rraiad9abszlw5736q37f0p-activate.drv
+  /nix/store/8qrms6l745rk88phmjlgz3yxqp19mq9r-nixos-system-nixos-26.05.20260515.
+d233902.drv
+these 2 paths will be fetched (2.16 MiB download, 12.48 MiB unpacked):
+  /nix/store/9ld21n4la75hpd4jijxdrl2cjmv5fjcm-ffmpeg-8.0.1-doc
+  /nix/store/x5pnf13md9xa4841ckdp9p0n192rlbwn-ffmpeg-8.0.1-man

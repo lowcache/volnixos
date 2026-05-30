@@ -1,0 +1,682 @@
+warning: using or as an identifier is deprecated because it cannot be used in mo
+st places (try let or = 1; in or). Use --extra-deprecated-features or-as-identif
+ier to disable this warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/lib/default.nix:6
+7:49:
+             66|       stringLength sub substring tail trace;
+             67|     inherit (self.trivial) id const pipe concat or and bitAnd b
+itOr bitXor
+               |                                                 ^
+             68|       bitNot boolToString mergeAttrs flip mapNullable inNixShel
+l isFloat min max
+warning: using or as an identifier is deprecated because it cannot be used in mo
+st places (try let or = 1; in or). Use --extra-deprecated-features or-as-identif
+ier to disable this warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/lib/trivial.nix:8
+3:3:
+             82|   /* boolean “or” */
+             83|   or = x: y: x || y;
+               |   ^
+             84|
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/mis
+c/nixpkgs.nix:71:9:
+             70|       defaultText = literalExample
+             71|         ''import "''${nixos}/.." {
+               |         ^
+             72|             inherit (cfg) config overlays localSystem crossSyst
+em;
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/pro
+grams/spacefm.nix:32:34:
+             31|         };
+             32|         example = literalExample ''{
+               |                                  ^
+             33|           tmp_dir = "/tmp";
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/sec
+urity/pam.nix:575:8:
+            574|      description =
+            575|        '' Define resource limits that should apply to users or
+groups.
+               |        ^
+            576|           Each item in the list should be an attribute set with
+ a
+warning: Whitespace in a ''-string will be stripped even if the string only has
+a single line, which is most likely not the intent of the code. To fix this, rem
+ove the whitespace or replace the string with " instead. Use --extra-deprecated-
+features broken-string-indentation to silence this warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/backup/borgbackup.nix:138:9:
+            137|       "passCommand or passphrase has to be specified because"
+            138|       + '' borgbackup.jobs.${name}.encryption != "none"'';
+               |         ^
+            139|   };
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/backup/tarsnap.nix:318:17:
+            317|           tarsnap = ''tarsnap --configfile "/etc/tarsnap/${name
+}.conf"'';
+            318|           run = ''${tarsnap} -c -f "${name}-$(date +"%Y%m%d%H%M
+%S")" \
+               |                 ^
+            319|                         ${optionalString cfg.verbose "-v"} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/cluster/kubernetes/apiserver.nix:312:25:
+            311|             Slice = "kubernetes.slice";
+            312|             ExecStart = ''${top.package}/bin/kube-apiserver \
+               |                         ^
+            313|               --allow-privileged=${boolToString cfg.allowPrivil
+eged} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/cluster/kubernetes/controller-manager.nix:121:21:
+            120|         Slice = "kubernetes.slice";
+            121|         ExecStart = ''${top.package}/bin/kube-controller-manage
+r \
+               |                     ^
+            122|           --allocate-node-cidrs=${boolToString cfg.allocateNode
+CIDRs} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/cluster/kubernetes/kubelet.nix:273:23:
+            272|           RestartSec = "1000ms";
+            273|           ExecStart = ''${top.package}/bin/kubelet \
+               |                       ^
+            274|             --address=${cfg.address} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/cluster/kubernetes/proxy.nix:65:21:
+             64|         Slice = "kubernetes.slice";
+             65|         ExecStart = ''${top.package}/bin/kube-proxy \
+               |                     ^
+             66|           --bind-address=${cfg.bindAddress} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/cluster/kubernetes/scheduler.nix:66:21:
+             65|         Slice = "kubernetes.slice";
+             66|         ExecStart = ''${top.package}/bin/kube-scheduler \
+               |                     ^
+             67|           --address=${cfg.address} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/databases/foundationdb.nix:337:76:
+            336|           Versions of FoundationDB before 6.1 do not support co
+nfigurable trace formats (only XML is supported).
+            337|           This option has no effect for version '' + cfg.packag
+e.version + '', and enabling it is an error.
+               |
+            ^
+            338|         '';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/databases/redis.nix:149:23:
+            148|         default = null;
+            149|         description = ''If the master is password protected (us
+ing the requirePass configuration)
+               |                       ^
+            150|         it is possible to tell the slave to authenticate before
+ starting the replication synchronization
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/development/jupyter/default.nix:178:23:
+            177|           Restart = "always";
+            178|           ExecStart = ''${package}/bin/${cfg.command} \
+               |                       ^
+            179|             --no-browser \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/mail/dovecot.nix:284:21:
+            283|       default = true;
+            284|       description = ''Whether to automatically create the user
+               |                     ^
+            285|         given in <option>services.dovecot.user</option> and the
+ group
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/mail/postgrey.nix:180:21:
+            179|         Type = "simple";
+            180|         ExecStart = ''${pkgs.postgrey}/bin/postgrey \
+               |                     ^
+            181|           ${bind-flag} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/mail/sympa.nix:490:21:
+            489|         Restart = "always";
+            490|         ExecStart = ''${pkgs.spawn_fcgi}/bin/spawn-fcgi \
+               |                     ^
+            491|           -u ${user} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/misc/bepasty.nix:159:25:
+            158|             '';
+            159|             ExecStart = ''${gunicorn}/bin/gunicorn bepasty.wsgi
+ --name ${name} \
+               |                         ^
+            160|               -u ${user} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/misc/gogs.nix:261:7:
+            260|     warnings = optional (cfg.database.password != "")
+            261|       ''config.services.gogs.database.password will be stored a
+s plaintext
+               |       ^
+            262|         in the Nix store. Use database.passwordFile instead.'';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/network-filesystems/ipfs.nix:161:23:
+            160|         type = types.bool;
+            161|         description = ''Whether to enable local discovery for t
+he ipfs daemon.
+               |                       ^
+            162|           This will allow ipfs to scan ports on your local netw
+ork. Some hosting services will ban you if you do this.
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/network-filesystems/netatalk.nix:29:32:
+             28|
+             29|     ${if cfg.homes.enable then ''[Homes]
+               |                                ^
+             30|     ${optionalString (cfg.homes.path != "") "path = ${cfg.homes
+.path}"}
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/network-filesystems/netatalk.nix:23:13:
+             22|
+             23|   afpConf = ''[Global]
+               |             ^
+             24|     extmap file = ${extmapFile}
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/network-filesystems/ceph.nix:48:19:
+             47|       Group = if daemonType == "osd" then "disk" else "ceph";
+             48|       ExecStart = ''${ceph.out}/bin/${if daemonType == "rgw" th
+en "radosgw" else "ceph-${daemonType}"} \
+               |                   ^
+             49|                     -f --cluster ${clusterName} --id ${daemonId
+}'';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/asterisk.nix:185:23:
+            184|         example = [ "sip.conf" "dundi.conf" ];
+            185|         description = ''Sets these config files to the default
+content. The default value for
+               |                       ^
+            186|           this option contains all necesscary files to avoid er
+rors at startup.
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/asterisk.nix:257:22:
+            256|           "${cfg.package}/bin/asterisk -U ${asteriskUser} -C /e
+tc/asterisk/asterisk.conf ${argString} -F";
+            257|         ExecReload = ''${cfg.package}/bin/asterisk -x "core rel
+oad"
+               |                      ^
+            258|           '';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/blockbook-frontend.nix:160:34:
+            159|         default = {};
+            160|         example = literalExample '' {
+               |                                  ^
+            161|           "alternative_estimate_fee" = "whatthefee-disabled";
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/ergo.nix:119:21:
+            118|         Group = cfg.group;
+            119|         ExecStart = ''${pkgs.ergo}/bin/ergo \
+               |                     ^
+            120|                       ${optionalString (!cfg.testnet)
+warning: \+ is an ill-defined escape. You can drop the \ and simply write + inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/kresd.nix:11:37:
+             10|   mkListen = kind: addr: let
+             11|     al_v4 = builtins.match "([0-9.]\+):([0-9]\+)" addr;
+               |                                     ^
+             12|     al_v6 = builtins.match "\\[(.\+)]:([0-9]\+)" addr;
+warning: \+ is an ill-defined escape. You can drop the \ and simply write + inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/kresd.nix:11:47:
+             10|   mkListen = kind: addr: let
+             11|     al_v4 = builtins.match "([0-9.]\+):([0-9]\+)" addr;
+               |                                               ^
+             12|     al_v6 = builtins.match "\\[(.\+)]:([0-9]\+)" addr;
+warning: \+ is an ill-defined escape. You can drop the \ and simply write + inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/kresd.nix:12:35:
+             11|     al_v4 = builtins.match "([0-9.]\+):([0-9]\+)" addr;
+             12|     al_v6 = builtins.match "\\[(.\+)]:([0-9]\+)" addr;
+               |                                   ^
+             13|     al_portOnly = builtins.match "()([0-9]\+)" addr;
+warning: \+ is an ill-defined escape. You can drop the \ and simply write + inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/kresd.nix:12:46:
+             11|     al_v4 = builtins.match "([0-9.]\+):([0-9]\+)" addr;
+             12|     al_v6 = builtins.match "\\[(.\+)]:([0-9]\+)" addr;
+               |                                              ^
+             13|     al_portOnly = builtins.match "()([0-9]\+)" addr;
+warning: \+ is an ill-defined escape. You can drop the \ and simply write + inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/kresd.nix:13:44:
+             12|     al_v6 = builtins.match "\\[(.\+)]:([0-9]\+)" addr;
+             13|     al_portOnly = builtins.match "()([0-9]\+)" addr;
+               |                                            ^
+             14|     al = findFirst (a: a != null)
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/morty.nix:89:23:
+             88|           User = "morty";
+             89|           ExecStart = ''${cfg.package}/bin/morty              \
+               |                       ^
+             90|             -listen ${cfg.listenAddress}:${toString cfg.port} \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/quorum.nix:133:34:
+            132|         default = null;
+            133|         example = literalExample '' {
+               |                                  ^
+            134|           alloc = {
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/quorum.nix:194:21:
+            193|         Group = cfg.group;
+            194|         ExecStart = ''${pkgs.quorum}/bin/geth \
+               |                     ^
+            195|             --nodiscover \
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/smokeping.nix:116:23:
+            115|         '';
+            116|         description = ''Configure the ping frequency and retent
+ion of the rrd files.
+               |                       ^
+            117|           Once set, changing the interval will require deletion
+ or migration of all
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/thelounge.nix:35:32:
+             34|       type = types.attrs;
+             35|       example = literalExample ''{
+               |                                ^
+             36|         reverseProxy = true;
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wg-quick.nix:175:23:
+            174|         type = with types; listOf str;
+            175|         description = ''List of IP (v4 or v6) addresses with CI
+DR masks from
+               |                       ^
+            176|         which this peer is allowed to send incoming traffic and
+ to which
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wg-quick.nix:186:23:
+            185|         type = with types; nullOr str;
+            186|         description = ''Endpoint IP or hostname of the peer, fo
+llowed by a colon,
+               |                       ^
+            187|         and then a port number of the peer.'';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wg-quick.nix:194:23:
+            193|         example = 25;
+            194|         description = ''This is optional and is by default off,
+ because most
+               |                       ^
+            195|         users will not need it. It represents, in seconds, betw
+een 1 and 65535
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wireguard.nix:122:23:
+            121|         example = "container";
+            122|         description = ''The pre-existing network namespace in w
+hich the
+               |                       ^
+            123|         WireGuard interface is created, and which retains the s
+ocket even if the
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wireguard.nix:135:23:
+            134|         example = "init";
+            135|         description = ''The pre-existing network namespace the
+WireGuard
+               |                       ^
+            136|         interface is moved to. The special value <literal>init<
+/literal> means
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wireguard.nix:189:23:
+            188|         type = with types; listOf str;
+            189|         description = ''List of IP (v4 or v6) addresses with CI
+DR masks from
+               |                       ^
+            190|         which this peer is allowed to send incoming traffic and
+ to which
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wireguard.nix:200:23:
+            199|         type = with types; nullOr str;
+            200|         description = ''Endpoint IP or hostname of the peer, fo
+llowed by a colon,
+               |                       ^
+            201|         and then a port number of the peer.'';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/networking/wireguard.nix:208:23:
+            207|         example = 25;
+            208|         description = ''This is optional and is by default off,
+ because most
+               |                       ^
+            209|         users will not need it. It represents, in seconds, betw
+een 1 and 65535
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/security/tor.nix:226:31:
+            225|     services.tor = {
+            226|       enable = mkEnableOption ''Tor daemon.
+               |                               ^
+            227|         By default, the daemon is run without
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/security/tor.nix:240:36:
+            239|
+            240|       enableGeoIP = mkEnableOption ''use of GeoIP databases.
+               |                                    ^
+            241|         Disabling this will disable by-country statistics for b
+ridges and relays
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/security/tor.nix:244:45:
+            243|
+            244|       controlSocket.enable = mkEnableOption ''control socket,
+               |                                             ^
+            245|         created in <literal>${runDir}/control</literal>'';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/security/tor.nix:248:33:
+            247|       client = {
+            248|         enable = mkEnableOption ''the routing of application co
+nnections.
+               |                                 ^
+            249|           You might want to disable this if you plan running a
+dedicated Tor relay'';
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/security/tor.nix:288:33:
+            287|       relay = {
+            288|         enable = mkEnableOption ''relaying of Tor traffic for o
+thers.
+               |                                 ^
+            289|
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/torrent/transmission.nix:21:31:
+             20|     services.transmission = {
+             21|       enable = mkEnableOption ''the headless Transmission BitTo
+rrent daemon.
+               |                               ^
+             22|
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/torrent/transmission.nix:130:49:
+            129|
+            130|       performanceNetParameters = mkEnableOption ''tweaking of k
+ernel parameters
+               |                                                 ^
+            131|         to open many more connections at the same time.
+warning: \u is an ill-defined escape. You can drop the \ and simply write u inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/ttys/getty.nix:57:36:
+             56|         '';
+             57|         example = "-h darkstar -- \u";
+               |                                    ^
+             58|       };
+warning: \. is an ill-defined escape. You can drop the \ and simply write . inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/web-apps/dokuwiki.nix:332:30:
+            331|
+            332|         locations."~ ^/lib.*\.(js|css|gif|png|ico|jpg|jpeg)$" =
+ {
+               |                              ^
+            333|           extraConfig = "expires 365d;";
+warning: \. is an ill-defined escape. You can drop the \ and simply write . inst
+ead. Use --extra-deprecated-features broken-string-escape to silence this warnin
+g.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/web-apps/dokuwiki.nix:352:23:
+            351|
+            352|         locations."~ \.php$" = {
+               |                       ^
+            353|           extraConfig = ''
+warning: Whitespace calculations for indentation stripping in a multiline ''-str
+ing include the first line, so putting text on it will effectively disable all i
+ndentation stripping. To fix this, simply break the line right after the string
+starts. Use --extra-deprecated-features broken-string-indentation to silence thi
+s warning.
+         at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/ser
+vices/web-apps/galene.nix:146:23:
+            145|           WorkingDirectory = cfg.stateDir;
+            146|           ExecStart = ''${cfg.package}/bin/galene \
+               |                       ^
+            147|           ${optionalString (cfg.insecure) "-insecure"} \
+error:
+       … while checking flake output 'nixosConfigurations'
+         at /nix/store/y2wazkglbya2ha0kal8f9hjj1dlf126r-source/flake.nix:5:5:
+            4|   outputs = { self, nixpkgs, ... }@inputs: {
+            5|     nixosConfigurations.container = nixpkgs.lib.nixosSystem {
+             |     ^
+            6|       system = "x86_64-linux";
+
+       … while checking the NixOS configuration 'nixosConfigurations.container'
+         at /nix/store/y2wazkglbya2ha0kal8f9hjj1dlf126r-source/flake.nix:5:5:
+            4|   outputs = { self, nixpkgs, ... }@inputs: {
+            5|     nixosConfigurations.container = nixpkgs.lib.nixosSystem {
+             |     ^
+            6|       system = "x86_64-linux";
+
+       (stack trace truncated; use '--show-trace' to show the full trace)
+
+       error: URL literals are deprecated, allow using them with --extra-depreca
+ted-features url-literals
+       at /nix/store/pl2p7a8blsdak3acy0c12zfnfkf68i2c-source/nixos/modules/servi
+ces/web-apps/hledger-web.nix:58:25:
+           57|       description = "hledger-web - web-app for the hledger accoun
+ting tool.";
+           58|       documentation = [ https://hledger.org/hledger-web.html ];
+             |                         ^
+           59|       wantedBy = [ "multi-user.target" ];

@@ -15,18 +15,22 @@
       "fonts".source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/priv.bkup/fonts";
       "kritarc".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/kritarc";
       "kritadisplayrc".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/kritadisplayrc";
+      
     };
   };
 
   home = {
     file = {
       ".local/share/krita".source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/krita";
+      ".gemini" = {
+        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/gemini";
+        force = true;
+      };    
     };
     persistence."/persist" = {
       directories =
         let
           dotfiles = [
-            ".gemini"
             ".npm"
             ".cargo"
             ".rustup"
@@ -80,7 +84,6 @@
             ".var/app"
           ];
           home-dirs = [
-            "Files"
             "CodeRepo"
             "Documents"
             "unDevel"

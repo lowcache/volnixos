@@ -1,0 +1,14 @@
+{
+  "id":  "5c64157e-12b3-409f-a80a-417084a007b3",
+  "name":  "/home/nondeus/Projects/lcpool",
+  "projectResources":  {
+    "resources":  [
+      {
+        "gitFolder":  {
+          "folderUri":  "file:///home/nondeus/Projects/lcpool",
+          "allowWrite":  true
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,3 @@
+~/.bin/jan-nix
+rm -rf /persist/home/nondeus/.ollama
+sudo nixos-rebuild switch --flake /persist/home/nondeus/.nix-config/#nondeus

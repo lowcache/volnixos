@@ -1,0 +1,36 @@
+warning: Git tree '/home/nondeus/.gemini/antigravity-cli/brain/fc759abc-6552-42e
+9-a7cd-d489203fab3d/.system_generated/worktrees/subagent-Nix-Channel-Upgrader---
+Refactorer-nix-upgrader-fec22d11' is dirty
+warning: input 'nixos-fhs-compat' has an override for a non-existent input 'nixp
+kgs'
+warning: system.stateVersion is not set, defaulting to 26.05. Read why this matt
+ers on https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersio
+n.
+warning: system.stateVersion is not set, defaulting to 26.05. Read why this matt
+ers on https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersio
+n.
+warning: flake output attribute 'defaultPackage' is deprecated; use 'packages.<s
+ystem>.default' instead
+error:
+       … while checking flake output 'defaultPackage'
+         at /nix/store/wmh5hndirllp78rf6r0lfn3f7nvlri84-source/flake.nix:60:5:
+           59|
+           60|     defaultPackage = builtins.mapAttrs
+             |     ^
+           61|       (system: _:
+
+       … while checking the derivation 'defaultPackage.x86_64-linux'
+
+       … while evaluating an expression to select 'drvPath' on it
+         at «internal»:1:552:
+       (stack trace truncated; use '--show-trace' to show the full trace)
+
+       error: undefined variable 'radare2-cutter'
+       at /nix/store/wmh5hndirllp78rf6r0lfn3f7nvlri84-source/pkgs.nix:68:3:
+           67|   radare2
+           68|   radare2-cutter
+             |   ^
+           69|   retdec
+
+       note: trace involved the following derivations:
+       derivation 'pentesting-tools'

@@ -1,0 +1,484 @@
+Building OCI image for 'sqlite' via Nix and loading into Docker...
+warning: error: unable to download 'https://hyprland.cachix.org/nix-cache-info':
+ Resolving timed out after 5000 milliseconds (curl error code=28); retrying in 5
+00 ms (attempt 1/5)
+builder.pl> Running phase: patchPhase
+builder.pl> Running phase: updateAutotoolsGnuConfigScriptsPhase
+builder.pl> Running phase: configurePhase
+builder.pl> no configure script, doing nothing
+builder.pl> Running phase: buildPhase
+builder.pl> Running phase: checkPhase
+builder.pl> Running phase: installPhase
+builder.pl> no Makefile or custom installPhase, doing nothing
+builder.pl> Running phase: fixupPhase
+builder.pl> shrinking RPATHs of ELF executables and libraries in /nix/store/pai2
+wycnlspqn7x9a7kc45rp3kbf0mr0-builder.pl
+builder.pl> checking for references to /build/ in /nix/store/pai2wycnlspqn7x9a7k
+c45rp3kbf0mr0-builder.pl...
+builder.pl> patching script interpreter paths in /nix/store/pai2wycnlspqn7x9a7kc
+45rp3kbf0mr0-builder.pl
+python3> structuredAttrs is enabled
+mcp-server-sqlite-pkg> Running phase: unpackPhase
+mcp-server-sqlite-pkg> unpacking source archive /nix/store/w1d1fzs9jhf59m34pg41x
+00da6qcnkxy-sqlite
+mcp-server-sqlite-pkg> source root is sqlite
+mcp-server-sqlite-pkg> Running phase: patchPhase
+mcp-server-sqlite-pkg> Running phase: updateAutotoolsGnuConfigScriptsPhase
+mcp-server-sqlite-pkg> Running phase: configurePhase
+python3> created 438 symlinks in user environment
+mcp-server-sqlite-pkg> no configure script, doing nothing
+mcp-server-sqlite-pkg> Running phase: installPhase
+mcp-server-sqlite-pkg> Running phase: fixupPhase
+mcp-server-sqlite-pkg> shrinking RPATHs of ELF executables and libraries in /nix
+/store/6jc2lyjmx03072cih6yqvc7lrwqjvxh2-mcp-server-sqlite-pkg
+mcp-server-sqlite-pkg> checking for references to /build/ in /nix/store/6jc2lyjm
+x03072cih6yqvc7lrwqjvxh2-mcp-server-sqlite-pkg...
+mcp-server-sqlite-pkg> patching script interpreter paths in /nix/store/6jc2lyjmx
+03072cih6yqvc7lrwqjvxh2-mcp-server-sqlite-pkg
+layers.json> structuredAttrs is enabled
+mcp-box-sqlite-conf.json> {
+mcp-box-sqlite-conf.json>   "architecture": "amd64",
+mcp-box-sqlite-conf.json>   "config": {
+mcp-box-sqlite-conf.json>     "Cmd": [
+mcp-box-sqlite-conf.json>       "python3",
+mcp-box-sqlite-conf.json>       "/app/server.py"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     "Env": [
+mcp-box-sqlite-conf.json>       "PATH=/nix/store/bnhxjgmy4gb76k3n0g2jmfz61bqxg24
+r-python3-3.13.13-env/bin:/nix/store/jl35p88sb0jjm11sr2p9v37q6hm3c6pm-sqlite-3.5
+1.2-bin/bin:/nix/store/cgjr3kj3hs7ngznyws5qfg16c8scpys0-bash-interactive-5.3p9/b
+in:/nix/store/9ypz3flqsrl5xl495mm8h645gadjsxi1-coreutils-9.11/bin",
+mcp-box-sqlite-conf.json>       "SQLITE_DB_PATH=/workspace/db.sqlite"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     "WorkingDir": "/workspace"
+mcp-box-sqlite-conf.json>   },
+mcp-box-sqlite-conf.json>   "os": "linux",
+mcp-box-sqlite-conf.json>   "store_dir": "/nix/store",
+mcp-box-sqlite-conf.json>   "from_image": null,
+mcp-box-sqlite-conf.json>   "store_layers": [
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/8wrmi2fp3wvn2w6ikdfgzspyr8nwn934-mai
+lcap-2.1.54"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/g54b6ghpnn98hfdz4yqw87w10c3hx8bv-xgc
+c-15.2.0-libgcc"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/xyikkpwkyxx6syba3kfrr0h67ig5hwmn-gcc
+-15.2.0-libgcc"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/6snfrwakqanqp7c21nnzmz183fkhnzv1-nss
+-cacert-3.123"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/bf6wgamqnl3c91iamlb1branrfcwwy7x-lib
+unistring-1.4.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/v2hsfkf03b3l79rhcxw4nq7w79kr3qkw-tzd
+ata-2026b"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/6qa00czc79b3nb6ld0mdyacfp2p1k3jx-lib
+idn2-2.3.8"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/57iz36553175g3178pvxjij8z5rcsd4n-gli
+bc-2.42-61"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/v2dzxxlyf0z8njnr3nar1wmdiw6hssb6-att
+r-2.5.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/61a1nwx3w6rqyaisj5rn1sal1981apm7-zli
+b-1.3.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/phzxi1l7gcm9slvikj9w4yswd89hi14x-lib
+yaml-0.2.5"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/yxla342pd0453pz2k0yybnyy1hig8dv4-acl
+-2.3.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/v9sym7lkcp6nj2llsqhajvp2zmimv5v1-mpd
+ecimal-4.0.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/d8927sznk6qnqln6hl9p4d42h8pq49vg-exp
+at-2.8.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/zswf4c2na0d8ykb59rrp14748jb0w2wc-gdb
+m-1.26-lib"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/waz72vmxc8zk90qqvgg9ikhzdk1kzjy4-xz-
+5.8.3"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/gik3rh1vz2jlgnifb9dh6vc6sxwwz9jj-bas
+h-5.3p9"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/1scb6xccxlqy8rj9hfgf7ppqv99pfwq9-uti
+l-linux-minimal-2.42-lib"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/jl35p88sb0jjm11sr2p9v37q6hm3c6pm-sql
+ite-3.51.2-bin"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/wl2nw5l4x4dg6kclbgpq7v9212i1s6cy-ncu
+rses-6.6"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/ylf24iiwy5xphy8wfz6jgahncsfgsy2r-rea
+dline-8.3p3"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/yg1gv8db04ldrnmdhykq8zjqqg6pg5kd-sql
+ite-3.51.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/y18pnbvfarnilsmgayswvi1khaw9wbsc-ope
+nssl-3.6.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/chqq8mpmpyfi9kgsngya71akv5xicn03-gcc
+-15.2.0-lib"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/cspsij182bd9hsx64mz1p7p143inkrjn-gmp
+-with-cxx-6.3.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/cgjr3kj3hs7ngznyws5qfg16c8scpys0-bas
+h-interactive-5.3p9"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/9ypz3flqsrl5xl495mm8h645gadjsxi1-cor
+eutils-9.11"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/3lnvi6r17y9kki4r9klzvavranaz3131-bzi
+p2-1.0.8",
+mcp-box-sqlite-conf.json>       "/nix/store/2zs4bbi72plfm8j6zxf1js4f3yc4yzwy-lib
+ffi-3.5.2",
+mcp-box-sqlite-conf.json>       "/nix/store/60m4rxhg2fldqaak400c0lry96ijrzqn-pyt
+hon3-3.13.13"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/pd253ma2x4m7q1lw8jlch55c2dv7nr2k-pyt
+hon3.13-jsonref-1.1.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/s2qxjcck61j7ppidvk2q27nrh61fhx89-pyt
+hon3.13-uncalled-for-0.3.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/9vpy6ikx3nyndy15jmk6gq3wx3v2fqfp-pyt
+hon3.13-pyperclip-1.11.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/s2nx98adafklbcbxlblwz6gr7fckmk6l-pyt
+hon3.13-annotated-types-0.7.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/n15xkpcwi9g157qnixycm8w1gsfw7mgz-pyt
+hon3.13-six-1.17.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/l8w74j5qdg6z8qajr6cgbj4742rb7g91-pyt
+hon3.13-exceptiongroup-1.3.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/m1mrzmcd7xapkh6xxpipb49gl6xc7nrn-pyt
+hon3.13-pathable-0.5.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/jwcfyn0jbdbjqky4iha3vjq41zy9mj7n-pyt
+hon3.13-python-dotenv-1.2.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/0v5wc096pxwjlxqs0ym9vxkh4175vy64-pyt
+hon3.13-cachetools-6.2.4"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/ifswxhrval94banclzvh86qfc6m4x5bn-pyt
+hon3.13-toml-0.10.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/9qrnclw2l1q7vyby5p3c2lrcxzw4y0x1-pyt
+hon3.13-platformdirs-4.5.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/qqx5w0l20v9l892x7rzl7qjslycdsrr6-pyt
+hon3.13-h11-0.16.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/9hpl7sv4vy8636gswdam8fhwiiy6qbfq-pyt
+hon3.13-wrapt-1.17.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/ciy5xx99z3qjnig7dprqkg7yvihjf9cy-pyt
+hon3.13-caio-0.10.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/0lisgfcpni3mcvh850mk5rnyf8qg40x4-pyt
+hon3.13-python-multipart-0.0.22"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/6nwq6q8dpn6iv964xgdacc5i1yc298w6-pyt
+hon3.13-pyjwt-2.12.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/73hyv30jacsc05ph6qn46svc0gac3shw-pyt
+hon3.13-deprecated-1.3.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/064f7b74ir3lnjng8ljcm550djz0xap3-pyt
+hon3.13-aiofile-3.8.6"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/kqdr0pijf558v8p6bm0i246jnhhh4ckq-pyt
+hon3.13-typing-extensions-4.15.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/70rxwd63szlf3ksqigf4a6x18gdnr6lg-pyt
+hon3.13-docstring-parser-0.17.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/i4s861am33czh6mingygsmsmvfm3il0q-pyt
+hon3.13-importlib-metadata-9.0.0",
+mcp-box-sqlite-conf.json>       "/nix/store/zl0kly05nb7cy6gl1qkp37458py8xiak-pyt
+hon3.13-zipp-3.23.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/8kxmfl4y3qvffgpc97xqf1fjsx5vv9a9-pyt
+hon3.13-jeepney-0.9"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/l9dklg0d504gdn0smcvnd5y6aa5kwkxw-pyt
+hon3.13-ply-3.11"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/rjjzzbjwm5qnll3w46g857y7n020rs4a-pyt
+hon3.13-typing-inspection-0.4.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/czhhpqfd9cz9c24gb3limln4ch201bhq-pyt
+hon3.13-attrs-26.1.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/vzfg067i45rzc9fjq0v9670jj8gphmz9-pyt
+hon3.13-pycparser-3.00"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/6xprjw4q4aqi703v24kk1i9cszc800wc-pyt
+hon3.13-rpds-py-0.30.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/04fvgg35pfzvnq554byx0jzznm3y6zgl-pyt
+hon3.13-markdown-it-py-4.0.0",
+mcp-box-sqlite-conf.json>       "/nix/store/15jrm9qd7r2sdlwakkdflhjy4nkp1xpd-pyt
+hon3.13-mdurl-0.1.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/3vw9khqzfln1w1jhhn6dcxl3caq56c3s-pyt
+hon3.13-more-itertools-10.8.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/yclf543g13ngziva0j30prwr0rx3kc4h-pyt
+hon3.13-idna-3.13"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/j58n4aif6hhb8b5v4vckpsblvhawpyf1-pyt
+hon3.13-jsonpath-ng-1.7.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/7flzx37n5pkws0bhlmi7scwrf7kmwjxp-pyt
+hon3.13-packaging-26.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/dddj23r1wqpa6f9csjr37661hv5aq4gy-pyt
+hon3.13-certifi-2026.01.04"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/8y32jrqnknxj6hakyg8x64y75gbl8jry-pyt
+hon3.13-pyyaml-6.0.3"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/knzx18kqdy77ckzzd2qm94qbxdpvkay9-pyt
+hon3.13-click-8.3.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/kl7hkw2zxkja2ldqp2m3zlch6nrmlrrg-pyt
+hon3.13-websockets-16.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/bhab4q69l4ph4syzk8as5m56vlad6xdy-pyt
+hon3.13-opentelemetry-api-1.34.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/34mandgnlpgpipkdlrm6v988kj72y089-pyt
+hon3.13-cffi-2.0.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/mlf0fxaq1168769y1p6sv8p2nnkm5lpc-pyt
+hon3.13-referencing-0.37.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/kszs22208z74jy5jr3mwn5508777b6af-pyt
+hon3.13-uvicorn-0.40.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/cr58slql0qwng2krw97fkvpqmar1c730-pyt
+hon3.13-httpcore-1.0.9"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/vxa2rka9frjhgh0v3mv21yzz1ljmqgql-pyt
+hon3.13-anyio-4.13.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/xc496b72chlgd3mqh56i029b76ji75nl-pyt
+hon3.13-starlette-0.52.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/kzcdfrbsdkljcdk2cxb3mwia3sbzj1cq-pyt
+hon3.13-watchfiles-1.1.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/jlzy569j5q4wzki7y398i0xg7a05f6sn-pyt
+hon3.13-jsonschema-path-0.4.6"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/nk8x3zg7n2dp17rc5fd0nzixwdk597g6-pyt
+hon3.13-dnspython-2.8.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/nmn6lvxs7a2yw5a5yzhg3pfz0mdvdjfm-pyt
+hon3.13-jsonschema-4.26.0",
+mcp-box-sqlite-conf.json>       "/nix/store/6nb7g54i5fh84dn1xlnn1pfsxzwb6nxv-pyt
+hon3.13-jsonschema-specifications-2025.9.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/ag9s1kc5h22ysmigsmhhrg052y8wnj87-pyt
+hon3.13-email-validator-2.3.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/8rsvaridagyb598pg0n38vyan540l3kw-pyt
+hon3.13-httpx-0.28.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/2ifcqxq8hp9s3lqngfbckmy9b4cd371x-pyt
+hon3.13-pydantic-core-2.41.5"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/s1fya244ggpq1jhy8cx4ybk2favrn521-pyt
+hon3.13-docutils-0.22.4"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/kcawwfgy52a17ijvzcvgfm185lnikf8r-pyt
+hon3.13-cryptography-48.0.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/hlbfg4zwmnjk0a1ag4qlznzq3j2z9jv1-pyt
+hon3.13-secretstorage-3.5.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/zr54ncck4nyjmd2yi9ip0slvma7fy4f9-pyt
+hon3.13-beartype-0.22.9"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/2m0z9fk4g0ry7fdl98kc7aj453ynmmkb-pyt
+hon3.13-joserfc-1.6.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/szyr458260mk9z1qz5mknmw5bmys1cry-pyt
+hon3.13-py-key-value-shared-0.3.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/cgyqmq9w5b4g90mfddpf9rfnx7l7dbp3-pyt
+hon3.13-jaraco-classes-3.4.0",
+mcp-box-sqlite-conf.json>       "/nix/store/h31a5wg2i327rl346201rbkgizspk5w4-pyt
+hon3.13-jaraco-context-6.1.0",
+mcp-box-sqlite-conf.json>       "/nix/store/52cqcpl1dzzfbsgpvv56j14d3ymsvq56-pyt
+hon3.13-jaraco-functools-4.4.0",
+mcp-box-sqlite-conf.json>       "/nix/store/1s1y4151sqlgmb0i2cylbw2505bg4bki-pyt
+hon3.13-keyring-25.7.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/1jqxpk0ghjx0mc0fgx6hnzf2lipm4q1b-pyt
+hon3.13-py-key-value-aio-0.3.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/jb8shx0d32kbiqkw557hp2d94yyk01kk-pyt
+hon3.13-pydantic-2.12.5"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/c0y9qgdyql30sp0x3b6gc95hi1vydn4i-pyt
+hon3.13-authlib-1.7.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/pg8jlnqaww41s7iwcqgc3bsxrv7lpmjb-pyt
+hon3.13-pygments-2.20.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/p95v3scj27pvl63bdqx529ljaxl96h85-pyt
+hon3.13-openapi-pydantic-0.5.1"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/i6g3kmk88cyvv8w9nv6j9x4rf52c2jks-pyt
+hon3.13-pydantic-settings-2.12.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/vx5k3rx32qi5009k50lq446ynpmybjsi-pyt
+hon3.13-rich-14.3.3"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/d9jqyclpcccv90jsvqzb89v9nl8779xf-pyt
+hon3.13-rich-rst-1.3.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/bgzar2bff2vh09b9gjx4pdjmjjqyxhmq-pyt
+hon3.13-cyclopts-4.10.2"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/d3w8z46hcd0513bs5pq10xxkh3gygfvw-pyt
+hon3.13-httpx-sse-0.4.3",
+mcp-box-sqlite-conf.json>       "/nix/store/5fp1gjajlkf1h4anqnc5d3wngvlf5d1m-pyt
+hon3.13-mcp-1.26.0",
+mcp-box-sqlite-conf.json>       "/nix/store/an3p8aysh856wjydgfpyf3k10cyf87cy-pyt
+hon3.13-sse-starlette-3.2.0"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/1fqdvirnhk00q0h3lza8hmxag7s2lrbb-pyt
+hon3.13-fastmcp-3.2.3"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/bnhxjgmy4gb76k3n0g2jmfz61bqxg24r-pyt
+hon3-3.13.13-env"
+mcp-box-sqlite-conf.json>     ],
+mcp-box-sqlite-conf.json>     [
+mcp-box-sqlite-conf.json>       "/nix/store/6jc2lyjmx03072cih6yqvc7lrwqjvxh2-mcp
+-server-sqlite-pkg"
+mcp-box-sqlite-conf.json>     ]
+mcp-box-sqlite-conf.json>   ],
+mcp-box-sqlite-conf.json>   "customisation_layer": "/nix/store/zjp5ppw7xg9qzmz2m
+fmhyji2cxp2j1zv-mcp-box-sqlite-customisation-layer",
+mcp-box-sqlite-conf.json>   "repo_tag": "mcp-box-sqlite:latest",
+mcp-box-sqlite-conf.json>   "created": "1970-01-01T00:00:01+00:00",
+mcp-box-sqlite-conf.json>   "mtime": "1970-01-01T00:00:01+00:00",
+mcp-box-sqlite-conf.json>   "uid": "0",
+mcp-box-sqlite-conf.json>   "gid": "0",
+mcp-box-sqlite-conf.json>   "uname": "root",
+mcp-box-sqlite-conf.json>   "gname": "root"
+mcp-box-sqlite-conf.json> }
+error: unable to execute '/nix/store/9ih3zjjyqmwsgba64q4549mvbxy23wls-stream-mcp
+-box-sqlite/bin/stream-mcp-box-sqlite': Not a directory
+unrecognized image format

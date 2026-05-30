@@ -1,0 +1,14 @@
+{
+  "id": "72153009-3852-4f67-ba75-90fba9b6a564",
+  "name": "/home/nondeus",
+  "projectResources": {
+    "resources": [
+      {
+        "gitFolder": {
+          "folderUri": "file:///home/nondeus",
+          "allowWrite": true
+        }
+      }
+    ]
+  }
+}

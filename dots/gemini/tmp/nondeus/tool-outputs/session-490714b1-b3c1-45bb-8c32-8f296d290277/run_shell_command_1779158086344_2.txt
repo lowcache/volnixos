@@ -1,0 +1,345 @@
+Output: .nix-config/dots/quickshell/ii/panelFamilies/WaffleFamily.qml:import qs.modules.ii.wallpaperSelector
+.nix-config/dots/quickshell/ii/panelFamilies/IllogicalImpulseFamily.qml:import qs.modules.ii.wallpaperSelector
+.nix-config/dots/quickshell/ii/GlobalStates.qml:    property bool wallpaperSelectorOpen: false
+.nix-config/dots/quickshell/ii/modules/waffle/taskView/TaskViewWorkspace.qml:    readonly property real windowScale: wallpaperHeight / screenHeight
+.nix-config/dots/quickshell/ii/modules/waffle/taskView/TaskViewWorkspace.qml:    property real wallpaperHeight: 124
+.nix-config/dots/quickshell/ii/modules/waffle/taskView/TaskViewWorkspace.qml:            height: root.wallpaperHeight
+.nix-config/dots/quickshell/ii/modules/waffle/taskView/TaskViewWorkspace.qml:                    sourceSize: Qt.size(root.screenAspectRatio * root.wallpaperHeight, root.wallpaperHeight)
+.nix-config/dots/quickshell/ii/modules/waffle/taskView/TaskViewWorkspace.qml:                    source: Config.options.background.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/waffle/background/WaffleBackground.qml:            source: Config.options.background.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/waffle/lock/WaffleLock.qml:                    print("Lock wallpaper loaded");
+.nix-config/dots/quickshell/ii/modules/waffle/lock/WaffleLock.qml:            source: Config.options.background.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/waffle/polkit/WPolkitContent.qml:        source: Config.options.background.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/settings/InterfaceConfig.qml:                text: Translation.tr("Extra wallpaper zoom (%)")
+.nix-config/dots/quickshell/ii/modules/settings/InterfaceConfig.qml:        icon: "wallpaper_slideshow"
+.nix-config/dots/quickshell/ii/modules/settings/InterfaceConfig.qml:            checked: Config.options.wallpaperSelector.useSystemFileDialog
+.nix-config/dots/quickshell/ii/modules/settings/InterfaceConfig.qml:                Config.options.wallpaperSelector.useSystemFileDialog = checked;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            checked: Config.options.appearance.wallpaperTheming.masterTheme.enable
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                Config.options.appearance.wallpaperTheming.masterTheme.enable = checked;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            visible: Config.options.appearance.wallpaperTheming.masterTheme.enable
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                    text: Config.options.appearance.wallpaperTheming.masterTheme.jsonPath
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                        Config.options.appearance.wallpaperTheming.masterTheme.jsonPath = text;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                checked: Config.options.appearance.wallpaperTheming.masterTheme.verboseOutput
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                    Config.options.appearance.wallpaperTheming.masterTheme.verboseOutput = checked;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            checked: Config.options.appearance.wallpaperTheming.enableAppsAndShell
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                Config.options.appearance.wallpaperTheming.enableAppsAndShell = checked;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            checked: Config.options.appearance.wallpaperTheming.enableQtApps
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                Config.options.appearance.wallpaperTheming.enableQtApps = checked;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            checked: Config.options.appearance.wallpaperTheming.enableTerminal
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                Config.options.appearance.wallpaperTheming.enableTerminal = checked;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                checked: Config.options.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                     Config.options.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode= checked;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            value: Config.options.appearance.wallpaperTheming.terminalGenerationProps.harmony * 100
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                Config.options.appearance.wallpaperTheming.terminalGenerationProps.harmony = value / 100;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            value: Config.options.appearance.wallpaperTheming.terminalGenerationProps.harmonizeThreshold
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                Config.options.appearance.wallpaperTheming.terminalGenerationProps.harmonizeThreshold = value;
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:            value: Config.options.appearance.wallpaperTheming.terminalGenerationProps.termFgBoost * 100
+.nix-config/dots/quickshell/ii/modules/settings/AdvancedConfig.qml:                Config.options.appearance.wallpaperTheming.terminalGenerationProps.termFgBoost = value / 100;
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:                    id: wallpaperPreview
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:                    source: Config.options.background.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:                        text: Translation.tr("Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers")
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:                    materialIcon: "wallpaper"
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:                        text: Translation.tr("Pick wallpaper image on your system")
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:                        Quickshell.execDetached(`${Directories.wallpaperSwitchScriptPath}`);
+.nix-config/dots/quickshell/ii/modules/settings/QuickConfig.qml:                Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --noswitch`]);
+.nix-config/dots/quickshell/ii/modules/settings/GeneralConfig.qml:            buttonIcon: "wallpaper"
+.nix-config/dots/quickshell/ii/modules/settings/GeneralConfig.qml:            text: Translation.tr("Hide sussy/anime wallpapers")
+.nix-config/dots/quickshell/ii/modules/settings/GeneralConfig.qml:            checked: Config.options.workSafety.enable.wallpaper
+.nix-config/dots/quickshell/ii/modules/settings/GeneralConfig.qml:                Config.options.workSafety.enable.wallpaper = checked;
+.nix-config/dots/quickshell/ii/modules/settings/BackgroundConfig.qml:            text: Translation.tr("Preferred wallpaper zoom (%)")
+.nix-config/dots/quickshell/ii/modules/settings/BackgroundConfig.qml:                    text: Translation.tr("Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.")
+.nix-config/dots/quickshell/ii/modules/common/models/quickToggles/DarkModeToggle.qml:            Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]);
+.nix-config/dots/quickshell/ii/modules/common/models/quickToggles/DarkModeToggle.qml:            Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "dark", "--noswitch"]);
+.nix-config/dots/quickshell/ii/modules/common/widgets/StyledBlurEffect.qml:    source: wallpaper
+.nix-config/dots/quickshell/ii/modules/common/widgets/LightDarkPreferenceButton.qml:        Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`])
+.nix-config/dots/quickshell/ii/modules/common/Directories.qml:    property string generatedWallpaperCategoryPath: FileUtils.trimFileProtocol(`${Directories.state}/user/generated/wallpaper/category.txt`)
+.nix-config/dots/quickshell/ii/modules/common/Directories.qml:    property string wallpaperSwitchScriptPath: FileUtils.trimFileProtocol(`${Directories.scriptPath}/colors/switchwall.sh`)
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        property string wallpaperPath: Config.options.background.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        property bool wallpaperIsVideo: wallpaperPath.endsWith(".mp4") || wallpaperPath.endsWith(".webm") || wallpaperPath.endsWith(".mkv") || wallpaperPath.endsWith(".avi") || wallpaperPath.endsWith(".mov")
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        source: Qt.resolvedUrl(wallpaperIsVideo ? Config.options.background.thumbnailPath : Config.options.background.wallpaperPath)
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:    property real wallpaperVibrancy: (wallColorQuant.colors[0]?.hslSaturation + wallColorQuant.colors[0]?.hslLightness) / 2
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        let x = wallpaperVibrancy
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        property real wallpaperSelectorWidth: 1200
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        property real wallpaperSelectorHeight: 690
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        property real wallpaperSelectorItemMargins: 8
+.nix-config/dots/quickshell/ii/modules/common/Appearance.qml:        property real wallpaperSelectorItemPadding: 6
+.nix-config/dots/quickshell/ii/modules/common/Config.qml:                property JsonObject wallpaperTheming: JsonObject {
+.nix-config/dots/quickshell/ii/modules/common/Config.qml:                property string wallpaperPath: ""
+.nix-config/dots/quickshell/ii/modules/common/Config.qml:                    property real workspaceZoom: 1.07 // Relative to your screen, not wallpaper size
+.nix-config/dots/quickshell/ii/modules/common/Config.qml:            property JsonObject wallpaperSelector: JsonObject {
+.nix-config/dots/quickshell/ii/modules/common/Config.qml:                    property bool wallpaper: false
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        id: wallpaperSelectorLoader
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        active: GlobalStates.wallpaperSelectorOpen
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:            WlrLayershell.namespace: "quickshell:wallpaperSelector"
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:            implicitHeight: Appearance.sizes.wallpaperSelectorHeight
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:            implicitWidth: Appearance.sizes.wallpaperSelectorWidth
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:                    GlobalStates.wallpaperSelectorOpen = false;
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        if (Config.options.wallpaperSelector.useSystemFileDialog) {
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        GlobalStates.wallpaperSelectorOpen = !GlobalStates.wallpaperSelectorOpen
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        target: "wallpaperSelector"
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        name: "wallpaperSelectorToggle"
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        description: "Toggle wallpaper selector"
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        name: "wallpaperSelectorRandom"
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelector.qml:        description: "Select random wallpaper in current folder"
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:    property alias colText: wallpaperItemName.color
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:    property alias padding: wallpaperItemColumnLayout.anchors.margins
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:    margins: Appearance.sizes.wallpaperSelectorItemMargins
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:    padding: Appearance.sizes.wallpaperSelectorItemPadding
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:            id: wallpaperItemColumnLayout
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                id: wallpaperItemImageContainer
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                        sourceSize.width: wallpaperItemColumnLayout.width
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                        sourceSize.height: wallpaperItemColumnLayout.height - wallpaperItemColumnLayout.spacing - wallpaperItemName.height
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                                width: wallpaperItemImageContainer.width
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                                height: wallpaperItemImageContainer.height
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                        sourceSize.width: wallpaperItemColumnLayout.width
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                        sourceSize.height: wallpaperItemColumnLayout.height - wallpaperItemColumnLayout.spacing - wallpaperItemName.height
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperDirectoryItem.qml:                id: wallpaperItemName
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:        const totalImageMargin = (Appearance.sizes.wallpaperSelectorItemMargins + Appearance.sizes.wallpaperSelectorItemPadding) * 2
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:            GlobalStates.wallpaperSelectorOpen = false;
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:        target: wallpaperGridBackground
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:        id: wallpaperGridBackground
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                radius: wallpaperGridBackground.radius - Layout.margins
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                        text: Translation.tr("Pick a wallpaper")
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                            { icon: "wallpaper", name: "Wallpapers", path: `${Directories.pictures}/Wallpapers` }, 
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                    radius: wallpaperGridBackground.radius - Layout.margins
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                            colBackground: (index === grid?.currentIndex || containsMouse) ? Appearance.colors.colPrimary : (fileModelData.filePath === Config.options.background.wallpaperPath) ? Appearance.colors.colSecondaryContainer : ColorUtils.transparentize(Appearance.colors.colPrimaryContainer)
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                            colText: (index === grid.currentIndex || containsMouse) ? Appearance.colors.colOnPrimary : (fileModelData.filePath === Config.options.background.wallpaperPath) ? Appearance.colors.colOnSecondaryContainer : Appearance.colors.colOnLayer0
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                                radius: wallpaperGridBackground.radius
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                                GlobalStates.wallpaperSelectorOpen = false;
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                                GlobalStates.wallpaperSelectorOpen = false;
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                                Config.options.wallpaperSelector.useSystemFileDialog = true
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                                text: Translation.tr("Click to toggle light/dark mode\n(applied when wallpaper is chosen)")
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                            placeholderText: focus ? Translation.tr("Search wallpapers") : Translation.tr("Hit \"/\" to search")
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                                GlobalStates.wallpaperSelectorOpen = false;
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:                                text: Translation.tr("Cancel wallpaper selection")
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:            if (GlobalStates.wallpaperSelectorOpen && monitorIsFocused) {
+.nix-config/dots/quickshell/ii/modules/ii/wallpaperSelector/WallpaperSelectorContent.qml:            GlobalStates.wallpaperSelectorOpen = false;
+.nix-config/dots/quickshell/ii/modules/ii/bar/UtilButtons.qml:                        Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode light --noswitch`);
+.nix-config/dots/quickshell/ii/modules/ii/bar/UtilButtons.qml:                        Hyprland.dispatch(`exec ${Directories.wallpaperSwitchScriptPath} --mode dark --noswitch`);
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:    required property real wallpaperScale
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:    property bool wallpaperIsVideo: Config.options.background.wallpaperPath.endsWith(".mp4") || Config.options.background.wallpaperPath.endsWith(".webm") || Config.options.background.wallpaperPath.endsWith(".mkv") || Config.options.background.wallpaperPath.endsWith(".avi") || Config.options.background.wallpaperPath.endsWith(".mov")
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:    property string wallpaperPath: wallpaperIsVideo ? Config.options.background.thumbnailPath : Config.options.background.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:        leastBusyRegionProc.wallpaperPath = root.wallpaperPath;
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:        property string wallpaperPath: root.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:            , wallpaperPath //
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:                root.targetX = parsedContent.center_x * root.wallpaperScale - root.width / 2;
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/AbstractBackgroundWidget.qml:                root.targetY  = parsedContent.center_y * root.wallpaperScale - root.height / 2;
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/clock/ClockWidget.qml:    property bool wallpaperSafetyTriggered: false
+.nix-config/dots/quickshell/ii/modules/ii/background/widgets/clock/ClockWidget.qml:                    shown: root.wallpaperSafetyTriggered
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property bool wallpaperIsVideo: Config.options.background.wallpaperPath.endsWith(".mp4") || Config.options.background.wallpaperPath.endsWith(".webm") || Config.options.background.wallpaperPath.endsWith(".mkv") || Config.options.background.wallpaperPath.endsWith(".avi") || Config.options.background.wallpaperPath.endsWith(".mov")
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property string wallpaperPath: (Config.options.background.perMonitorWallpaper && Config.options.background.perMonitorWallpaper.hasOwnProperty(modelData.name)) ? Config.options.background.perMonitorWallpaper[modelData.name] : (wallpaperIsVideo ? Config.options.background.thumbnailPath : Config.options.background.wallpaperPath)
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property bool wallpaperSafetyTriggered: {
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:            const enabled = Config.options.workSafety.enable.wallpaper;
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:            const sensitiveWallpaper = (CF.StringUtils.stringListContainsSubstring(wallpaperPath.toLowerCase(), Config.options.workSafety.triggerCondition.fileKeywords));
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property real wallpaperToScreenRatio: Math.min(wallpaperWidth / screen.width, wallpaperHeight / screen.height)
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property int wallpaperWidth: modelData.width // Some reasonable init value, to be updated
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property int wallpaperHeight: modelData.height // Some reasonable init value, to be updated
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property real movableXSpace: ((wallpaperWidth / wallpaperToScreenRatio * effectiveWallpaperScale) - screen.width) / 2
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        property real movableYSpace: ((wallpaperHeight / wallpaperToScreenRatio * effectiveWallpaperScale) - screen.height) / 2
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:        readonly property bool verticalParallax: (Config.options.background.parallax.autoVertical && wallpaperHeight > wallpaperWidth) || Config.options.background.parallax.vertical
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:            if (wallpaperSafetyTriggered)
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:            if (!bgRoot.wallpaperSafetyTriggered || bgRoot.wallpaperIsVideo)
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:            getWallpaperSizeProc.path = bgRoot.wallpaperPath;
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:            property string path: bgRoot.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                id: wallpaperSizeOutputCollector
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    const output = wallpaperSizeOutputCollector.text;
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    bgRoot.wallpaperWidth = width;
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    bgRoot.wallpaperHeight = height;
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                        // Undersized/perfectly sized wallpapers
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                id: wallpaper
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                opacity: (status === Image.Ready && !bgRoot.wallpaperIsVideo) ? 1 : 0
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                source: bgRoot.wallpaperSafetyTriggered ? "" : bgRoot.wallpaperPath
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                width: bgRoot.wallpaperWidth / bgRoot.wallpaperToScreenRatio * bgRoot.effectiveWallpaperScale
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                height: bgRoot.wallpaperHeight / bgRoot.wallpaperToScreenRatio * bgRoot.effectiveWallpaperScale
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                anchors.fill: wallpaper
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    source: wallpaper
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    left: wallpaper.left
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    right: wallpaper.right
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    top: wallpaper.top
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    bottom: wallpaper.bottom
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                        const extraMove = (wallpaper.effectiveValueX * 2 * bgRoot.movableXSpace) * (parallaxFactor - 1);
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                        const extraMove = (wallpaper.effectiveValueY * 2 * bgRoot.movableYSpace) * (parallaxFactor - 1);
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                width: wallpaper.width
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                height: wallpaper.height
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                    when: GlobalStates.screenLocked || bgRoot.wallpaperSafetyTriggered
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                        wallpaperScale: bgRoot.effectiveWallpaperScale
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                        wallpaperScale: bgRoot.effectiveWallpaperScale
+.nix-config/dots/quickshell/ii/modules/ii/background/Background.qml:                        wallpaperSafetyTriggered: bgRoot.wallpaperSafetyTriggered
+.nix-config/dots/quickshell/ii/scripts/images/least_busy_region.py:    parser = argparse.ArgumentParser(description="Find least busy region in an image and output a JSON. Made for determining a suitable position for a wallpaper widget.")
+.nix-config/dots/quickshell/ii/scripts/images/least_busy_region.py:    parser.add_argument("--screen-width", type=int, default=1920, help="Screen width for wallpaper scaling")
+.nix-config/dots/quickshell/ii/scripts/images/least_busy_region.py:    parser.add_argument("--screen-height", type=int, default=1080, help="Screen height for wallpaper scaling")
+.nix-config/dots/quickshell/ii/scripts/ai/gemini-categorize-wallpaper.sh:PROMPT="${3:-${GEMINI_WALLPAPER_PROMPT:-Categorize the wallpaper. Its file name is $WALLPAPER_NAME}}"
+.nix-config/dots/quickshell/ii/scripts/ai/gemini-categorize-wallpaper.sh:RESIZED_IMG_PATH="/tmp/quickshell/ai/wallpaper.jpg"
+.nix-config/dots/quickshell/ii/scripts/colors/applycolor.sh:  enable_terminal=$(jq -r '.appearance.wallpaperTheming.enableTerminal' "$CONFIG_FILE")
+.nix-config/dots/quickshell/ii/scripts/colors/random/random_konachan_wall.sh:downloadPath="$PICTURES_DIR/Wallpapers/random_wallpaper.$ext"
+.nix-config/dots/quickshell/ii/scripts/colors/random/random_konachan_wall.sh:currentWallpaperPath=$(jq -r '.background.wallpaperPath' $illogicalImpulseConfigPath)
+.nix-config/dots/quickshell/ii/scripts/colors/random/random_konachan_wall.sh:    downloadPath="$PICTURES_DIR/Wallpapers/random_wallpaper-1.$ext"
+.nix-config/dots/quickshell/ii/scripts/colors/random/random_osu_wall.sh:downloadPath="$PICTURES_DIR/Wallpapers/random_wallpaper.$ext"
+.nix-config/dots/quickshell/ii/scripts/colors/random/random_osu_wall.sh:currentWallpaperPath=$(jq -r '.background.wallpaperPath' $illogicalImpulseConfigPath)
+.nix-config/dots/quickshell/ii/scripts/colors/random/random_osu_wall.sh:    downloadPath="$PICTURES_DIR/Wallpapers/random_wallpaper-1.$ext"
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:        enable_qt_apps=$(jq -r '.appearance.wallpaperTheming.enableQtApps' "$SHELL_CONFIG_FILE")
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:set_per_monitor_wallpaper_path() {
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:set_wallpaper_path() {
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:        jq --arg path "$path" '.background.wallpaperPath = $path' "$SHELL_CONFIG_FILE" > "$SHELL_CONFIG_FILE.tmp" && cp "$SHELL_CONFIG_FILE.tmp" "$SHELL_CONFIG_FILE" && rm "$SHELL_CONFIG_FILE.tmp"
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:                set_per_monitor_wallpaper_path "$monitor_flag" "$imgpath"
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:                set_wallpaper_path "$imgpath"
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:                set_per_monitor_wallpaper_path "$monitor_flag" "$imgpath"
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:                set_wallpaper_path "$imgpath"
+.nix-config/dots/quickshell/ii/scripts/colors/switchwall.sh:            --noswitch) imgpath=$(jq -r '.background.wallpaperPath' "$SHELL_CONFIG_FILE"); shift ;;
+.nix-config/dots/quickshell/ii/welcome.qml:                    title: Translation.tr("Style & wallpaper")
+.nix-config/dots/quickshell/ii/welcome.qml:                                text: Translation.tr("Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers")
+.nix-config/dots/quickshell/ii/welcome.qml:                            materialIcon: "wallpaper"
+.nix-config/dots/quickshell/ii/welcome.qml:                                text: Translation.tr("Pick wallpaper image on your system")
+.nix-config/dots/quickshell/ii/welcome.qml:                                Quickshell.execDetached([`${Directories.wallpaperSwitchScriptPath}`]);
+.nix-config/dots/quickshell/ii/welcome.qml:                        text: Translation.tr("Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner")
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml: * Provides a list of wallpapers and an "apply" action that calls the existing
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml:    property list<string> wallpapers: [] // List of absolute file paths (without file://)
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml:            Directories.wallpaperSwitchScriptPath,
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml:            Directories.wallpaperSwitchScriptPath,
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml:        print("Randomly selected wallpaper:", filePath);
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml:            root.wallpapers = []
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml:                if (path && path.length) root.wallpapers.push(path)
+.nix-config/dots/quickshell/ii/services/Wallpapers.qml:        target: "wallpapers"
+.nix-config/dots/quickshell/ii/services/LauncherSearch.qml:                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--noswitch", "--color", ...(args != '' ? [`${args}`] : [])]);
+.nix-config/dots/quickshell/ii/services/LauncherSearch.qml:                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "dark", "--noswitch"]);
+.nix-config/dots/quickshell/ii/services/LauncherSearch.qml:            action: "konachanwallpaper",
+.nix-config/dots/quickshell/ii/services/LauncherSearch.qml:                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]);
+.nix-config/dots/quickshell/ii/services/LauncherSearch.qml:            action: "wallpaper",
+.nix-config/dots/quickshell/ii/services/LauncherSearch.qml:                GlobalStates.wallpaperSelectorOpen = true;
+.nix-config/dots/quickshell/ii/services/FirstRunExperience.qml:    property string defaultWallpaperPath: FileUtils.trimFileProtocol(`${Directories.assetsPath}/images/default_wallpaper.png`)
+.nix-config/dots/quickshell/ii/services/FirstRunExperience.qml:        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, root.defaultWallpaperPath])
+.nix-config/dots/quickshell/ii/services/MaterialThemeLoader.qml:    property string filePath: Config.options.appearance.wallpaperTheming.masterTheme.enable ? Config.options.appearance.wallpaperTheming.masterTheme.jsonPath : Directories.generatedMaterialThemePath
+.nix-config/dots/quickshell/ii/services/Booru.qml:            "description": Translation.tr("For desktop wallpapers | Good quality"),
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "For desktop wallpapers | Good quality": "桌面壁纸专用 | 质量好",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "随机 Konachan SFW 动漫壁纸\n图片会保存到 ~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Pick wallpaper image on your system": "在系统中选择壁纸图片",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Style & wallpaper": "样式与壁纸",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Preferred wallpaper zoom (%)": "首选壁纸缩放比例（%）",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Search wallpapers": "搜索壁纸",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Pick a wallpaper": "挑选壁纸",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner": "稍后可在启动器中通过 /dark、/light、/wallpaper 随时更改\n如果 Shell 的配色没有变化：\n    1. 用 Super+N 打开右侧边栏\n    2. 点击右上角的“重新加载 Hyprland 与 Quickshell”",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Cancel wallpaper selection": "取消壁纸选择",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "点击来切换浅色/深色模式\n（仅在选择壁纸后生效）",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Extra wallpaper zoom (%)": "额外壁纸缩放（%）",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "使用 Gemini 对壁纸进行分类，然后根据分类选择一个预设。\n你需要先在左侧边栏设 置 Gemini API 密钥。\n图片会被降低分辨率以提高性能, 但为了安全起见，\n请勿选择包含敏感信息的壁纸。",
+.nix-config/dots/quickshell/ii/translations/zh_CN.json:  "Hide sussy/anime wallpapers": "隐藏可疑或动漫壁纸",
+.nix-config/dots/quickshell/ii/translations/it_IT.json:  "Style & wallpaper": "Sfondo e stile",
+.nix-config/dots/quickshell/ii/translations/it_IT.json:  "For desktop wallpapers | Good quality": "Per sfondi del desktop | Buona qualità",
+.nix-config/dots/quickshell/ii/translations/it_IT.json:  "Preferred wallpaper zoom (%)": "Zoom sfondo (%)",
+.nix-config/dots/quickshell/ii/translations/it_IT.json:  "Pick wallpaper image on your system": "Seleziona un'immagine nel tuo sistema",
+.nix-config/dots/quickshell/ii/translations/it_IT.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Sfondo anime SFW casuale da Konachan\nL'immagine verrà salvata in ~/Immagini/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner": "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Preferred wallpaper zoom (%)": "Preferred wallpaper zoom (%)",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Search wallpapers": "Search wallpapers",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Pick wallpaper image on your system": "Pick wallpaper image on your system",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Cancel wallpaper selection": "Cancel wallpaper selection",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "Click to toggle light/dark mode\n(applied when wallpaper is chosen)",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Extra wallpaper zoom (%)": "Extra wallpaper zoom (%)",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Pick a wallpaper": "Pick a wallpaper",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "For desktop wallpapers | Good quality": "For desktop wallpapers | Good quality",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Style & wallpaper": "Style & wallpaper",
+.nix-config/dots/quickshell/ii/translations/en_US.json.bak:  "Hide sussy/anime wallpapers": "Hide sussy/anime wallpapers",
+.nix-config/dots/quickshell/ii/translations/uk_UA.json:  "For desktop wallpapers | Good quality": "На шпалери | Хороша якість",
+.nix-config/dots/quickshell/ii/translations/uk_UA.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Випадкові SFW аніме шпалери від Konachan\nЗображення збережено до ~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/uk_UA.json:  "Pick wallpaper image on your system": "Виберіть зображення шпалер на вашому комп'ютері",
+.nix-config/dots/quickshell/ii/translations/uk_UA.json:  "Style & wallpaper": "Стиль та шпалери",
+.nix-config/dots/quickshell/ii/translations/uk_UA.json:  "Preferred wallpaper zoom (%)": "Бажаний маштаб шпалер (%)",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner": "Jederzeit später ändern mit /dark, /light, /wallpaper im Launcher\nFalls sich die Shell-Farben nicht ändern:\n    1. Öffne die rechte Seitenleiste mit Super+N\n    2. Klicke auf \"Hyprland & Quickshell neu laden\" in der oberen rechten Ecke",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Zufälliges SFW-Anime-Hintergrundbild von Konachan\nBild wird in ~/Pictures/Wallpapers gespeichert",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Preferred wallpaper zoom (%)": "Bevorzugter Hintergrundbild-Zoom (%)",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Search wallpapers": "Hintergrundbilder suchen",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "Verwendet Gemini, um das Hintergrundbild zu kategorisieren und wählt dann ein Preset basierend darauf aus.\nDu musst zuerst den Gemini-API-Schlüssel in der linken Seitenleiste festlegen.\nBilder werden für die Leistung herunterskaliert, aber nur zur Sicherheit,\nwähle keine Hintergrundbilder mit sensiblen Informationen aus.",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Pick wallpaper image on your system": "Hintergrundbild auf deinem System auswählen",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Cancel wallpaper selection": "Hintergrundbild-Auswahl abbrechen",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "Klicken zum Umschalten zwischen Hell/Dunkel-Modus\n(wird angewendet, wenn Hintergrundbild gewählt wird)",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Extra wallpaper zoom (%)": "Zusätzlicher Hintergrundbild-Zoom (%)",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Pick a wallpaper": "Hintergrundbild wählen",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "For desktop wallpapers | Good quality": "Für Desktop-Hintergrundbilder | Gute Qualität",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Style & wallpaper": "Stil & Hintergrundbild",
+.nix-config/dots/quickshell/ii/translations/de_DE.json:  "Hide sussy/anime wallpapers": "Verdächtige/Anime-Hintergrundbilder ausblenden",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "For desktop wallpapers | Good quality": "デスクトップ壁紙向け | 高品質",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Konachanから健全なアニメ壁紙をランダムで取得し、~/Pictures/Wallpapers に保存します",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "Pick wallpaper image on your system": "システムから壁紙画像を選択",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "Style & wallpaper": "スタイルと壁紙",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "Click to toggle light/dark mode (applied when wallpaper is chosen)": "クリックでライト/ダークモード切替（壁紙選択時に適用されます）",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "Search wallpapers": "壁紙を検索",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "Preferred wallpaper zoom (%)": "壁紙の拡大率（%）",
+.nix-config/dots/quickshell/ii/translations/ja_JP.json:  "Pick a wallpaper": "壁紙を選択",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner": "İstediğiniz zaman /dark, /light, /wallpaper komutlarıyla değiştirebilirsiniz\nShell renkleri değişmiyorsa:\n    1. Super+N ile sağ kenar çubuğunu açın\n    2. Sağ üst köşedeki \"Hyprland ve Quickshell'i Yeniden Yükle\" düğmesine tıklayın",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Konachan'dan rastgele SFW Anime duvar kağıdı\nGörsel ~/Resimler/Wallpapers dizinine kaydedilir",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Preferred wallpaper zoom (%)": "Tercih edilen duvar kağıdı yakınlaştırması (%)",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Search wallpapers": "Duvar kağıtlarında ara",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "Gemini kullanarak duvar kağıdını kategorize eder ve ona göre bir ön ayar seçer.\nÖnce sol kenar çubuğunda Gemini API anahtarını ayarlamanız gerekir.\nGörseller performans için küçültülür, ancak güvenli olmak için\nhasas bilgi içeren duvar kağıtlarını seçmeyin.",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Pick wallpaper image on your system": "Sisteminizdeki duvar kağıdı görselini seçin",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Cancel wallpaper selection": "Duvar kağıdı seçimini iptal et",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "Açık/koyu modu değiştirmek için tıklayın\n(duvar kağıdı seçildiğinde uygulanır)",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Extra wallpaper zoom (%)": "Ekstra duvar kağıdı yakınlaştırması (%)",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Pick a wallpaper": "Bir duvar kağıdı seçin",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "For desktop wallpapers | Good quality": "Masaüstü duvar kağıtları için | İyi kalite",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Style & wallpaper": "Stil ve duvar kağıdı",
+.nix-config/dots/quickshell/ii/translations/tr_TR.json:  "Hide sussy/anime wallpapers": "Şüpheli/anime duvar kağıtlarını gizle",
+.nix-config/dots/quickshell/ii/translations/vi_VN.json:  "Style & wallpaper": "Phong cách & hình nền",
+.nix-config/dots/quickshell/ii/translations/vi_VN.json:  "Pick wallpaper image on your system": "Chọn hình nền trên máy",
+.nix-config/dots/quickshell/ii/translations/vi_VN.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Hình nền Anime SFW ngẫu nhiên từ Konachan\nẢnh được lưu vào ~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/vi_VN.json:  "For desktop wallpapers | Good quality": "Cho hình nền máy tính | Chất lượng tốt",
+.nix-config/dots/quickshell/ii/translations/vi_VN.json:  "Preferred wallpaper zoom (%)": "Tỷ lệ thu phóng hình nền (%)",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Style & wallpaper": "סגנון וטפט",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "For desktop wallpapers | Good quality": "לטפטים | איכות טובה",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Preferred wallpaper zoom (%)": "זום טפט מועדף (%)",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Pick wallpaper image on your system": "בחר טפט מהמחשב",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "טפט אנימה אקראי מ-Konachan\nהתמונה נשמרת ב-~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner":   "ניתן לשנות בכל עת עם /dark, /light, /wallpaper במפעיל\nאם צבעי ה-shell לא משתנים:\n    1. פתח את הסרגל הצדדי הימני עם Super+N\n    2. לחץ על \"טען מחדש Hyprland & Quickshell\" בפינה הימנית העליונה",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "לחץ לשינוי בין מצב בהיר/כהה\n(מיושם לאחר בחירת רקע)",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Cancel wallpaper selection": "בטל בחירת רקע",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Pick a wallpaper": "בחירת רקע",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Extra wallpaper zoom (%)": "הגדלת רקע (%)",
+.nix-config/dots/quickshell/ii/translations/he_HE.json:  "Search wallpapers": "חיפוש רקעים",
+.nix-config/dots/quickshell/ii/translations/ru_RU.json:  "Style & wallpaper": "Стиль и обои",
+.nix-config/dots/quickshell/ii/translations/ru_RU.json:  "For desktop wallpapers | Good quality": "Для обоев | Отличное качество",
+.nix-config/dots/quickshell/ii/translations/ru_RU.json:  "Preferred wallpaper zoom (%)": "Предпочитаемый зум обоев (%)",
+.nix-config/dots/quickshell/ii/translations/ru_RU.json:  "Pick wallpaper image on your system": "Выберите изображение для обоев на своём ПК",
+.nix-config/dots/quickshell/ii/translations/ru_RU.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Случайные SFW обои с Konachan\nИзображение сохраняются в ~/Изображения/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "For desktop wallpapers | Good quality": "Para desktop | Boa qualidade",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Style & wallpaper": "Estilo & Papel de parede",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "Clique para alternar modo claro/escuro\n(aplicado ao escolher papel de parede)",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Preferred wallpaper zoom (%)": "Zoom preferido do papel de parede (%)",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Pick wallpaper image on your system": "Escolher imagem no sistema",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Search wallpapers": "Buscar papéis de parede",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner": "Mude depois com /dark, /light, /wallpaper no launcher\nSe as cores não mudarem:\n    1. Abra a barra direita com Super+N\n    2. Clique em \"Recarregar Hyprland & Quickshell\" no canto superior direito",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Cancel wallpaper selection": "Cancelar seleção de papel de parede",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Pick a wallpaper": "Escolha um papel de parede",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Extra wallpaper zoom (%)": "Zoom extra do papel de parede (%)",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "Usa Gemini para categorizar o papel de parede e escolhe um preset.\nVocê precisa definir a chave API do Gemini na barra esquerda antes.\nImagens são reduzidas para desempenho, mas por segurança,\nnão selecione papéis de parede com informações sensíveis.",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Hide sussy/anime wallpapers": "Esconder wallpapers suspeitos/anime",
+.nix-config/dots/quickshell/ii/translations/pt_BR.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Wallpaper Anime SFW aleatório do Konachan\nImagem salva em ~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner": "Ubah kapan saja dengan /dark, /light, /wallpaper di peluncur\nJika warna shell tidak berubah:\n    1. Buka sidebar kanan dengan Super+N\n    2. Klik \"Muat Ulang Hyprland & Quickshell\" di pojok kanan atas",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Wallpaper Anime SFW acak dari Konachan\nGambar disimpan di ~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Preferred wallpaper zoom (%)": "Preferensi perbesaran wallpaper (%)",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Search wallpapers": "Cari wallpaper",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "Menggunakan Gemini untuk mengkategorikan wallpaper lalu memilih preset yang sesuai berdasarkan kategori.\nAnda perlu mengatur kunci API Gemini di sidebar kiri terlebih dahulu.\nGambar diperkecil untuk performa, tetapi agar tetap aman,\njangan pilih wallpaper dengan informasi sensitif.",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Pick wallpaper image on your system": "Pilih gambar wallpaper di sistem Anda",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Cancel wallpaper selection": "Batalkan pemilihan wallpaper",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "Klik untuk beralih mode terang/gelap\n(diterapkan saat wallpaper dipilih)",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Extra wallpaper zoom (%)": "Zoom wallpaper ekstra (%)",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Wallpaper parallax": "Paralaks wallpaper",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Wallpaper safety enforced": "Keamanan wallpaper diberlakukan",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Pick a wallpaper": "Pilih wallpaper",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "For desktop wallpapers | Good quality": "Untuk wallpaper desktop | Kualitas bagus",
+.nix-config/dots/quickshell/ii/translations/id_ID.json:  "Style & wallpaper": "Gaya & wallpaper",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner": "Change any time later with /dark, /light, /wallpaper in the launcher\nIf the shell's colors aren't changing:\n    1. Open the right sidebar with Super+N\n    2. Click \"Reload Hyprland & Quickshell\" in the top-right corner",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers": "Random SFW Anime wallpaper from Konachan\nImage is saved to ~/Pictures/Wallpapers",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Preferred wallpaper zoom (%)": "Preferred wallpaper zoom (%)",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Search wallpapers": "Search wallpapers",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.": "Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Pick wallpaper image on your system": "Pick wallpaper image on your system",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Cancel wallpaper selection": "Cancel wallpaper selection",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Click to toggle light/dark mode\n(applied when wallpaper is chosen)": "Click to toggle light/dark mode\n(applied when wallpaper is chosen)",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Extra wallpaper zoom (%)": "Extra wallpaper zoom (%)",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Pick a wallpaper": "Pick a wallpaper",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "For desktop wallpapers | Good quality": "For desktop wallpapers | Good quality",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Style & wallpaper": "Style & wallpaper",
+.nix-config/dots/quickshell/ii/translations/en_US.json:  "Hide sussy/anime wallpapers": "Hide sussy/anime wallpapers",
+Process Group PGID: 20457

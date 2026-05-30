@@ -1,0 +1,26 @@
+warning: Git tree '/home/nondeus/.nix-config' is dirty
+error:
+       … while checking flake output 'packages'
+         at /nix/store/7ibwfs3d8s6jga0i9p6ygq94q7nfs89v-source/flake.nix:62:5:
+           61|     # Add this to allow building/running the VM package
+           62|     packages.x86_64-linux.net-gate = self.nixosConfigurations.non
+deus.config.microvm.vms.net-gate.config.microvm.declaredRunner;
+             |     ^
+           63|   };
+
+       … while checking the derivation 'packages.x86_64-linux.net-gate'
+         at /nix/store/7ibwfs3d8s6jga0i9p6ygq94q7nfs89v-source/flake.nix:62:5:
+           61|     # Add this to allow building/running the VM package
+           62|     packages.x86_64-linux.net-gate = self.nixosConfigurations.non
+deus.config.microvm.vms.net-gate.config.microvm.declaredRunner;
+             |     ^
+           63|   };
+
+       error: attribute 'microvm' missing
+       at /nix/store/7ibwfs3d8s6jga0i9p6ygq94q7nfs89v-source/flake.nix:62:106:
+           61|     # Add this to allow building/running the VM package
+           62|     packages.x86_64-linux.net-gate = self.nixosConfigurations.non
+deus.config.microvm.vms.net-gate.config.microvm.declaredRunner;
+             |
+                                        ^
+           63|   };

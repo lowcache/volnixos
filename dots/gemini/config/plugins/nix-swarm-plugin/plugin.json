@@ -1,0 +1,19 @@
+{
+  "name": "nix-swarm-plugin",
+  "version": "1.0.0",
+  "description": "Chief NixOS Swarm Plugin encapsulating the Chief Nix Architect, Flake, Impermanence, Virtualization, Home Manager, and Options Expert skills and subagents.",
+  "author": {
+    "name": "Nix Swarm Team"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "nix",
+    "nixos",
+    "flake",
+    "impermanence",
+    "virtualization",
+    "home-manager",
+    "options",
+    "swarm"
+  ]
+}

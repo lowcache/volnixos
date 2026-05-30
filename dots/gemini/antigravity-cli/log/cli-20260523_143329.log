@@ -1,0 +1,136 @@
+I0523 14:33:29.288338 24195 server.go:1301] Starting language server process with pid 24195
+I0523 14:33:29.288835 24195 server.go:471] Language server will attempt to listen on host localhost
+I0523 14:33:29.289916 24195 server.go:485] Language server listening on random port at 40999 for HTTPS (gRPC)
+I0523 14:33:29.290363 24195 server.go:492] Language server listening on random port at 43283 for HTTP
+W0523 14:33:29.639304 24195 launchmanager.go:69] Entering local chrome mode! This is WRONG unless you are running tests or in eval mode on Linux.
+E0523 14:33:29.641087 24195 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0523 14:33:29.641351 24195 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0523 14:33:29.641364 24195 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0523 14:33:29.641388 24195 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0523 14:33:29.641712 24195 server.go:2248] Auth succeeded, refreshing features and managers
+E0523 14:33:29.641768 24195 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0523 14:33:29.641922 24195 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0523 14:33:29.641931 24195 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0523 14:33:29.641969 24195 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0523 14:33:29.642141 24195 server.go:2254] State refresh took 0ms
+I0523 14:33:29.648462 24195 server.go:1912] initialized server successfully in 360.067609ms
+W0523 14:33:29.648868 24195 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0523 14:33:29.648883 24195 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0523 14:33:29.648895 24195 server.go:604] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0523 14:33:29.648906 24195 client.go:81] failed to set auth token
+I0523 14:33:29.649003 24195 auto_updater.go:253] Spawned background update process with PID 24227
+I0523 14:33:29.649128 24195 common.go:103] Launching CLI mode
+I0523 14:33:29.649861 24195 project.go:64] project: discovered project "/home/nondeus/.nix-config" (id=6091b5f1-463e-4445-9cda-228fd9990759) via /home/nondeus/.nix-config/.antigravitycli
+I0523 14:33:29.649876 24195 common.go:156] project: using project "/home/nondeus/.nix-config" (id=6091b5f1-463e-4445-9cda-228fd9990759) at /home/nondeus/.gemini/config/projects/6091b5f1-463e-4445-9cda-228fd9990759.json
+E0523 14:33:29.649893 24195 common.go:188] Failed to resolve GeminiDir ".gemini": .gemini must be an absolute path: path is not absolute, falling back to default
+I0523 14:33:29.649907 24195 common.go:197] CLI app data directory: /home/nondeus/.gemini/antigravity-cli
+I0523 14:33:29.649917 24195 server.go:200] Creating CLI server backend: product=antigravity workspaceDirs=[] appDataDir=/home/nondeus/.gemini/antigravity-cli cascadeManager=true codeAssist=true
+I0523 14:33:29.650045 24195 manager.go:249] Initializing CLI store manager for workspace /home/nondeus/.nix-config
+I0523 14:33:29.650408 24195 cli_setting_manager.go:612] Skipping telemetry propagation because user is not logged in
+I0523 14:33:29.650420 24195 cli_setting_manager.go:66] CLI settings initialized: permissions=&{Allow:[command(git) command(ls) command(journalctl) command(find) command(nix) command(nix-shell) command(grep) command(rg) command(dmesg) command(npm) command(nvidia-smi) command(lspci) command(tail) command(systemctl status) command(coredumpctl) command(head) command(printenv) command(type)] Deny:[command(rm -rf) command(nixos-rebuild)] Ask:[]}, toolPermission=request-review
+I0523 14:33:29.650554 24195 manager.go:312] CLI store manager initialized successfully
+I0523 14:33:29.650575 24195 common.go:312] CLI store manager created successfully
+I0523 14:33:29.654458 24195 common.go:402] Starting CLI program
+CLI ready for user input (startup took 5.307873ms)
+ERROR: logging before google.Init: I0523 14:33:29.657649     122 terminal_info_manager.go:160] Terminal detection: TERM="xterm-kitty" altScreen=true ssh=false
+I0523 14:33:29.658278 24195 gemini_extensions.go:28] Detecting Gemini extensions in /home/nondeus/.gemini/extensions
+I0523 14:33:29.658314 24195 gemini_extensions.go:49] No extensions found
+I0523 14:33:29.658344 24195 root.go:132] Failed to add workspace dir: failed to add workspace folder /home/nondeus/.nix-config: file:///home/nondeus/.nix-config is hidden: ignore uri
+W0523 14:33:29.659346 24195 token_storage.go:113] Failed to load token from keyring, falling back to file: The name is not activatable
+I0523 14:33:29.708134 24195 manager.go:542] Full redraw completed (rerenderAll) for conversation  (epoch 0, items 1)
+I0523 14:33:30.027325 24195 auth.go:114] ChainedAuth: authenticated via keyring (effective: keyring)
+I0523 14:33:30.027367 24195 server_oauth.go:212] applyAuthResult: email=drawpdeadredd@gmail.com, authMethod=consumer, quotaProject=
+I0523 14:33:30.027381 24195 server_oauth.go:217] OAuth: authenticated successfully as drawpdeadredd@gmail.com
+I0523 14:33:30.027393 24195 server_oauth.go:223] b.codeAssistClient.AuthProvider (0x78aa88a0b80) is same as b.cliAuth (0x78aa88a0b80)
+I0523 14:33:30.807448 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x725c50cb170180f8
+I0523 14:33:31.276384 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xa59e73d35f345268
+I0523 14:33:31.279506 24195 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 14:33:31.431425 24195 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 14:33:31.431502 24195 experiment_manager.go:35] Starting experiment refresh after login
+I0523 14:33:31.589430 24195 experiment_manager.go:39] Experiments refreshed after login
+I0523 14:33:31.589517 24195 manager.go:932] Reloading system slash commands
+I0523 14:33:31.765869 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x2072abfca6b4a800
+I0523 14:33:32.386166 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x29797d65bcd5e428
+I0523 14:33:32.509790 24195 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 14:33:32.510014 24195 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 14:33:32.650323 24195 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 14:33:32.650372 24195 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 14:33:32.650388 24195 experiment_manager.go:35] Starting experiment refresh after login
+I0523 14:33:32.650441 24195 experiment_manager.go:35] Starting experiment refresh after login
+I0523 14:33:32.747496 24195 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 14:33:32.903246 24195 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 14:33:32.903290 24195 experiment_manager.go:35] Starting experiment refresh after login
+I0523 14:33:32.904155 24195 experiment_manager.go:39] Experiments refreshed after login
+I0523 14:33:32.904247 24195 manager.go:932] Reloading system slash commands
+I0523 14:33:32.906761 24195 manager.go:936] Slash commands unchanged, skipping update
+I0523 14:33:33.058051 24195 experiment_manager.go:39] Experiments refreshed after login
+I0523 14:33:33.058143 24195 manager.go:932] Reloading system slash commands
+I0523 14:33:33.058179 24195 experiment_manager.go:39] Experiments refreshed after login
+I0523 14:33:33.058233 24195 manager.go:932] Reloading system slash commands
+I0523 14:33:33.061001 24195 manager.go:936] Slash commands unchanged, skipping update
+I0523 14:33:33.061031 24195 manager.go:936] Slash commands unchanged, skipping update
+I0523 14:33:33.078842 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xef82c1001bafa990
+I0523 14:36:03.037428 24195 input_loop.go:34] HandleUserInput called with text: "using the nix-expert skill find me a cli app that can scan, evaluate, and parse nix configuration files for general syntax, option validity, and error handling"
+I0523 14:36:03.037469 24195 conversation_manager.go:284] Starting new conversation (agent=false)
+I0523 14:36:03.037478 24195 server.go:718] Creating new cascade trajectory (agentScript=false)
+I0523 14:36:03.037485 24195 server.go:726] Conversation using project ID: 6091b5f1-463e-4445-9cda-228fd9990759
+I0523 14:36:03.037985 24195 server.go:747] Created conversation 2364f95e-2c94-4616-a435-f2df555d7487
+I0523 14:36:03.038291 24195 conversation_manager.go:378] Streaming conversation 2364f95e-2c94-4616-a435-f2df555d7487
+I0523 14:36:03.038544 24195 server.go:766] Starting conversation update stream for 2364f95e-2c94-4616-a435-f2df555d7487
+I0523 14:36:03.038563 24195 conversation_manager.go:321] Forwarding user message to conversation 2364f95e-2c94-4616-a435-f2df555d7487 (items=1, media=0)
+I0523 14:36:03.038570 24195 server.go:1072] Sending user message to conversation 2364f95e-2c94-4616-a435-f2df555d7487 (items=1, media=0)
+E0523 14:36:03.043149 24195 discovery.go:334] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0523 14:36:05.103775 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf0898fe785bc8a03
+I0523 14:36:07.866003 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x721ae29c6c636a22
+E0523 14:36:07.995053 24195 log.go:398] checkpoint model generated tool calls
+I0523 14:36:09.607448 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa47ef0d1fc46fd3d
+I0523 14:36:13.191494 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x89600f030b7311c2
+I0523 14:36:14.204548 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd6d6b93d069b4955
+I0523 14:36:17.800736 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xe18bd003777348a3
+I0523 14:36:18.723982 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5f00117b1641c6d0
+I0523 14:36:23.431836 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xeec0be0d2b88b566
+I0523 14:36:25.785946 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x34c99d976f7b8c15
+I0523 14:36:37.067233 24195 text_drip.go:173] Drip stopped: lastStepIdx=11, charIdx=3252, length=3477
+I0523 14:39:29.900307 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xf8e5706d1bbe1e0a
+I0523 14:39:30.333415 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xbcab83ef5d0397
+I0523 14:45:30.023231 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x2749938d66116bba
+I0523 14:45:30.335834 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x30858d1244e6d1bf
+I0523 14:51:30.026878 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xbdbfa55e9be528de
+I0523 14:51:30.338884 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x491ae522dfed8afc
+I0523 14:57:30.184099 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x7827e12e0efd2c69
+I0523 14:57:30.494999 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xcdd1c1bcea5a51dd
+I0523 15:03:30.027232 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xc5086407be5a5ce2
+I0523 15:03:30.492855 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xac94f8eb1d1806ca
+I0523 15:09:30.040452 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xb237cdad85200d43
+I0523 15:09:30.495195 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x98b869e05a8860d2
+I0523 15:15:30.029608 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x5eb506583eced21f
+I0523 15:15:30.496633 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xf6ca310f0b87d38f
+W0523 15:20:30.028456 24195 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0523 15:20:30.652907 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x341402c56b7a41d7
+I0523 15:26:30.038091 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x8a011906ea3e5589
+I0523 15:26:30.352008 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xe4d2d850823ff2cb
+I0523 15:32:30.030090 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x97f38e5587dc301c
+I0523 15:32:30.337823 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xf242f6e9eedf0e2f
+I0523 15:38:30.183038 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xb6860fab6d08ce36
+I0523 15:38:30.525408 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x882ec748c003671b
+E0523 15:59:10.228357 24195 log.go:398] Failed to poll ListExperiments: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:listExperiments": read tcp 10.21.125.211:38144->142.250.9.95:443: read: connection timed out
+W0523 15:59:10.237775 24195 log_context.go:117] Cache(userInfo): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchUserInfo": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.237834 24195 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchUserInfo": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.237849 24195 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.237876 24195 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.237908 24195 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+E0523 15:59:10.237916 24195 log.go:398] Failed to poll ListExperiments: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:listExperiments": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.238214 24195 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.238375 24195 log_context.go:117] Cache(availableModels): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.238403 24195 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.238414 24195 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.238423 24195 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": dial tcp: lookup daily-cloudcode-pa.googleapis.com: no such host
+W0523 15:59:10.241126 24195 log_context.go:117] Cache(peopleInfo): Singleflight refresh failed: Get "https://www.googleapis.com/oauth2/v2/userinfo": dial tcp: lookup www.googleapis.com: no such host
+W0523 15:59:10.241160 24195 log_context.go:117] Failed to refresh cache in background: Get "https://www.googleapis.com/oauth2/v2/userinfo": dial tcp: lookup www.googleapis.com: no such host
+E0523 15:59:15.228791 24195 client.go:58] Post "https://play.googleapis.com/log": dial tcp: lookup play.googleapis.com: no such host
+ERROR: logging before google.Init: E0523 15:59:15.228785      46 g3syslog.go:23] [Post "https://play.googleapis.com/log": dial tcp: lookup play.googleapis.com: no such host]
+I0523 15:59:30.360207 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x427b51a426aac0fc
+I0523 15:59:30.474722 24195 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x8b855781c744715f
+I0523 16:03:30.128506 24195 common.go:407] CLI program exited, shutting down
+I0523 16:03:30.147264 24195 manager.go:450] CLI store manager shutting down
+I0523 16:03:30.147787 24195 conversation_manager.go:346] Stopping conversation stream

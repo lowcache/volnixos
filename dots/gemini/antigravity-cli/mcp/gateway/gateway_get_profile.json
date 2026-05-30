@@ -1,0 +1,1 @@
+{"name":"gateway_get_profile","description":"Show the active routing profile for this session and what it allows or denies.","parameters":{"properties":{},"required":[],"type":"object"}}

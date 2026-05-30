@@ -1,0 +1,3 @@
+{
+  "output": "Directory listing for /home/nondeus/.nix-config/home:\ndefault.nix (382 bytes)\npersist.nix (3614 bytes)\npkgs.nix (2472 bytes)\nsession.nix (2622 bytes)\nshell.nix (11510 bytes)"
+}

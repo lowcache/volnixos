@@ -1,0 +1,10 @@
+{
+  "name": "modern-web-guidance-plugin",
+  "version": "1.0.4",
+  "description": "Curated collection of agent skills for modern web development.",
+  "author": {
+    "name": "Google"
+  },
+  "repository": "https://github.com/GoogleChrome/modern-web-guidance",
+  "license": "Apache-2.0"
+}

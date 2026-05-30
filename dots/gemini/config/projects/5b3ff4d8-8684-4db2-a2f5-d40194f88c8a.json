@@ -1,0 +1,14 @@
+{
+  "id":  "5b3ff4d8-8684-4db2-a2f5-d40194f88c8a",
+  "name":  "/home/nondeus/Downloads",
+  "projectResources":  {
+    "resources":  [
+      {
+        "gitFolder":  {
+          "folderUri":  "file:///home/nondeus/Downloads",
+          "allowWrite":  true
+        }
+      }
+    ]
+  }
+}

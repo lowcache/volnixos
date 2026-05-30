@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_WALKTHROUGH",
+  "summary": "This walkthrough outlines the clean, hardware-independent NixOS 'limbo' configuration created alongside 'infernalnix' in the .nix-config repository. It details how the opinionated Lanzaboote (Secure Boot), impermanence, GPU-specific configurations, and custom kernels were successfully removed and replaced by declarative alternatives. It also provides evaluation and validation outputs for both configurations.",
+  "updatedAt": "2026-05-29T20:37:42.708351340Z"
+}

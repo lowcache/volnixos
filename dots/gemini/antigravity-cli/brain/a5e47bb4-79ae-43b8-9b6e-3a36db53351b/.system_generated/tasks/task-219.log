@@ -1,0 +1,17 @@
+warning: Git tree '/home/nondeus/.gemini/antigravity-cli/brain/fc759abc-6552-42e
+9-a7cd-d489203fab3d/.system_generated/worktrees/subagent-Nix-Channel-Upgrader---
+Refactorer-nix-upgrader-fec22d11' is dirty
+warning: input 'nixos-fhs-compat' has an override for a non-existent input 'nixp
+kgs'
+warning: system.stateVersion is not set, defaulting to 26.05. Read why this matt
+ers on https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersio
+n.
+warning: system.stateVersion is not set, defaulting to 26.05. Read why this matt
+ers on https://nixos.org/manual/nixos/stable/options.html#opt-system.stateVersio
+n.
+warning: flake output attribute 'defaultPackage' is deprecated; use 'packages.<s
+ystem>.default' instead
+warning: The check omitted these incompatible systems: aarch64-darwin, aarch64-l
+inux, armv6l-linux, armv7l-linux, i686-linux, powerpc64le-linux, riscv64-linux,
+x86_64-darwin, x86_64-freebsd
+Use '--all-systems' to check all.

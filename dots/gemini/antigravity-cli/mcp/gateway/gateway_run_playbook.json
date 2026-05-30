@@ -1,0 +1,1 @@
+{"name":"gateway_run_playbook","description":"Execute a multi-step playbook (collapses multiple tool calls into one invocation)","parameters":{"properties":{"arguments":{"default":{},"description":"Playbook input arguments","type":"object"},"name":{"description":"Playbook name to execute","type":"string"}},"required":["name"],"type":"object"}}

@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_TASK",
+  "summary": "Task checklist to execute the approved hybrid GPU freeze and stability solution. This includes adding kernel stability parameters, removing chromium from pkgs.nix, creating browsers.nix, updating imports in default.nix, deleting brave.nix, and verifying the configuration.",
+  "updatedAt": "2026-05-22T04:21:46.555279599Z"
+}

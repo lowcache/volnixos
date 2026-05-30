@@ -1,0 +1,115 @@
+I0526 09:50:37.281226 167144 server.go:1303] Starting language server process with pid 167144
+I0526 09:50:37.282248 167144 server.go:473] Language server will attempt to listen on host localhost
+I0526 09:50:37.283402 167144 server.go:487] Language server listening on random port at 40977 for HTTPS (gRPC)
+I0526 09:50:37.283794 167144 server.go:494] Language server listening on random port at 37099 for HTTP
+W0526 09:50:37.540487 167144 launchmanager.go:69] Entering local chrome mode! This is WRONG unless you are running tests or in eval mode on Linux.
+E0526 09:50:37.543708 167144 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0526 09:50:37.544114 167144 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0526 09:50:37.544133 167144 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0526 09:50:37.544172 167144 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0526 09:50:37.544641 167144 server.go:2271] Auth succeeded, refreshing features and managers
+E0526 09:50:37.544701 167144 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0526 09:50:37.544982 167144 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0526 09:50:37.544997 167144 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0526 09:50:37.545030 167144 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0526 09:50:37.545241 167144 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0526 09:50:37.545262 167144 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0526 09:50:37.545271 167144 server.go:2277] State refresh took 0ms
+E0526 09:50:37.545279 167144 server.go:606] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0526 09:50:37.545304 167144 client.go:81] failed to set auth token
+I0526 09:50:37.551318 167144 server.go:1935] initialized server successfully in 270.026549ms
+W0526 09:50:37.551546 167144 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0526 09:50:37.551567 167144 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0526 09:50:37.551582 167144 server.go:606] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0526 09:50:37.551593 167144 client.go:81] failed to set auth token
+I0526 09:50:37.552392 167144 auto_updater.go:253] Spawned background update process with PID 167171
+I0526 09:50:37.552633 167144 common.go:103] Launching CLI mode
+I0526 09:50:37.552677 167144 project.go:162] project: no project found from /home/nondeus, creating new project
+I0526 09:50:37.552969 167144 project.go:141] project: created project "/home/nondeus" (id=818f9def-27f0-4b41-b1e7-3b37d1ff26c7) at /home/nondeus/.gemini/config/projects/818f9def-27f0-4b41-b1e7-3b37d1ff26c7.json, symlinked from /home/nondeus/.antigravitycli/818f9def-27f0-4b41-b1e7-3b37d1ff26c7.json
+I0526 09:50:37.552980 167144 common.go:156] project: using project "/home/nondeus" (id=818f9def-27f0-4b41-b1e7-3b37d1ff26c7) at /home/nondeus/.gemini/config/projects/818f9def-27f0-4b41-b1e7-3b37d1ff26c7.json
+E0526 09:50:37.553004 167144 common.go:188] Failed to resolve GeminiDir ".gemini": .gemini must be an absolute path: path is not absolute, falling back to default
+I0526 09:50:37.553022 167144 common.go:197] CLI app data directory: /home/nondeus/.gemini/antigravity-cli
+I0526 09:50:37.553038 167144 server.go:200] Creating CLI server backend: product=antigravity workspaceDirs=[] appDataDir=/home/nondeus/.gemini/antigravity-cli cascadeManager=true codeAssist=true
+I0526 09:50:37.553146 167144 manager.go:249] Initializing CLI store manager for workspace /home/nondeus
+I0526 09:50:37.553952 167144 cli_setting_manager.go:612] Skipping telemetry propagation because user is not logged in
+I0526 09:50:37.553969 167144 cli_setting_manager.go:66] CLI settings initialized: permissions=&{Allow:[command(git) command(ls) command(journalctl) command(find) command(nix) command(nix-shell) command(grep) command(rg) command(dmesg) command(npm) command(nvidia-smi) command(lspci) command(tail) command(systemctl status) command(coredumpctl) command(head) command(printenv) command(type)] Deny:[command(rm -rf) command(nixos-rebuild)] Ask:[]}, toolPermission=request-review
+I0526 09:50:37.554065 167144 manager.go:312] CLI store manager initialized successfully
+I0526 09:50:37.554076 167144 common.go:312] CLI store manager created successfully
+I0526 09:50:37.559077 167144 common.go:402] Starting CLI program
+CLI ready for user input (startup took 6.420967ms)
+ERROR: logging before google.Init: I0526 09:50:37.560964      58 terminal_info_manager.go:160] Terminal detection: TERM="xterm-kitty" altScreen=true ssh=false
+I0526 09:50:37.561459 167144 gemini_extensions.go:28] Detecting Gemini extensions in /home/nondeus/.gemini/extensions
+I0526 09:50:37.561500 167144 gemini_extensions.go:49] No extensions found
+W0526 09:50:37.562765 167144 token_storage.go:113] Failed to load token from keyring, falling back to file: The name is not activatable
+I0526 09:50:37.611862 167144 manager.go:542] Full redraw completed (rerenderAll) for conversation  (epoch 0, items 1)
+I0526 09:50:37.751800 167144 auth.go:114] ChainedAuth: authenticated via keyring (effective: keyring)
+I0526 09:50:37.751841 167144 server_oauth.go:212] applyAuthResult: email=drawpdeadredd@gmail.com, authMethod=consumer, quotaProject=
+I0526 09:50:37.751854 167144 server_oauth.go:217] OAuth: authenticated successfully as drawpdeadredd@gmail.com
+I0526 09:50:37.751866 167144 server_oauth.go:223] b.codeAssistClient.AuthProvider (0x2b9faebff500) is same as b.cliAuth (0x2b9faebff500)
+I0526 09:50:38.254566 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x4b86ca7fede2a6d8
+I0526 09:50:38.868270 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x7e66f89250807855
+I0526 09:50:38.870251 167144 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0526 09:50:38.985561 167144 input_loop.go:499] Auth done received, triggering experiment refresh
+I0526 09:50:38.985639 167144 experiment_manager.go:35] Starting experiment refresh after login
+I0526 09:50:39.391558 167144 experiment_manager.go:39] Experiments refreshed after login
+I0526 09:50:39.391679 167144 manager.go:932] Reloading system slash commands
+I0526 09:50:39.500923 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xac6147e718afc774
+I0526 09:50:40.247027 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xd2c90d8115b4201c
+I0526 09:50:40.493329 167144 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0526 09:50:40.493490 167144 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0526 09:50:40.626376 167144 input_loop.go:499] Auth done received, triggering experiment refresh
+I0526 09:50:40.626445 167144 input_loop.go:499] Auth done received, triggering experiment refresh
+I0526 09:50:40.626460 167144 experiment_manager.go:35] Starting experiment refresh after login
+I0526 09:50:40.626476 167144 experiment_manager.go:35] Starting experiment refresh after login
+I0526 09:50:40.771718 167144 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0526 09:50:40.866619 167144 experiment_manager.go:39] Experiments refreshed after login
+I0526 09:50:40.866729 167144 manager.go:932] Reloading system slash commands
+I0526 09:50:40.869760 167144 manager.go:936] Slash commands unchanged, skipping update
+I0526 09:50:40.880858 167144 input_loop.go:499] Auth done received, triggering experiment refresh
+I0526 09:50:40.880880 167144 experiment_manager.go:35] Starting experiment refresh after login
+I0526 09:50:41.025547 167144 experiment_manager.go:39] Experiments refreshed after login
+I0526 09:50:41.025707 167144 manager.go:932] Reloading system slash commands
+I0526 09:50:41.030330 167144 manager.go:936] Slash commands unchanged, skipping update
+I0526 09:50:41.196086 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x70927d8bc9a0501
+I0526 09:50:41.196985 167144 experiment_manager.go:39] Experiments refreshed after login
+I0526 09:50:41.197074 167144 manager.go:932] Reloading system slash commands
+I0526 09:50:41.199934 167144 manager.go:936] Slash commands unchanged, skipping update
+I0526 09:51:34.433291 167144 input_loop.go:34] HandleUserInput called with text: "I need to create my own API for a website with a pretty convoluted login requirements including use of link that is emailed and a captcha. Is this possible?"
+I0526 09:51:34.433357 167144 conversation_manager.go:284] Starting new conversation (agent=false)
+I0526 09:51:34.433375 167144 server.go:718] Creating new cascade trajectory (agentScript=false)
+I0526 09:51:34.433388 167144 server.go:726] Conversation using project ID: 818f9def-27f0-4b41-b1e7-3b37d1ff26c7
+I0526 09:51:34.433978 167144 server.go:747] Created conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6
+I0526 09:51:34.434309 167144 conversation_manager.go:378] Streaming conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6
+I0526 09:51:34.434543 167144 server.go:766] Starting conversation update stream for 52fdb723-e6fd-4c4f-b284-e539cfde56b6
+I0526 09:51:34.434561 167144 conversation_manager.go:321] Forwarding user message to conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6 (items=1, media=0)
+I0526 09:51:34.434566 167144 server.go:1072] Sending user message to conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6 (items=1, media=0)
+E0526 09:51:34.459066 167144 discovery.go:351] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0526 09:51:36.936035 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x74cfde6faf71f513
+I0526 09:51:40.384517 167144 text_drip.go:173] Drip stopped: lastStepIdx=2, charIdx=708, length=2442
+I0526 09:51:42.760677 167144 manager.go:542] Full redraw completed (rerenderAll) for conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6 (epoch 0, items 5)
+I0526 09:51:43.355781 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5bbd529cec0ee4d4
+I0526 09:55:48.915553 167144 input_loop.go:34] HandleUserInput called with text: "ok so given session persistence and access to the email, its possible, After login the task would necessitate the clicking of 3 links/buttons for the main task up to 10+ with drop down menus. So can we get started on it? The website is skipthegames.com and i will give you all subsequent login and email information when needed"
+I0526 09:55:48.915709 167144 conversation_manager.go:321] Forwarding user message to conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6 (items=1, media=0)
+I0526 09:55:48.915720 167144 server.go:1072] Sending user message to conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6 (items=1, media=0)
+E0526 09:55:48.919484 167144 discovery.go:351] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0526 09:55:49.362523 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xdeb73ff678474469
+I0526 09:55:49.474508 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x28926d03ad2faae9
+I0526 09:55:52.938264 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x6591dc1c7450bf5e
+I0526 09:55:56.056737 167144 text_drip.go:173] Drip stopped: lastStepIdx=5, charIdx=1228, length=3160
+I0526 09:56:39.134168 167144 input_loop.go:34] HandleUserInput called with text: "is it possible to load ollama models into the antigravity-cli interface"
+I0526 09:56:39.134216 167144 conversation_manager.go:321] Forwarding user message to conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6 (items=1, media=0)
+I0526 09:56:39.134224 167144 server.go:1072] Sending user message to conversation 52fdb723-e6fd-4c4f-b284-e539cfde56b6 (items=1, media=0)
+E0526 09:56:39.137852 167144 discovery.go:351] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0526 09:56:40.784018 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x355cc3b2fe9e0959
+I0526 09:56:40.934227 167144 text_drip.go:173] Drip stopped: lastStepIdx=7, charIdx=84, length=141
+I0526 09:56:42.192855 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8e981c4d8c7da94f
+I0526 09:56:42.334126 167144 text_drip.go:173] Drip stopped: lastStepIdx=9, charIdx=84, length=102
+I0526 09:56:43.712791 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa9466389146400f2
+I0526 09:56:43.834508 167144 text_drip.go:173] Drip stopped: lastStepIdx=11, charIdx=79, length=167
+I0526 09:56:45.485000 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x2662863402a103e0
+I0526 09:56:46.656149 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa99913ff1b361fbe
+I0526 09:56:48.853290 167144 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x860c9417b12a804a
+I0526 09:56:48.984272 167144 text_drip.go:173] Drip stopped: lastStepIdx=17, charIdx=84, length=129
+I0526 09:56:50.135537 167144 common.go:407] CLI program exited, shutting down
+I0526 09:56:50.135909 167144 manager.go:450] CLI store manager shutting down
+I0526 09:56:50.137537 167144 conversation_manager.go:346] Stopping conversation stream

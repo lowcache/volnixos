@@ -1,0 +1,49 @@
+{
+  "allowNonWorkspaceAccess": true,
+  "colorScheme": "colorblind-friendly dark",
+  "permissions": {
+    "allow": [
+      "command(git)",
+      "command(ls)",
+      "command(journalctl)",
+      "command(find)",
+      "command(nix)",
+      "command(nix-shell)",
+      "command(grep)",
+      "command(rg)",
+      "command(dmesg)",
+      "command(npm)",
+      "command(nvidia-smi)",
+      "command(lspci)",
+      "command(tail)",
+      "command(systemctl status)",
+      "command(coredumpctl)",
+      "command(head)",
+      "command(printenv)",
+      "command(type)",
+      "command(cp)",
+      "command(nixos-version)",
+      "command(cat)",
+      "command(nix-channel)",
+      "command(tar)",
+      "command(/home/nondeus/.local/bin/antigravity-ide)",
+      "command(nixpkgs-fmt)"
+    ],
+    "deny": [
+      "command(rm -rf)",
+      "command(nixos-rebuild)"
+    ]
+  },
+  "trustedWorkspaces": [
+    "/home/nondeus",
+    "/home/nondeus/.gemini/antigravity-cli",
+    "/home/nondeus/.nix-config",
+    "/persist/home/nondeus/*",
+    "/home/nondeus/.gemini",
+    "/home/nondeus/.gemini/skills",
+    "/home/nondeus/Projects/lcpool",
+    "/home/nondeus/Downloads",
+    "/home/nondeus/CodeRepo/kalinix",
+    "/home/lowcache/.nix-config"
+  ]
+}

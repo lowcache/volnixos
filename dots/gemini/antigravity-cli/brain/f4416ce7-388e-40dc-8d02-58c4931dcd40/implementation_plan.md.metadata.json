@@ -1,0 +1,6 @@
+{
+  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary": "An implementation plan to resolve GPU-related screen and laptop freezes by fixing conflicting service settings, correcting global environment variables, enabling proper dynamic power management, and using the proprietary Nvidia kernel module.",
+  "updatedAt": "2026-05-21T23:06:49.689679503Z",
+  "requestFeedback": true
+}

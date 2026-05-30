@@ -1,0 +1,160 @@
+I0523 16:09:07.953913 128302 server.go:1301] Starting language server process with pid 128302
+I0523 16:09:07.954730 128302 server.go:471] Language server will attempt to listen on host localhost
+I0523 16:09:07.955936 128302 server.go:485] Language server listening on random port at 41675 for HTTPS (gRPC)
+I0523 16:09:07.956479 128302 server.go:492] Language server listening on random port at 44053 for HTTP
+W0523 16:09:08.181497 128302 launchmanager.go:69] Entering local chrome mode! This is WRONG unless you are running tests or in eval mode on Linux.
+E0523 16:09:08.183985 128302 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0523 16:09:08.184398 128302 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0523 16:09:08.184408 128302 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0523 16:09:08.184426 128302 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0523 16:09:08.184656 128302 server.go:2248] Auth succeeded, refreshing features and managers
+E0523 16:09:08.184687 128302 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0523 16:09:08.184792 128302 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0523 16:09:08.184799 128302 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0523 16:09:08.184813 128302 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0523 16:09:08.184923 128302 server.go:2254] State refresh took 0ms
+I0523 16:09:08.204964 128302 server.go:1912] initialized server successfully in 250.988998ms
+W0523 16:09:08.205398 128302 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0523 16:09:08.205416 128302 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0523 16:09:08.205428 128302 server.go:604] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0523 16:09:08.205441 128302 client.go:81] failed to set auth token
+I0523 16:09:08.205609 128302 auto_updater.go:253] Spawned background update process with PID 128335
+I0523 16:09:08.205668 128302 common.go:103] Launching CLI mode
+I0523 16:09:08.206068 128302 project.go:64] project: discovered project "/home/nondeus" (id=72153009-3852-4f67-ba75-90fba9b6a564) via /home/nondeus/.antigravitycli
+I0523 16:09:08.206081 128302 common.go:156] project: using project "/home/nondeus" (id=72153009-3852-4f67-ba75-90fba9b6a564) at /home/nondeus/.gemini/config/projects/72153009-3852-4f67-ba75-90fba9b6a564.json
+E0523 16:09:08.206098 128302 common.go:188] Failed to resolve GeminiDir ".gemini": .gemini must be an absolute path: path is not absolute, falling back to default
+I0523 16:09:08.206112 128302 common.go:197] CLI app data directory: /home/nondeus/.gemini/antigravity-cli
+I0523 16:09:08.206122 128302 server.go:200] Creating CLI server backend: product=antigravity workspaceDirs=[] appDataDir=/home/nondeus/.gemini/antigravity-cli cascadeManager=true codeAssist=true
+I0523 16:09:08.206191 128302 manager.go:249] Initializing CLI store manager for workspace /home/nondeus
+I0523 16:09:08.206874 128302 cli_setting_manager.go:612] Skipping telemetry propagation because user is not logged in
+I0523 16:09:08.206890 128302 cli_setting_manager.go:66] CLI settings initialized: permissions=&{Allow:[command(git) command(ls) command(journalctl) command(find) command(nix) command(nix-shell) command(grep) command(rg) command(dmesg) command(npm) command(nvidia-smi) command(lspci) command(tail) command(systemctl status) command(coredumpctl) command(head) command(printenv) command(type)] Deny:[command(rm -rf) command(nixos-rebuild)] Ask:[]}, toolPermission=request-review
+I0523 16:09:08.207343 128302 manager.go:312] CLI store manager initialized successfully
+I0523 16:09:08.207411 128302 common.go:312] CLI store manager created successfully
+I0523 16:09:08.210561 128302 common.go:402] Starting CLI program
+CLI ready for user input (startup took 4.876765ms)
+ERROR: logging before google.Init: I0523 16:09:08.212587      32 terminal_info_manager.go:160] Terminal detection: TERM="xterm-kitty" altScreen=true ssh=false
+I0523 16:09:08.213277 128302 gemini_extensions.go:28] Detecting Gemini extensions in /home/nondeus/.gemini/extensions
+I0523 16:09:08.213313 128302 gemini_extensions.go:49] No extensions found
+W0523 16:09:08.214978 128302 token_storage.go:113] Failed to load token from keyring, falling back to file: The name is not activatable
+I0523 16:09:08.263040 128302 manager.go:542] Full redraw completed (rerenderAll) for conversation  (epoch 0, items 1)
+I0523 16:09:08.359835 128302 auth.go:114] ChainedAuth: authenticated via keyring (effective: keyring)
+I0523 16:09:08.359867 128302 server_oauth.go:212] applyAuthResult: email=drawpdeadredd@gmail.com, authMethod=consumer, quotaProject=
+I0523 16:09:08.359876 128302 server_oauth.go:217] OAuth: authenticated successfully as drawpdeadredd@gmail.com
+I0523 16:09:08.359883 128302 server_oauth.go:223] b.codeAssistClient.AuthProvider (0x36d09d281300) is same as b.cliAuth (0x36d09d281300)
+I0523 16:09:08.997699 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x1e95b7c0ec4d0b0e
+I0523 16:09:09.626834 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x4aed4a6fe689f67
+I0523 16:09:09.628388 128302 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 16:09:09.932056 128302 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 16:09:09.932122 128302 experiment_manager.go:35] Starting experiment refresh after login
+I0523 16:09:10.122679 128302 experiment_manager.go:39] Experiments refreshed after login
+I0523 16:09:10.122777 128302 manager.go:932] Reloading system slash commands
+I0523 16:09:10.326417 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xe54e657e49b9d20
+I0523 16:09:10.833589 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x2fd1908878e25100
+I0523 16:09:10.946047 128302 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 16:09:10.946259 128302 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 16:09:11.043517 128302 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 16:09:11.043585 128302 experiment_manager.go:35] Starting experiment refresh after login
+I0523 16:09:11.045554 128302 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 16:09:11.045584 128302 experiment_manager.go:35] Starting experiment refresh after login
+I0523 16:09:11.146332 128302 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0523 16:09:11.252654 128302 experiment_manager.go:39] Experiments refreshed after login
+I0523 16:09:11.252720 128302 manager.go:932] Reloading system slash commands
+I0523 16:09:11.256135 128302 manager.go:936] Slash commands unchanged, skipping update
+I0523 16:09:11.350464 128302 input_loop.go:499] Auth done received, triggering experiment refresh
+I0523 16:09:11.350514 128302 experiment_manager.go:35] Starting experiment refresh after login
+I0523 16:09:11.453675 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x7170a4a5e03c0f6a
+I0523 16:09:11.454284 128302 experiment_manager.go:39] Experiments refreshed after login
+I0523 16:09:11.454341 128302 manager.go:932] Reloading system slash commands
+I0523 16:09:11.456848 128302 manager.go:936] Slash commands unchanged, skipping update
+I0523 16:09:11.469212 128302 experiment_manager.go:39] Experiments refreshed after login
+I0523 16:09:11.469319 128302 manager.go:932] Reloading system slash commands
+I0523 16:09:11.473975 128302 manager.go:936] Slash commands unchanged, skipping update
+I0523 16:09:23.847883 128302 input_loop.go:34] HandleUserInput called with text: "how do I add gemini api keys and model usage to open-webui"
+I0523 16:09:23.847937 128302 conversation_manager.go:284] Starting new conversation (agent=false)
+I0523 16:09:23.847948 128302 server.go:718] Creating new cascade trajectory (agentScript=false)
+I0523 16:09:23.847956 128302 server.go:726] Conversation using project ID: 72153009-3852-4f67-ba75-90fba9b6a564
+I0523 16:09:23.849516 128302 server.go:747] Created conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7
+I0523 16:09:23.850032 128302 conversation_manager.go:378] Streaming conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7
+I0523 16:09:23.850232 128302 server.go:766] Starting conversation update stream for 12b535df-be6c-4ee1-815f-d573fe9f41c7
+I0523 16:09:23.850256 128302 conversation_manager.go:321] Forwarding user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+I0523 16:09:23.850261 128302 server.go:1072] Sending user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+E0523 16:09:23.855816 128302 discovery.go:334] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0523 16:09:25.579376 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd7886179a34386c9
+I0523 16:09:29.366500 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x4a8e6eb7481cf9f6
+I0523 16:09:31.419804 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x12615b93dbcdd749
+I0523 16:09:33.560421 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x65efaaf6eb0533be
+I0523 16:09:37.052440 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xd8de4078b769da77
+I0523 16:09:38.080403 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1359f22b6205dde7
+I0523 16:09:42.069207 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xdf65f5369140f589
+I0523 16:09:43.503342 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5518e859d41dfa36
+I0523 16:09:48.028222 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xa54d41eb85c0a54a
+I0523 16:09:50.230835 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa8bd528a7bc299d2
+I0523 16:09:54.356937 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xd4a695b86cca0735
+I0523 16:09:55.314810 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x39e78853d9b73c83
+I0523 16:09:59.597504 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xcfe65516fa71516e
+I0523 16:10:00.398029 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf0c0e1be8c3f42e1
+I0523 16:10:04.585779 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xea40ac576ec65a9
+I0523 16:10:06.607307 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x3ac6b2c1f88fa5f3
+I0523 16:10:13.919204 128302 text_drip.go:173] Drip stopped: lastStepIdx=17, charIdx=2349, length=2508
+I0523 16:11:30.965128 128302 input_loop.go:34] HandleUserInput called with text: "how do i add my mcp gateway to open-webui i tried to add the mcp server wth the http server and port directly from the mcp_config.json for this interface and it would never connect"
+I0523 16:11:30.965193 128302 conversation_manager.go:321] Forwarding user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+I0523 16:11:30.965205 128302 server.go:1072] Sending user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+E0523 16:11:30.971198 128302 discovery.go:334] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0523 16:11:31.821379 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xca87db9614f91f35
+I0523 16:11:35.918724 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x30291171343c9e79
+I0523 16:11:37.074334 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xb46d593870254e54
+I0523 16:11:41.564836 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xcce0afb6f7188177
+I0523 16:11:42.999421 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa5830d093499b572
+I0523 16:11:46.070780 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x5efaa85cab651b59
+I0523 16:11:47.033941 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe7e2bfc174638053
+I0523 16:11:51.601633 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xeb3ec44a7c854cee
+I0523 16:11:53.547094 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa2b76e5448601c74
+I0523 16:11:57.534991 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x2b192047d34e17ed
+I0523 16:11:59.600088 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe261f365d6cc703d
+I0523 16:12:07.305831 128302 text_drip.go:173] Drip stopped: lastStepIdx=29, charIdx=2483, length=2673
+I0523 16:12:34.429184 128302 input_loop.go:34] HandleUserInput called with text: "and how to a send a terminal to open-webui"
+I0523 16:12:34.429232 128302 conversation_manager.go:321] Forwarding user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+I0523 16:12:34.429240 128302 server.go:1072] Sending user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+E0523 16:12:34.433655 128302 discovery.go:334] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0523 16:12:35.564021 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x95f410e9992f104d
+I0523 16:12:39.931334 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x85a3441e99a31c3d
+I0523 16:12:40.881499 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x437d98c8dc750046
+I0523 16:12:45.352180 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x66f18e48e829fbf5
+I0523 16:12:47.493272 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xeb2319627ef52bfc
+I0523 16:12:54.194591 128302 text_drip.go:173] Drip stopped: lastStepIdx=35, charIdx=2093, length=2299
+I0523 16:15:08.611562 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x705e78702124e517
+I0523 16:15:08.918479 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xac85b490b50d97f9
+W0523 16:21:08.437343 128302 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0523 16:21:08.738478 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x81fb25ae2202af6e
+I0523 16:21:09.054186 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xfc4cfa945a247723
+I0523 16:27:08.622482 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x1675881de2e8e311
+I0523 16:27:09.000483 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x6daac7351f1da9f3
+I0523 16:32:11.742413 128302 input_loop.go:34] HandleUserInput called with text: "I want to create a function within open-webui where i can have a conversation with multiple models where the models can interact with each other as well as me"
+I0523 16:32:11.742490 128302 conversation_manager.go:321] Forwarding user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+I0523 16:32:11.742513 128302 server.go:1072] Sending user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+E0523 16:32:11.747549 128302 discovery.go:334] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0523 16:32:12.093731 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x6d934ecd98a8208f
+I0523 16:32:12.420828 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xe70895f8fefe27f
+I0523 16:32:13.127050 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf2968a9c95137323
+I0523 16:32:17.206722 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xccd92f6a882c88d2
+I0523 16:32:18.377236 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x22bcc0a5130e4385
+I0523 16:32:23.357995 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x6caae267e254abbb
+I0523 16:32:24.183670 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x54742b5c014973e8
+I0523 16:32:29.096808 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x926ada60420557c0
+I0523 16:32:30.935472 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xfd9d4b8bf098054f
+I0523 16:32:33.668961 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x6091be5f41322d6
+I0523 16:32:37.400427 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x4582224e2deecd6a
+I0523 16:32:55.751637 128302 text_drip.go:173] Drip stopped: lastStepIdx=45, charIdx=4731, length=6029
+I0523 16:36:51.826140 128302 input_loop.go:34] HandleUserInput called with text: "i would rather the interactions be more organic than a debate in the background thats then posted to the conversation Is there a way to do this where the models are given somewhat amount of autonomy to either engage, dispute/contribute, or passive read"
+I0523 16:36:51.826202 128302 conversation_manager.go:321] Forwarding user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+I0523 16:36:51.826208 128302 server.go:1072] Sending user message to conversation 12b535df-be6c-4ee1-815f-d573fe9f41c7 (items=1, media=0)
+E0523 16:36:51.829704 128302 discovery.go:334] Failed to load JSON config file /home/nondeus/.gemini/config/mcp_config.json: unexpected end of JSON input
+I0523 16:36:53.591373 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xcafbd1922c6c0b45
+I0523 16:36:59.224147 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x25bb0d71003a9f19
+I0523 16:37:01.798095 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x3dbc9f9f83351923
+I0523 16:37:19.918888 128302 text_drip.go:173] Drip stopped: lastStepIdx=49, charIdx=4970, length=6391
+I0523 16:37:20.264430 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x36a698f0c77e647e
+I0523 16:37:20.383448 128302 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x345a29bc70018456
+I0523 16:37:42.499970 128302 common.go:407] CLI program exited, shutting down
+I0523 16:37:42.502410 128302 manager.go:450] CLI store manager shutting down
+I0523 16:37:42.502831 128302 conversation_manager.go:346] Stopping conversation stream

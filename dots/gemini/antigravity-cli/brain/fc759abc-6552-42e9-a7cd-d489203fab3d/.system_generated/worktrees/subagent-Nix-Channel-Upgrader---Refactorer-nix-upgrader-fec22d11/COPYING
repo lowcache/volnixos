@@ -1,0 +1,15 @@
+COPYING & COPYRIGHT LINEAGE NOTICE
+
+This project is a derivative work based on an original, unlicensed repository.
+
+1. Base Project:
+   * Origin: Derived from the public NixOS configuration for containerized pentesting.
+   * Original Upstream: https://github.com/balsoft/kalinix
+   * License: Unlicensed (All Rights Reserved by the original author).
+
+2. Fork & Modifications:
+   * Scope: Includes comprehensive security hardening, socket restriction policies, firewall rule leak prevention, mount cleanup traps, and the complete microvm.nix virtual machine runner integration.
+   * Copyright: Copyright (c) 2026 The Fork Contributors.
+   * License: All modifications and additions made in this fork are licensed under the MIT License (see the LICENSE file in this repository).
+
+Any distribution, copying, or modification of the base code remains subject to the rights and terms of the original author. All new modifications in this repository are freely distributable under the terms of the MIT License.

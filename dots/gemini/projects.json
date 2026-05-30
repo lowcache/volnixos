@@ -1,0 +1,11 @@
+{
+  "projects": {
+    "/home/nondeus/CodeRep/infernal-init/src": "src",
+    "/home/nondeus/.gemini": "gemini",
+    "/home/nondeus": "nondeus",
+    "/home/nondeus/CodeRep/infernal-init": "infernal-init",
+    "/home/nondeus/.nix-config": "nix-config",
+    "/home/nondeus/Storage/CodeRep/infernal-init/src": "src-1",
+    "/home/nondeus/CodeRepo/audit.swarm": "audit-swarm"
+  }
+}

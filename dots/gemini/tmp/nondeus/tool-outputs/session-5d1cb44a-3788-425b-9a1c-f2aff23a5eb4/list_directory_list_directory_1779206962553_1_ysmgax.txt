@@ -1,0 +1,3 @@
+{
+  "output": "Directory listing for /home/nondeus/.config/mcp-gateway:\ngateway.yaml (1076 bytes)"
+}

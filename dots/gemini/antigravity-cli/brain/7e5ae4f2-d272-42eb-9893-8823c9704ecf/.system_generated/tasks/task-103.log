@@ -1,0 +1,25 @@
+warning: creating lock file '/home/nondeus/Projects/mcp-box/flake.lock':
+• Added input 'flake-utils':
+    'github:numtide/flake-utils/11707dc2f618dd54ca8739b309ec4fc024de578b' (2024-
+11-13)
+• Added input 'flake-utils/systems':
+    'github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba5b49a27e' (2023-
+04-09)
+• Added input 'nixpkgs':
+    'github:nixos/nixpkgs/29916453413845e54a65b8a1cf996842300cd299' (2026-05-23)
+Resolved URL:  path:/home/nondeus/Projects/mcp-box
+Locked URL:    path:/home/nondeus/Projects/mcp-box?lastModified=1779633239&narHa
+sh=sha256-exMZKcv3m/rLfQymn37C%2B68QGvY10dpHdUBThpbiRdc%3D
+Description:   mcp-box: Turnkey immutable Linux container sandboxes for MCP serv
+ers
+Path:          /nix/store/dkgzz0jwcz6939gzpgkfw5kpj1iikmpz-source
+Last modified: 2026-05-24 09:33:59
+Inputs:
+├───flake-utils: github:numtide/flake-utils/11707dc2f618dd54ca8739b309ec4fc024de
+578b
+│   Last modified: 2024-11-13 15:27:16
+│   └───systems: github:nix-systems/default/da67096a3b9bf56a91d16901293e51ba5b49
+a27e
+│       Last modified: 2023-04-09 03:27:08
+└───nixpkgs: github:nixos/nixpkgs/29916453413845e54a65b8a1cf996842300cd299
+    Last modified: 2026-05-22 22:54:30

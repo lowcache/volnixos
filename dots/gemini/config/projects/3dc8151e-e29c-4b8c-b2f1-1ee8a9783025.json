@@ -1,0 +1,21 @@
+{
+  "id": "3dc8151e-e29c-4b8c-b2f1-1ee8a9783025",
+  "name": "/home/nondeus",
+  "projectResources": {
+    "resources": [
+      {
+        "gitFolder": {
+          "folderUri": "file:///home/nondeus",
+          "allowWrite": true
+        }
+      }
+    ]
+  },
+  "permissionGrants": {
+    "permissionGrants": {
+      "allow": [
+        "mcp(gateway)"
+      ]
+    }
+  }
+}

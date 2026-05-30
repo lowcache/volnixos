@@ -1,0 +1,14 @@
+{
+  "id":  "237ffd1f-2f66-495d-a4fa-eff838578f74",
+  "name":  "/home/nondeus/CodeRepo/kalinix",
+  "projectResources":  {
+    "resources":  [
+      {
+        "gitFolder":  {
+          "folderUri":  "file:///home/nondeus/CodeRepo/kalinix",
+          "allowWrite":  true
+        }
+      }
+    ]
+  }
+}

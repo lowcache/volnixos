@@ -1,0 +1,3 @@
+{
+  "output": "Successfully modified file: /home/nondeus/.nix-config/nixos/configuration.nix (1 replacements). Here is the updated code:\n...\n  boot = {\n    initrd.systemd.enable = true;\n    kernelModules = [ \"amdgpu\" ];\n    kernelParams = [\n      \"nvidia.NVreg_EnableGpuFirmware=1\"\n      \"nvidia.NVreg_PreserveVideoMemoryAllocations=1\"\n      \"preempt=full\"\n      \"threadirqs\"\n    ];\n    kernelPackages = pkgs.cachyosKernels.linuxPackages-cachyos-latest;\n    kernel.sysctl = {\n..."
+}

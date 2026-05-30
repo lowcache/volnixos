@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_TASK",
+  "summary": "Task list for executing the Nix configuration fixes to resolve GPU-related freezing.",
+  "updatedAt": "2026-05-21T23:08:07.753354230Z"
+}

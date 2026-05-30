@@ -1,0 +1,3 @@
+{
+  "output": "{ config, pkgs, lib, ... }: {\n\n  imports = [\n    ./shell.nix\n\t  ./pkgs.nix\n\t  ./session.nix\n\t  ./persist.nix\n  ];\n\n  home = {\n    username = \"nondeus\";\n    homeDirectory = \"/home/nondeus\";\n    stateVersion = \"24.11\";\n  };\n\n  gtk = {\n    enable = true;\n    theme = {\n      name = \"adw-gtk3-dark\";\n      package = pkgs.adw-gtk3;\n    };\n    gtk4 = {\n      theme = null;\n    };\n  };\n\n}\n"
+}

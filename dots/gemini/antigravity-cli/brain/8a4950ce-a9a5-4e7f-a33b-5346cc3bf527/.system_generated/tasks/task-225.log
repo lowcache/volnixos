@@ -1,0 +1,314 @@
+warning: Git tree '/home/nondeus/.nix-config' is dirty
+these 59 derivations will be built:
+  /nix/store/061rl6b5fsjmkjxrfmcwa1sc8gqk08r2-pyodide-0.28.2.tar.bz2.drv
+  /nix/store/h5d0rvyvc5rnqs8ajn69xfzrmddb4ivw-brave-1.90.122.drv
+  /nix/store/f5bij0arzwf93pjwrk7wid0rmx9d26mw-man-paths.drv
+  /nix/store/bz0if8sn0ywm1bvsqrpq9s7wnmabwiyg-man-cache.drv
+  /nix/store/3y383204whx37x54yzb2zwpsqn3bk258-hm_.manpath.drv
+  /nix/store/b5a7zwzlgv4qgxda7d09z83r319ik084-brave-1.90.122-fish-completions.dr
+v
+  /nix/store/9ys721029023id57bqs19rbdigryi1x5-nondeus-fish-completions.drv
+  /nix/store/qb1j1i4jzj9w20p7027i2fk53rf0p0rf-home-manager-path.drv
+  /nix/store/gk75qm8c2yrc7y2cly9zvkb210vpaqjy-hm_fontconfigconf.d10hmfonts.conf.
+drv
+  /nix/store/19zr4wicz7kbsca3nb4prwd5ijfvcq1d-home-manager-files.drv
+  /nix/store/5gxh4y2v6ri1hvb6q1lyx75r67w6024q-user-environment.drv
+  /nix/store/k06bamfd0hf72kbv76dwakngdl65wh74-etc-sysctl.d-60-nixos.conf.drv
+  /nix/store/rj28cigixlhlqc5lbaplyih6b5jzh0bf-unit-10-microvm-tap.network.drv
+  /nix/store/26q1m9yd02q4dcl503q5h8pb0ny6rc92-unit-ollama.service.drv
+  /nix/store/m8wssgn47hbvsr0qlchsbpxxv1byg2xy-source.drv
+  /nix/store/lyy1kgbwmbfjjdkakh1dmjjqdfqnlz72-open-webui-frontend-0.9.5-npm-deps
+.drv
+  /nix/store/5par4n1d4szw5s64hyh681fvz278bs3a-open-webui-frontend-0.9.5.drv
+  /nix/store/3pm244zr7f9xwj1ckc1hg9m1d34j9r6g-open-webui-0.9.5.drv
+  /nix/store/npy2m9sdkj0r87dx3w5zrmixp3k0ds8r-unit-script-open-webui-pre-start.d
+rv
+  /nix/store/3jmj9sjfznz8db2wig6rxbki0hvkmv29-unit-open-webui.service.drv
+  /nix/store/ykq3cb1il63cf8izx05674ri5nm6x61q-unit-10-lan.network.drv
+  /nix/store/5s1sg7d8wqr49j6qirxr3na2z7cnhj7a-X-Reload-Triggers-systemd-networkd
+.drv
+  /nix/store/c9nfyim4nixj5as39wxa472js09ny75q-unit-systemd-networkd.service.drv
+  /nix/store/gklx8lkwn3y7yzla6mhvi9ly84b99vxj-system-units.drv
+  /nix/store/qfxsqg770bqkdiji8ysx1cm3xwc6nld7-etc-fstab.drv
+  /nix/store/byk1s1kc071kb958nphivliqdsp5i96h-etc.drv
+  /nix/store/jmz93r1px91f1wsiqjzkffnnq5naz1yd-activate.drv
+  /nix/store/s124nd7v7fwh61chkrzis18bmmnzfzmf-nixos-system-net-gate-26.05pre-git
+.drv
+  /nix/store/ihcc9gmxxp206s544iih9j84kknpn3ga-X-Restart-Triggers-microvm-net-gat
+e.drv
+  /nix/store/c2kyawrp3wqn81ajyrlsb9kr88rfn7qc-unit-microvm-net-gate.service.drv
+  /nix/store/cdbrfrvr36vsjy7fwyjgy6pssfmmf56v-closure-info.drv
+  /nix/store/abmi2f1kkffrx4vf5aj4lrgxs208qli6-runtime-deps.drv
+  /nix/store/msnhcq6lba6z2q0vh0vsyhdgixlv66fn-microvm-store-disk.erofs.drv
+  /nix/store/3yb0nbg8nnxyb70df28sz0nkn2ykjjk0-microvm-net-gate-microvm-run.drv
+  /nix/store/fkqrlyfp9kqrq32pvcc44zjalk8afrf7-virtiofsd-tor-data.drv
+  /nix/store/fyfggf915nbniysh5afb8y1m7vhn12xc-pythoncheck.sh.drv
+  /nix/store/4lkmwpljr9bm0y26wc0a7jjq8ywzxrg1-pythoncheck.sh.drv
+  /nix/store/dbi7pwal70fpy2mnpfvsk2a4w3qhdfkz-supervisord-event-handler.py.drv
+  /nix/store/a10krkil5sgsdkmg7hmxl3m3dm8q8i5x-supervisord-event-handler.drv
+  /nix/store/rbxzdc68xq37h76jkf871xl9dh05i5qa-supervisord-event-handler.drv
+  /nix/store/fgsv62lf3r53z4yjd4g1mm1ni6j52s8z-net-gate-virtiofsd-supervisord.con
+f.drv
+  /nix/store/zg61y1shnssnq8nsm9mz5nv6j0z3hr6w-microvm-net-gate-virtiofsd-run.drv
+  /nix/store/yzsgmaqp0j70wh2k1za6g1kbilwgqg4j-microvm-cloud-hypervisor-net-gate.
+drv
+  /nix/store/6mw68hn0yngxl8cg4pi9fgn7i310cmg9-unit-script-install-microvm-net-ga
+te-start.drv
+  /nix/store/hh5a1qaviqynhb1ix6hz1sv3m073rmkl-unit-install-microvm-net-gate.serv
+ice.drv
+  /nix/store/28bswgwjccxmf6jyhcz9a0wlyx0r509n-X-Reload-Triggers-systemd-networkd
+.drv
+  /nix/store/hi5z4svnmqgc9agv31l9ydv08cbr45zc-unit-systemd-networkd.service.drv
+  /nix/store/lnlnq2rsf99r7gzy8spz8h5jq79lcddb-unit-scx.service.drv
+  /nix/store/i3hg5ckn91m38jfvl0gd0zy9fcs6j1lf-X-Restart-Triggers-systemd-sysctl.
+drv
+  /nix/store/ngs8pxhsgsrian4maiaif5xbq65b6rl3-unit-systemd-sysctl.service.drv
+  /nix/store/sac5vpgmlcawlaiw96zkzy5zs6ck6bnn-unit-var-lib-open-x2dwebui.mount.d
+rv
+  /nix/store/n4y4hhqpin60kbzchlp0n2r87h7blfzz-home-manager-generation.drv
+  /nix/store/w4736514cyd3wrgffqq76wkncfds88by-unit-home-manager-nondeus.service.
+drv
+  /nix/store/wylaqnm77lg0qicipgwjyyhrgl4p747h-system-units.drv
+  /nix/store/1jav1vxdn39459cxx95miggdv1cw718v-etc.drv
+  /nix/store/ibh912fy4wcbyaia9plj07kgwl40rqll-persistence-run-create-directories
+.drv
+  /nix/store/wr7sqii3030pps411w6fz24zzjs9pkjy-activate.drv
+  /nix/store/y2r0jsx2npvqp633b3ifkmy17kkna9d0-boot.json.drv
+  /nix/store/a0d7blh8mbgf9hci0wfr7hxpzl68vrf0-nixos-system-nixos-26.05.20260515.
+d233902.drv
+these 195 paths will be fetched (425.84 MiB download, 2152.01 MiB unpacked):
+  /nix/store/ijyfd1nn0590caam1rcf1g44qnijl7mj-arrow-cpp-23.0.0
+  /nix/store/mmyqladiniczb4ksiac2ndjdm84q70nl-aws-sdk-cpp-1.11.647
+  /nix/store/i9rr0nj9kq44f481aywckqwsfw0bks2h-azure-sdk-for-cpp-core-1.16.3
+  /nix/store/az0h466j7wcfp00nckarl53iy2b9mhi7-azure-sdk-for-cpp-identity-1.13.3
+  /nix/store/1rglwsm49pksjphf74xj6a1ds6ymjrpb-azure-sdk-for-cpp-storage-blobs-12
+.16.0
+  /nix/store/n51hxw9q2j6lvcl6ifabhf402jlx681m-azure-sdk-for-cpp-storage-common-1
+2.12.0
+  /nix/store/vd7kk9qb8w1lqzm543aws3rmp8nd0xxa-azure-sdk-for-cpp-storage-files-da
+talake-12.14.0
+  /nix/store/ps4yvpkjgk8bh4ibxa4cc3hfpvilp053-brave-browser_1.90.122_amd64.deb
+  /nix/store/g7q653srqzs5g753x420vb874scbvb6g-crc32c-1.1.2
+  /nix/store/h5bz79hkz0vskg5q8v495mazrm0x2pr5-ctranslate2-4.7.1
+  /nix/store/i7zjahads51g30wscfrsn2ihxy03p46q-dpkg-1.23.7
+  /nix/store/9x2ysg4qql14vmcncrr97v65y20hdqz1-geos-3.14.1
+  /nix/store/sg2v5kcif4mciyfjgf8qc409y280kqgm-google-cloud-cpp-2.44.0
+  /nix/store/awj5amyd119zps3d34vqfssj0bcrk70z-graphene-1.10.8-dev
+  /nix/store/18pf97n05kijiks2sznpcmm0856z7ijl-gtk4-4.20.3-dev
+  /nix/store/dpgq8ihdv7qpk62vwh2dkpi6xgialjcg-libargon2-20190702
+  /nix/store/0c583yq09ck0ccr72xqcwhbp811wsn0d-libpq-18.2-dev
+  /nix/store/7k1qfc90s1xk9dq1wim02jkwsjifmgs6-nodejs-24.14.1-source
+  /nix/store/dp5hj389fvx601hgwa1kzxny1k1jz7dl-nodejs-install-executables
+  /nix/store/k9mr745jn5c3r24cfacm7ls21sk1hil0-nodejs-install-manuals
+  /nix/store/70j7ppw99prg7bqw9l3mg9m3mb361nar-npm-build-hook
+  /nix/store/x9iv5gxv2knxzx7p8gh0l139hd4d73cl-npm-config-hook
+  /nix/store/kzh21fzp2dlp8b2977b8dyy34vxvyz8s-npm-install-hook
+  /nix/store/79n1vcygvykxqix63ya412h98v08jjsd-opencv-4.13.0
+  /nix/store/qdnbv2yrbl3ld59ipdll2bw7x9fh6fzi-prefetch-npm-deps-0.1.0
+  /nix/store/x8b5jk7svdpas24q8zmxnjlhrsk2wq9h-python3.13-accelerate-1.13.0
+  /nix/store/liii7z3191ki6m5n7jz1in75c487g4b3-python3.13-aiocache-0.12.3
+  /nix/store/jz8xjsdrrw32rspr7kplvg6s4428g443-python3.13-aiofiles-25.1.0
+  /nix/store/p9zqacdq5xjv4xws5llp1p9ikfrn83sg-python3.13-aiosqlite-0.21.0
+  /nix/store/10yshsmgsgq4lk6b5d19wsndv1l47iy0-python3.13-alembic-1.18.1
+  /nix/store/6mrj7piczgsrvdlrs0pxr62ax82ywq68-python3.13-anthropic-0.97.0
+  /nix/store/w2px4pli0pq208yi2r6gpis0qz7vbrq9-python3.13-apscheduler-3.11.2
+  /nix/store/m63mkh187f60dwdrvdlkfxgi3wpx76qv-python3.13-apsw-3.51.0.0
+  /nix/store/b265m7v71rwi2vxibv5zv5kl6ak5yldr-python3.13-argon2-cffi-25.1.0
+  /nix/store/4hvmxs74ank1wprlqbb4gwkf5pyavb3z-python3.13-argon2-cffi-bindings-25
+.1.0
+  /nix/store/clvgpay9knl5fqz8k9zaj9g2z95zs5x3-python3.13-asgiref-3.11.0
+  /nix/store/fzkp8411wn89s60w0jg4qbc49xwni7a8-python3.13-async-timeout-5.0.1
+  /nix/store/gcxdsj4bghq4j63pc1dz2ycm7sm7dlx5-python3.13-av-17.0.1
+  /nix/store/py9yzv61vhpl9qpsb838vjdg2c2fc7vq-python3.13-azure-ai-documentintell
+igence-1.0.2
+  /nix/store/2m49y1kmib3f6irp03xqq6m8d737am7r-python3.13-azure-core-1.38.0
+  /nix/store/6w0i3rri08xwhk0l5kbqyd2naxnylwcy-python3.13-azure-identity-1.25.1
+  /nix/store/2vg0l02kkjx3hd9fgif689l42n2rcrxd-python3.13-azure-storage-blob-12.2
+8.0
+  /nix/store/ili718g87n866irxqmiqlcirp7kbhzzq-python3.13-backoff-2.2.1
+  /nix/store/jqv88qxmrk54vv0i5hgyh2hshlh2l7m0-python3.13-bcrypt-5.0.0
+  /nix/store/nq88b9q2hkswb69k1vrb7m2xfklf8ccd-python3.13-bidict-0.23.1
+  /nix/store/yk2ay5wn56lcribazm7cvwvxasm3nvhk-python3.13-black-25.1.0
+  /nix/store/95pfjpp4c9qyjmq12grrav5r8mjc0fp4-python3.13-boto3-1.42.31
+  /nix/store/4n3wcar6c85z711m32ixdkk4nj8829zi-python3.13-botocore-1.42.31
+  /nix/store/y6rbg9z7kvzrijaxsvm531vpb3f3i51s-python3.13-brotlicffi-1.2.0.0
+  /nix/store/k5lyca1iwqbwyrnsbhbzbnqmj04zlpz0-python3.13-chardet-5.2.0
+  /nix/store/37119n5cl8vl0dz4fzi5rd1bds8q733h-python3.13-chromadb-1.5.8
+  /nix/store/syqjpl54rwfvqq5j533l4w4r7i9lsjry-python3.13-ctranslate2-4.7.1
+  /nix/store/s5wv1vsi7g68am55fq1h4jlngfgwa9kf-python3.13-dataclasses-json-0.6.7
+  /nix/store/bv0i8a4ja68vs9d595xxaacwisvq4aww-python3.13-datasets-3.6.0
+  /nix/store/byj2xpi6gkijvyn2ydi0x85mvqhrh1fi-python3.13-ddgs-9.14.2
+  /nix/store/rarxbz2ic6qpml6vdci7l23xy4y9sfw6-python3.13-dill-0.4.1
+  /nix/store/68mj5vacmaad65vjbabr28cfbqy3hahi-python3.13-docx2txt-0.9
+  /nix/store/jr7rzb9bbqw92zg7fw7ajdmq16nf98x2-python3.13-durationpy-0.10
+  /nix/store/j0yba6xyqx11cvyqixkfxb1b2pk23509-python3.13-einops-0.8.1
+  /nix/store/lrsj6hmy5d94xwmk4hjw6945psbxcn7x-python3.13-events-0.5
+  /nix/store/kpaiz1cl7c9s8llmgrjqs412zg159y2d-python3.13-fake-useragent-2.2.0
+  /nix/store/c6k21wz193fxj8hnaag8vdzjb4s5klrh-python3.13-fastapi-0.128.0
+  /nix/store/0mkrwvlbyw54j6cxgmvfvcyx8h6ww3py-python3.13-faster-whisper-1.2.1
+  /nix/store/8wszp6n6l1rrdhpaxfj6mdi9yhs3fyhd-python3.13-flake8-7.3.0
+  /nix/store/ra40k47ifs76q17jrsmad7mdnsdj26ij-python3.13-flit-core-3.12.0
+  /nix/store/fi160p3sx5dylgdnydw8has00jz84rvx-python3.13-fonttools-4.61.1
+  /nix/store/y5c66dppba7lnsqaqpmxa14b6jvw1cbz-python3.13-fpdf2-2.8.5
+  /nix/store/pj1n32d3l1mzfmlyh33a5namvyqh91hk-python3.13-ftfy-6.3.1
+  /nix/store/bxfsdlyvzwmpwg070nq2dvv5ihvkshc8-python3.13-google-api-python-clien
+t-2.192.0
+  /nix/store/ypqvcf9valf1khr7hz67b5d4zwypz7wc-python3.13-google-auth-httplib2-0.
+3.0
+  /nix/store/3bqi6lbjwdnkrj9g68m12a8msia5qfyf-python3.13-google-auth-oauthlib-1.
+3.1
+  /nix/store/4ddz8hvgibv9m2bb79j823nwq737a3d4-python3.13-google-cloud-core-2.5.0
+  /nix/store/g8a9bvhbmgaqv43a458kck11vq8f2rq0-python3.13-google-cloud-storage-3.
+10.1
+  /nix/store/zn02v54vzwk2qd194xfj3f64sg01kijh-python3.13-google-crc32c-1.8.0
+  /nix/store/0dmwgqv254vw7jl40p652rb0wcqy8a3k-python3.13-google-genai-1.67.0
+  /nix/store/kk0jjjy8rr3c5gi6gmmgkqy3k1c032mf-python3.13-google-resumable-media-
+2.8.0
+  /nix/store/863qn3bw6x2lci32mp5v9s5s2gyzsz9g-python3.13-greenlet-3.3.0
+  /nix/store/mibzp5z5hzr7h67hmlc827yall21mjc8-python3.13-httplib2-0.31.1
+  /nix/store/dap0x87aw9y6l15g2lbimwzdnh0j90g1-python3.13-importlib-resources-6.5
+.2
+  /nix/store/p73qbh20rjpz975kgl4b0abqggcvai7g-python3.13-isodate-0.7.2
+  /nix/store/vxp23qrd7v308fr6g63cbai6lpxqm13j-python3.13-itsdangerous-2.2.0
+  /nix/store/8zdgw7h25l2al1z0njc5ff5x1n3k87fz-python3.13-jmespath-1.0.1
+  /nix/store/0zrfvlzwffr26gv51ng8q1m6pn84hy2y-python3.13-joblib-1.5.3
+  /nix/store/fxvjpmbvbdwvy3rlp05h95s0byrgn9d0-python3.13-jsonpatch-1.33
+  /nix/store/y5msxqsq4r8iyn9pxl78brpkna90k1yw-python3.13-jsonpointer-3.0.0
+  /nix/store/25j8r9cpqr0815cwagw2alf56lgr2yjl-python3.13-kubernetes-35.0.0
+  /nix/store/17har15vg3xr7y3yd1q3is6j6gw6hsqy-python3.13-langchain-1.2.15
+  /nix/store/fraj44vkqvpycs7hpdh52mgbyr1l2xf3-python3.13-langchain-classic-1.0.4
+  /nix/store/rin1h1n6wjkkpn6axkjng88kwykh3gzr-python3.13-langchain-community-0.4
+.1
+  /nix/store/rw829w4jiz042bjxhnmiwzq6wbb4aa6j-python3.13-langchain-core-1.3.2
+  /nix/store/9pin9iphqdgnz40s052rrjxyi1cyc9g4-python3.13-langchain-protocol-0.0.
+12
+  /nix/store/rva251ngl0xyj2cjm1v84fjgv34abcsx-python3.13-langchain-text-splitter
+s-1.1.2
+  /nix/store/afnm7l159gcwzrxs71mb9b1rykn83gy8-python3.13-langgraph-1.1.10
+  /nix/store/3y2ssdnpbmifpha3204qdn8r0ic4bgv5-python3.13-langgraph-checkpoint-4.
+0.3
+  /nix/store/g910ykc4092xxkwlcb8sylbxwhwm8hqm-python3.13-langgraph-prebuilt-1.0.
+12
+  /nix/store/v8gikmajrw32j03f88wwf048fkpdgg4c-python3.13-langgraph-sdk-0.3.14
+  /nix/store/cyzgzvgr96mnbbfhfh4bhg80m1ca3r9l-python3.13-langsmith-0.7.37
+  /nix/store/llg35nbwwdawzn7hldfdxhdhrkdbj717-python3.13-ldap3-2.9.1
+  /nix/store/k2mwpjxcmqmng45j8ylq4rzg7iz0fcgd-python3.13-loguru-0.7.3
+  /nix/store/rf18wi6fpk19infxya248g36f4qz5vmd-python3.13-lz4-4.4.5
+  /nix/store/y4bkbx86312iyh06nhs8p65aygbqfmav-python3.13-marshmallow-4.2.0
+  /nix/store/6pnjfki2sab049m96imynxb66psydagw-python3.13-mccabe-0.7.0
+  /nix/store/s0vmxhwx3mrh2zmlqxjjp6i9ybpczwz9-python3.13-mmh3-5.2.1
+  /nix/store/l7hp26c6g7v3xrn8yj3020z9x8qhq7mv-python3.13-monotonic-1.6
+  /nix/store/yrq0w11i2p97lcpy44n33ncqmmzwxa91-python3.13-msal-1.34.0
+  /nix/store/ckj8312lmxvb3i6pbssl3lnkhyva444d-python3.13-msal-extensions-1.3.1
+  /nix/store/qihrr89fw294lhjbggvjha2468gw8ba7-python3.13-msgpack-1.1.2
+  /nix/store/xjwqdgf20gc3614jafkyfx3krs5k030p-python3.13-msoffcrypto-tool-6.0.0
+  /nix/store/dj05cdjnh0hfpzr3xa0j0qymkma1h793-python3.13-multiprocess-0.70.19
+  /nix/store/wfvyr0mh12hfajf5rn93g76ykf4x3hch-python3.13-mypy-extensions-1.1.0
+  /nix/store/dhvjas4zzfjw716jgiryvaav5kbralaj-python3.13-nltk-3.9.2
+  /nix/store/fq6k357z34351684040jrfqps40w1qqd-python3.13-oauthlib-3.3.1
+  /nix/store/6n59pk6w5pqks6v6y3ajcpkm65dk79vh-python3.13-opencv-python-4.13.0
+  /nix/store/qblg95cq2dryjd9vzi3qnzbwwk8i57hp-python3.13-opencv-python-headless-
+4.13.0
+  /nix/store/15vzx5qb2gh6183fprg5n196frwvmwvx-python3.13-opensearch-py-3.0.0
+  /nix/store/5x9bf9fc6np7cz4xcg4yvzlw6xpk0qfw-python3.13-opentelemetry-exporter-
+otlp-1.34.0
+  /nix/store/nmxfs57lg90l7ddfimndds38bf3kg87m-python3.13-opentelemetry-exporter-
+otlp-proto-common-1.34.0
+  /nix/store/70b8gxclkizjyxbsm7jhqaqbrk260hp8-python3.13-opentelemetry-exporter-
+otlp-proto-grpc-1.34.0
+  /nix/store/61jvwsqxvy9s0hlgvxfwsq32h5iaab7k-python3.13-opentelemetry-exporter-
+otlp-proto-http-1.34.0
+  /nix/store/az1vhd5jh21n94sqsjfvfkk82vqlf9wq-python3.13-opentelemetry-instrumen
+tation-0.55b0
+  /nix/store/gmvqizck2pc4s5sy3skfnkg4h5f2f04f-python3.13-opentelemetry-instrumen
+tation-aiohttp-client-0.55b0
+  /nix/store/09ikyiajw0rwn1gq2y6lx6vnvy7fp2k1-python3.13-opentelemetry-instrumen
+tation-asgi-0.55b0
+  /nix/store/rdl0d29zvx1ryg1whb3fxrnvy2ys7pmj-python3.13-opentelemetry-instrumen
+tation-fastapi-0.55b0
+  /nix/store/h2z2azisqscr2f77bkpxixfv5xchkafh-python3.13-opentelemetry-instrumen
+tation-httpx-0.55b0
+  /nix/store/0g67pxc6r8yy7chs98a3pz8x24g32fah-python3.13-opentelemetry-instrumen
+tation-logging-0.55b0
+  /nix/store/j91yzdk19zdqw822v87ax4ij096fpvbc-python3.13-opentelemetry-instrumen
+tation-redis-0.55b0
+  /nix/store/y3ki0zlkn97knvgqyy8z81ilhx6h6g86-python3.13-opentelemetry-instrumen
+tation-requests-0.55b0
+  /nix/store/y16ay4dpqy3wknhzafqj58vwdqhap2zz-python3.13-opentelemetry-instrumen
+tation-sqlalchemy-0.55b0
+  /nix/store/p0wjwh6z964qhmrd6qwxb023xw1s0rvb-python3.13-opentelemetry-proto-1.3
+4.0
+  /nix/store/nylfgikais27j1mkjvjhpi2qvssjx2j8-python3.13-opentelemetry-sdk-1.34.
+0
+  /nix/store/by1bqbnw2pgwnzdxnn0qryd3qyhdgrw0-python3.13-opentelemetry-semantic-
+conventions-0.55b0
+  /nix/store/a6pl1izmaxni5i1a7zdfnwpx3ih4sda2-python3.13-opentelemetry-util-http
+-0.55b0
+  /nix/store/xbxndzslc47gc80lc2q5hlgxpj0mczac-python3.13-orjson-3.11.7
+  /nix/store/fcd9wwwc4h0w5rawhz9wv727s7vdjykb-python3.13-ormsgpack-1.12.2
+  /nix/store/r8fip0r9mdaia0gbfj10k1jy6kwj3cyw-python3.13-overrides-7.7.0
+  /nix/store/s7kzfd19fblfdxjh3jlwli2jgxz8j9y7-python3.13-peewee-3.19.0
+  /nix/store/8xch0x3zm589cxi62sj6qnrfi4gmqhyd-python3.13-peewee-migrate-1.15.0
+  /nix/store/wpy49sbkhcr462wfm1hhm1k4idlrwp28-python3.13-portalocker-3.2.0
+  /nix/store/xzykfwh3yczlb1k26gxhn1g8cmgdrp20-python3.13-posthog-7.11.0
+  /nix/store/4hrn4iazbvziam5ybxq3haiwq3sxl6ab-python3.13-primp-1.2.3
+  /nix/store/vvvq7n3cxf5ymaddvp86psay6zh1f0wa-python3.13-psycopg-3.3.3
+  /nix/store/z3aag804qaaq4dcnnah975151ygwi7i1-python3.13-psycopg-c-3.3.3
+  /nix/store/bxad7iy3k57q3hak9jw32phaz5dj3wik-python3.13-pyarrow-23.0.0
+  /nix/store/nfqhzmvg638jnbcivxa6ss3ghdr4i3lc-python3.13-pybase64-1.4.3
+  /nix/store/m22gw62kdpp7fwls36pxwd06gakxfjpb-python3.13-pyclipper-1.4.0
+  /nix/store/n9xf4cxmybpg1j16ldx8v57k21jcsnnl-python3.13-pycodestyle-2.14.0
+  /nix/store/xwik1gky20c7wy02d3fsrf0icjcxr34b-python3.13-pycrdt-0.13.0
+  /nix/store/wm6hyvcy085r4j3nxnfkszdm6mpnnx27-python3.13-pyflakes-3.4.0
+  /nix/store/6i9xjkha5hj17zr5xsxynhhsyk8zxkmj-python3.13-pymdown-extensions-10.2
+1.2
+  /nix/store/jnw6mx0i21zkzmvs2aws8cx24lrw6gf2-python3.13-pymysql-1.1.2
+  /nix/store/pxmnc8kpps9fwcpwyf63990rnnqy3avg-python3.13-pypandoc-1.16.2
+  /nix/store/lllk2g4y69simcl9fmxq26fain4wxf6n-python3.13-pypdf-6.10.2
+  /nix/store/dss89v56rb1v6j5nkf88n6fxhink2bza-python3.13-pypika-0.50.0
+  /nix/store/ni9abd2xccmwjzif7xpzwnjwmz7v3qxs-python3.13-python-engineio-4.13.1
+  /nix/store/yh9xc9aams9n99xpjc1grkqpywxmf21m-python3.13-python-jose-3.5.0
+  /nix/store/jigql56dm9djh6487w8hjkjl45h8vi0y-python3.13-python-mimeparse-2.0.0
+  /nix/store/pnj5v15nvvbl4cxx3c2zh7v0qp089m3g-python3.13-python-socketio-5.16.1
+  /nix/store/csbmhxlwcrpfgqs6ad2lw387nmkh0hf6-python3.13-pytube-15.0.0
+  /nix/store/rn4mlmzix7gppx23qws04gi8686w2v2z-python3.13-pyxlsb-1.0.10
+  /nix/store/xrkmlyfcfn1p04b7kxiv5f0l344hzwbf-python3.13-rank-bm25-0.2.2
+  /nix/store/1mhr9fgaf8fxnmsyq0hmjz55wiy55gaf-python3.13-rapidocr-onnxruntime-1.
+4.4
+  /nix/store/i1y4mzsfdhp6bhjm69z50addmhqzx01g-python3.13-redis-7.4.0
+  /nix/store/7mzqrlb43m9s9aax6wgds04jsr3179c1-python3.13-requests-oauthlib-2.0.0
+  /nix/store/n20pq8s8p7k37n732dhg3zp8ydcdy1y2-python3.13-requests-toolbelt-1.0.0
+  /nix/store/86sw9a8gy2rnrrbrgdj008pp5y1b4ghj-python3.13-restrictedpython-8.1
+  /nix/store/n8ky92b5n7ksqly26j3v94dxrzsi521d-python3.13-s3transfer-0.16.0
+  /nix/store/wjzdp99ay7njsfcd9qij4n9yd52xplw4-python3.13-safetensors-0.7.0
+  /nix/store/1j88kxb7jacgir0b53csj7b2yliavl43-python3.13-scikit-learn-1.8.0
+  /nix/store/kza1h0g1vq481brwk83a1gs09bi5mi2d-python3.13-sentence-transformers-5
+.4.1
+  /nix/store/xvd5s1ka9iprs8cjq9x8ydbnsg65jk50-python3.13-sentencepiece-0.2.1
+  /nix/store/aqyi1p35ppj638ka72sbyvz2rw1li8kh-python3.13-shapely-2.1.2
+  /nix/store/f8qqnb4821far47qgq0rrqd05fni7skb-python3.13-simple-websocket-1.1.0
+  /nix/store/zlbh0jrblcj9qsn25v52ggf4gwc452j6-python3.13-sqlalchemy-2.0.49
+  /nix/store/hgvbicbsrq4r27a9sq5gnpr0q6m0zssj-python3.13-starlette-compress-1.6.
+1
+  /nix/store/kzp0rzginbqv2kw75gwky2s62sj08jk7-python3.13-starsessions-.2.2.0
+  /nix/store/kzvjnfmpq97agfj982m16rlffqgc42a1-python3.13-tenacity-9.1.2
+  /nix/store/c3ss2rkmjnglvwy39fxxas3bj329bpdp-python3.13-threadpoolctl-3.6.0
+  /nix/store/2zi21askmyaj1pq69iijvj80bv608x87-python3.13-torch-2.11.0
+  /nix/store/fzgz484bvm00fcmfik7v33n7wqpbddd8-python3.13-torch-2.11.0-dev
+  /nix/store/yf4601x180jmkx3jinx8g83hg1pa1x9c-python3.13-torch-2.11.0-lib
+  /nix/store/zgp8fvklq30532vbxdfcw6mcahgf67xd-python3.13-transformers-5.5.4
+  /nix/store/r22dxv5n8vyzhvkc54hwv13lj17r58r0-python3.13-triton-3.6.0
+  /nix/store/fhx533xjdq5c7r4a16ajnzc8yss2bdkp-python3.13-typing-inspect-0.9.0-un
+stable-2025-10-20
+  /nix/store/y798z09pd82q01hgqw24j9azsvq6cr6g-python3.13-tzlocal-5.3.1
+  /nix/store/dc2y2mw4p0m77bs1cpf8j714vgvb0fm0-python3.13-uritemplate-4.2.0
+  /nix/store/amr9jbgrdap8dwc6wl03nrpz1dgchbkz-python3.13-uuid-utils-0.14.1
+  /nix/store/x1qlncymi4ni2a4knkbi7q7807qaf9yr-python3.13-validators-0.35.0
+  /nix/store/4q37qjcbwkn2gcz7hx07nvph3rm4qhhv-python3.13-wcwidth-0.6.0
+  /nix/store/rapw45dph4n3q4idv95672549wnsxak9-python3.13-websocket-client-1.9.0
+  /nix/store/vc91m8a5npbvadp1kdywzv94f8bdwk55-python3.13-wsproto-1.3.2
+  /nix/store/9sn8prwd9jwf4ah368pyls7dqfp8pkhx-python3.13-xxhash-3.6.0
+  /nix/store/ibn1w31071ik0a67ckcsabkbqp3cmn6a-python3.13-zstandard-0.25.0
+  /nix/store/6q0grs0ah0lr2pnl3lan0hhrdrw5xjsd-sentencepiece-0.2.1
+  /nix/store/gar9c0ank28q10jcfi6bnqlmsjh0r6gf-thrift-0.22.0
+  /nix/store/zzwgnhgb7i4b54niqfwqq2k3rg33wz77-wrap-gapps-hook
