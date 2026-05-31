@@ -95,6 +95,7 @@
               username = "inlimbo";
               homeDirectory = "/home/inlimbo";
               stateVersion = "24.11";
+              enableNixpkgsReleaseCheck = false;
             };
             gtk = {
               enable = true;
