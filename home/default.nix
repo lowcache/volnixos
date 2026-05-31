@@ -33,7 +33,7 @@
       icon = "system-run";
       type = "Application";
       categories = [ "Utility" "Development" ];
-      mimetype = [ "x-scheme-handler/Antigravity"];  
+      mimeType = [ "x-scheme-handler/Antigravity"];  
     };
     antigravity-ide = {
       name = "Antigravity-IDE";
