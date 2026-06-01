@@ -32,7 +32,11 @@
           enable = true;
           networks."10-lan" = {
             matchConfig.Name = "en* eth*";
-            networkConfig.DHCP = "ipv4";
+            networkConfig = {
+              Address = [ "192.168.100.2/24" ];
+              Gateway = "192.168.100.1";
+              DNS = [ "192.168.100.1" ];
+            };
           };
         };
         services = {
@@ -123,7 +127,11 @@
           enable = true;
           networks."10-lan" = {
             matchConfig.Name = "en* eth*";
-            networkConfig.DHCP = "ipv4";
+            networkConfig = {
+              Address = [ "192.168.101.2/24" ];
+              Gateway = "192.168.101.1";
+              DNS = [ "192.168.101.1" ];
+            };
           };
         };
       };
@@ -187,7 +195,6 @@
         matchConfig.Name = "vm-netgate";
         networkConfig = {
           Address = [ "192.168.100.1/24" ];
-          DHCPServer = true;
           IPv4Forwarding = true;
         };
         # Ensure this network doesn't become the default route for the host
@@ -197,7 +204,6 @@
         matchConfig.Name = "vm-tailscale";
         networkConfig = {
           Address = [ "192.168.101.1/24" ];
-          DHCPServer = true;
           IPv4Forwarding = true;
         };
         # Ensure this network doesn't become the default route for the host

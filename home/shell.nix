@@ -230,8 +230,8 @@
               echo "Example: setwall ~/Pictures/wall.png DP-1"
               return 1
             end
-            set - l img (realpath $argv [ 1 ])
-            set - l mon $argv [ 2 ]
+            set -l img (realpath $argv[1])
+            set -l mon $argv[2]
             # Update the wallpaper.png symlink for matugen service
             ln - sf "$img" ~/Pictures/wallpaper.png
             if test -n "$mon"
@@ -309,7 +309,7 @@
             echo "Starting Safe Sync to priv.bkup..."
 
             # List of directories to sync
-            set -l DIRS Documents Pictures CodeRep unDevel AppImage ZAP-Sessions fonts krita-master .bin crypto-bot
+            set -l DIRS Documents Pictures CodeRepo unDevel AppImage ZAP-Sessions fonts krita-master .bin crypto-bot
 
             for dir in $DIRS
               if test -d $LIVE_HOME/$dir

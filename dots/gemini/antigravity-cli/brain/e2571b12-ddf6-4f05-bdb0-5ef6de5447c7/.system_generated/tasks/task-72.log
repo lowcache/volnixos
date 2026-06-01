@@ -1,0 +1,4 @@
+warning: Git tree '/home/lowcache/.nix-config' is dirty
+warning: could not update mtime for file '': No such file or directory
+"/nix/store/s4wnh431fjdcskbyy7v7qnz6pax4cbw0-nixos-system-limbo-26.05.20260523.6
+4c08a7.drv"

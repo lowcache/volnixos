@@ -1,0 +1,15 @@
+warning: Git tree '/home/lowcache/.nix-config' is dirty
+warning: could not update mtime for file '': No such file or directory
+warning: error: unable to download 'https://github.com/nixos/nixpkgs/archive/331
+800de5053fcebacf6813adb5db9c9dca22a0c.tar.gz': Resolving timed out after 5004 mi
+lliseconds (curl error code=28); retrying in 398 ms (attempt 1/5)
+warning: uri https://github.com/nixos/nixpkgs/archive/331800de5053fcebacf6813adb
+5db9c9dca22a0c.tar.gz changed final destination from https://github.com/nixos/ni
+xpkgs/archive/331800de5053fcebacf6813adb5db9c9dca22a0c.tar.gz to https://codeloa
+d.github.com/NixOS/nixpkgs/tar.gz/331800de5053fcebacf6813adb5db9c9dca22a0c durin
+g transfer
+warning: updating lock file '/home/lowcache/.nix-config/flake.lock':
+• Updated input 'nixpkgs':
+    'github:nixos/nixpkgs/64c08a7ca051951c8eae34e3e3cb1e202fe36786' (2026-05-23)
+  → 'github:nixos/nixpkgs/331800de5053fcebacf6813adb5db9c9dca22a0c' (2026-05-31)
+warning: Git tree '/home/lowcache/.nix-config' is dirty

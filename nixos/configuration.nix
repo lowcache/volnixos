@@ -104,6 +104,7 @@
           "OLLAMA_FLASH_ATTENTION=1"
           "OLLAMA_NUM_PARALLEL=1"
           "CUDA_VISIBLE_DEVICES=0"
+          "OLLAMA_KEEP_ALIVE=5m"
         ];
       };
       # Inject ffmpeg into open-webui's PATH environment for dynamic user execution

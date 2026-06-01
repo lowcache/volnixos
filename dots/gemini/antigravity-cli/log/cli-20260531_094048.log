@@ -201,3 +201,182 @@ I0531 10:23:29.990001 42777 conversation_manager.go:321] Forwarding user message
 I0531 10:23:29.990009 42777 server.go:1083] Sending user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
 I0531 10:23:33.567693 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x334c9f71d9c803e4
 I0531 10:23:34.431925 42777 text_drip.go:173] Drip stopped: lastStepIdx=281, charIdx=596, length=1688
+I0531 10:26:48.970561 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x56d62f9f1c629a68
+I0531 10:26:49.255326 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x720f4308f2e7f53b
+I0531 10:32:49.023960 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x38148223f0595b00
+I0531 10:32:49.424563 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xe3f7f3d0167d77a9
+I0531 10:38:48.979160 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xf97f9df9d16dcf8e
+I0531 10:38:49.282708 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x1109e25d85cb00f4
+W0531 10:40:48.892338 42777 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+E0531 18:44:33.818171 42777 log.go:398] Failed to poll ListExperiments: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:listExperiments": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 18:44:33.840623 42777 log_context.go:117] Cache(availableModels): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 18:44:33.840948 42777 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 18:44:33.848223 42777 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 18:44:33.848277 42777 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 18:44:49.106898 42777 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0531 18:44:50.119521 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x956485ca3e82c19e
+I0531 18:44:50.319769 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x7045c492103fc27e
+I0531 18:50:49.052602 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x128b22febf08fa5d
+I0531 18:50:49.192655 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x8d97dee6f44ab86a
+I0531 18:56:48.889678 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x69b377db12b9d19b
+I0531 18:56:49.042586 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x5502a3616e8ffad
+I0531 19:02:49.041535 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xb31668bae9869a7f
+I0531 19:02:49.042533 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xd93bb183befc7861
+I0531 19:08:48.660330 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x7fb091ba1793480c
+I0531 19:08:49.263207 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x34a95a23d3754d9b
+I0531 19:14:49.041527 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xeeababbfc7b591d
+I0531 19:14:49.044612 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xaaf96979de0df28
+I0531 19:20:48.884440 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x88102dccf4fc3cfb
+I0531 19:20:49.352040 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x60f3d6558a7a6a14
+I0531 19:26:16.159458 42777 input_loop.go:34] HandleUserInput called with text: "it seems like the cache substitution didnt work because its been over 12 hours, with the caveat that the system went into hibernation when the screen saver kicked in, but the kernel and everythibng else is STILL building,"
+I0531 19:26:16.161780 42777 conversation_manager.go:321] Forwarding user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:26:16.163750 42777 server.go:1083] Sending user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:26:16.566149 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x4e8072d20d5a9c09
+I0531 19:26:16.794208 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xfd8161cc1eb4f42b
+I0531 19:26:21.077365 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x3021d96f9cedbee1
+I0531 19:26:29.495341 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x4e95dd3365c4deee
+I0531 19:26:33.883151 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x7a3878ef31415419
+I0531 19:26:35.517396 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8f18c5d1349a1e3e
+I0531 19:26:36.545296 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x15a5cc3c5dc12e3c
+I0531 19:26:37.525851 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1e11af9b23c09996
+I0531 19:26:39.933600 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe183a2f8bf038967
+I0531 19:26:41.251662 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbf8554ffed7815d5
+I0531 19:26:42.392347 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x833b166837e2fa58
+I0531 19:26:43.418111 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x68c1488b23a57d86
+I0531 19:26:44.543806 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x143732a458566e8f
+I0531 19:26:45.859555 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa3dde9895c33a851
+I0531 19:26:46.887357 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc88ae69e3a3caaf1
+I0531 19:26:48.517492 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xb60566d800da490f
+I0531 19:26:49.751700 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x26f2a1b679597954
+I0531 19:26:55.753388 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x3476cc6f6b0e167e
+I0531 19:26:57.037449 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x2f77bc887caa6362
+I0531 19:26:57.958090 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x92fc544947c56bc7
+I0531 19:27:00.093772 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x4276227f98682310
+I0531 19:27:05.726479 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf4af9d909af5cd54
+I0531 19:27:07.080024 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc340c1976726b8ad
+I0531 19:27:09.461222 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xad2237474986daf4
+I0531 19:27:11.367029 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x9649a278e07c39b2
+I0531 19:27:14.227319 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe952bfed8a4da77a
+I0531 19:27:19.862582 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x24e4e0d3da00f418
+I0531 19:27:21.599335 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc0a3ae40f29a5101
+I0531 19:27:25.541094 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xa815a0fffb07ffad
+I0531 19:27:27.941776 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5a4dcabd40187254
+I0531 19:27:34.600279 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xca536418fe46379
+I0531 19:27:34.609847 42777 log_context.go:117] Model output error: failed to read file: open /home/lowcache/.gemini/antigravity-cli/brain/ba83894c-ea00-403a-96a5-1e2f9d0744ac/.system_generated/tasks/task-335.log: no such file or directory
+E0531 19:27:34.609934 42777 log.go:398] model output error: invalid tool call error (invalid_args) failed to read file: open /home/lowcache/.gemini/antigravity-cli/brain/ba83894c-ea00-403a-96a5-1e2f9d0744ac/.system_generated/tasks/task-335.log: no such file or directory
+I0531 19:27:35.624932 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xfab9f964609f9e84
+I0531 19:27:36.849419 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x27c919037a760883
+I0531 19:27:38.061101 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x955031bd11d9a406
+I0531 19:27:39.021341 42777 text_drip.go:173] Drip stopped: lastStepIdx=342, charIdx=792, length=2753
+I0531 19:27:42.893175 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x12e5a18681f17d7b
+I0531 19:27:44.231228 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc3106e78809961a2
+I0531 19:27:44.232541 42777 log_context.go:117] Model output error: failed to read file: open /home/lowcache/.gemini/antigravity-cli/brain/ba83894c-ea00-403a-96a5-1e2f9d0744ac/.system_generated/tasks/task-335.log: no such file or directory
+E0531 19:27:44.232604 42777 log.go:398] model output error: invalid tool call error (invalid_args) failed to read file: open /home/lowcache/.gemini/antigravity-cli/brain/ba83894c-ea00-403a-96a5-1e2f9d0744ac/.system_generated/tasks/task-335.log: no such file or directory
+I0531 19:27:45.264626 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x6ade9f5fd67ad237
+I0531 19:27:46.375475 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x506ce1050c9397f1
+I0531 19:27:47.507141 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5b4df407cf0671f3
+I0531 19:27:48.730167 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x39ac32ee93558a52
+I0531 19:27:49.876876 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbf4b2e883ca88c69
+I0531 19:27:51.248414 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xfeca8beb60f7a9a6
+I0531 19:27:52.121012 42777 text_drip.go:173] Drip stopped: lastStepIdx=359, charIdx=732, length=2051
+I0531 19:31:48.546560 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xf0156b2fd7cae0a9
+I0531 19:31:48.853150 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xf66b38d651f4a207
+I0531 19:33:12.320901 42777 input_loop.go:34] HandleUserInput called with text: "can we remove the necessity for each commit to be signed, i understand push, pull, fetch, etc. but having to sign a commit seems overkill"
+I0531 19:33:12.323388 42777 conversation_manager.go:321] Forwarding user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:33:12.324585 42777 server.go:1083] Sending user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:33:13.735977 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xfabdb9482ba225d8
+I0531 19:33:14.978535 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x4aab7b51fcd4fe41
+I0531 19:33:16.804038 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x32fa32f0eb5a6aec
+I0531 19:33:17.990132 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5a01e4f6158c1011
+I0531 19:33:19.117243 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x17535f438c5f6f0e
+I0531 19:33:20.186891 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x38fcd660edddaa60
+I0531 19:33:21.313181 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xedd7748ab3bf9bdf
+I0531 19:33:23.366710 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x26412491aa6aca39
+I0531 19:33:24.615992 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc06587edba3e62c9
+I0531 19:33:26.105074 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xb5dbd537db60159
+I0531 19:33:28.480155 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xcc1478857737b5ed
+I0531 19:33:29.828899 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1b4d731afc5a855b
+I0531 19:33:30.425977 42777 text_drip.go:173] Drip stopped: lastStepIdx=383, charIdx=516, length=1599
+I0531 19:33:32.836080 42777 manager.go:551] Full redraw completed (rerenderAll) for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (epoch 0, items 276)
+I0531 19:33:48.547370 42777 input_loop.go:34] HandleUserInput called with text: "error: public key is not valid\nCommand 'nix --extra-experimental-features 'nix-command flakes' build --print-out-paths '/persist/home/lowcache/.nix-config/#nixosConfigurations.\"infernalnix\".config.system.build.toplevel' --no-link --option extra-substituters 'https://cuda-maintainers.cachix.org https://cache.numtide.com https://attic.xuyh0120.win/lantian' --option extra-trusted-public-keys 'cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= lantian:EeAUQ+W+\n  6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc='' returned non-zero exit status 1."
+I0531 19:33:48.547432 42777 conversation_manager.go:321] Forwarding user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:33:48.547443 42777 server.go:1083] Sending user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:33:50.697337 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf5d4a6f190a8a776
+I0531 19:33:51.158986 42777 text_drip.go:173] Drip stopped: lastStepIdx=385, charIdx=256, length=802
+I0531 19:35:33.654947 42777 input_loop.go:34] HandleUserInput called with text: "ther was another error but the build continued and i cant roll back and copy it"
+I0531 19:35:33.657321 42777 conversation_manager.go:321] Forwarding user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:35:33.659406 42777 server.go:1083] Sending user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:35:35.370649 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x978464f5668e1713
+I0531 19:35:35.421507 42777 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 388
+I0531 19:35:39.845137 42777 input_loop.go:436] Responding to tool confirmation: convID=ba83894c-ea00-403a-96a5-1e2f9d0744ac, stepIdx=388, approved=true, sandboxOverride=false, turnGrants=[]
+I0531 19:35:39.852704 42777 server.go:1548] Tool confirmation for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac step 388 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0531 19:35:41.991096 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x95f8cfd09d7f3958
+I0531 19:35:43.638164 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc8210b0d7b4c1f1e
+I0531 19:35:45.518128 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa7615ecb2e02ddd3
+I0531 19:35:47.665133 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe041383abadcd95d
+I0531 19:35:47.770306 42777 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 396
+I0531 19:35:49.055095 42777 input_loop.go:436] Responding to tool confirmation: convID=ba83894c-ea00-403a-96a5-1e2f9d0744ac, stepIdx=396, approved=true, sandboxOverride=false, turnGrants=[]
+I0531 19:35:49.055293 42777 server.go:1548] Tool confirmation for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac step 396 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0531 19:35:50.299150 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa20d00bca86055d7
+I0531 19:35:50.370664 42777 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 398
+I0531 19:35:51.223679 42777 input_loop.go:436] Responding to tool confirmation: convID=ba83894c-ea00-403a-96a5-1e2f9d0744ac, stepIdx=398, approved=true, sandboxOverride=false, turnGrants=[]
+I0531 19:35:51.223753 42777 server.go:1548] Tool confirmation for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac step 398 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0531 19:35:52.247775 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x3adc38671346eb0c
+I0531 19:35:52.370399 42777 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 400
+I0531 19:35:53.258401 42777 input_loop.go:436] Responding to tool confirmation: convID=ba83894c-ea00-403a-96a5-1e2f9d0744ac, stepIdx=400, approved=true, sandboxOverride=false, turnGrants=[]
+I0531 19:35:53.258472 42777 server.go:1548] Tool confirmation for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac step 400 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0531 19:35:56.082519 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x81800f899d5163fc
+I0531 19:35:57.659241 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xef42d053d7d6ba37
+I0531 19:35:59.405190 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd640b3d97a70aa98
+I0531 19:35:59.470274 42777 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 406
+I0531 19:36:02.177500 42777 input_loop.go:436] Responding to tool confirmation: convID=ba83894c-ea00-403a-96a5-1e2f9d0744ac, stepIdx=406, approved=true, sandboxOverride=false, turnGrants=[]
+I0531 19:36:02.177580 42777 server.go:1548] Tool confirmation for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac step 406 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0531 19:36:04.616222 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x67326ba7dc2602c1
+I0531 19:36:07.094658 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x227f4a3e33f1bcbc
+I0531 19:36:07.270649 42777 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 410
+I0531 19:36:09.913899 42777 input_loop.go:436] Responding to tool confirmation: convID=ba83894c-ea00-403a-96a5-1e2f9d0744ac, stepIdx=410, approved=true, sandboxOverride=false, turnGrants=[]
+I0531 19:36:09.914565 42777 server.go:1548] Tool confirmation for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac step 410 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0531 19:36:12.812511 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x286754b557cf65c5
+I0531 19:36:16.219799 42777 text_drip.go:173] Drip stopped: lastStepIdx=411, charIdx=480, length=1467
+I0531 19:37:26.073554 42777 input_loop.go:34] HandleUserInput called with text: "usually nix error of that fashion stop the build immediately, ive never seen nix throw an error like that and continue to the build the flake"
+I0531 19:37:26.073787 42777 conversation_manager.go:321] Forwarding user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:37:26.073806 42777 server.go:1083] Sending user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 19:37:26.325695 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x7976e4694a761b86
+I0531 19:37:26.632681 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x249afd78b3067e73
+I0531 19:37:28.470549 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd552351426088cb2
+I0531 19:37:30.932766 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xcd0f70b42f698c0e
+I0531 19:37:33.334606 42777 text_drip.go:173] Drip stopped: lastStepIdx=415, charIdx=546, length=1486
+I0531 19:39:51.605884 42777 manager.go:551] Full redraw completed (rerenderAll) for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (epoch 0, items 303)
+I0531 19:42:48.664105 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xdc8621ebe707a8f9
+I0531 19:42:48.972099 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x7159adde9695123f
+W0531 19:44:48.688716 42777 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0531 19:48:48.876166 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x53c8c2516bba7c3e
+I0531 19:48:49.081052 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x4f659ede78b56d28
+I0531 19:54:49.022675 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x748ab99a1b0e5e57
+I0531 19:54:49.227077 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x4b3d7d354e3e050d
+E0531 21:42:02.472266 42777 log.go:398] Failed to poll ListExperiments: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:listExperiments": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 21:42:02.481283 42777 log_context.go:117] Cache(availableModels): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 21:42:02.481345 42777 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 21:42:02.483150 42777 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 21:42:02.483185 42777 log_context.go:117] Failed to refresh cache in background: Post "https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist": Post "https://oauth2.googleapis.com/token": dial tcp: lookup oauth2.googleapis.com: no such host
+W0531 21:42:48.602014 42777 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0531 21:42:49.517331 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x47fdca39da1c061e
+I0531 21:42:49.824622 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x513364c004dd7055
+I0531 21:48:48.644484 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xd2bc1c8b1f858f63
+I0531 21:48:48.951591 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xedd706e106bb67dd
+I0531 21:52:34.793673 42777 input_loop.go:34] HandleUserInput called with text: "its still building cuda but its at 96%"
+I0531 21:52:34.798648 42777 conversation_manager.go:321] Forwarding user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 21:52:34.800676 42777 server.go:1083] Sending user message to conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac (items=1, media=0)
+I0531 21:52:37.824518 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1fc3df4d15cbac2f
+I0531 21:52:37.871390 42777 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 418
+I0531 21:52:40.491816 42777 input_loop.go:436] Responding to tool confirmation: convID=ba83894c-ea00-403a-96a5-1e2f9d0744ac, stepIdx=418, approved=true, sandboxOverride=false, turnGrants=[]
+I0531 21:52:40.492368 42777 server.go:1548] Tool confirmation for conversation ba83894c-ea00-403a-96a5-1e2f9d0744ac step 418 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0531 21:52:42.411355 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xba8c07f8b660213b
+I0531 21:52:43.084101 42777 text_drip.go:173] Drip stopped: lastStepIdx=419, charIdx=480, length=1175
+I0531 21:54:48.794765 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x1c0a05cd8f15caec
+I0531 21:54:49.102239 42777 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x9bea12b6bce9c967
+I0531 22:01:05.506212 42777 common.go:398] Terminal gone, shutting down
+I0531 22:01:05.508170 42777 common.go:413] CLI program exited, shutting down
+I0531 22:01:05.515341 42777 manager.go:459] CLI store manager shutting down
+I0531 22:01:05.523757 42777 conversation_manager.go:346] Stopping conversation stream
+I0531 22:01:05.527778 42777 server.go:2186] Language server shutting down
