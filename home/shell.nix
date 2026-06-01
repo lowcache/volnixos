@@ -372,7 +372,7 @@
         init.defaultBranch = "main";
       };
       signing = {
-        signByDefault = true;
+        signByDefault = false;
         format = "ssh";
         key = "${config.home.homeDirectory}/.ssh/id_ed25519.pub";
       };
