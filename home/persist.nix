@@ -37,6 +37,7 @@
             ".ssh"
             ".ollama"
             ".gnupg"
+            ".claude"
             ".nix-config"
             ".vscode-oss"
             ".antigravity"
@@ -96,6 +97,11 @@
           ];
         in
         dotfiles ++ config ++ cache ++ local ++ flatpak-var ++ home-dirs;
+      # Single files in $HOME that must survive the tmpfs wipe.
+      # ~/.claude.json holds Claude Code config/state and lives OUTSIDE ~/.claude.
+      files = [
+        ".claude.json"
+      ];
     };
   };
 }
