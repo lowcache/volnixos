@@ -42,6 +42,8 @@
             ".vscode-oss"
             ".antigravity"
             ".antigravity-ide"
+            ".solc-select"
+            ".foundry"
             ".ZAP"
           ];
           config = [
