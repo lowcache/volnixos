@@ -353,3 +353,10 @@ I0601 16:26:30.844578 611216 http_helpers.go:182] URL: https://daily-cloudcode-p
 I0601 16:26:33.170572 611216 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1bcadbf8bea939e7
 I0601 16:26:35.279986 611216 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8bad9d622da32401
 I0601 16:26:36.726467 611216 text_drip.go:173] Drip stopped: lastStepIdx=161, charIdx=1248, length=3433
+I0601 16:31:57.220559 611216 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xb2789620c5fc0b75
+I0601 16:31:57.516845 611216 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x215271c6ee2a43d1
+I0601 16:37:16.817518 611216 common.go:398] Terminal gone, shutting down
+I0601 16:37:16.826153 611216 common.go:413] CLI program exited, shutting down
+I0601 16:37:16.830419 611216 manager.go:459] CLI store manager shutting down
+I0601 16:37:16.835644 611216 conversation_manager.go:346] Stopping conversation stream
+I0601 16:37:16.840455 611216 server.go:2186] Language server shutting down

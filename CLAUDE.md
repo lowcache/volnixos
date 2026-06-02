@@ -1,6 +1,6 @@
-# Agent Guide (GEMINI.md)
+# Agent Guide (CLAUDE.md)
 
-Welcome, Gemini! You are working on the **Infernal NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
+Welcome, Claude! You are working on the **Infernal NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
 
 Before making any changes or proposals, you must thoroughly read this document and the files in the `./memory/` directory.
 

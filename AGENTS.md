@@ -1,6 +1,6 @@
-# Agent Guide (GEMINI.md)
+# Agent Guide (AGENTS.md)
 
-Welcome, Gemini! You are working on the **Infernal NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
+Welcome, Agent! You are working on the **Infernal NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
 
 Before making any changes or proposals, you must thoroughly read this document and the files in the `./memory/` directory.
 
@@ -58,7 +58,7 @@ To maintain context across separate conversational boundaries, you must read, ap
 1. **Read on Startup:** Before suggesting any design, read all files in `./memory/`.
 2. **Write on Decision:** Whenever a new architectural layout is chosen, before generating or modifying any `.nix` expression, update `memory/decisions.md`. `Enforce Syntax Checks` and `Produce clean, idiomatic Nix code` when implementing decisions and use `nixpkgs-fmt` or `nixfmt` tools to keep code formats consistent.
 3. **Write on Mistake:** If a rebuild fails, a service hangs, or an active bug is discovered/resolved, it falls under `Error Handling`. Treat evaluation errors as strict compilation failures, trace the error back to the exact file layout, scoping binding (let/in), or inheritence statement, and record it in `memory/mistakes.md`.
-4. **Git Operations:** Stage your updates to `./memory/` alongside your code edits. Always commit using the `--no-gpg-sign` flag to prevent pinentry locks in non-interactive environments. All commits should be brand/model free, first-person, from user "lowcache" perspective.
+4. **Git Operations:** Stage your updates to `./memory/` alongside your code edits. Always commit using the `--no-gpg-sign` flag to prevent pinentry locks in non-interactive environments. All commits should be brand/model free, first-person, from user "lowcache" perspective.All commits should be brand/model free, first-person, from user "lowcache" perspective.
 5. **Never Guess Attributes:** Do not approximate, hallucinate, or invent configuration options, attribute paths, or package names. You must execute your attached `mcp-nixos` gateway tools (`nix` or `nix_versions`) to verify option paths and dependency schemas before outputting any code modifications.
 6. **Declarative Architecture:** Prioritize pure, hermetic, and flake-based paradigms. Avoid legacy, imperative commands (such as `nix-env`) unless explicitly requested.
 7. **Preserve Layouts:** Maintain existing codebase patterns. Do not refactor modular configuration profiles or split file layouts into massive single-file expressions.
