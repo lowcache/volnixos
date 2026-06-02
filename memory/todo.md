@@ -4,6 +4,20 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 
 ---
 
+## 0. ACTIVATION DRIFT — running system is behind the repo (found 2026-06-01)
+
+* **Critical:** A build audit showed the live box is NOT running this config:
+  * `booted-system` = `...-infernalnix-26.05.20260515` (old generation, pre-reboot)
+  * `current-system` = a `26.11.20260531` build switched live ~15:27 (no reboot since)
+  * `nixos-rebuild build` of current HEAD produces a THIRD, different store path
+* **Proof the fix never activated:** the running generation still has the *misspelled* `~/Pictures/fromAi/ouputs` symlink pointing INTO `/nix/store/.../home-manager-files/...ouputs` — i.e. the pre-`mistakes.md#4` state. The repo source is correct (`outputs`, out-of-store to `Storage`), but it was committed and never switched. **`mistakes.md#4` is fixed in source, NOT on the machine.**
+* **Consequence:** todo.md §1 checks below "fail" mostly because the config isn't live, not because it's wrong. MicroVM `net-gate` (autostart) is `inactive (dead)` since 16:35; taps absent; pings fail.
+* **Action:** Do a clean `switch` the SAFE way (per `mistakes.md#1` — session restart kills it): run inside `tmux`/`systemd-run --scope`, e.g.
+  `systemd-run --scope --user-unit=rebuild bash -c 'sudo nixos-rebuild switch --flake ~/.nix-config#infernalnix'`
+  then re-run §1 verifications. The build itself is confirmed green (exit 0).
+
+---
+
 ## 1. Pending Verification Tasks (Immediate Priority)
 
 * [ ] **Verify Ollama VRAM Unloading:** After running a model in Open WebUI, wait 5 minutes and run `nvidia-smi` to verify that Ollama unloads the model from VRAM, showing `0 MiB` usage, and that the Nvidia GPU power draw drops to suspend levels (0W–2W).
