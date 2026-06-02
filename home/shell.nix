@@ -109,7 +109,7 @@
         end
       '';
       shellAliases = {
-        clear = "printf '033[2J033[3J033[1;1H'";
+        clear = "printf '\\033[2J\\033[3J\\033[1;1H'";
         celar = "clear";
         claer = "clear";
         c = "clear";
@@ -136,8 +136,11 @@
         nvrun = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ";
         fooogo = "sudo systemctl start docker-fooocus";
         fooostp = "sudo systemctl stop docker-fooocus";
-        forggo = "sudo systemctl start docker-forge";
-        forgstp = "sudo systemctl stop docker-forge";
+        # NOTE: no `forge` oci-container is declared in nixos/configuration.nix yet;
+        # these aliases target a non-existent docker-forge.service. Re-enable once
+        # the forge container is defined (see memory/todo.md).
+        # forggo = "sudo systemctl start docker-forge";
+        # forgstp = "sudo systemctl stop docker-forge";
       };
       functions = {
         colorhex = {
@@ -233,7 +236,7 @@
             set -l img (realpath $argv[1])
             set -l mon $argv[2]
             # Update the wallpaper.png symlink for matugen service
-            ln - sf "$img" ~/Pictures/wallpaper.png
+            ln -sf "$img" ~/Pictures/wallpaper.png
             if test -n "$mon"
               echo "Setting wallpaper for $mon..."
               $script --monitor $mon --image "$img"
