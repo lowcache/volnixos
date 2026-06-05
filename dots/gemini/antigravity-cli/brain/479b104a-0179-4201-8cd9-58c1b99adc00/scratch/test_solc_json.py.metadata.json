@@ -1,0 +1,5 @@
+{
+  "artifactType": "ARTIFACT_TYPE_OTHER",
+  "summary": "Create a scratch script to test different ways of compiling solc_json contracts after source tree materialisation",
+  "updatedAt": "2026-06-02T10:48:14.273105293Z"
+}

@@ -1,0 +1,6 @@
+warning: Git tree '/home/lowcache/Storage/datasets/adversarial-auditor-solc-json
+' is dirty
+auditor dev-shell ready:
+  forge Version: 1.7.1-dev
+  slither 0.11.5
+  solc 0.8.35+commit.47b9dedd.Linux.g++

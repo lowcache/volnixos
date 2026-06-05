@@ -1,0 +1,157 @@
+I0603 13:47:57.698552 2896943 server.go:1292] Starting language server process with pid 2896943
+I0603 13:47:57.699473 2896943 server.go:475] Language server will attempt to listen on host localhost
+I0603 13:47:57.701548 2896943 server.go:489] Language server listening on random port at 39121 for HTTPS (gRPC)
+I0603 13:47:57.701939 2896943 server.go:496] Language server listening on random port at 32833 for HTTP
+W0603 13:47:58.030639 2896943 launchmanager.go:69] Entering local chrome mode! This is WRONG unless you are running tests or in eval mode on Linux.
+I0603 13:47:58.034644 2896943 manager.go:92] Creating trajectory store manager with proto store and SQLite store
+W0603 13:47:58.035113 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.035135 2896943 log_context.go:117] Cache(fetchAdminControls): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.035142 2896943 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.035182 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.035201 2896943 log_context.go:117] Cache(fetchAdminControls): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.035588 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.035607 2896943 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.035634 2896943 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.036018 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.036037 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.036059 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+I0603 13:47:58.036271 2896943 server.go:2267] Auth succeeded, refreshing features and managers
+E0603 13:47:58.036311 2896943 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.036505 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.036526 2896943 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.036528 2896943 client.go:81] failed to set auth token
+E0603 13:47:58.036559 2896943 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0603 13:47:58.036748 2896943 server.go:2273] State refresh took 0ms
+W0603 13:47:58.036981 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.036998 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.037009 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.037024 2896943 client.go:81] failed to set auth token
+I0603 13:47:58.061883 2896943 server.go:1928] initialized server successfully in 363.162426ms
+W0603 13:47:58.062069 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.062101 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.062116 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.062127 2896943 client.go:81] failed to set auth token
+I0603 13:47:58.063903 2896943 auto_updater.go:253] Spawned background update process with PID 2896996
+I0603 13:47:58.064440 2896943 common.go:104] Launching CLI mode
+E0603 13:47:58.064459 2896943 common.go:123] Failed to resolve GeminiDir ".gemini": .gemini must be an absolute path: path is not absolute, falling back to default
+I0603 13:47:58.064476 2896943 common.go:154] CLI app data directory: /home/lowcache/.gemini/antigravity-cli
+I0603 13:47:58.064741 2896943 server.go:211] Creating CLI server backend: product=antigravity workspaceDirs=[/home/lowcache/.nix-config] appDataDir=/home/lowcache/.gemini/antigravity-cli cascadeManager=true codeAssist=true
+I0603 13:47:58.065144 2896943 project.go:157] project: no project found from /home/lowcache/.nix-config, creating new project
+I0603 13:47:58.065867 2896943 project.go:137] project: created project "/home/lowcache/.nix-config" (id=493347a1-4f01-484a-869e-268a1def8355) at /home/lowcache/.gemini/config/projects/493347a1-4f01-484a-869e-268a1def8355.json (no symlink)
+I0603 13:47:58.065885 2896943 server.go:1337] Backend project ID updated dynamically to: 493347a1-4f01-484a-869e-268a1def8355
+E0603 13:47:58.065930 2896943 common.go:326] project: failed to add project resource folder "/home/lowcache/.nix-config" to workspace: file:///home/lowcache/.nix-config is hidden: ignore uri
+I0603 13:47:58.066734 2896943 manager.go:257] Initializing CLI store manager for workspace /home/lowcache/.nix-config
+I0603 13:47:58.067856 2896943 cli_setting_manager.go:626] Skipping telemetry propagation because user is not logged in
+I0603 13:47:58.067907 2896943 cli_setting_manager.go:66] CLI settings initialized: permissions=&{Allow:[command(git) command(ls) command(journalctl) command(find) command(nix) command(nix-shell) command(grep) command(rg) command(dmesg) command(npm) command(nvidia-smi) command(lspci) command(tail) command(systemctl status) command(coredumpctl) command(head) command(printenv) command(type) command(cp) command(nixos-version) command(cat) command(nix-channel) command(tar) command(/home/nondeus/.local/bin/antigravity-ide) command(nixpkgs-fmt)] Deny:[command(rm -rf) command(nixos-rebuild)] Ask:[]}, toolPermission=request-review
+I0603 13:47:58.068445 2896943 manager.go:350] CLI store manager initialized successfully
+I0603 13:47:58.068465 2896943 common.go:398] CLI store manager created successfully
+I0603 13:47:58.074885 2896943 common.go:494] Starting CLI program
+CLI ready for user input (startup took 10.417156ms)
+ERROR: logging before google.Init: I0603 13:47:58.082221     107 terminal_info_manager.go:160] Terminal detection: TERM="xterm-kitty" altScreen=true ssh=false
+I0603 13:47:58.082885 2896943 gemini_extensions.go:28] Detecting Gemini extensions in /home/lowcache/.gemini/extensions
+I0603 13:47:58.082955 2896943 root.go:132] Failed to add workspace dir: failed to add workspace folder /home/lowcache/.nix-config: file:///home/lowcache/.nix-config is hidden: ignore uri
+I0603 13:47:58.083063 2896943 gemini_extensions.go:49] No extensions found
+W0603 13:47:58.083848 2896943 token_storage.go:113] Failed to load token from keyring, falling back to file: The name is not activatable
+I0603 13:47:58.136082 2896943 manager.go:580] Full redraw completed (rerenderAll) for conversation  (epoch 0, items 1)
+W0603 13:47:58.155360 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.155407 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.155420 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.155428 2896943 client.go:81] failed to set auth token
+W0603 13:47:58.155488 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.155496 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.155501 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.155505 2896943 client.go:81] failed to set auth token
+W0603 13:47:58.155542 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.155549 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.155556 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.155561 2896943 client.go:81] failed to set auth token
+E0603 13:47:58.155566 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.155572 2896943 client.go:81] failed to set auth token
+W0603 13:47:58.918154 2896943 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+W0603 13:47:58.918900 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.918928 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.918940 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.918950 2896943 client.go:81] failed to set auth token
+W0603 13:47:58.919011 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.919020 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.919028 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.919035 2896943 client.go:81] failed to set auth token
+W0603 13:47:58.956438 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:58.956466 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:58.956480 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:58.956491 2896943 client.go:81] failed to set auth token
+W0603 13:47:59.197659 2896943 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+W0603 13:47:59.197690 2896943 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0603 13:47:59.197703 2896943 server.go:608] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0603 13:47:59.197713 2896943 client.go:81] failed to set auth token
+I0603 13:47:59.386005 2896943 auth.go:114] ChainedAuth: authenticated via keyring (effective: keyring)
+I0603 13:47:59.386049 2896943 server_oauth.go:212] applyAuthResult: email=drawpdeadredd@gmail.com, authMethod=consumer, quotaProject=
+I0603 13:47:59.386064 2896943 server_oauth.go:217] OAuth: authenticated successfully as drawpdeadredd@gmail.com
+I0603 13:47:59.386076 2896943 server_oauth.go:223] b.codeAssistClient.AuthProvider (0x3ae6ef240180) is same as b.cliAuth (0x3ae6ef240180)
+I0603 13:48:00.329324 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xbd6dcc454db891e5
+I0603 13:48:01.035603 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x53e1a6a28d7bd291
+I0603 13:48:01.037195 2896943 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0603 13:48:01.160429 2896943 input_loop.go:499] Auth done received, triggering experiment refresh
+I0603 13:48:01.160506 2896943 experiment_manager.go:35] Starting experiment refresh after login
+I0603 13:48:01.775758 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x1b7975c61b290f49
+I0603 13:48:01.776662 2896943 experiment_manager.go:39] Experiments refreshed after login
+I0603 13:48:01.776776 2896943 manager.go:975] Reloading system slash commands
+I0603 13:48:02.395484 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x317eb81f13f5ac7b
+I0603 13:48:02.600252 2896943 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0603 13:48:02.600321 2896943 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0603 13:48:02.719891 2896943 input_loop.go:499] Auth done received, triggering experiment refresh
+I0603 13:48:02.719961 2896943 experiment_manager.go:35] Starting experiment refresh after login
+I0603 13:48:02.724230 2896943 input_loop.go:499] Auth done received, triggering experiment refresh
+I0603 13:48:02.724273 2896943 experiment_manager.go:35] Starting experiment refresh after login
+I0603 13:48:02.909203 2896943 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0603 13:48:03.011772 2896943 input_loop.go:499] Auth done received, triggering experiment refresh
+I0603 13:48:03.011830 2896943 experiment_manager.go:35] Starting experiment refresh after login
+I0603 13:48:03.215127 2896943 experiment_manager.go:39] Experiments refreshed after login
+I0603 13:48:03.215213 2896943 manager.go:975] Reloading system slash commands
+I0603 13:48:03.216541 2896943 manager.go:979] Slash commands unchanged, skipping update
+I0603 13:48:03.319468 2896943 experiment_manager.go:39] Experiments refreshed after login
+I0603 13:48:03.319468 2896943 experiment_manager.go:39] Experiments refreshed after login
+I0603 13:48:03.319550 2896943 manager.go:975] Reloading system slash commands
+I0603 13:48:03.319572 2896943 manager.go:975] Reloading system slash commands
+I0603 13:48:03.321166 2896943 manager.go:979] Slash commands unchanged, skipping update
+I0603 13:48:03.321697 2896943 manager.go:979] Slash commands unchanged, skipping update
+I0603 13:48:04.344913 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xf2b52bb21e397611
+I0603 13:48:58.768368 2896943 input_loop.go:34] HandleUserInput called with text: "recently you built implemented a Makefile system into my nix-config directory to handle common nix actions and workflows, but I cannot get any of the \"make\" commands to work, and im wondering if i missed something or if im doing something wrong"
+I0603 13:48:58.768434 2896943 conversation_manager.go:288] Starting new conversation (agent=false)
+I0603 13:48:58.768449 2896943 server.go:724] Creating new cascade trajectory (agentScript=false)
+I0603 13:48:58.768457 2896943 server.go:727] Conversation using project ID: 493347a1-4f01-484a-869e-268a1def8355
+I0603 13:48:58.806646 2896943 server.go:755] Created conversation 62cce826-45e9-45d5-b604-0242edc62e5e
+I0603 13:48:58.807061 2896943 server.go:1970] GetConversationDetail: found conversation 62cce826-45e9-45d5-b604-0242edc62e5e in memory or locally
+I0603 13:48:58.807082 2896943 conversation_manager.go:317] project: switching to conversation belonging to project ID: 493347a1-4f01-484a-869e-268a1def8355
+I0603 13:48:58.807161 2896943 server.go:1337] Backend project ID updated dynamically to: 493347a1-4f01-484a-869e-268a1def8355
+E0603 13:48:58.807213 2896943 conversation_manager.go:375] project: failed to add project resource folder "/home/lowcache/.nix-config" to workspace dynamically: failed to add workspace folder /home/lowcache/.nix-config: file:///home/lowcache/.nix-config is hidden: ignore uri
+I0603 13:48:58.807318 2896943 conversation_manager.go:383] project: synced active project to "/home/lowcache/.nix-config" (id=493347a1-4f01-484a-869e-268a1def8355) and updated workspace cache
+I0603 13:48:58.807340 2896943 conversation_manager.go:471] Streaming conversation 62cce826-45e9-45d5-b604-0242edc62e5e
+I0603 13:48:58.807618 2896943 server.go:774] Starting conversation update stream for 62cce826-45e9-45d5-b604-0242edc62e5e
+I0603 13:48:58.807642 2896943 conversation_manager.go:414] Forwarding user message to conversation 62cce826-45e9-45d5-b604-0242edc62e5e (items=1, media=0)
+I0603 13:48:58.807647 2896943 server.go:1075] Sending user message to conversation 62cce826-45e9-45d5-b604-0242edc62e5e (items=1, media=0)
+I0603 13:49:01.270545 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x9c2de0cd98f9188d
+I0603 13:49:03.214670 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8789d8cdf2349043
+E0603 13:49:03.324773 2896943 log.go:398] checkpoint model generated tool calls
+I0603 13:49:05.161334 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbe682fce7c2d35fe
+I0603 13:49:07.010156 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x27ec02123ce1e618
+I0603 13:49:08.445111 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x656710d3ab03b9ea
+I0603 13:49:10.184230 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xcf88a94d0af068e0
+I0603 13:49:11.730876 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1d950284181b0358
+I0603 13:49:11.757758 2896943 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 14
+I0603 13:49:14.434665 2896943 input_loop.go:436] Responding to tool confirmation: convID=62cce826-45e9-45d5-b604-0242edc62e5e, stepIdx=14, approved=true, sandboxOverride=false, turnGrants=[]
+I0603 13:49:14.434743 2896943 server.go:1555] Tool confirmation for conversation 62cce826-45e9-45d5-b604-0242edc62e5e step 14 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0603 13:49:16.069917 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa81d0dcfb6260b3c
+I0603 13:49:17.453977 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbd2ebe1bca6d44ac
+I0603 13:49:18.902669 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x983cb8df48ba4fde
+I0603 13:49:20.628311 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x3a16780421668a33
+I0603 13:49:21.873303 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x2c5b8c20fd63b924
+I0603 13:49:23.803559 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x649fa2eb759e8a63
+I0603 13:49:26.152661 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd1ce9e4c76e21f65
+I0603 13:49:30.481882 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x62ce3c80529cfcc6
+I0603 13:49:32.603965 2896943 http_helpers.go:182] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x65743b7a72372a4b
+I0603 13:49:33.236428 2896943 text_drip.go:173] Drip stopped: lastStepIdx=31, charIdx=453, length=1313
+I0603 13:49:53.934587 2896943 common.go:499] CLI program exited, shutting down
+I0603 13:49:53.935657 2896943 manager.go:488] CLI store manager shutting down
+I0603 13:49:53.935799 2896943 conversation_manager.go:439] Stopping conversation stream
+I0603 13:49:53.936122 2896943 server.go:2174] Language server shutting down

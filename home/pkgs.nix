@@ -13,6 +13,7 @@
           glibc
           gdb
           cmake
+          gnumake
           strace
           ltrace
           gperf
@@ -168,6 +169,8 @@
           claude-code-router
           gemini-cli
           github-copilot-cli
+          rtk
+          pkgs.llm-agents.claude-plugins
         ];
       in
       nixified-ai ++ terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
