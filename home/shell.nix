@@ -109,7 +109,6 @@
         end
       '';
       shellAliases = {
-        clear = "printf '\\033[2J\\033[3J\\033[1;1H'";
         celar = "clear";
         claer = "clear";
         c = "clear";
@@ -118,7 +117,6 @@
         nf = "fastfetch";
         pf = "fastfetch";
         ff = "fastfetch";
-        jan = "$HOME/.bin/jan-nix";
         infernal = "infernalinit";
         shutdown = "systemctl poweroff";
         bootbios = "systemctl reboot --firmware";
@@ -134,13 +132,10 @@
         nxfd = "nix search nixpkgs ";
         nxrn = "nix-shell -p ";
         nvrun = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ";
-        fooogo = "sudo systemctl start docker-fooocus";
+        fooogo = "sudo systemctl start docker-fooocus && brave http://localhost:7865 & disown";
         fooostp = "sudo systemctl stop docker-fooocus";
-        # NOTE: no `forge` oci-container is declared in nixos/configuration.nix yet;
-        # these aliases target a non-existent docker-forge.service. Re-enable once
-        # the forge container is defined (see memory/todo.md).
-        # forggo = "sudo systemctl start docker-forge";
-        # forgstp = "sudo systemctl stop docker-forge";
+        cl = "claude";
+        
       };
       functions = {
         colorhex = {
