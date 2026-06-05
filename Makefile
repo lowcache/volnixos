@@ -3,7 +3,7 @@
 
 HOST ?= infernalnix
 
-.PHONY: help switch build test dry-activate check fmt update update-nixpkgs gc run-netgate run-tailscale
+.PHONY: help switch build test dry-activate check fmt update update-nixpkgs gc run-netgate run-tailscale git
 
 help:
 	@echo "Infernal NixOS Helper Makefile"
@@ -24,6 +24,7 @@ help:
 	@echo "  make update         Update all flake inputs"
 	@echo "  make update-nixpkgs Update only the nixpkgs input"
 	@echo "  make gc             Garbage collect older Nix store derivations"
+	@echo "  make git            Adds changes and creates commit with generic description"
 
 switch:
 	sudo nixos-rebuild switch --flake .#$(HOST)
@@ -60,3 +61,8 @@ gc:
 	sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations 7d
 	@echo "Running Nix store garbage collection..."
 	nix-store --gc
+
+git:
+	git add .
+	git commit -m "Minor Updates"
+	

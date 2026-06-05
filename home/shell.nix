@@ -226,7 +226,7 @@
         };
         setwall = {
           description = "Set wallpaper for a specific monitor or globally";
-            body = ''
+          body = ''
             set -l script ~/.config/quickshell/ii/scripts/colors/switchwall.sh
             if test (count $argv) -eq 0
               echo "Usage: setwall <image_path> [monitor_name]"

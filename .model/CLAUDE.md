@@ -46,13 +46,15 @@ You are operating under a state-of-the-art declarative NixOS setup. The followin
 
 ---
 
-## 3. Swarm Memory System
+## 3. Swarm Memory System and model files
 
-To maintain context across separate conversational boundaries, you must read, append to, and update the directory `./memory/` at the root of the repository:
+To maintain context across separate conversational boundaries, you must read, append to, and update the directory `./.memory/` at the root of the repository:
 
-* `memory/decisions.md` — Active, canonical architecture decisions and system preferences (high-signal, read before every implementation).
-* `memory/mistakes.md` — Audit log of past configuration mistakes, causes, and exact prevention rules (append-only).
-* `memory/todo.md` — Open loops, enhancement ideas, and pending verification tasks.
+* `.memory/decisions.md` — Active, canonical architecture decisions and system preferences (high-signal, read before every implementation).
+* `.memory/mistakes.md` — Audit log of past configuration mistakes, causes, and exact prevention rules (append-only).
+* `.memory/todo.md` — Open loops, enhancement ideas, and pending verification tasks.
+
+Ensure that this file has been places in the `./.model/` directory with other claude-code specific settings files
 
 ### Operational Protocols:
 1. **Read on Startup:** Before suggesting any design, read all files in `./memory/`.
@@ -63,3 +65,5 @@ To maintain context across separate conversational boundaries, you must read, ap
 6. **Declarative Architecture:** Prioritize pure, hermetic, and flake-based paradigms. Avoid legacy, imperative commands (such as `nix-env`) unless explicitly requested.
 7. **Preserve Layouts:** Maintain existing codebase patterns. Do not refactor modular configuration profiles or split file layouts into massive single-file expressions.
 
+## 4. CLAUDE specific notes:
+the `scripts/nixmcp.py` file was at one point necessary, but the addition of the gateway mcp server with access to mcp-nixos as well as other beneficial tools to the claude-code settings should render this redundant, HOWEVER if access to the gateway mcp server has not been addressed then this should be the first thing done before any other work is started on this project. Remediation of this issue is of top importance to ensure access to all tools and keeping the repo clean of temporary or one time use, files. 

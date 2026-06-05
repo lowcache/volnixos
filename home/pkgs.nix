@@ -158,7 +158,7 @@
           spotatui
           inputs.infernal-init.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
-        nixified-ai= with pkgs; [
+        nixified-ai = with pkgs; [
           mcp-nixos
           mcp-gateway
           github-mcp-server
