@@ -1,3 +1,10 @@
+---
+type: todo
+project: Infernal NixOS
+last_updated: 2026-06-06
+status: active
+---
+
 # Open Tasks and Enhancement Roadmap (`memory/todo.md`)
 
 This file catalogs open loops, enhancement ideas, and pending validation tasks for **Infernal NixOS**.

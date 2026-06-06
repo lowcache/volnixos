@@ -142,12 +142,14 @@ You do not have a background review process. If you identify an error mid-respon
 ## XI. MEMORY SYSTEM AND SETTINGS FILES
 For every project, repository, or working directory check for the following directories:
 - `./.model/` location of the `GEMINI.md` file and other important settings files. The `./.model/GEMINI.md` should be read before anything else for project scope and important information. This is also where any directories or settings files created by the antigravity (agy) system (i.e., `./.antigravitycli/`) should also be placed in this directory.
-- `./.memory/` directory is the location of the following memory files and their instructions:
+- `./.memory/` directory is the location of the following memory files and their instructions. All files in `.memory/` require a YAML front-matter metadata header with `type`, `project`, `last_updated`, and `status`:
+  * `memory/state.md` — Single source of truth for the current live status, configs, directory maps, services, active workarounds, and ports.
   * `memory/decisions.md` — Active, canonical architecture decisions and system preferences (high-signal, read before every implementation).
-  * `memory/mistakes.md` — Audit log of past configuration mistakes, causes, and exact prevention rules (append-only).
-  * `memory/todo.md` — Open loops, enhancement ideas, and pending verification tasks.
+  * `memory/mistakes.md` — Audit log of past configuration mistakes, causes, and exact prevention rules (append-only). Outdated or resolved entries must be moved to `memory/archive/`.
+  * `memory/todo.md` — Open tasks, enhancement roadmap, and pending verification loops.
+  * `memory/archive/` — Historical or pruned memory records (directory) to keep active files concise and optimize context window token usage.
 
-If any of the `./.model/GEMINI.md` or `./.memory/{decisions.md,mistakes.md,todo.md}` files or directories are missing they should be created and populated immediately with whatever information is known, and edited as it becomes known as the project progresses.  
+If any of the `./.model/GEMINI.md` or `./.memory/{state.md,decisions.md,mistakes.md,todo.md}` files or directories are missing they should be created and populated immediately with whatever information is known, and edited as it becomes known as the project progresses.  
 
 
 ---

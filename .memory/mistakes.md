@@ -1,3 +1,10 @@
+---
+type: mistakes
+project: Infernal NixOS
+last_updated: 2026-06-06
+status: append-only
+---
+
 # Known Mistakes and Prevention Rules (`memory/mistakes.md`)
 
 This file catalogs past bugs, configuration issues, and operational pitfalls encountered on **Infernal NixOS**. AI agents must study these cases to prevent regression.
