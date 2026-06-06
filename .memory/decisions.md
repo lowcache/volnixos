@@ -31,3 +31,12 @@ This file catalogs the active, canonical design decisions and system configurati
   * **Ollama Keep-Alive Timeout:** Configure the CUDA-enabled Ollama background daemon with the environment variable `"OLLAMA_KEEP_ALIVE=5m"` in [configuration.nix](file:///home/lowcache/.nix-config/nixos/configuration.nix).
   * **Mechanism:** When no AI models are actively loaded, Ollama completely unloads memory allocations and closes all Nvidia driver CUDA handles. This allows the Nvidia GPU to automatically enter the ultra-low-power Runtime suspend state (RTD3, 0W draw) when idle, extending laptop battery life.
   * **User Experience:** Zero impact on workflows. Open WebUI (`localhost:8080`) queries will dynamically trigger model loading as soon as a prompt is entered.
+
+---
+
+## 4. Krita Qt6 / Wayland Compatibility Wrapper
+
+* **Decision (2026-06-06):** Force Krita to run under the X11 compatibility layer (XWayland) instead of native Wayland.
+  * **Implementation:** Wrapped Krita using `symlinkJoin` and `makeWrapper` to inject `QT_QPA_PLATFORM=xcb` in [home/pkgs.nix](file:///home/lowcache/.nix-config/home/pkgs.nix).
+  * **Reason:** In Krita 6 (Qt6 transition), native Wayland rendering on Hyprland (especially with Nvidia/AMD hybrid GPU systems) causes document-switching canvas freezes and application crashes. Running under X11/XWayland completely stabilizes canvas updates and tab switching.
+
