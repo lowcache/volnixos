@@ -57,6 +57,15 @@
           bibata-cursors
           bibata-cursors-translucent
         ];
+        krita-wrapped = pkgs.symlinkJoin {
+          name = "krita";
+          paths = [ pkgs.krita ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/krita \
+              --set QT_QPA_PLATFORM xcb
+          '';
+        };
         hyprland = with pkgs; [
           hypridle
           hyprlock
@@ -75,7 +84,7 @@
           fuzzel
           kitty
           krita-plugin-gmic
-          krita
+          krita-wrapped
           imagemagick
           spacedrive
           papirus-icon-theme

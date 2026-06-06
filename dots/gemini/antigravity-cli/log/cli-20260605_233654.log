@@ -1,0 +1,279 @@
+I0605 23:36:54.871360 19500 server.go:1295] Starting language server process with pid 19500
+I0605 23:36:54.872993 19500 server.go:478] Language server will attempt to listen on host localhost
+I0605 23:36:54.874937 19500 server.go:492] Language server listening on random port at 41263 for HTTPS (gRPC)
+I0605 23:36:54.875473 19500 server.go:499] Language server listening on random port at 33399 for HTTP
+W0605 23:36:55.358414 19500 launchmanager.go:69] Entering local chrome mode! This is WRONG unless you are running tests or in eval mode on Linux.
+W0605 23:36:55.361828 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.361879 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.361903 19500 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+I0605 23:36:55.362375 19500 manager.go:92] Creating trajectory store manager with proto store and SQLite store
+W0605 23:36:55.362706 19500 log_context.go:117] Cache(fetchAdminControls): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.362721 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.362842 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.362855 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.362974 19500 log_context.go:117] Cache(fetchAdminControls): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.362984 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.363231 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.363275 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.363557 19500 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.363591 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.363801 19500 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+I0605 23:36:55.364169 19500 server.go:2270] Auth succeeded, refreshing features and managers
+E0605 23:36:55.364221 19500 log.go:398] Failed to poll ListExperiments: error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.364220 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.364257 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.364497 19500 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.364513 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.364561 19500 log_context.go:117] Cache(availableModels): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.364592 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.364683 19500 server.go:611] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0605 23:36:55.364701 19500 client.go:81] failed to set auth token
+E0605 23:36:55.364891 19500 log.go:398] Failed to poll FetchAvailableModels: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.365132 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.365154 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+I0605 23:36:55.365185 19500 server.go:2276] State refresh took 1ms
+W0605 23:36:55.365926 19500 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.365966 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.366296 19500 server.go:611] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0605 23:36:55.366313 19500 client.go:81] failed to set auth token
+W0605 23:36:55.379334 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.379384 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.379618 19500 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.379652 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.379859 19500 server.go:611] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0605 23:36:55.379870 19500 client.go:81] failed to set auth token
+W0605 23:36:55.379975 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.380002 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.380197 19500 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.380220 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.380434 19500 server.go:611] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0605 23:36:55.380443 19500 client.go:81] failed to set auth token
+E0605 23:36:55.380511 19500 server.go:611] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0605 23:36:55.380543 19500 client.go:81] failed to set auth token
+W0605 23:36:55.380524 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.380589 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.380894 19500 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.380920 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.381156 19500 server.go:611] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0605 23:36:55.381168 19500 client.go:81] failed to set auth token
+I0605 23:36:55.386500 19500 server.go:1931] initialized server successfully in 514.90351ms
+W0605 23:36:55.386698 19500 log_context.go:117] Cache(loadCodeAssistResponse): Singleflight refresh failed: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.386737 19500 log.go:398] error getting token source: You are not logged into Antigravity.
+W0605 23:36:55.386921 19500 log_context.go:117] Cache(userInfo): Singleflight refresh failed: failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.386937 19500 log.go:398] failed to get load code assist response: error getting token source: You are not logged into Antigravity.
+E0605 23:36:55.387120 19500 server.go:611] Failed to get OAuth token: error getting token source from auth provider: You are not logged into Antigravity.
+W0605 23:36:55.387129 19500 client.go:81] failed to set auth token
+I0605 23:36:55.387895 19500 auto_updater.go:253] Spawned background update process with PID 19546
+I0605 23:36:55.387947 19500 common.go:105] Launching CLI mode
+E0605 23:36:55.387963 19500 common.go:124] Failed to resolve GeminiDir ".gemini": .gemini must be an absolute path: path is not absolute, falling back to default
+I0605 23:36:55.387982 19500 common.go:155] CLI app data directory: /home/lowcache/.gemini/antigravity-cli
+I0605 23:36:55.388216 19500 server.go:211] Creating CLI server backend: product=antigravity workspaceDirs=[/home/lowcache/.nix-config] appDataDir=/home/lowcache/.gemini/antigravity-cli cascadeManager=true codeAssist=true
+I0605 23:36:55.388935 19500 project.go:153] project: discovered project "/home/lowcache/.nix-config" (id=493347a1-4f01-484a-869e-268a1def8355) via cache
+I0605 23:36:55.389101 19500 server.go:1338] Backend project ID updated dynamically to: 493347a1-4f01-484a-869e-268a1def8355
+E0605 23:36:55.389142 19500 common.go:327] project: failed to add project resource folder "/home/lowcache/.nix-config" to workspace: file:///home/lowcache/.nix-config is hidden: ignore uri
+I0605 23:36:55.390269 19500 manager.go:265] Initializing CLI store manager for workspace /home/lowcache/.nix-config
+I0605 23:36:55.391591 19500 cli_setting_manager.go:655] Skipping telemetry propagation because user is not logged in
+I0605 23:36:55.391635 19500 cli_setting_manager.go:79] CLI settings initialized: permissions=&{Allow:[command(git) command(ls) command(journalctl) command(find) command(nix) command(nix-shell) command(grep) command(rg) command(dmesg) command(npm) command(nvidia-smi) command(lspci) command(tail) command(systemctl status) command(coredumpctl) command(head) command(printenv) command(type) command(cp) command(nixos-version) command(cat) command(nix-channel) command(tar) command(/home/nondeus/.local/bin/antigravity-ide) command(nixpkgs-fmt)] Deny:[command(rm -rf) command(nixos-rebuild)] Ask:[]}, toolPermission=request-review
+I0605 23:36:55.392079 19500 manager.go:369] CLI store manager initialized successfully
+I0605 23:36:55.392098 19500 common.go:401] CLI store manager created successfully
+I0605 23:36:55.392113 19500 cli_setting_manager.go:192] ApplyProjectPermissionGrants: no grants for project "/home/lowcache/.nix-config", cleared project permissions
+I0605 23:36:55.397940 19500 common.go:503] Starting CLI program
+CLI ready for user input (startup took 9.976105ms)
+ERROR: logging before google.Init: I0605 23:36:55.400478     198 terminal_info_manager.go:160] Terminal detection: TERM="xterm-kitty" altScreen=true ssh=false
+I0605 23:36:55.400921 19500 gemini_extensions.go:28] Detecting Gemini extensions in /home/lowcache/.gemini/extensions
+I0605 23:36:55.401442 19500 gemini_extensions.go:49] No extensions found
+I0605 23:36:55.403419 19500 root.go:132] Failed to add workspace dir: failed to add workspace folder /home/lowcache/.nix-config: file:///home/lowcache/.nix-config is hidden: ignore uri
+W0605 23:36:55.403562 19500 token_storage.go:113] Failed to load token from keyring, falling back to file: The name is not activatable
+I0605 23:36:55.452458 19500 manager.go:599] Full redraw completed (rerenderAll) for conversation  (epoch 0, items 1)
+W0605 23:36:55.511471 19500 token_storage.go:80] Failed to save token to keyring, falling back to file: The name is not activatable
+I0605 23:36:55.679423 19500 auth.go:114] ChainedAuth: authenticated via keyring (effective: keyring)
+I0605 23:36:55.679449 19500 server_oauth.go:212] applyAuthResult: email=drawpdeadredd@gmail.com, authMethod=consumer, quotaProject=
+I0605 23:36:55.679456 19500 server_oauth.go:217] OAuth: authenticated successfully as drawpdeadredd@gmail.com
+I0605 23:36:55.679461 19500 server_oauth.go:223] b.codeAssistClient.AuthProvider (0x32401d7eca80) is same as b.cliAuth (0x32401d7eca80)
+I0605 23:36:56.442598 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xdbc748d365382179
+I0605 23:36:57.105070 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xdfbd893e8c092a42
+I0605 23:36:57.106382 19500 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0605 23:36:57.187698 19500 input_loop.go:499] Auth done received, triggering experiment refresh
+I0605 23:36:57.187738 19500 experiment_manager.go:35] Starting experiment refresh after login
+I0605 23:36:57.536431 19500 experiment_manager.go:39] Experiments refreshed after login
+I0605 23:36:57.536519 19500 manager.go:1183] Reloading system slash commands
+I0605 23:36:57.758662 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x72f5b76b37198f0b
+I0605 23:36:58.304691 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x3a911b72135ce2bb
+I0605 23:36:58.421814 19500 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0605 23:36:58.421906 19500 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0605 23:36:58.516244 19500 input_loop.go:499] Auth done received, triggering experiment refresh
+I0605 23:36:58.516277 19500 experiment_manager.go:35] Starting experiment refresh after login
+I0605 23:36:58.532230 19500 input_loop.go:499] Auth done received, triggering experiment refresh
+I0605 23:36:58.532260 19500 experiment_manager.go:35] Starting experiment refresh after login
+I0605 23:36:58.590994 19500 model_config_manager.go:157] Propagating selected model override to backend: label="Gemini 3.5 Flash (Medium)"
+I0605 23:36:58.769528 19500 input_loop.go:499] Auth done received, triggering experiment refresh
+I0605 23:36:58.769579 19500 experiment_manager.go:35] Starting experiment refresh after login
+I0605 23:36:58.811029 19500 experiment_manager.go:39] Experiments refreshed after login
+I0605 23:36:58.811120 19500 manager.go:1183] Reloading system slash commands
+I0605 23:36:58.812119 19500 manager.go:1187] Slash commands unchanged, skipping update
+I0605 23:36:58.815912 19500 experiment_manager.go:39] Experiments refreshed after login
+I0605 23:36:58.816006 19500 manager.go:1183] Reloading system slash commands
+I0605 23:36:58.817141 19500 manager.go:1187] Slash commands unchanged, skipping update
+I0605 23:36:58.990645 19500 experiment_manager.go:39] Experiments refreshed after login
+I0605 23:36:58.990724 19500 manager.go:1183] Reloading system slash commands
+I0605 23:36:58.992004 19500 manager.go:1187] Slash commands unchanged, skipping update
+I0605 23:36:59.196491 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x2db76def351a2475
+I0605 23:40:49.281847 19500 input_loop.go:34] HandleUserInput called with text: "for some reason my krita painting application is not running correctly, i cannot switch between editing images, so if i have two images open at the same tine and attempt to switch between them the images dont switch between the two, and the first image never leaves the canvas, and it pretty much crashes the entire app, if it doesnt crash im stuck editing the first image unless i re-open the seconfd image and try to force the second canvas, either way there are obvious issues with krita, i havent ran the app in quite a while becasue of this so there nay not be persistent logs that have logged the behavior, but the behavior is the same every time I open it."
+I0605 23:40:49.281945 19500 conversation_manager.go:288] Starting new conversation (agent=false)
+I0605 23:40:49.281963 19500 server.go:719] Creating new cascade trajectory (agentScript=false)
+I0605 23:40:49.281974 19500 server.go:722] Conversation using project ID: 493347a1-4f01-484a-869e-268a1def8355
+I0605 23:40:49.320260 19500 server.go:750] Created conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6
+I0605 23:40:49.320712 19500 server.go:2017] GetConversationDetail: found conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 (active=true)
+I0605 23:40:49.320773 19500 conversation_manager.go:317] project: switching to conversation belonging to project ID: 493347a1-4f01-484a-869e-268a1def8355
+I0605 23:40:49.320857 19500 server.go:1338] Backend project ID updated dynamically to: 493347a1-4f01-484a-869e-268a1def8355
+I0605 23:40:49.320878 19500 cli_setting_manager.go:192] ApplyProjectPermissionGrants: no grants for project "/home/lowcache/.nix-config", cleared project permissions
+E0605 23:40:49.320954 19500 conversation_manager.go:381] project: failed to add project resource folder "/home/lowcache/.nix-config" to workspace dynamically: failed to add workspace folder /home/lowcache/.nix-config: file:///home/lowcache/.nix-config is hidden: ignore uri
+I0605 23:40:49.321152 19500 conversation_manager.go:389] project: synced active project to "/home/lowcache/.nix-config" (id=493347a1-4f01-484a-869e-268a1def8355) and updated workspace cache
+I0605 23:40:49.321162 19500 conversation_manager.go:477] Streaming conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6
+I0605 23:40:49.321608 19500 server.go:769] Starting conversation update stream for 6b7361e0-4af4-4be8-b943-c5c0878a8ef6
+I0605 23:40:49.321632 19500 conversation_manager.go:420] Forwarding user message to conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 (items=1, media=0)
+I0605 23:40:49.321636 19500 server.go:1070] Sending user message to conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 (items=1, media=0)
+I0605 23:40:49.996240 19500 encoder_embed.go:85] Installing/updating embedded webm_encoder binary to /home/lowcache/.gemini/antigravity-cli/bin/webm_encoder
+I0605 23:40:51.676825 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x20d0f8a2d98f842a
+I0605 23:40:51.820818 19500 text_drip.go:173] Drip stopped: lastStepIdx=2, charIdx=132, length=193
+I0605 23:40:51.822405 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 3
+I0605 23:40:54.649000 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=3, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:40:54.649048 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 3 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:40:54.668903 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 3
+I0605 23:41:01.086311 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=3, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:41:01.086464 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 3 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:41:01.088123 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 3
+I0605 23:41:01.952279 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=3, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:41:01.952485 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 3 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:41:03.345898 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x9ad7181f4a2a45a1
+I0605 23:41:04.484443 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa9bab7dbe7afdc5b
+I0605 23:41:04.603945 19500 text_drip.go:173] Drip stopped: lastStepIdx=5, charIdx=144, length=171
+I0605 23:41:04.607715 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 6
+I0605 23:41:06.664525 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=6, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:41:06.664647 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 6 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:41:06.668524 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 6
+I0605 23:41:07.446209 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=6, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:41:07.446303 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 6 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:41:09.252622 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xdddffed5186afc79
+I0605 23:41:09.389913 19500 text_drip.go:173] Drip stopped: lastStepIdx=7, charIdx=134, length=160
+I0605 23:41:13.492056 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x1fe55bb706834a10
+I0605 23:41:14.715984 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf84dd1c7209603a8
+I0605 23:41:14.822497 19500 text_drip.go:173] Drip stopped: lastStepIdx=9, charIdx=120, length=148
+I0605 23:41:16.559502 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xf056e5620fd7f6e9
+I0605 23:41:16.563888 19500 text_drip.go:173] Drip stopped: lastStepIdx=11, charIdx=24, length=201
+I0605 23:41:17.788881 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x33f05c8f40d1637e
+I0605 23:41:18.198175 19500 text_drip.go:173] Drip stopped: lastStepIdx=13, charIdx=164, length=164
+I0605 23:41:19.440992 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x72fdce3d291caf96
+I0605 23:41:19.550467 19500 text_drip.go:173] Drip stopped: lastStepIdx=15, charIdx=120, length=160
+I0605 23:41:19.551636 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 16
+I0605 23:41:20.279468 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=16, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:41:20.279553 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 16 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:41:20.281128 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 16
+I0605 23:41:21.025014 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=16, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:41:21.025082 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 16 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:41:22.636615 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x5d8fce861701c767
+I0605 23:41:22.766210 19500 text_drip.go:173] Drip stopped: lastStepIdx=17, charIdx=144, length=173
+I0605 23:41:27.720807 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x1dd7dd588a1e9612
+I0605 23:41:29.258844 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x35d49c8c8be618b1
+I0605 23:41:29.353849 19500 text_drip.go:173] Drip stopped: lastStepIdx=19, charIdx=76, length=167
+I0605 23:41:33.760942 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x16152d5e73ceea12
+I0605 23:41:35.537987 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8e23b09c0016956e
+I0605 23:41:35.714912 19500 text_drip.go:173] Drip stopped: lastStepIdx=21, charIdx=119, length=165
+I0605 23:41:36.978501 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xee20cbda7a766941
+I0605 23:41:37.135663 19500 text_drip.go:173] Drip stopped: lastStepIdx=23, charIdx=154, length=154
+I0605 23:41:42.260040 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0xf3aaa834c983231b
+I0605 23:41:43.501630 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x14e1ffdf82ed951a
+I0605 23:41:43.587092 19500 text_drip.go:173] Drip stopped: lastStepIdx=25, charIdx=84, length=183
+I0605 23:41:49.221774 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x52aadabb25ca5095
+I0605 23:41:50.536929 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbe72aed5263d5d44
+I0605 23:41:50.558232 19500 text_drip.go:173] Drip stopped: lastStepIdx=27, charIdx=60, length=192
+I0605 23:41:51.676339 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1fada7787d532cd8
+I0605 23:41:51.701982 19500 text_drip.go:173] Drip stopped: lastStepIdx=29, charIdx=60, length=121
+I0605 23:41:59.153123 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x4d07aac9b786901
+I0605 23:41:59.154147 19500 text_drip.go:173] Drip stopped: lastStepIdx=31, charIdx=12, length=70
+I0605 23:41:59.282841 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xe91ba3470a2b0abf
+I0605 23:41:59.557420 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xb91b05b6e85672af
+I0605 23:42:19.236341 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xeead2959eecc577e
+I0605 23:42:19.325540 19500 text_drip.go:173] Drip stopped: lastStepIdx=33, charIdx=84, length=122
+I0605 23:42:20.285663 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x614bc75ce5dc68c4
+I0605 23:42:20.287668 19500 text_drip.go:173] Drip stopped: lastStepIdx=35, charIdx=12, length=112
+I0605 23:42:21.511106 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x87eac45c23de985d
+I0605 23:42:21.668183 19500 text_drip.go:173] Drip stopped: lastStepIdx=37, charIdx=157, length=161
+I0605 23:42:24.248537 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbbe131882fb3b776
+I0605 23:42:24.253162 19500 text_drip.go:173] Drip stopped: lastStepIdx=39, charIdx=36, length=101
+I0605 23:42:25.878835 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xe3212b9f6fe46c1d
+I0605 23:42:25.910858 19500 text_drip.go:173] Drip stopped: lastStepIdx=41, charIdx=60, length=170
+I0605 23:42:26.973870 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x8474416617038844
+I0605 23:42:27.107070 19500 text_drip.go:173] Drip stopped: lastStepIdx=43, charIdx=144, length=211
+I0605 23:42:31.405907 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x69639fab9bc68f4c
+I0605 23:42:32.659774 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xad2acb2fc19f3af7
+I0605 23:42:32.841555 19500 text_drip.go:173] Drip stopped: lastStepIdx=45, charIdx=41, length=116
+I0605 23:42:34.267941 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc7f39a920124b802
+I0605 23:42:34.270459 19500 text_drip.go:173] Drip stopped: lastStepIdx=47, charIdx=24, length=85
+I0605 23:42:36.504844 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x72f3344acab8164a
+I0605 23:42:36.661771 19500 text_drip.go:173] Drip stopped: lastStepIdx=49, charIdx=144, length=157
+I0605 23:42:37.003741 19500 tool_confirmation_manager.go:77] Surfacing tool confirmation: "Bash" at step 50
+I0605 23:42:38.552930 19500 input_loop.go:436] Responding to tool confirmation: convID=6b7361e0-4af4-4be8-b943-c5c0878a8ef6, stepIdx=50, approved=true, sandboxOverride=false, turnGrants=[]
+I0605 23:42:38.553093 19500 server.go:1556] Tool confirmation for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 step 50 (type=*gemini_coder_go_proto.Step_RunCommand approved=true)
+I0605 23:42:41.135582 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x6805239813cc9dd3
+I0605 23:42:43.115162 19500 text_drip.go:173] Drip stopped: lastStepIdx=51, charIdx=126, length=126
+I0605 23:42:44.101462 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x1dd7838f4715a9d5
+I0605 23:42:44.103027 19500 text_drip.go:173] Drip stopped: lastStepIdx=53, charIdx=24, length=118
+I0605 23:42:45.332197 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xbb094b72480173b3
+I0605 23:42:45.337636 19500 text_drip.go:173] Drip stopped: lastStepIdx=55, charIdx=36, length=108
+I0605 23:42:46.766056 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xaf1a41a4591ada4b
+I0605 23:42:47.195808 19500 text_drip.go:173] Drip stopped: lastStepIdx=57, charIdx=226, length=226
+I0605 23:42:48.198064 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x6157a19e62ca8612
+I0605 23:42:50.412735 19500 text_drip.go:173] Drip stopped: lastStepIdx=59, charIdx=230, length=230
+I0605 23:42:52.149477 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x472fe1d3e661b1c1
+I0605 23:42:52.618372 19500 text_drip.go:173] Drip stopped: lastStepIdx=61, charIdx=492, length=1189
+I0605 23:47:55.859830 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xa1fd700c6a534b86
+I0605 23:47:56.273044 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xa528e1ab935eb38
+I0605 23:53:55.862752 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0x3e3843a93805ec86
+I0605 23:53:56.486544 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x7b191537d4743aa5
+I0605 23:56:23.364184 19500 manager.go:599] Full redraw completed (rerenderAll) for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 (epoch 0, items 63)
+I0605 23:57:01.793437 19500 manager.go:599] Full redraw completed (rerenderAll) for conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 (epoch 0, items 63)
+I0605 23:57:06.678100 19500 artifact_detail.go:867] artifact renderer dismiss: fileName="krita_troubleshooting.md" commentCount=0 commentsLen=0
+I0605 23:57:30.303477 19500 artifact_detail.go:867] artifact renderer dismiss: fileName="krita_troubleshooting.md" commentCount=0 commentsLen=0
+I0605 23:57:40.442383 19500 input_loop.go:34] HandleUserInput called with text: "test b resolved the issue"
+I0605 23:57:40.442464 19500 conversation_manager.go:420] Forwarding user message to conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 (items=1, media=0)
+I0605 23:57:40.442485 19500 server.go:1070] Sending user message to conversation 6b7361e0-4af4-4be8-b943-c5c0878a8ef6 (items=1, media=0)
+I0605 23:57:43.623833 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x2ecd7a74ef33c40a
+I0605 23:57:43.834875 19500 text_drip.go:173] Drip stopped: lastStepIdx=63, charIdx=108, length=201
+I0605 23:57:45.173478 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x174b749daf6cafcd
+I0605 23:57:45.273478 19500 text_drip.go:173] Drip stopped: lastStepIdx=65, charIdx=83, length=120
+I0605 23:57:46.985776 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xc3bddeb22ecc7e35
+I0605 23:57:47.073439 19500 text_drip.go:173] Drip stopped: lastStepIdx=67, charIdx=96, length=96
+I0605 23:57:48.163934 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd20c62d524af8bde
+I0605 23:57:48.166054 19500 text_drip.go:173] Drip stopped: lastStepIdx=69, charIdx=24, length=96
+I0605 23:57:49.297053 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x104447cb62f5bd9f
+I0605 23:57:49.301720 19500 text_drip.go:173] Drip stopped: lastStepIdx=71, charIdx=36, length=89
+I0605 23:57:50.540352 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x15f03e22805e8b6f
+I0605 23:57:50.724845 19500 text_drip.go:173] Drip stopped: lastStepIdx=73, charIdx=96, length=135
+I0605 23:57:53.467651 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x82f2441f9bb2400b
+I0605 23:57:54.311553 19500 text_drip.go:173] Drip stopped: lastStepIdx=75, charIdx=168, length=222
+I0605 23:57:57.837942 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent Trace: 0x7fda105796a05c38
+I0605 23:57:59.489408 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xa6cb7b8ace7afd87
+I0605 23:57:59.622530 19500 text_drip.go:173] Drip stopped: lastStepIdx=77, charIdx=116, length=131
+I0605 23:58:00.920633 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x11cf58ce63514787
+I0605 23:58:01.024622 19500 text_drip.go:173] Drip stopped: lastStepIdx=79, charIdx=108, length=108
+I0605 23:58:02.359381 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x2373080bdd2a9c69
+I0605 23:58:02.461880 19500 text_drip.go:173] Drip stopped: lastStepIdx=81, charIdx=75, length=123
+I0605 23:58:03.585659 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xd3997424bc5b9b53
+I0605 23:58:04.107750 19500 text_drip.go:173] Drip stopped: lastStepIdx=83, charIdx=179, length=179
+I0605 23:58:05.540100 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x57a08a290eac50f7
+I0605 23:58:05.673165 19500 text_drip.go:173] Drip stopped: lastStepIdx=85, charIdx=107, length=162
+I0605 23:58:06.993841 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0x705e660e5bdb831d
+I0605 23:58:06.996002 19500 text_drip.go:173] Drip stopped: lastStepIdx=87, charIdx=12, length=133
+I0605 23:58:09.003796 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:streamGenerateContent?alt=sse Trace: 0xb7abdec7622bf920
+I0605 23:58:09.255989 19500 text_drip.go:173] Drip stopped: lastStepIdx=89, charIdx=258, length=860
+I0605 23:59:55.810137 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xe0b2b97938aaee60
+I0605 23:59:56.014950 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x2fd4ae759779fe7d
+I0606 00:05:55.748516 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xbb4219ab320de31b
+I0606 00:05:56.256828 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xf00a4d08f0d604d7
+I0606 00:11:55.764792 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xe250c6259f3d2be6
+I0606 00:11:56.376169 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x612a7c914f35aa42
+I0606 00:17:55.781338 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xafa704d8f0b71165
+I0606 00:17:56.087558 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0xb988d51478726b94
+I0606 00:23:55.796057 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:fetchAvailableModels Trace: 0xe0b945c379899228
+I0606 00:23:56.000392 19500 http_helpers.go:183] URL: https://daily-cloudcode-pa.googleapis.com/v1internal:loadCodeAssist Trace: 0x56085d7eb8d54da9

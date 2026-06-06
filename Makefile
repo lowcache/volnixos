@@ -24,7 +24,7 @@ help:
 	@echo "  make update         Update all flake inputs"
 	@echo "  make update-nixpkgs Update only the nixpkgs input"
 	@echo "  make gc             Garbage collect older Nix store derivations"
-	@echo "  make git            Adds changes and creates commit with generic description"
+	@echo "  make ghc            Adds changes and creates commit with generic description"
 
 switch:
 	sudo nixos-rebuild switch --flake .#$(HOST)
@@ -62,7 +62,7 @@ gc:
 	@echo "Running Nix store garbage collection..."
 	nix-store --gc
 
-git:
+ghc:
 	git add .
 	git commit -m "Minor Updates"
 	

@@ -1,0 +1,5 @@
+{
+  "summary": "A comprehensive troubleshooting guide to diagnose and resolve Krita 6 (Qt6) crashes/freezes on Hyprland (Wayland) under NixOS, detailing the fixed path references, how to clean-launch, and how to force XWayland.",
+  "updatedAt": "2026-06-06T04:42:50.411850965Z",
+  "userFacing": true
+}
