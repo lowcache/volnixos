@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 status: active
 ---
 
@@ -71,7 +71,16 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 
 ---
 
-## 5. Nix Binary Caches & Lix Pinning
+## 5. Secrets Management (sops-nix + age)
+
+* **Encrypted store:** `nixos/secrets.yaml` (sops, age), `defaultSopsFile` in `configuration.nix`. Recipients: the **host** ssh key (`/persist/etc/ssh/ssh_host_ed25519_key` → `age1eweg3j…`, used by sops-nix at activation) and the **user** ssh key (`~/.ssh/id_ed25519` → `age1fdm66…`, used for editing). Encrypted → safe to commit.
+* **User editing key:** `~/.config/sops/age/keys.txt` — native `AGE-SECRET-KEY-1…`, mode `600`, derived once from `~/.ssh/id_ed25519` via `ssh-to-age -private-key`. Persisted: `.config/sops` added to `home/persist.nix` config list **and** the key copied into `/persist/home/lowcache/.config/sops/age/keys.txt` (impermanence bind-mounts that over `~/.config/sops`; it does **not** migrate tmpfs data, so the manual copy into `/persist` is mandatory). `SOPS_AGE_KEY_FILE` set in fish `shellInit` → `sops nixos/secrets.yaml` works with no env prefix.
+* **Gotcha:** `~/.ssh/id_ed25519` is passphrase-protected and sops/age cannot use an encrypted ssh key non-interactively — hence the one-time conversion to a passphrase-free native age key. CLI is `pkgs.sops` + `ssh-to-age` (`home/pkgs.nix`); edit with the `edit` subcommand (`sops edit <file>` — bare `sops <file>` dumps usage in this version).
+* **Declared secrets** (`configuration.nix` `sops.secrets`, decrypted to `/run/secrets/<name>` at activation): `user_password`, `root_password` (`neededForUsers`); `gemini_api_key`, `github_token` (`owner = "lowcache"`). The two API keys export to env in fish `shellInit`: `GEMINI_API_KEY`, `GITHUB_TOKEN` ← `/run/secrets/*`.
+
+---
+
+## 6. Nix Binary Caches & Lix Pinning
 
 * **Substituters** (`nixos/configuration.nix` `nix.settings`, merged with the `cache.nixos.org` default): `hyprland.cachix.org`, `nix-community.cachix.org`, `cache.lix.systems`, `cuda-maintainers.cachix.org`, `cache.numtide.com`, `attic.xuyh0120.win/lantian` — each with its trusted public key. `trusted-users = [ "root" "lowcache" ]` (required, or non-default substituters are ignored).
 * **Lix pinning (2026-06-08, post-recovery):** Working state **KEEPS** the overrides — `lix-module` has `inputs.nixpkgs.follows = "nixpkgs"` and `inputs.lix.url` tracking `lix` main; locked `lix=daa2bc82`, `lix-module=727d859b`, `infernal-init=9862dd2`. This **builds Lix from source every switch** (slow) because main is never on `cache.lix.systems` — accepted as the cost of a working build. An attempt to remove the overrides for cache hits BROKE eval (module 2.96 vs lix 2.94-pre → removed `mdbook-linkcheck`) and was reverted via `git checkout fb63b6f`. **Do NOT** remove these overrides or `nix flake update lix-module` without eval-verifying first; real cache hits require pinning a matched Lix *release*, not main. See mistakes.md #7.

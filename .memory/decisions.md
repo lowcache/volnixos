@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-06-06
+last_updated: 2026-06-09
 status: active
 ---
 
@@ -46,4 +46,13 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Decision (2026-06-06):** Force Krita to run under the X11 compatibility layer (XWayland) instead of native Wayland.
   * **Implementation:** Wrapped Krita using `symlinkJoin` and `makeWrapper` to inject `QT_QPA_PLATFORM=xcb` in [home/pkgs.nix](file:///home/lowcache/.nix-config/home/pkgs.nix).
   * **Reason:** In Krita 6 (Qt6 transition), native Wayland rendering on Hyprland (especially with Nvidia/AMD hybrid GPU systems) causes document-switching canvas freezes and application crashes. Running under X11/XWayland completely stabilizes canvas updates and tab switching.
+
+---
+
+## 5. Secrets Location — sops or `/persist`, NEVER `dots/`
+
+* **Decision (2026-06-09):** Secrets (API keys, tokens, OAuth creds, private keys) live in exactly two places: **sops-encrypted** (`nixos/secrets.yaml`, committable *because* encrypted) or **`/persist`** (never git-tracked, e.g. `~/.config/sops/age/keys.txt`). They **never** go under `dots/`.
+* **Reason:** `dots/` is symlinked into a **public** repo (`github.com/lowcache/volnixos`). The out-of-store symlink already serves live config from disk + `/persist` — git tracking is never required for a working config. Blanket-tracking agent dirs (`.gemini`, and the planned `.claude`) leaked live OAuth tokens to the public repo — see mistakes.md #8.
+* **Pattern (three touch-points):** add to `nixos/secrets.yaml` (encrypted) → declare `sops.secrets.<name>.owner = "lowcache"` in `configuration.nix` (decrypts to `/run/secrets/<name>`) → export in `home/shell.nix` `shellInit` (`set -gx VAR (cat /run/secrets/<name>)`).
+* **Adding agent/tool dirs to `dots/`:** track only declarative config; gitignore runtime/state/credential files with **dir-relative** patterns; never rely on git to keep a secret out — keep it out of the tree entirely.
 

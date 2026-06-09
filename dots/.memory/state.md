@@ -66,6 +66,24 @@ and `dots/.model/` are safe homes for scoped context (they never reach `~/.confi
   previously-dropped kitty `color15`), `peach_dim`, `coral_dim`, `coral_container`, and the
   M3 `error*` / `success*` sets.
 
+## Active Theme & Live Reload
+
+* **Active theme (2026-06-09):** `radioactive_slime.json` — neon green/yellow/orange "toxic"
+  scheme on a green-tinted near-black background ramp. The **volinit** colors (`~/CodeRepo/volinit`,
+  `src/volinit.nim`) are woven in as the structural/dim tones: PCB green `#AAD71E` →
+  `primary_dim`/`inverse_primary`, die-gold `#CDB964` → `secondary_dim`, die-silver `#C8CDC8`
+  → `fg`, grey-green `#96AA96` → outline/subtle. Hand-authored (not the generator) for
+  art-direction control; 77 roles, `make theme-check` clean.
+* Canonical templates: `amalgamation.json` + `petrified_spittoon.json` carry the full role
+  set; new themes clone their mappings (see [[decisions]] D5).
+* **Kitty live color reload (no restart):** `kitty.conf` has `allow_remote_control` +
+  `listen_on unix:@mykitty`. `apply_theme.py` pushes to running windows via
+  `kitty @ --to unix:@mykitty set-colors --all --configured <args>` (module constant
+  `KITTY_SOCKET`), so `make theme-apply` recolors live; it skips gracefully when nothing is
+  listening, and the `USR1` reload still handles tab-bar colors. Caveats: `@mykitty` is a
+  fixed abstract socket so only the first kitty instance binds it; and `listen_on` applies
+  only at kitty start, so windows opened before the config change need one restart.
+
 ## Subtree / Independent History
 
 * Tracked in the single `nix-config` repo; publishable with filtered history via `git subtree`.

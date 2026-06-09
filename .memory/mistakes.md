@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-06-08
+last_updated: 2026-06-09
 status: append-only
 ---
 
@@ -76,3 +76,20 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
   3. To genuinely hit the cache you must pin **both** `lix-module` and `lix` to a matched *release* that also builds against current nixpkgs — a deliberate, separately-tested change, not a quick edit.
   4. **NEVER** alter Lix pinning without eval-verifying (`nix eval …toplevel.drvPath`) before triggering a rebuild. A slow source build is acceptable; a broken eval that aborts the switch is not.
   5. (Unrelated) `nil` source rebuilds are `pkgs.nil` from nixpkgs hitting cache.nixos.org lag for a fresh rev — not a config defect; resolves when Hydra catches up.
+
+---
+
+## 8. Live Credentials Committed to a PUBLIC GitHub Repo (blanket-tracked `.gemini`)
+
+* **Incident (2026-06-09):** `dots/gemini/oauth_creds.json` (Google OAuth tokens), `google_accounts.json`, and agent task-logs under `antigravity-cli/brain/` (which captured live secrets) were committed and pushed to the **public** repo `github.com/lowcache/volnixos` (commit `2ccdd52 "added .gemini to dots"`). Confirmed public via anonymous GitHub API (HTTP 200).
+* **The Bug:** `.gemini` was added to `dots/` wholesale (out-of-store symlinked **and** git-tracked) "to keep a working config." Two compounding errors: (a) the out-of-store symlink already serves the live config from disk + `/persist`, so git tracking was never required for it to work; (b) the intended guard `dots/gemini/.gitignore` was non-functional — its patterns were written repo-root-relative (`dots/gemini/oauth_creds.json`) inside a file that interprets paths relative to its **own** directory, so they matched nothing, and gitignore cannot untrack already-committed files regardless. 159 MB / 1058 files of agent chaff (`brain/ mcp/ log/ cache/ tmp/ history/`) rode along, including logs the agent had written secrets into.
+* **Impact:** Plaintext OAuth tokens exposed on a public repo. (`nixos/secrets.yaml` was safe — sops-encrypted.) Tokens must be treated as fully compromised.
+* **Remediation done (2026-06-09):** `git rm -r --cached` of 615 secret/chaff files (left on disk; live config untouched, 1058→443 tracked); rewrote `dots/gemini/.gitignore` with correct dir-relative patterns (keep `config/ skills/ settings.json GEMINI.md mcp_config.json`; ignore `brain/ mcp/ log/ cache/ tmp/ history/ *.log oauth_creds.json google_accounts.json state.json installation_id`); verified with `git check-ignore`.
+* **STILL OPEN — NOT resolved:**
+  1. **Rotate** the Google/Gemini OAuth tokens (+ any API key Antigravity touched in logged sessions). The ONLY action that un-exposes them; untracking/scrub cannot.
+  2. **History scrub** — secrets remain in every historical commit on `origin/main`. Needs `git filter-repo --invert-paths` + `git push --force` before the repo is clean.
+* **Prevention Rules:**
+  1. Secrets NEVER live under `dots/` (public repo). Use sops (encrypted, committable) or `/persist` (never tracked). See decisions.md #5.
+  2. Never blanket-track agent/tool dirs (`.gemini`, `.claude`, …) — they write credentials and verbose logs. Track only declarative config; the *symlink*, not git, is what makes the live config work.
+  3. `.gitignore` patterns are relative to the file's own directory; verify with `git check-ignore <path>`.
+  4. gitignore does not untrack committed files — pair every ignore rule for an already-tracked secret with `git rm --cached`.
