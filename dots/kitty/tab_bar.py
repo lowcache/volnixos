@@ -24,7 +24,7 @@ opts = get_options()
 ICON_FG = as_rgb(0xEBD39D) # cream
 ICON_BG = as_rgb(0x111314) # basalt_dim
 ACTIVE_FG = as_rgb(0x111314) # basalt
-ACTIVE_BG = as_rgb(0xFC826A) # coral
+ACTIVE_BG = as_rgb(0xAAD71E) # coral
 INACTIVE_FG = as_rgb(0xD9AB77) # sage
 INACTIVE_BG = as_rgb(0x111314) # basalt_deep
 

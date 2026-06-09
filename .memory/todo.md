@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Infernal NixOS
-last_updated: 2026-06-06
+last_updated: 2026-06-08
 status: active
 ---
 
@@ -48,3 +48,23 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 * [ ] **Define or drop the `forge` container:** `forggo`/`forgstp` aliases in `home/shell.nix` were commented out because no `docker-forge.service` exists (only `fooocus`). Either declare a `forge` oci-container in `nixos/configuration.nix` (the `Storage/ai-generation/forge` tmpfiles dir is already created) and re-enable the aliases, or remove them.
 * [ ] **`.gitignore` footgun:** `nixos/*.yaml` silently ignores any NEW yaml dropped in `nixos/` (current `secrets.yaml`/`.sops.yaml` survive only because they were force-added). Consider narrowing the rule so a future secret file isn't lost.
 * [ ] **`limbo` plaintext passwords:** `nixos/limbo/configuration.nix` uses `initialPassword = "root"`/`"nixos"`, which land world-readable in `/nix/store`. Acceptable for a scratch host; switch to `hashedPasswordFile`/sops if `limbo` ever becomes real.
+
+---
+
+## 4. De-Infernal Rebrand — rename "infernal" out of everything (QUEUED 2026-06-08)
+
+lowcache is removing the literal **"infernal"** brand from ALL projects/repos and replacing it
+with a name **NOT YET DECIDED**. `lowcache` stays the GitHub handle/umbrella; only project names
+change. Cross-repo effort, coordinated with `infernal-init` (repo+binary) and `infernalcode`/
+`infernalbits`. Wait for the chosen name before starting.
+
+* **Scope in THIS repo (`~/.nix-config`):**
+  * [ ] Repo name `infernalnixos` (remote `git@github.com:lowcache/infernalnixos.git`).
+  * [ ] Hostname **`infernalnix`** — `nixosConfigurations.infernalnix`, used in rebuild
+        commands / `make switch` / flake refs. ⚠️ Rename deliberately; it affects activation.
+  * [ ] Flake `description = "Infernal NixOS - Imprecation & Impermanence by LowCache ..."`.
+  * [ ] The `infernal-init` flake input (name + URL) — renames in lockstep with that repo.
+  * [ ] `.memory/*` `project: Infernal NixOS` headers + any "Infernal" references.
+* Context lives in `infernal-init/.memory/todo.md` (the rename is its NEXT ACTIVE TASK) and the
+  session auto-memory. Note: the banner already reads "LowCache"; if the final name ≠ LowCache,
+  the banner figlet/tagline need re-rendering too.
