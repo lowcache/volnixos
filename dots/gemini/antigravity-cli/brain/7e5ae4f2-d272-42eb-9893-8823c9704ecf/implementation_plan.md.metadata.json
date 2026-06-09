@@ -1,6 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
-  "summary": "Implementation plan to rewrite the user-facing mcp-box CLI script from Bash to a portable Go binary, utilizing the Go standard library for zero dependencies, and integrating it with the Nix flake build definitions.",
-  "updatedAt": "2026-05-24T19:04:34.659007119Z",
-  "requestFeedback": true
-}

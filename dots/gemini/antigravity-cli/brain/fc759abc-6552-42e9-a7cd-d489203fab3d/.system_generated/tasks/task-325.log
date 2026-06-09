@@ -1,8 +1,0 @@
-warning: Git tree '/home/nondeus/CodeRepo/kalinix' is dirty
-warning: input 'nixos-fhs-compat' has an override for a non-existent input 'nixp
-kgs'
-warning: updating lock file '/home/nondeus/CodeRepo/kalinix/flake.lock':
-• Updated input 'nixpkgs':
-    'github:NixOS/nixpkgs/64c08a7ca051951c8eae34e3e3cb1e202fe36786' (2026-05-23)
-  → 'github:NixOS/nixpkgs/d233902339c02a9c334e7e593de68855ad26c4cb' (2026-05-15)
-warning: Git tree '/home/nondeus/CodeRepo/kalinix' is dirty

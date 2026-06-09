@@ -1,6 +1,0 @@
-{
-  "artifactType":  "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
-  "summary":  "Upgraded implementation plan to migrate the entire kalinix environment to a modern nixpkgs channel by spinning up a specialized subagent to research, refactor, and validate package compatibility in pkgs.nix.",
-  "updatedAt":  "2026-05-28T06:20:55.654946216Z",
-  "requestFeedback":  true
-}

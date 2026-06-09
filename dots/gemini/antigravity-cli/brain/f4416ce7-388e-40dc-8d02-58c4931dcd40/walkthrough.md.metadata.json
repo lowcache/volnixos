@@ -1,5 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_WALKTHROUGH",
-  "summary": "Walkthrough summarizing the changes made to the NixOS configuration to resolve GPU-related laptop freezes, along with successful check and dry-run build validation.",
-  "updatedAt": "2026-05-21T23:10:16.898161019Z"
-}

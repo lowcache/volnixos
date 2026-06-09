@@ -1,1 +1,0 @@
-{"name":"gateway_set_profile","description":"Switch the active routing profile for this session. A routing profile restricts which tools and backends are available.","parameters":{"properties":{"profile":{"description":"Name of the routing profile to activate (e.g. \"research\", \"coding\")","type":"string"}},"required":["profile"],"type":"object"}}

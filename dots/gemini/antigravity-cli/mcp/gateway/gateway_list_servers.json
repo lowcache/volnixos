@@ -1,1 +1,0 @@
-{"name":"gateway_list_servers","description":"List all 6 connected MCP backend servers with their status, tool count, and circuit-breaker state.","parameters":{"properties":{},"required":[],"type":"object"}}

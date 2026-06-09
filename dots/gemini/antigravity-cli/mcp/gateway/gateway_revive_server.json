@@ -1,1 +1,0 @@
-{"name":"gateway_revive_server","description":"Re-enable routing to a previously disabled backend server. Also resets the error budget so the server gets a clean slate.","parameters":{"properties":{"server":{"description":"Name of the backend server to re-enable","type":"string"}},"required":["server"],"type":"object"}}

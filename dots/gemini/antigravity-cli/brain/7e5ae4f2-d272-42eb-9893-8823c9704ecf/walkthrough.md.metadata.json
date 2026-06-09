@@ -1,5 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_WALKTHROUGH",
-  "summary": "Walkthrough of the completed mcp-box Bash-to-Go migration. Summarizes the new main.go CLI architecture, the refactored flake.nix, and explains the successful hermetic Nix store compilation.",
-  "updatedAt": "2026-05-24T19:53:15.788234968Z"
-}

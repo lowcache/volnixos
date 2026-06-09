@@ -1,6 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
-  "summary": "Implementation plan for optimizing NixOS boot time and analyzing GPU stability settings.",
-  "updatedAt": "2026-05-23T13:37:26.977422410Z",
-  "requestFeedback": true
-}

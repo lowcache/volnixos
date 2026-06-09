@@ -8,6 +8,7 @@ HYPR_COLORS = os.path.expanduser("~/.config/hypr/hyprland/colors.conf")
 KITTY_COLORS = os.path.expanduser("~/.config/kitty/current.conf")
 KITTY_TABBAR = os.path.expanduser("~/.config/kitty/tab_bar.py")
 STARSHIP_TOML = os.path.expanduser("~/.config/starship.toml")
+KITTY_SOCKET = "unix:@mykitty"  # matches `listen_on unix:@mykitty` in kitty.conf
 
 # Technical Mapping for Appearance.qml
 TECHNICAL_MAP = {
@@ -201,6 +202,21 @@ plugin {{
         if verbose: print("Updated Kitty current.conf")
     except Exception as e:
         if verbose: print(f"Error updating Kitty: {e}")
+
+    # 3b. Live-apply to running kitty windows over the remote-control socket (no restart).
+    # Tab-bar colors aren't settable via set-colors; the USR1 reload (in __main__) covers those.
+    try:
+        setcolors = [f"background={bg}", f"foreground={fg}", f"cursor={primary}",
+                     f"selection_background={primary}", f"selection_foreground={bg}"]
+        for i, val in enumerate(term_hex):
+            if val: setcolors.append(f"color{i}={val}")
+        r = subprocess.run(["kitty", "@", "--to", KITTY_SOCKET, "set-colors", "--all", "--configured", *setcolors],
+                           capture_output=True, text=True)
+        if verbose:
+            print("Pushed colors to live kitty windows" if r.returncode == 0
+                  else f"Kitty live set-colors skipped ({r.stderr.strip() or 'no listening instance'})")
+    except FileNotFoundError:
+        if verbose: print("Kitty live set-colors skipped (kitty not on PATH)")
 
     # 4. Kitty tab_bar.py
     if os.path.exists(KITTY_TABBAR):

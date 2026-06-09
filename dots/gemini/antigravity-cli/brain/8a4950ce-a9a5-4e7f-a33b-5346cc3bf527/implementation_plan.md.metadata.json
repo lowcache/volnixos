@@ -1,6 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
-  "summary": "Implementation plan for refactoring the Nix configuration repository to support a unified, modular structure for NixOS (x86_64-linux) and Nix-on-Droid (aarch64-linux, S26 Ultra) environments. It outlines file re-organization, flake input adjustments, and verification steps.",
-  "updatedAt": "2026-05-22T01:15:50.940854791Z",
-  "requestFeedback": true
-}

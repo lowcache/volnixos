@@ -1,5 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_WALKTHROUGH",
-  "summary": "Detailed walkthrough summarizing all changes made to configuration.nix, default.nix, pkgs.nix, and the creation of browsers.nix. Explains how kernel-level power/scheduling parameters and browser Wayland flags resolve system freezes on the hybrid GPU system while enabling Floorp as a backup browser.",
-  "updatedAt": "2026-05-22T04:22:53.959691189Z"
-}

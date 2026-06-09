@@ -1,9 +1,0 @@
-warning: Git tree '/home/nondeus/.nix-config' is dirty
-warning: updating lock file '/home/nondeus/.nix-config/flake.lock':
-• Updated input 'impermanence/nixpkgs':
-    'github:nixos/nixpkgs/e4bae1bd10c9c57b2cf517953ab70060a828ee6f' (2026-01-16)
-  → follows 'nixpkgs'
-• Updated input 'nix-cachyos-kernel/nixpkgs':
-    'github:NixOS/nixpkgs/8e72e9888e67ce593df16546cd31e0d75544ad0d' (2026-05-20)
-  → follows 'nixpkgs'
-warning: Git tree '/home/nondeus/.nix-config' is dirty

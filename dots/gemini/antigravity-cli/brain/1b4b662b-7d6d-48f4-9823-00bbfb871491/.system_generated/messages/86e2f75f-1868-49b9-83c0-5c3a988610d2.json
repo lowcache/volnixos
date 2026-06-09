@@ -1,1 +1,0 @@
-{"id":"86e2f75f-1868-49b9-83c0-5c3a988610d2","recipient":"1b4b662b-7d6d-48f4-9823-00bbfb871491","sender":"1b4b662b-7d6d-48f4-9823-00bbfb871491/task-91","priority":"MESSAGE_PRIORITY_HIGH","timestamp":"2026-05-29T20:36:21.693177746Z","renderDetails":{"messageTitle":"Schedule timer: Timer has expired"},"content":"Check if the nix-agent has completed the limbo configuration task."}

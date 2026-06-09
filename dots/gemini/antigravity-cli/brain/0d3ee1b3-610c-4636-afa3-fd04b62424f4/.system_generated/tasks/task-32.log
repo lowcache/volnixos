@@ -1,7 +1,0 @@
-26.05.20260515.d233902 (Yarara)
-Linux nixos 7.0.9-cachyos #1-NixOS SMP PREEMPT_DYNAMIC Tue Jan  1 00:00:00 UTC 1
-980 x86_64 GNU/Linux
-fetching path input 'path:/nix/store/77dbgds155bbz3vd3qywq1sii07i5ljs-source'
- - system: `"x86_64-linux"`
- - host os: `Linux 7.0.9-cachyos, NixOS, 26.05 (Yarara), 26.05.20260515.d233902`
- - multi-user?: `yes`

@@ -1,5 +1,0 @@
-{
-  "artifactType": "ARTIFACT_TYPE_TASK",
-  "summary": "Task list for removing Jan, enabling the native NixOS open-webui service, and performing configuration dry-runs.",
-  "updatedAt": "2026-05-22T00:30:54.741938031Z"
-}

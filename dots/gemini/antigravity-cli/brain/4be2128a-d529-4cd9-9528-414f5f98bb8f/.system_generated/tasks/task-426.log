@@ -1,6 +1,0 @@
-fetching path input 'path:/nix/store/77dbgds155bbz3vd3qywq1sii07i5ljs-source'
-this path will be fetched (0.01 MiB download, 0.09 MiB unpacked):
-  /nix/store/a66axxp1306j73ax63n5s3mlbc874rbd-libnotify-0.8.8-dev
-copying path '/nix/store/a66axxp1306j73ax63n5s3mlbc874rbd-libnotify-0.8.8-dev' f
-rom 'https://cache.nixos.org'...
-/nix/store/48zpr03lhzxp6k4wn3vpjdx3dm4p1631-libnotify-0.8.8/bin/notify-send

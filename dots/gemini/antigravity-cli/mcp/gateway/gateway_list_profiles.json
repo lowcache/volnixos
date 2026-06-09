@@ -1,1 +1,0 @@
-{"name":"gateway_list_profiles","description":"List all available routing profiles with their descriptions. Use gateway_set_profile to switch to a profile that narrows the visible toolset to the current task (e.g. \"coding\", \"research\").","parameters":{"properties":{},"required":[],"type":"object"}}

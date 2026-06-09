@@ -1,6 +1,0 @@
-Successfully scheduled one-shot timer.
-Expected to fire at: 2026-05-28T17:17:32-05:00
-Prompt: Check if the nixos-rebuild has completed or progressed
-
-[2026-05-28T17:17:27-05:00] Still waiting. Remaining time: 5s
-[2026-05-28T17:17:32-05:00] Timer fired.
