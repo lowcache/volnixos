@@ -1,7 +1,7 @@
 ---
 type: state
 project: Infernal NixOS
-last_updated: 2026-06-06
+last_updated: 2026-06-08
 status: active
 ---
 
@@ -68,3 +68,10 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Discrete GPU Battery Drain:**
   * **Daemon:** Ollama background daemon runs with `"OLLAMA_KEEP_ALIVE=5m"`.
   * **Reason:** Forces VRAM unloading and driver handle release after 5 minutes of idle time, allowing the dGPU to enter RTD3 (0W suspend state).
+
+---
+
+## 5. Nix Binary Caches & Lix Pinning
+
+* **Substituters** (`nixos/configuration.nix` `nix.settings`, merged with the `cache.nixos.org` default): `hyprland.cachix.org`, `nix-community.cachix.org`, `cache.lix.systems`, `cuda-maintainers.cachix.org`, `cache.numtide.com`, `attic.xuyh0120.win/lantian` — each with its trusted public key. `trusted-users = [ "root" "lowcache" ]` (required, or non-default substituters are ignored).
+* **Lix pinning invariant (2026-06-08):** `lix-module` in `flake.nix` MUST NOT override `inputs.nixpkgs.follows` or `inputs.lix.url`, or Lix rebuilds from source on every switch (binary-cache miss — see mistakes.md #7). Currently clean: `lix` rev `91867941` (cached tarball release), `lix-module` `727d859b`, lix-module's nixpkgs `08dacfca` is a **separate** lock node from top-level nixpkgs `331800de`. Update Lix only via `nix flake update lix-module`.

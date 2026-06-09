@@ -27,9 +27,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     lix-module = {
+      # NOTE: deliberately NOT overriding nixpkgs.follows or pinning inputs.lix.
+      # Both overrides force Lix to rebuild from source (hash diverges from the
+      # builds on cache.lix.systems). Let the module use its own pinned lix +
+      # nixpkgs so the binary cache substitutes. See .memory/mistakes.md.
       url = "git+https://git.lix.systems/lix-project/nixos-module";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.lix.url = "git+https://git.lix.systems/lix-project/lix";
     };
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -48,71 +50,102 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, microvm, infernal-init, nur, llm-agents, ... }@inputs: {
-    nixosConfigurations.infernalnix = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [
-        { nixpkgs.hostPlatform = "x86_64-linux"; }
-        { nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned inputs.nur.overlays.default inputs.llm-agents.overlays.default ]; }
-        ./nixos/configuration.nix
-        ./nixos/hardware-configuration.nix
-        inputs.lanzaboote.nixosModules.lanzaboote
-        inputs.impermanence.nixosModules.impermanence
-        inputs.lix-module.nixosModules.default
-        inputs.sops-nix.nixosModules.sops
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.lowcache = import ./home;
-        }
-      ];
-    };
-
-    nixosConfigurations.limbo = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; };
-      modules = [
-        { nixpkgs.hostPlatform = "x86_64-linux"; }
-        { nixpkgs.overlays = [ inputs.nur.overlays.default inputs.llm-agents.overlays.default ]; }
-        ./nixos/limbo/configuration.nix
-        ./nixos/limbo/hardware-configuration.nix
-        inputs.lix-module.nixosModules.default
-        home-manager.nixosModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.inlimbo = { config, pkgs, lib, ... }: {
-            imports = [
-              ./home/shell.nix
-              ./home/pkgs.nix
-              ./home/session.nix
-              ./home/browsers.nix
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      microvm,
+      infernal-init,
+      nur,
+      llm-agents,
+      ...
+    }@inputs:
+    {
+      nixosConfigurations.infernalnix = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          { nixpkgs.hostPlatform = "x86_64-linux"; }
+          {
+            nixpkgs.overlays = [
+              inputs.nix-cachyos-kernel.overlays.pinned
+              inputs.nur.overlays.default
+              inputs.llm-agents.overlays.default
             ];
-            home = {
-              username = "inlimbo";
-              homeDirectory = "/home/inlimbo";
-              stateVersion = "24.11";
-              enableNixpkgsReleaseCheck = false;
-            };
-            gtk = {
-              enable = true;
-              theme = {
-                name = "adw-gtk3-dark";
-                package = pkgs.adw-gtk3;
-              };
-              gtk4 = {
-                theme = null;
-              };
-            };
-          };
-        }
-      ];
-    };
+          }
+          ./nixos/configuration.nix
+          ./nixos/hardware-configuration.nix
+          inputs.lanzaboote.nixosModules.lanzaboote
+          inputs.impermanence.nixosModules.impermanence
+          inputs.lix-module.nixosModules.default
+          inputs.sops-nix.nixosModules.sops
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.lowcache = import ./home;
+          }
+        ];
+      };
 
-    # Add this to allow building/running the VM packages
-    packages.x86_64-linux.net-gate = self.nixosConfigurations.infernalnix.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
-    packages.x86_64-linux.tailscale-vm = self.nixosConfigurations.infernalnix.config.microvm.vms.tailscale.config.config.microvm.declaredRunner;
-  };
+      nixosConfigurations.limbo = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs; };
+        modules = [
+          { nixpkgs.hostPlatform = "x86_64-linux"; }
+          {
+            nixpkgs.overlays = [
+              inputs.nur.overlays.default
+              inputs.llm-agents.overlays.default
+            ];
+          }
+          ./nixos/limbo/configuration.nix
+          ./nixos/limbo/hardware-configuration.nix
+          inputs.lix-module.nixosModules.default
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.users.inlimbo =
+              {
+                config,
+                pkgs,
+                lib,
+                ...
+              }:
+              {
+                imports = [
+                  ./home/shell.nix
+                  ./home/pkgs.nix
+                  ./home/session.nix
+                  ./home/browsers.nix
+                ];
+                home = {
+                  username = "inlimbo";
+                  homeDirectory = "/home/inlimbo";
+                  stateVersion = "24.11";
+                  enableNixpkgsReleaseCheck = false;
+                };
+                gtk = {
+                  enable = true;
+                  theme = {
+                    name = "adw-gtk3-dark";
+                    package = pkgs.adw-gtk3;
+                  };
+                  gtk4 = {
+                    theme = null;
+                  };
+                };
+              };
+          }
+        ];
+      };
+
+      # Add this to allow building/running the VM packages
+      packages.x86_64-linux.net-gate =
+        self.nixosConfigurations.infernalnix.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
+      packages.x86_64-linux.tailscale-vm =
+        self.nixosConfigurations.infernalnix.config.microvm.vms.tailscale.config.config.microvm.declaredRunner;
+    };
 }

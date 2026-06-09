@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Infernal NixOS
-last_updated: 2026-06-06
+last_updated: 2026-06-08
 status: append-only
 ---
 
@@ -61,3 +61,12 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Incident (2026-06-05):** Running `make switch` upgraded user-space Nvidia libraries to `595.80`, but the systemd service `nvidia-container-toolkit-cdi-generator.service` failed to start with a driver/library version mismatch error (`failed to initialize NVML: Driver/library version mismatch`).
 * **The Bug:** The kernel was still running the older Nvidia driver module (`595.71.05`), while the newly built user-space packages/libraries (such as `libnvidia-ml.so`) were compiled/linked for `595.80`. Since NVML requires matching driver and user-space library versions, any service invoking NVML (like the CDI generator) fails to initialize and exits with error code 1.
 * **Prevention Rule:** A reboot is required to load the newly built kernel module and match the updated user-space libraries. Alternatively, if a reboot is not currently possible and container GPU access is not immediately required, the service failure can be ignored until the next boot.
+
+---
+
+## 7. Lix Rebuilt From Source Every Switch (binary cache silently missed)
+
+* **Incident (2026-06-08):** Every `nixos-rebuild` recompiled **Lix** from source (the heaviest build of the switch) despite `cache.lix.systems` being configured as a substituter with its trusted public key, and `lowcache` being in `trusted-users`. Effective `nix config show` confirmed all substituters/keys were live.
+* **The Bug:** The `lix-module` flake input carried two overrides — `inputs.nixpkgs.follows = "nixpkgs"` **and** `inputs.lix.url = "git+https://git.lix.systems/lix-project/lix"` (no rev → tracked `main`, locked to `daa2bc82`). The `follows` rebuilt Lix against our *top-level* nixpkgs, and the url override pinned Lix to a bleeding `main` commit. Either change shifts the Lix derivation hash away from what `cache.lix.systems` built (Lix's *own* pinned lix × its *own* pinned nixpkgs), so no substitute exists → source build. Key lesson: **"pinned in flake.lock" ≠ "a prebuilt exists in the cache."** A correct substituter list does nothing if the derivation hash doesn't match.
+* **Fix:** Removed both overrides; `lix-module` now uses its own pins. After `nix flake update lix-module`: `lix` → tarball rev `91867941` (2025-10, a cached release), `lix-module` → `727d859b`, and lix-module's nixpkgs is a **separate** lock node (`08dacfca`) from top-level nixpkgs (`331800de`) — verified, not shared.
+* **Prevention Rule:** Do **not** set `inputs.nixpkgs.follows` or override `inputs.lix.url` on `lix-module` — the follows pattern that's correct for cheap leaf inputs (sops-nix, infernal-init, quickshell…) breaks the Lix binary cache. To update Lix, run `nix flake update lix-module` (it re-pins a cached lix); never track `lix` `main`. Verify the fix by confirming lix-module's nixpkgs lock node is distinct from the top-level nixpkgs node. (Unrelated: `nil` source rebuilds are `pkgs.nil` from nixpkgs hitting cache.nixos.org lag for a fresh rev — not a config defect, resolves itself when Hydra catches up.)
