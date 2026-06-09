@@ -1,4 +1,4 @@
-# Agent Guide (CLAUDE.md)
+57387;13u# Agent Guide (CLAUDE.md)
 
 Welcome, Claude! You are working on the **Infernal NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
 
@@ -46,15 +46,16 @@ You are operating under a state-of-the-art declarative NixOS setup. The followin
 
 ---
 
-## 3. Swarm Memory System and model files
+## 3. swarm memory system
+To maintain context across separate conversational boundaries, you must read, append to, and update the directory `./memory/` at the root of the repository. All memory files require a YAML front-matter metadata header specifying `type`, `project`, `last_updated`, and `status`.
 
-To maintain context across separate conversational boundaries, you must read, append to, and update the directory `./.memory/` at the root of the repository:
+* `memory/state.md` — Single source of truth for current configuration mappings, active services, ports, and workarounds.
+* `memory/decisions.md` — Active, canonical architecture decisions and system preferences (high-signal, read before every implementation).
+* `memory/mistakes.md` — Audit log of past configuration mistakes, causes, and exact prevention rules (append-only). *Pruning Policy:* Move resolved or obsolete entries to `memory/archive/` to keep context footprint small.
+* `memory/todo.md` — Open tasks, enhancement roadmap, and pending verification loops.
+* `memory/archive/` — Historical and pruned memory records to optimize context window token usage.
 
-* `.memory/decisions.md` — Active, canonical architecture decisions and system preferences (high-signal, read before every implementation).
-* `.memory/mistakes.md` — Audit log of past configuration mistakes, causes, and exact prevention rules (append-only).
-* `.memory/todo.md` — Open loops, enhancement ideas, and pending verification tasks.
-
-Ensure that this file has been places in the `./.model/` directory with other claude-code specific settings files
+Ensure that this file has been places in the `./.model/` directory with other claude-code specific settings files (e.g., /.claude directory )
 
 ### Operational Protocols:
 1. **Read on Startup:** Before suggesting any design, read all files in `./memory/`.

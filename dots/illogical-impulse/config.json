@@ -293,7 +293,7 @@
     },
     "night": {
       "automatic": false,
-      "colorTemperature": 5464,
+      "colorTemperature": 4918,
       "from": "19:00",
       "to": "06:30"
     }
@@ -467,15 +467,11 @@
           },
           {
             "size": 2,
-            "type": "nightLight"
-          },
-          {
-            "size": 1,
-            "type": "easyEffects"
-          },
-          {
-            "size": 1,
             "type": "powerProfile"
+          },
+          {
+            "size": 1,
+            "type": "screenSnip"
           }
         ]
       },
