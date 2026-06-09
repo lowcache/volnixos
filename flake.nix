@@ -49,15 +49,14 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      home-manager,
-      microvm,
-      volinit,
-      nur,
-      llm-agents,
-      ...
+    { self
+    , nixpkgs
+    , home-manager
+    , microvm
+    , volinit
+    , nur
+    , llm-agents
+    , ...
     }@inputs:
     {
       nixosConfigurations.volnix = nixpkgs.lib.nixosSystem {
@@ -106,11 +105,10 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.inlimbo =
-              {
-                config,
-                pkgs,
-                lib,
-                ...
+              { config
+              , pkgs
+              , lib
+              , ...
               }:
               {
                 imports = [

@@ -22,11 +22,11 @@ opts = get_options()
 # --- Configuration ---
 # You can change these to match your theme
 ICON_FG = as_rgb(0xEBD39D) # cream
-ICON_BG = as_rgb(0x151515) # basalt_dim
-ACTIVE_FG = as_rgb(0x151515) # basalt
-ACTIVE_BG = as_rgb(0xAAD71E) # coral
-INACTIVE_FG = as_rgb(0xfbcb97) # sage
-INACTIVE_BG = as_rgb(0x151515) # basalt_deep
+ICON_BG = as_rgb(0x080B08) # basalt_dim
+ACTIVE_FG = as_rgb(0x080B08) # basalt
+ACTIVE_BG = as_rgb(0xB4FF00) # coral
+INACTIVE_FG = as_rgb(0xEAFF00) # sage
+INACTIVE_BG = as_rgb(0x080B08) # basalt_deep
 
 # Separators - WezTerm "Pill" Style
 LEFT_SEP = ""

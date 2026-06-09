@@ -44,6 +44,27 @@ and `dots/.model/` are safe homes for scoped context (they never reach `~/.confi
   - Post-actions: `hyprctl reload`, `killall -USR1 kitty`.
 * Invocation used: `python3 scripts/apply_theme.py <palette.json> true`.
 * Generated files are overwritten on each apply — edit the palette, not the outputs.
+* Theme generator: `scripts/make_theme.py` builds a new standards-compliant theme JSON
+  from raw colors (CLI args / `--colors "<str>"`) or any file containing hex codes
+  (`--from`). It derives the background ramp, accents, containers, dim variants and a
+  16-color terminal set, fills in M3 error/success tones, and validates (hex via
+  `apply_theme.validate_palette` + dangling-reference check) before writing — refuses to
+  write on failure. `--apply` applies it live.
+* Theme validator: `scripts/check_theme.py <theme.json>` — hard-fails on bad hex / dangling
+  refs, warns on roles missing vs amalgamation (the [[decisions]] D5 canonical template).
+* Makefile targets (run from repo root; cut out long paths). `THEME` = bare name:
+  - `make theme-list` — list theme names.
+  - `make theme-apply THEME=<name>` — apply + reload.
+  - `make theme-check THEME=<name>` — validate.
+  - `make theme-new NAME="X" [COLORS="#a #b"] [FROM=<file>] [APPLY=1] [FORCE=1]` — generate.
+    COLORS must be one quoted string (bare `#` args are shell comments otherwise).
+* Coverage (as of 2026-06-09 expansion): the script now also patches `Appearance.qml`
+  `term0`–`term15` (kept in sync with the kitty terminal palette via a single shared
+  `term_hex` list), plus `m3primaryContainer`, `m3surfaceVariant`, `m3inverseSurface`, and
+  the `m3error*` / `m3success*` families — all driven by the theme's `accents`/`surfaces`/
+  `states`/`terminal` mappings. Palette gained derived tokens: `pure_white` (fixes the
+  previously-dropped kitty `color15`), `peach_dim`, `coral_dim`, `coral_container`, and the
+  M3 `error*` / `success*` sets.
 
 ## Subtree / Independent History
 

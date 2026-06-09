@@ -12,17 +12,18 @@ STARSHIP_TOML = os.path.expanduser("~/.config/starship.toml")
 # Technical Mapping for Appearance.qml
 TECHNICAL_MAP = {
     "surfaces.main_bg": [
-        "m3background", "m3surface", "m3surfaceDim", "m3surfaceBright", 
-        "m3surfaceContainerLowest", "m3surfaceContainerLow", 
-        "m3surfaceContainer", "m3surfaceContainerHigh", 
-        "m3surfaceContainerHighest"
+        "m3background", "m3surface", "m3surfaceDim", "m3surfaceBright",
+        "m3surfaceContainerLowest", "m3surfaceContainerLow",
+        "m3surfaceContainer", "m3surfaceContainerHigh",
+        "m3surfaceContainerHighest", "m3surfaceVariant", "m3inverseSurface"
     ],
     "accents.primary_active": [
-        "m3primary", "m3surfaceTint", 
-        "m3primaryFixed", "m3primaryFixedDim", "m3inversePrimary"
+        "m3primary", "m3surfaceTint",
+        "m3primaryFixed", "m3primaryFixedDim", "m3inversePrimary",
+        "m3primaryContainer"
     ],
     "accents.secondary_active": [
-        "m3secondary", "m3secondaryContainer", 
+        "m3secondary", "m3secondaryContainer",
         "m3secondaryFixed", "m3secondaryFixedDim",
         "m3outline", "m3outlineVariant"
     ],
@@ -31,13 +32,19 @@ TECHNICAL_MAP = {
         "m3tertiaryFixed", "m3tertiaryFixedDim"
     ],
     "text.normal": [
-        "m3onBackground", "m3onSurface", 
+        "m3onBackground", "m3onSurface",
         "m3onSurfaceVariant", "m3inverseOnSurface"
     ],
     "text.on_accent": [
         "m3onPrimary", "m3onSecondary", "m3onTertiary",
         "m3onPrimaryContainer", "m3onSecondaryContainer", "m3onTertiaryContainer",
         "m3onPrimaryFixed", "m3onSecondaryFixed", "m3onTertiaryFixed"
+    ],
+    "states.error": [
+        "m3error", "m3onError", "m3errorContainer", "m3onErrorContainer"
+    ],
+    "states.success": [
+        "m3success", "m3onSuccess", "m3successContainer", "m3onSuccessContainer"
     ]
 }
 
@@ -102,6 +109,19 @@ def apply_theme(theme_path, verbose=False):
     secondary_rgb = to_rgb(secondary)
     fg_rgb = to_rgb(fg)
 
+    # Resolve the 16 terminal colors once; shared by Appearance.qml (term0-15)
+    # and kitty (color0-15) so the two never drift apart.
+    term_map = mappings.get("terminal", {})
+    term_names = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white",
+                  "bright_black", "bright_red", "bright_green", "bright_yellow",
+                  "bright_blue", "bright_magenta", "bright_cyan", "bright_white"]
+    term_hex = []
+    for name in term_names:
+        cname = term_map.get(name)
+        val = palette.get(cname) if cname else None
+        if val and not val.startswith("#"): val = "#" + val
+        term_hex.append(val)
+
     # 1. Patch Appearance.qml
     if os.path.exists(APPEARANCE_QML):
         try:
@@ -123,6 +143,10 @@ def apply_theme(theme_path, verbose=False):
                         if hv:
                             if not hv.startswith("#"): hv = "#" + hv
                             full_map[tech_name] = hv
+
+            # Keep Appearance.qml's term0-15 in sync with the terminal palette.
+            for i, val in enumerate(term_hex):
+                if val: full_map[f"term{i}"] = val
 
             with open(APPEARANCE_QML, "r") as f: lines = f.readlines()
             new_lines = []
@@ -169,14 +193,10 @@ plugin {{
     try:
         kitty_content = f"# Generated\nbackground {bg}\nforeground {fg}\nselection_background {primary}\nselection_foreground {bg}\ncursor {primary}\n"
         kitty_content += f"active_tab_foreground {bg}\nactive_tab_background {primary}\ninactive_tab_foreground {secondary}\ninactive_tab_background {bg}\ntab_bar_background {bg}\n"
-        
-        term_map = mappings.get("terminal", {})
-        term_names = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white",
-                      "bright_black", "bright_red", "bright_green", "bright_yellow", "bright_blue", "bright_magenta", "bright_cyan", "bright_white"]
-        for i, name in enumerate(term_names):
-            cname = term_map.get(name)
-            if cname and palette.get(cname): kitty_content += f"color{i} {palette[cname]}\n"
-        
+
+        for i, val in enumerate(term_hex):
+            if val: kitty_content += f"color{i} {val}\n"
+
         with open(KITTY_COLORS, "w") as f: f.write(kitty_content)
         if verbose: print("Updated Kitty current.conf")
     except Exception as e:

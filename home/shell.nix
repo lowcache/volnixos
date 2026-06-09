@@ -83,8 +83,8 @@
                 alias la='ls --absolute'
             end
 
-            if command -v volinit > /dev/null
-                volinit
+            if command -v infernalinit > /dev/null
+                infernalinit
             else if command -v fastfetch > /dev/null
                 fastfetch
             end
@@ -112,30 +112,32 @@
         celar = "clear";
         claer = "clear";
         c = "clear";
+        color = "colorhex";
+        chex = "colorhex";
         qii = "qs -c ii";
         edit = "$EDITOR";
         nf = "fastfetch";
         pf = "fastfetch";
         ff = "fastfetch";
-        vol = "volinit";
+        jan = "$HOME/.bin/jan-nix";
+        infernal = "infernalinit";
         shutdown = "systemctl poweroff";
         bootbios = "systemctl reboot --firmware";
         wifi = "nmtui";
         mkbann = "figlet.sh";
         wifilist = "nmcli device wifi list";
         nx = "nix";
-        nxs = "nix-shell";
-        nxr = "nix-rebuild";
-        nxrbs = "sudo nixos-rebuild switch --flake /persist/home/lowcache/.nix-config/#volnix";
-        nxrbb = "sudo nixos-rebuild build --flake /persist/home/lowcache/.nix-config/#volnix";
-        nxfu = "nix flake update";
+        nxup = "nix flake update ";
         nxfd = "nix search nixpkgs ";
-        nxrn = "nix-shell -p ";
+        nxsh = "nix-shell -p ";
         nvrun = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ";
-        fooogo = "sudo systemctl start docker-fooocus && brave http://localhost:7865 & disown";
-        fooostp = "sudo systemctl stop docker-fooocus";
-        cl = "claude";
-        
+        stbldff-on = "sudo systemctl start docker-fooocus";
+        stbldff-off = "sudo systemctl stop docker-fooocus";
+        # NOTE: no `forge` oci-container is declared in nixos/configuration.nix yet;
+        # these aliases target a non-existent docker-forge.service. Re-enable once
+        # the forge container is defined (see memory/todo.md).
+        # forggo = "sudo systemctl start docker-forge";
+        # forgstp = "sudo systemctl stop docker-forge";
       };
       functions = {
         colorhex = {

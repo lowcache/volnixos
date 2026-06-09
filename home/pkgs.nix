@@ -181,7 +181,7 @@
           github-copilot-cli
           rtk
           pkgs.llm-agents.claude-plugins
-          
+
         ];
       in
       nixified-ai ++ terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
