@@ -1,6 +1,6 @@
 # Agent Guide (GEMINI.md)
 
-Welcome, Gemini! You are working on the **Infernal NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
+Welcome, Gemini! You are working on the **Vol NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
 
 Before making any changes or proposals, you must thoroughly read this document and the files in the `./memory/` directory.
 
@@ -29,9 +29,9 @@ You are operating under a state-of-the-art declarative NixOS setup. The followin
 * **Idle Suspend:** To allow the Nvidia GPU to drop to 0W idle suspend (RTD3), Ollama is configured with `"OLLAMA_KEEP_ALIVE=5m"` in systemd environment variables. 
 * **Constraint:** Do not remove the keep-alive variable or introduce daemons that continuously poll or open handles to the Nvidia device drivers (`/dev/nvidia*`), as it will cause immediate, severe laptop battery drain.
 
-### D. Opinionated "Infernal" tools, repos, and vms 
-* **Infernal-init:** A terminal banner-fetch thats run on init of an interactive shell or terminal session. The repo URL is https://github.com/lowcache/infernal-init and it has been added as a input in flake.nix and interwoven into infernal nixos. The cloned repo exists at /home/lowcache/CodeRepo/infernal-init and any changes to the infernal-init repo must be commited and pushed to its own repo, then the input updated and locked through flake.nix (nix flake update infernal-init) before rebuilds for changes to take effect.
-* **kalinix.vm:** A vm that boots in less than a second to a full pentesting environment with tools that runs within, but not dependent on, the infernal nixos system. 
+### D. Opinionated "Vol" tools, repos, and vms 
+* **Infernal-init:** A terminal banner-fetch thats run on init of an interactive shell or terminal session. The repo URL is https://github.com/lowcache/infernal-init and it has been added as a input in flake.nix and interwoven into Vol NixOS. The cloned repo exists at /home/lowcache/CodeRepo/infernal-init and any changes to the infernal-init repo must be commited and pushed to its own repo, then the input updated and locked through flake.nix (nix flake update infernal-init) before rebuilds for changes to take effect.
+* **kalinix.vm:** A vm that boots in less than a second to a full pentesting environment with tools that runs within, but not dependent on, the Vol NixOS system. 
 * **mcp-gateway:** A mcp-gateway server that consolidates multiple mcp servers into a single tool call cutting tokens and tool-calls down to the minimum. Includes the mcp-nixos tool, a nix based mcp server that can help with all nix related tasks, as well as a github mcp, markitdown mcp, and playwright mcp. **Needs to be updated and made available to all agentic entities and more helpful need-based mcp servers added for host based tasks**
 
 ---

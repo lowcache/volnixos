@@ -217,7 +217,7 @@
     },
     "flake-utils_2": {
       "inputs": {
-        "systems": "systems_2"
+        "systems": "systems_3"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -332,27 +332,6 @@
         "type": "github"
       }
     },
-    "infernal-init": {
-      "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1780968095,
-        "narHash": "sha256-T5NppYnySeBXS5xchoNTa4bDryYm+oobSI3f0FJyXBg=",
-        "owner": "lowcache",
-        "repo": "infernal-init",
-        "rev": "7a14381d8e844249b647348625de51f94ebab0ed",
-        "type": "github"
-      },
-      "original": {
-        "owner": "lowcache",
-        "repo": "infernal-init",
-        "type": "github"
-      }
-    },
     "lanzaboote": {
       "inputs": {
         "crane": "crane",
@@ -394,7 +373,7 @@
     },
     "lix-module": {
       "inputs": {
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils",
         "flakey-profile": "flakey-profile",
         "lix": "lix",
         "nixpkgs": [
@@ -423,7 +402,7 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "systems": "systems_3",
+        "systems": "systems_2",
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
@@ -644,7 +623,6 @@
       "inputs": {
         "home-manager": "home-manager",
         "impermanence": "impermanence",
-        "infernal-init": "infernal-init",
         "lanzaboote": "lanzaboote",
         "lix-module": "lix-module",
         "llm-agents": "llm-agents",
@@ -654,7 +632,8 @@
         "nixpkgs": "nixpkgs_3",
         "nur": "nur",
         "quickshell": "quickshell",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "volinit": "volinit"
       }
     },
     "rust-overlay": {
@@ -777,6 +756,27 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "volinit": {
+      "inputs": {
+        "flake-utils": "flake-utils_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1780979003,
+        "narHash": "sha256-NsDiya6M12mfbcxCJrljeOQoklv+galpNESzk2kQTzY=",
+        "owner": "lowcache",
+        "repo": "volinit",
+        "rev": "775d8e328fb554f27e3275369877cda35c4203c0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lowcache",
+        "repo": "volinit",
         "type": "github"
       }
     }

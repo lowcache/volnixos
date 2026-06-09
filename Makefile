@@ -1,12 +1,12 @@
-# Infernal NixOS Makefile
+# Vol NixOS Makefile
 # Unifies system rebuilds, MicroVM guest management, and maintenance tasks
 
-HOST ?= infernalnix
+HOST ?= volnix
 
 .PHONY: help switch build test dry-activate check fmt update update-nixpkgs gc run-netgate run-tailscale git
 
 help:
-	@echo "Infernal NixOS Helper Makefile"
+	@echo "Vol NixOS Helper Makefile"
 	@echo ""
 	@echo "System Operations:"
 	@echo "  make switch         Rebuild and switch system live (Default HOST: $(HOST))"

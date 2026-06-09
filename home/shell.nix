@@ -83,8 +83,8 @@
                 alias la='ls --absolute'
             end
 
-            if command -v infernalinit > /dev/null
-                infernalinit
+            if command -v volinit > /dev/null
+                volinit
             else if command -v fastfetch > /dev/null
                 fastfetch
             end
@@ -117,7 +117,7 @@
         nf = "fastfetch";
         pf = "fastfetch";
         ff = "fastfetch";
-        infernal = "infernalinit";
+        vol = "volinit";
         shutdown = "systemctl poweroff";
         bootbios = "systemctl reboot --firmware";
         wifi = "nmtui";
@@ -126,8 +126,8 @@
         nx = "nix";
         nxs = "nix-shell";
         nxr = "nix-rebuild";
-        nxrbs = "sudo nixos-rebuild switch --flake /persist/home/lowcache/.nix-config/#infernalnix";
-        nxrbb = "sudo nixos-rebuild build --flake /persist/home/lowcache/.nix-config/#infernalnix";
+        nxrbs = "sudo nixos-rebuild switch --flake /persist/home/lowcache/.nix-config/#volnix";
+        nxrbb = "sudo nixos-rebuild build --flake /persist/home/lowcache/.nix-config/#volnix";
         nxfu = "nix flake update";
         nxfd = "nix search nixpkgs ";
         nxrn = "nix-shell -p ";

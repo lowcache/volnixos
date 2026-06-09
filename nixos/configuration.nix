@@ -56,7 +56,7 @@
   };
 
   networking = {
-    hostName = "infernalnix";
+    hostName = "volnix";
     networkmanager = {
       enable = true;
       wifi.scanRandMacAddress = true;

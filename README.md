@@ -1,4 +1,4 @@
-# Infernal NixOS: Imprecation & Impermanence
+# Vol NixOS: Imprecation & Impermanence
 
 A declarative, highly optimized, and ephemeral NixOS system configuration based on Nix Flakes. This setup integrates advanced system virtualization, low-latency performance kernels, encrypted secret management, secure boot configurations, and a bespoke Qt6/QML window manager desktop shell.
 
@@ -102,11 +102,11 @@ Instead of generic wallpaper generation, this setup relies on a highly sophistic
   * **Starship Prompt**: Synthesizes custom palette hashes directly inside `~/.config/starship.toml`.
 * The pipeline integrates with `switchwall.sh` and `applycolor.sh` to programmatically update wallpaper positions on multiple monitors and hot-reload virtual terminal color escape sequences (`/dev/pts/*`) along with Qt/Kvantum assets dynamically.
 
-### 2.3 System Welcome Banner: `infernal-init`
-A custom-developed terminal system information fetch and stylized ASCII art banner application (`infernal-init`) is packaged natively:
-* Pulled declaratively via Nix Flakes input bindings from the upstream repository `lowcache/infernal-init`.
+### 2.3 System Welcome Banner: `volinit`
+A custom-developed terminal system information fetch and stylized ASCII art banner application (`volinit`) is packaged natively:
+* Pulled declaratively via Nix Flakes input bindings from the upstream repository `lowcache/volinit`.
 * Runs instantly on launch to provide an aesthetic, low-overhead system status display.
-* Tracked locally under `~/CodeRepo/infernal-init/` and can be pushed/pulled independently, then updated globally using `nix flake update infernal-init`.
+* Tracked locally under `~/CodeRepo/volinit/` and can be pushed/pulled independently, then updated globally using `nix flake update volinit`.
 
 ### 2.4 Advanced Work Safety Daemon
 Inside the `illogical-impulse` configurations lies a highly advanced safety filter:
@@ -117,7 +117,7 @@ Inside the `illogical-impulse` configurations lies a highly advanced safety filt
 
 ## 3. Directory and Configuration Layout
 
-* **`flake.nix`**: System inputs, CachyOS kernel overlays, lanzarboote/sops imports, `infernal-init` fetch modules, and system configurations mapping.
+* **`flake.nix`**: System inputs, CachyOS kernel overlays, lanzarboote/sops imports, `volinit` fetch modules, and system configurations mapping.
 * **`nixos/`**:
   * `configuration.nix`: Main hardware definitions, system services, Docker OCI setups, greetd settings, Nix-LD graphics libraries, and kernel parameter flags.
   * `vms.nix`: Declares `net-gate` MicroVM configuration, Tor services, and systemd-networkd TAP rules.
@@ -140,11 +140,11 @@ To facilitate fast operations, the shell is loaded with precise, specialized Fis
 ### 4.1 System Rebuilding
 * **`nxrbs`**: Runs a full NixOS system rebuild and applies changes on-the-fly from the local flake:
   ```bash
-  sudo nixos-rebuild switch --flake /persist$HOME/.nix-config/#infernalnix
+  sudo nixos-rebuild switch --flake /persist$HOME/.nix-config/#volnix
   ```
 * **`nxrbb`**: Dry-builds the system configuration to test for compilations and evaluation failures:
   ```bash
-  sudo nixos-rebuild build --flake /persist$HOME/.nix-config/#infernalnix
+  sudo nixos-rebuild build --flake /persist$HOME/.nix-config/#volnix
   ```
 
 ### 4.2 Workspace Operations
@@ -167,7 +167,7 @@ To facilitate fast operations, the shell is loaded with precise, specialized Fis
 
 The **`limbo`** configuration profile provides a generic, non-opinionated, hardware-independent version of this NixOS system that is highly portable and runs cleanly out of the box on standard x86_64 systems (including physical machines and virtual machines). 
 
-It is completely decoupled from all proprietary features of `infernalnix`, meaning it excludes:
+It is completely decoupled from all proprietary features of `volnix`, meaning it excludes:
 * Lanzaboote Secure Boot (reverts to standard **`systemd-boot`**)
 * Impermanence and root on RAM (uses a standard, reliable persistent filesystem partition scheme)
 * SOPS-Nix encrypted secrets (uses declarative initial passwords)
@@ -200,7 +200,7 @@ To install and run Limbo successfully, partition your target drive using a stand
    ```
 3. **Clone the Configuration:** Clone this repository directly to the target system:
    ```bash
-   git clone https://github.com/lowcache/infernalnixos.git /mnt/home/inlimbo/.nix-config
+   git clone https://github.com/lowcache/volnixos.git /mnt/home/inlimbo/.nix-config
    ```
 4. **Run Installation:** Install the system specifying the `limbo` profile:
    ```bash

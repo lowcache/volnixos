@@ -1,13 +1,13 @@
 ---
 type: decisions
-project: Infernal NixOS
+project: Vol NixOS
 last_updated: 2026-06-06
 status: active
 ---
 
 # Architectural Decisions (`memory/decisions.md`)
 
-This file catalogs the active, canonical design decisions and system configurations of **Infernal NixOS**. AI agents must refer to this document before making any changes.
+This file catalogs the active, canonical design decisions and system configurations of **Vol NixOS**. AI agents must refer to this document before making any changes.
 
 ---
 

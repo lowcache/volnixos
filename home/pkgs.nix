@@ -166,7 +166,7 @@
           android-tools
           nixpkgs-fmt
           spotatui
-          inputs.infernal-init.packages.${pkgs.stdenv.hostPlatform.system}.default
+          inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
         nixified-ai = with pkgs; [
           mcp-nixos

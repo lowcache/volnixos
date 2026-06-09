@@ -1,19 +1,19 @@
 ---
 type: state
-project: Infernal NixOS
+project: Vol NixOS
 last_updated: 2026-06-08
 status: active
 ---
 
 # System State Inventory (`memory/state.md`)
 
-This file is the single source of truth for the active configuration, mapping, and hardware state of **Infernal NixOS**. It must be updated whenever services are added, network layouts shift, or core directory targets change.
+This file is the single source of truth for the active configuration, mapping, and hardware state of **Vol NixOS**. It must be updated whenever services are added, network layouts shift, or core directory targets change.
 
 ---
 
 ## 1. System & Hardware Profile
 
-* **Hostname:** `infernalnix`
+* **Hostname:** `volnix`
 * **OS Distribution:** NixOS 26.11 (Zokor)
 * **Desktop Environment / Compositor:** Hyprland (Wayland)
 * **Shell:** Fish (configured via Home Manager)

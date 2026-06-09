@@ -1,13 +1,13 @@
 ---
 type: todo
-project: Infernal NixOS
+project: Vol NixOS
 last_updated: 2026-06-08
 status: active
 ---
 
 # Open Tasks and Enhancement Roadmap (`memory/todo.md`)
 
-This file catalogs open loops, enhancement ideas, and pending validation tasks for **Infernal NixOS**.
+This file catalogs open loops, enhancement ideas, and pending validation tasks for **Vol NixOS**.
 
 ---
 
@@ -20,7 +20,7 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 * **Proof the fix never activated:** the running generation still has the *misspelled* `~/Pictures/fromAi/ouputs` symlink pointing INTO `/nix/store/.../home-manager-files/...ouputs` — i.e. the pre-`mistakes.md#4` state. The repo source is correct (`outputs`, out-of-store to `Storage`), but it was committed and never switched. **`mistakes.md#4` is fixed in source, NOT on the machine.**
 * **Consequence:** todo.md §1 checks below "fail" mostly because the config isn't live, not because it's wrong. MicroVM `net-gate` (autostart) is `inactive (dead)` since 16:35; taps absent; pings fail.
 * **Action:** Do a clean `switch` the SAFE way (per `mistakes.md#1` — session restart kills it): run inside `tmux`/`systemd-run --scope`, e.g.
-  `systemd-run --scope --user-unit=rebuild bash -c 'sudo nixos-rebuild switch --flake ~/.nix-config#infernalnix'`
+  `systemd-run --scope --user-unit=rebuild bash -c 'sudo nixos-rebuild switch --flake ~/.nix-config#volnix'`
   then re-run §1 verifications. The build itself is confirmed green (exit 0).
 
 ---
@@ -51,20 +51,37 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 
 ---
 
-## 4. De-Infernal Rebrand — rename "infernal" out of everything (QUEUED 2026-06-08)
+## 4. De-Infernal Rebrand — rename "infernal" out of everything (IN PROGRESS 2026-06-08)
 
-lowcache is removing the literal **"infernal"** brand from ALL projects/repos and replacing it
-with a name **NOT YET DECIDED**. `lowcache` stays the GitHub handle/umbrella; only project names
-change. Cross-repo effort, coordinated with `infernal-init` (repo+binary) and `infernalcode`/
-`infernalbits`. Wait for the chosen name before starting.
+**Name LOCKED: `vol`** (chosen for the volatile/impermanent tmpfs-root architecture; "clever but
+ambiguous to performance", reads as volatile-memory/volume not failure). Derived tokens:
+host `volnix`, repo `vol-nixos`, flake input `vol-init`, brand text "Vol NixOS".
+`lowcache` stays the GitHub handle/umbrella; only project names change. Cross-repo effort,
+coordinated with `infernal-init` (repo+binary) and `infernalcode`/`infernalbits`.
 
-* **Scope in THIS repo (`~/.nix-config`):**
-  * [ ] Repo name `infernalnixos` (remote `git@github.com:lowcache/infernalnixos.git`).
-  * [ ] Hostname **`infernalnix`** — `nixosConfigurations.infernalnix`, used in rebuild
-        commands / `make switch` / flake refs. ⚠️ Rename deliberately; it affects activation.
-  * [ ] Flake `description = "Infernal NixOS - Imprecation & Impermanence by LowCache ..."`.
-  * [ ] The `infernal-init` flake input (name + URL) — renames in lockstep with that repo.
-  * [ ] `.memory/*` `project: Infernal NixOS` headers + any "Infernal" references.
-* Context lives in `infernal-init/.memory/todo.md` (the rename is its NEXT ACTIVE TASK) and the
-  session auto-memory. Note: the banner already reads "LowCache"; if the final name ≠ LowCache,
-  the banner figlet/tagline need re-rendering too.
+* **DONE in THIS repo (`~/.nix-config`), 2026-06-08 — internal renames only, no rebuild run:**
+  * [x] Hostname `infernalnix` → **`volnix`** — `nixosConfigurations.volnix` (flake.nix),
+        `networking.hostName` (nixos/configuration.nix), `HOST` (Makefile), `nxrbs`/`nxrbb`
+        (home/shell.nix), README rebuild commands + `limbo` prose.
+        ⚠️ **Activation:** next switch MUST target `#volnix`; bare `nixos-rebuild` keyed on the
+        live hostname `infernalnix` will fail until the box switches and renames itself.
+  * [x] Flake `description` brand "Infernal NixOS" → "Vol NixOS" (repo URL left until rename).
+  * [x] `.memory/*` + `.model/*` brand text "Infernal NixOS"/"Infernal" → "Vol NixOS"/"Vol"
+        (this header set). `infernal-init`/`infernalnixos` tokens deliberately preserved.
+* **DONE 2026-06-08 (cont.) — repo `infernalnixos` → `volnixos`:** GitHub rename live; this repo's
+  `git remote set-url origin git@github.com:lowcache/volnixos.git` done; clone URL (README L203)
+  + flake `description` URL flipped to `volnixos.git`.
+* **DONE 2026-06-08 — `infernal-init` → `volinit` input flip:** upstream `volinit` pushed
+  (commit `775d8e3`, `result/bin/volinit` build-verified). Flipped here: flake input label +
+  url `github:lowcache/volinit`, `home/pkgs.nix` `inputs.volinit`, the `volinit` binary call +
+  `vol` abbr (home/shell.nix L86-87,120), README §2.3. `nix flake lock` locked `volinit` →
+  `775d8e3` and dropped the `infernal-init` node (Lix pins untouched). **Eval-verified:**
+  `…volnix…toplevel.drvPath` → `nixos-system-volnix-26.11…drv` (exit 0).
+* **REMAINING (lowcache):**
+  * [ ] **Activate:** safe `switch --flake .#volnix` inside `tmux`/`systemd-run` (mistakes.md #1).
+        Reboot afterward to load the volnix-built kernel/nvidia modules (mistakes.md #6).
+  * [ ] Optional housekeeping: `mv ~/CodeRepo/infernal-init ~/CodeRepo/volinit` (README now points
+        there; the live build uses `github:lowcache/volinit`, so the dir name is cosmetic).
+  * [ ] Commit the `~/.nix-config` rebrand (working tree still dirty as of this entry).
+* Context also lives in `infernal-init/.memory/todo.md`. Banner already reads "LowCache"; if a
+  separate banner brand is wanted it needs figlet/tagline re-render in the infernal-init repo.

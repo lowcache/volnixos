@@ -1,13 +1,13 @@
 ---
 type: mistakes
-project: Infernal NixOS
+project: Vol NixOS
 last_updated: 2026-06-08
 status: append-only
 ---
 
 # Known Mistakes and Prevention Rules (`memory/mistakes.md`)
 
-This file catalogs past bugs, configuration issues, and operational pitfalls encountered on **Infernal NixOS**. AI agents must study these cases to prevent regression.
+This file catalogs past bugs, configuration issues, and operational pitfalls encountered on **Vol NixOS**. AI agents must study these cases to prevent regression.
 
 ---
 
@@ -69,7 +69,7 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Incident (2026-06-08):** Every `nixos-rebuild` recompiled **Lix** from source (the heaviest build of the switch) despite `cache.lix.systems` being configured as a substituter with its trusted public key, and `lowcache` being in `trusted-users`. Effective `nix config show` confirmed all substituters/keys were live.
 * **The Bug:** The `lix-module` flake input carried two overrides — `inputs.nixpkgs.follows = "nixpkgs"` **and** `inputs.lix.url = "git+https://git.lix.systems/lix-project/lix"` (no rev → tracked `main`, locked to `daa2bc82`). The `follows` rebuilt Lix against our *top-level* nixpkgs, and the url override pinned Lix to a bleeding `main` commit. Either change shifts the Lix derivation hash away from what `cache.lix.systems` built (Lix's *own* pinned lix × its *own* pinned nixpkgs), so no substitute exists → source build. Key lesson: **"pinned in flake.lock" ≠ "a prebuilt exists in the cache."** A correct substituter list does nothing if the derivation hash doesn't match.
 * **Attempted "fix" that BACKFIRED — do NOT repeat:** Removed both overrides and ran `nix flake update lix-module`. `lix-module` `727d859b` expects **Lix 2.96**, but with the override gone its own `lix` input resolved to `91867941` = **2.94.0-pre** (older). That version desync, plus that older Lix referencing **`mdbook-linkcheck`** (removed from current nixpkgs at mdbook 0.5.0+), made `nixos-rebuild` abort at *evaluation*: `error: 'mdbook-linkcheck' has been removed`. A slow-but-working setup became a broken one.
-* **Recovery (2026-06-08):** `git checkout fb63b6f -- flake.nix flake.lock` — the last commit that actually built the banner: original lix-module block (follows + `inputs.lix.url` tracking main), `lix=daa2bc82`, `infernal-init=9862dd2`. Confirmed working with `nix eval ~/.nix-config#nixosConfigurations.infernalnix.config.system.build.toplevel.drvPath` returning a `.drv` *before* rebuilding.
+* **Recovery (2026-06-08):** `git checkout fb63b6f -- flake.nix flake.lock` — the last commit that actually built the banner: original lix-module block (follows + `inputs.lix.url` tracking main), `lix=daa2bc82`, `infernal-init=9862dd2`. Confirmed working with `nix eval ~/.nix-config#nixosConfigurations.volnix.config.system.build.toplevel.drvPath` returning a `.drv` *before* rebuilding.
 * **Prevention Rules:**
   1. The `follows`/`lix.url` overrides are **load-bearing** here — `lix-module 727d859b` tracks `lix` main, so removing the override exposes the module's own older, incompatible lix pin. Don't strip them casually.
   2. `cache.lix.systems` only serves **tagged releases**. While `inputs.lix.url` tracks `main`, Lix will **always** build from source — that cache miss is inherent to main-tracking, *not* caused by the follows. Removing the follows alone does not earn a cache hit.
