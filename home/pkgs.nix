@@ -139,6 +139,8 @@
           bat
           gnupg
           gpg-tui
+          sops
+          ssh-to-age
           ripgrep
           ripgrep-all
           flatpak

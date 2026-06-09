@@ -61,6 +61,15 @@
 
         set -gx PATH $HOME/.bin $HOME/.local/bin $HOME/.local/share/npm-global/bin $GOPATH/bin $CARGO_HOME/bin $GEM_HOME/bin $PATH
         set -gx NODE_PATH $HOME/.local/share/npm-global/lib/node_modules
+
+        # sops: native age identity, so `sops nixos/secrets.yaml` edits need no env prefix
+        set -gx SOPS_AGE_KEY_FILE $HOME/.config/sops/age/keys.txt
+        # Gemini API key — decrypted at runtime by sops-nix to /run/secrets/gemini_api_key
+        test -r /run/secrets/gemini_api_key
+        and set -gx GEMINI_API_KEY (cat /run/secrets/gemini_api_key)
+        # Github token - sops-nix to /run/secrets/github_token
+        test -r /run/secrets/github_token
+        and set -gx GITHUB_TOKEN (cat /run/secrets/github_token)
       '';
       interactiveShellInit = ''
         if status is-interactive

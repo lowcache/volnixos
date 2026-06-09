@@ -56,6 +56,7 @@
             ".config/micro"
             ".config/mcp-gateway"
             ".config/systemd/user"
+            ".config/sops"
           ];
           cache = [
             ".cache/pip"

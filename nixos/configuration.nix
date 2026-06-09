@@ -141,6 +141,12 @@
       root_password = {
         neededForUsers = true;
       };
+      gemini_api_key = {
+        owner = "lowcache";
+      };
+      github_token = {
+        owner = "lowcache";
+      };
     };
   };
   programs = {
