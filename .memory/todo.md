@@ -28,7 +28,13 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 ## 1. Pending Verification Tasks (Immediate Priority)
 
 * [ ] **Verify Ollama VRAM Unloading:** After running a model in Open WebUI, wait 5 minutes and run `nvidia-smi` to verify that Ollama unloads the model from VRAM, showing `0 MiB` usage, and that the Nvidia GPU power draw drops to suspend levels (0W–2W).
-* [ ] **Verify MicroVM Static Connectivity:** Run `ping 192.168.100.2` and `ping 192.168.101.2` from the host to verify that the `net-gate` and `tailscale` guest MicroVMs are fully accessible via their new static IP allocations.
+* [x] **Verify MicroVM Static Connectivity (2026-06-09, post-volnix switch):** `net-gate`
+      auto-starts (`microvm.vms.net-gate.autostart = true`, `nixos/vms.nix:9`) — `ping 192.168.100.2`
+      OK, tap `vm-netgate` up at `192.168.100.1`. **`tailscale` is `autostart = false`**
+      (`nixos/vms.nix:107`) — it is **on-demand BY DESIGN**, so `192.168.101.2` / the `vm-tailscale`
+      tap will NOT exist until `sudo systemctl start microvm@tailscale.service`. A dead
+      `192.168.101.2` is NOT a regression — do not chase it as a fault. (Flip to `autostart = true`
+      only if always-on tailscale is wanted.)
 * [ ] **Verify Fooocus Outputs Symlink:** Access `~/Pictures/fromAi/outputs` to verify the symlink correctly resolves to `/home/lowcache/Storage/ai-generation/fooocus/outputs` and that images can be read/written.
 
 ---

@@ -3,7 +3,14 @@
 
 HOST ?= volnix
 
-.PHONY: help switch build test dry-activate check fmt update update-nixpkgs gc run-netgate run-tailscale git
+# --- Dotfiles subtree config (override on the command line if needed) ---
+DOTS_PREFIX       ?= dots
+DOTS_REMOTE       ?= dotfiles
+DOTS_BRANCH       ?= main
+DOTS_SPLIT_BRANCH ?= dots-history
+
+.PHONY: help switch build test dry-activate check fmt update update-nixpkgs gc run-netgate run-tailscale ghc \
+        dots-log dots-split dots-remote dots-push dots-pull
 
 help:
 	@echo "Vol NixOS Helper Makefile"
@@ -25,6 +32,13 @@ help:
 	@echo "  make update-nixpkgs Update only the nixpkgs input"
 	@echo "  make gc             Garbage collect older Nix store derivations"
 	@echo "  make ghc            Adds changes and creates commit with generic description"
+	@echo ""
+	@echo "Dotfiles Subtree (independent history for $(DOTS_PREFIX)/, single repo):"
+	@echo "  make dots-log       Show history scoped to $(DOTS_PREFIX)/ (read-only, no remote needed)"
+	@echo "  make dots-split     (Re)generate the '$(DOTS_SPLIT_BRANCH)' projection branch of $(DOTS_PREFIX)/"
+	@echo "  make dots-remote URL=<git-url>   Add the standalone '$(DOTS_REMOTE)' remote (one-time)"
+	@echo "  make dots-push      Publish $(DOTS_PREFIX)/ history to $(DOTS_REMOTE)/$(DOTS_BRANCH)"
+	@echo "  make dots-pull      Merge changes from $(DOTS_REMOTE)/$(DOTS_BRANCH) back into $(DOTS_PREFIX)/"
 
 switch:
 	sudo nixos-rebuild switch --flake .#$(HOST)
@@ -65,4 +79,27 @@ gc:
 ghc:
 	git add .
 	git commit -m "Minor Updates"
+
+# --- Dotfiles subtree -------------------------------------------------------
+# dots-log and dots-split work with no remote. dots-push/dots-pull need the
+# remote set up once via `make dots-remote URL=...`.
+
+dots-log:
+	git log --oneline -- $(DOTS_PREFIX)
+
+dots-split:
+	@echo "Regenerating '$(DOTS_SPLIT_BRANCH)' projection of $(DOTS_PREFIX)/ ..."
+	-@git branch -D $(DOTS_SPLIT_BRANCH) >/dev/null 2>&1 || true
+	git subtree split --prefix=$(DOTS_PREFIX) -b $(DOTS_SPLIT_BRANCH)
+
+dots-remote:
+	@test -n "$(URL)" || { echo "Usage: make dots-remote URL=<git-url>"; exit 1; }
+	git remote add $(DOTS_REMOTE) "$(URL)"
+	@echo "Added remote '$(DOTS_REMOTE)' -> $(URL)"
+
+dots-push:
+	git subtree push --prefix=$(DOTS_PREFIX) $(DOTS_REMOTE) $(DOTS_BRANCH)
+
+dots-pull:
+	git subtree pull --prefix=$(DOTS_PREFIX) $(DOTS_REMOTE) $(DOTS_BRANCH)
 	

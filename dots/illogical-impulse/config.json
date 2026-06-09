@@ -42,10 +42,10 @@
         "wallpaperTheming": {
             "enableAppsAndShell": true,
             "enableQtApps": true,
-            "enableTerminal": true,
+            "enableTerminal": false,
             "masterTheme": {
                 "enable": true,
-                "jsonPath": "~/.config/illogical-impulse/themes/petrified_spittoon.json",
+                "jsonPath": "~/.config/illogical-impulse/themes/amalgamation.json",
                 "verboseOutput": true
             },
             "terminalGenerationProps": {

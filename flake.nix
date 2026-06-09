@@ -1,5 +1,5 @@
 {
-  description = "Vol NixOS - Imprecation & Impermanence by LowCache [github.com/lowcache/volnixos.git]";
+  description = "Vol NixOS - Vol(atile) Nix OS by LowCache [github.com/lowcache/volnixos.git]";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {

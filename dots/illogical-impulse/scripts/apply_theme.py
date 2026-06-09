@@ -41,6 +41,26 @@ TECHNICAL_MAP = {
     ]
 }
 
+def validate_palette(palette):
+    """Return a list of (name, value, reason) for any palette entry that is not a
+    valid hex color. QML accepts #RGB, #RGBA, #RRGGBB, #AARRGGBB (3/4/6/8 hex digits).
+    A single bad literal (e.g. "#90C722q") makes Quickshell fail to load the entire
+    config, so the apply is aborted before any files are written."""
+    bad = []
+    for name, value in palette.items():
+        if not isinstance(value, str):
+            bad.append((name, value, "not a string"))
+            continue
+        v = value.strip()
+        if not re.fullmatch(r"#?[0-9A-Fa-f]+", v):
+            bad.append((name, value, "contains non-hex characters"))
+            continue
+        digits = len(v.lstrip("#"))
+        if digits not in (3, 4, 6, 8):
+            bad.append((name, value, f"{digits} hex digits (expected 3, 4, 6, or 8)"))
+    return bad
+
+
 def apply_theme(theme_path, verbose=False):
     if not os.path.exists(theme_path):
         if verbose: print(f"Error: Theme file not found at {theme_path}")
@@ -58,6 +78,14 @@ def apply_theme(theme_path, verbose=False):
     
     if not palette:
         if verbose: print("Error: No palette found in theme file.")
+        return False
+
+    # Fail fast on bad colors so nothing is written to the live (symlinked) configs.
+    bad_colors = validate_palette(palette)
+    if bad_colors:
+        print(f"Error: invalid hex color(s) in palette '{theme_path}' — aborting, no files written:", file=sys.stderr)
+        for name, value, reason in bad_colors:
+            print(f"  - {name}: {value!r} ({reason})", file=sys.stderr)
         return False
 
     # Get standard colors

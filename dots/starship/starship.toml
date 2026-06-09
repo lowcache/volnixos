@@ -117,11 +117,11 @@ show_notifications = true
 min_time_to_notify = 45000
 
 [palettes.current]
-black = "#111314"
-red = "#8B3E2F"
-green = "#9CA84E"
+black = "#151515"
+red = "#96333E"
+green = "#1ed759"
 yellow = "#AAD71E"
-blue = "#D9AB77"
-magenta = "#8B4EA8"
-cyan = "#4EA8A8"
-white = "#EBD39D"
+blue = "#fbcb97"
+magenta = "#F7882D"
+cyan = "#90C722"
+white = "#f3ecd4"
