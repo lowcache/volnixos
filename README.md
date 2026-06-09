@@ -1,4 +1,22 @@
-# Vol NixOS: Imprecation & Impermanence
+# Vol NixOS: VOL(ATILE) NIXOS 
+
+<p align="center">
+  <a href="https://github.com/lowcache/volnixos/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/lowcache/volnixos?style=flat-square&logo=git&logoColor=white&label=last%20commit&color=5277C3"></a>
+  <img alt="Repo size" src="https://img.shields.io/github/repo-size/lowcache/volnixos?style=flat-square&label=size&color=5277C3">
+  <img alt="Top language" src="https://img.shields.io/github/languages/top/lowcache/volnixos?style=flat-square&logo=nixos&logoColor=white&color=5277C3">
+  <img alt="Code size" src="https://img.shields.io/github/languages/code-size/lowcache/volnixos?style=flat-square&color=5277C3">
+</p>
+
+<p align="center">
+  <img alt="NixOS unstable" src="https://img.shields.io/badge/NixOS-unstable-5277C3?style=flat-square&logo=nixos&logoColor=white">
+  <img alt="Nix Flakes" src="https://img.shields.io/badge/Nix-Flakes-7EBAE4?style=flat-square&logo=nixos&logoColor=white">
+  <img alt="Lix daemon" src="https://img.shields.io/badge/Daemon-Lix-2F4F8F?style=flat-square">
+  <img alt="Hyprland" src="https://img.shields.io/badge/WM-Hyprland-00AAFF?style=flat-square&logo=hyprland&logoColor=white">
+  <img alt="Wayland" src="https://img.shields.io/badge/Display-Wayland-FFBC00?style=flat-square&logo=wayland&logoColor=black">
+  <img alt="Ephemeral root" src="https://img.shields.io/badge/Root-Ephemeral%20tmpfs-E95420?style=flat-square">
+  <img alt="Lanzaboote Secure Boot" src="https://img.shields.io/badge/Secure%20Boot-Lanzaboote-1793D1?style=flat-square&logo=linux&logoColor=white">
+  <img alt="banner: volinit" src="https://img.shields.io/badge/banner-volinit-b00000?style=flat-square">
+</p>
 
 A declarative, highly optimized, and ephemeral NixOS system configuration based on Nix Flakes. This setup integrates advanced system virtualization, low-latency performance kernels, encrypted secret management, secure boot configurations, and a bespoke Qt6/QML window manager desktop shell.
 
