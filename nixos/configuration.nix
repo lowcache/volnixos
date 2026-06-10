@@ -281,7 +281,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'bash -l -c \"uwsm start hyprland.desktop\"'";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd 'uwsm start hyprland.desktop'";
           user = "greeter";
         };
       };
