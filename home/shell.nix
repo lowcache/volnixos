@@ -92,8 +92,8 @@
                 alias la='ls --absolute'
             end
 
-            if command -v infernalinit > /dev/null
-                infernalinit
+            if command -v volinit > /dev/null
+                volinit
             else if command -v fastfetch > /dev/null
                 fastfetch
             end
@@ -149,6 +149,25 @@
         # forgstp = "sudo systemctl stop docker-forge";
       };
       functions = {
+        tablet = {
+          description = "Phone S-Pen as a Krita tablet over USB (Weylus + adb reverse)";
+          body = ''
+            if test "$(adb -d get-state 2>/dev/null)" != device
+                echo "No authorized USB device. Plug in USB-C, enable USB debugging, accept the prompt on the phone."
+                adb devices
+                return 1
+            end
+            adb -d reverse tcp:1701 tcp:1701; or begin
+                echo "adb reverse failed"
+                return 1
+            end
+            echo "Weylus -> open http://localhost:1701 in Chrome/Samsung Internet on the phone."
+            echo "Ctrl-C here to stop."
+            weylus --no-gui --bind-address 127.0.0.1 --web-port 1701
+            adb -d reverse --remove tcp:1701 2>/dev/null
+            echo "tablet: stopped, USB tunnel removed."
+          '';
+        };
         colorhex = {
           description = "Colorize hex color codes in input text";
           body = ''

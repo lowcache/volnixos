@@ -6,6 +6,7 @@
     ./session.nix
     ./persist.nix
     ./browsers.nix
+    ./memd.nix
   ];
 
   home = {

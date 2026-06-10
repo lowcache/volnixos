@@ -116,7 +116,7 @@
     };
     user.extraConfig = "DefaultTimeoutStopSec=5s";
   };
-
+  hardware.uinput.enable = true;
   users = {
     users = {
       root = {
@@ -125,7 +125,7 @@
       lowcache = {
         isNormalUser = true;
         hashedPasswordFile = config.sops.secrets.user_password.path;
-        extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" ];
+        extraGroups = [ "adbusers" "networkmanager" "wheel" "video" "docker" "uinput" ];
       };
     };
   };
@@ -324,6 +324,7 @@
           ffmpeg
           adwaita-icon-theme
           hicolor-icon-theme
+          weylus
         ];
         nix-utils = with pkgs; [
           nh

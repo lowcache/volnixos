@@ -10,3 +10,6 @@ dots/gemini/state.json
 dots/gemini/antigravity-cli/antigravity-oauth-token
 nixos/*.yaml
 
+
+# python bytecode
+__pycache__/

@@ -15,7 +15,7 @@ THEMES_DIR  := $(II_DIR)/themes
 SCRIPTS_DIR := $(II_DIR)/scripts
 PYTHON      ?= python3
 
-.PHONY: help switch build test dry-activate check fmt update update-nixpkgs gc run-netgate run-tailscale ghc \
+.PHONY: help switch build test dry-activate boot check fmt update update-nixpkgs gc run-netgate run-tailscale ghc \
         dots-log dots-split dots-remote dots-push dots-pull \
         theme-list theme-apply theme-check theme-new
 
@@ -27,6 +27,7 @@ help:
 	@echo "  make build          Build system configuration without switching"
 	@echo "  make test           Temporarily switch to configuration (no boot entry)"
 	@echo "  make dry-activate   See what service transitions will happen"
+	@echo "  make boot           stage the rebuild for the next boot"
 	@echo ""
 	@echo "MicroVM Guest Operations:"
 	@echo "  make run-netgate    Start the Tor net-gate MicroVM runner"
@@ -65,6 +66,9 @@ test:
 
 dry-activate:
 	sudo nixos-rebuild dry-activate --flake .#$(HOST)
+
+boot:
+	sudo nixos-rebuild boot --flake .#$(HOST)
 
 run-netgate:
 	nix run .#net-gate

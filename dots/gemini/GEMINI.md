@@ -139,17 +139,23 @@ You do not have a background review process. If you identify an error mid-respon
 
 ---
 
-## XI. MEMORY SYSTEM AND SETTINGS FILES
+## XI. MEMORY SYSTEM AND SETTINGS FILES (memd PLATFORM)
+Project memory is **owned and curated by `memd`**, an autonomous background curator (source: `~/.nix-config/scripts/memd/`, docs in its README). It distills session transcripts (claude-code hooks + systemd sweep timer; antigravity conversations read natively from `~/.gemini/antigravity-cli/conversations/`), maintains frontmatter, enforces append-only `mistakes.md`, prunes overflow to `archive/`, and git-commits every change to `.memory/` only.
+
 For every project, repository, or working directory check for the following directories:
 - `./.model/` location of the `GEMINI.md` file and other important settings files. The `./.model/GEMINI.md` should be read before anything else for project scope and important information. This is also where any directories or settings files created by the antigravity (agy) system (i.e., `./.antigravitycli/`) should also be placed in this directory.
-- `./.memory/` directory is the location of the following memory files and their instructions. All files in `.memory/` require a YAML front-matter metadata header with `type`, `project`, `last_updated`, and `status`:
-  * `memory/state.md` — Single source of truth for the current live status, configs, directory maps, services, active workarounds, and ports.
-  * `memory/decisions.md` — Active, canonical architecture decisions and system preferences (high-signal, read before every implementation).
-  * `memory/mistakes.md` — Audit log of past configuration mistakes, causes, and exact prevention rules (append-only). Outdated or resolved entries must be moved to `memory/archive/`.
-  * `memory/todo.md` — Open tasks, enhancement roadmap, and pending verification loops.
-  * `memory/archive/` — Historical or pruned memory records (directory) to keep active files concise and optimize context window token usage.
+- `./.memory/` — **READ at session start, before substantive work:**
+  * `state.md` — Single source of truth for the current live status, configs, directory maps, services, active workarounds, and ports.
+  * `decisions.md` — Active, canonical architecture decisions and system preferences (high-signal, read before every implementation).
+  * `mistakes.md` — Append-only audit log of past mistakes, causes, and exact prevention rules.
+  * `todo.md` — Open tasks, enhancement roadmap, and pending verification loops.
+  * `archive/` — Historical or pruned memory records. Reference only when current files lack needed history.
 
-If any of the `./.model/GEMINI.md` or `./.memory/{state.md,decisions.md,mistakes.md,todo.md}` files or directories are missing they should be created and populated immediately with whatever information is known, and edited as it becomes known as the project progresses.  
+**WRITE RULES — sessions read memory, memd writes it:**
+- **Do not** directly edit, rewrite, prune, archive, or "fix" any `.memory/` file or its frontmatter. memd distills sessions autonomously; manual edits race its background runs and corrupt its invariants.
+- To record something deliberately (a decision, constraint, completed task, mistake, or correction to existing memory), **drop a dated markdown note in `./.memory/inbox/`** — the curator ingests, merges, and deletes it on the next distill. This is also the interface for swarm agents and non-claude CLIs.
+- **Do not** hand-create missing `.memory/` scaffolding. Run `memd init [path]` (memd also auto-scaffolds git-root projects with session activity). `memd status` shows registry and backlog; distill history is in `git log -- .memory/`.
+- *Exception:* edit memory files directly only when lowcache explicitly instructs it in the current session.
 
 
 ---
