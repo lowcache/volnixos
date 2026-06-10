@@ -112,3 +112,16 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Cross-CLI/swarm interface:** Drop dated markdown notes in `.memory/inbox/`; curator ingests and deletes on next distill.
 * **Agent instruction files updated (2026-06-10):** `~/.claude/CLAUDE.md` §XI, `~/.gemini/GEMINI.md` §XI, `.model/CLAUDE.md`, `.model/AGENTS.md`, `.model/GEMINI.md` — old self-managed memory protocol replaced by memd platform rules (read-only in session; inbox for deliberate notes; no direct edits).
 * **Status:** Operational. First live distill 2026-06-10 (commit `d3cef27`). Sweep timer starts after next `make`.
+
+---
+
+## 8. Agentic Tether — Claude Code ↔ Antigravity/Gemini Pro (Staged 2026-06-10)
+
+* **Purpose:** Enable Claude Code to delegate and manage tasks with Gemini Pro via Antigravity CLI; coordinate skills, tools, and plugins autonomously or on instruction.
+* **CLI:** `agy` (Antigravity CLI executable)
+* **Config Structure:**
+  * `~/.gemini/antigravity-cli/` — granular per-session settings and runtime state
+  * `~/.gemini/` — global skills, plugins, and shared configuration
+  * `~/.gemini/GEMINI.md` — global source of truth for Antigravity configuration (canonical reference for agent behavior)
+* **Workspace:** `~/.nix-config/.models/agent-tether` — directory for orchestration files (delegation templates, coordination logs, task schemas) that are neither Claude Code native config (`.claude/`) nor Antigravity native config (`~/.gemini/`)
+* **Status (2026-06-10):** Scoped and staged; implementation interrupted by tool error during discovery phase. To resume: validate `agy` CLI availability/version, audit Antigravity config structure, design delegation protocol, and build initial orchestration templates.

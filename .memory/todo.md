@@ -25,6 +25,12 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 
 ---
 
+## Pending Agentic Tether Implementation (2026-06-10)
+
+* [ ] **Build agentic tether between Claude Code and Antigravity/Gemini Pro:** Enable Claude Code to delegate, orchestrate, and manage tasks with Gemini Pro via `agy` CLI; initialization automatic or on explicit instruction. **Config scope:** `~/.gemini/antigravity-cli/` (granular), `~/.gemini/` (global skills/plugins), `~/.gemini/GEMINI.md` (canonical truth), plus workspace `~/.nix-config/.models/agent-tether/` (orchestration files). **Status:** Scoped; discovery phase (validating `agy` CLI, Antigravity config structure) interrupted by tool error (working directory deleted, parallel bash call cancelled). **To resume:** Validate `agy` availability and version, audit Antigravity config directories, design delegation/task-coordination protocol, and build initial orchestration templates.
+
+---
+
 ## Pending Declarative Hardening & Workaround Reversions
 
 * [ ] **Guard `asus-shutdown` hang declaratively:** Currently mitigated only by global `DefaultTimeoutStopSec=10s` + manual `kill -9`. Make deterministic, e.g. `systemd.services.asus-shutdown.serviceConfig.SendSIGKILL = lib.mkForce true;` or per-unit `TimeoutStopSec`. Verify exact unit name via `systemctl cat asus-shutdown.service` first. (See mistakes.md #2 for context.)
