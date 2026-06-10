@@ -87,7 +87,8 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 ## 6. Nix Binary Caches & Lix Pinning
 
 * **Substituters** (`nixos/configuration.nix` `nix.settings`, merged with the `cache.nixos.org` default): `hyprland.cachix.org`, `nix-community.cachix.org`, `cache.lix.systems`, `cuda-maintainers.cachix.org`, `cache.numtide.com`, `attic.xuyh0120.win/lantian` — each with its trusted public key. `trusted-users = [ "root" "lowcache" ]` (required, or non-default substituters are ignored).
-* **Lix pinning (2026-06-08, post-recovery):** Working state **KEEPS** the overrides — `lix-module` has `inputs.nixpkgs.follows = "nixpkgs"` and `inputs.lix.url` tracking `lix` main; locked `lix=daa2bc82`, `lix-module=727d859b`, `infernal-init=9862dd2`. This **builds Lix from source every switch** (slow) because main is never on `cache.lix.systems` — accepted as the cost of a working build. An attempt to remove the overrides for cache hits BROKE eval (module 2.96 vs lix 2.94-pre → removed `mdbook-linkcheck`) and was reverted via `git checkout fb63b6f`. **Do NOT** remove these overrides or `nix flake update lix-module` without eval-verifying first; real cache hits require pinning a matched Lix *release*, not main. See mistakes.md #7.
+* **Lix pinning (2026-06-08, post-recovery):** Working state **KEEPS** the overrides — `lix-module` has `inputs.nixpkgs.follows = "nixpkgs"` and `inputs.lix.url` tracking `lix` main; locked `lix=daa2bc82`, `lix-module=727d859b`. This **builds Lix from source every switch** (slow) because main is never on `cache.lix.systems` — accepted as the cost of a working build. An attempt to remove the overrides for cache hits BROKE eval (module 2.96 vs lix 2.94-pre → removed `mdbook-linkcheck`) and was reverted via `git checkout fb63b6f`. **Do NOT** remove these overrides or `nix flake update lix-module` without eval-verifying first; real cache hits require pinning a matched Lix *release*, not main. See mistakes.md #7.
+* **volinit input:** flake input label `volinit`, `github:lowcache/volinit`, locked at `775d8e3`; `infernal-init` node dropped.
 
 ---
 
@@ -96,17 +97,17 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Deployment Date:** 2026-06-10
 * **Binary Location:** `~/.local/bin/memd` (symlink, deployed via home-manager)
 * **Configuration:** `~/.config/memd/config.json`
-* **State & Logs:** `~/.local/state/memd/` (cursor tracking, distill history, audit log)
-* **Home Manager Module:** `home/memd.nix` (imported in `home/default.nix`)
-* **Systemd Timer:** User-level timer, 30-minute interval (background distill trigger)
-* **Claude Code Integration:**
-  * Hooks in `~/.claude/settings.json`:
-    * `SessionStart` — brief memory context injection (index only, <200 tokens)
-    * `SessionEnd` — autonomous distill (background task, Haiku model)
-    * `PreCompact` — distill before context compression (Haiku model)
-  * Model selection: Haiku by default (cost-optimized for 24/7 background); Sonnet on demand for complex digests > 15k chars
-* **Memory Scope:** Manages `.memory/` files only (`state.md`, `decisions.md`, `todo.md`, `mistakes.md`, `archive/`)
-  * Git commits limited to `.memory/` pathspec; commit messages include brief summaries; full audit trail in `git log`
-  * Cross-CLI/swarm interface: AI session transcripts fed to curator; inbox notes dropped into `.memory/inbox/` are processed and merged
-* **Project Registration:** This repo (`/home/lowcache/.nix-config`) registered as "Vol NixOS"
-* **Status:** Operational (first dry-run passed; first live session 2026-06-10)
+* **State & Logs:** `~/.local/state/memd/` (cursor tracking, distill history, audit log at `memd.log`)
+* **Home Manager Module:** `home/memd.nix` (imported in `home/default.nix`; `memd-sweep` timer active after next `make`)
+* **Claude Code Integration (hooks in `~/.claude/settings.json`):**
+  * `SessionStart` — brief memory context injection (index only, <200 tokens; no LLM call)
+  * `SessionEnd` — autonomous detached distill (Haiku; Sonnet when digest >15k chars)
+  * `PreCompact` — distill before context compression (Haiku)
+* **Transcript Sources:**
+  * Claude Code: per-session JSONL under `~/.claude/` (cursor-tracked by byte offset)
+  * Antigravity: `~/.gemini/antigravity-cli/conversations/*.db` — SQLite `steps` table with protobuf payloads. Attribution via content-based matching (workspace header records *launch dir*, not working dir — unreliable for project mapping; content matching required). Legacy `.pb` files skipped. 9 conversations attributed to this repo as of 2026-06-10, baselined.
+* **Credential Redaction:** All digest paths (claude, antigravity, inbox) pass a redaction filter before reaching the curator (OAuth `ya29.` tokens, GitHub PATs, `sk-` keys, AWS keys, JWTs, `*_token` JSON values).
+* **Memory Scope:** `.memory/` only (`state.md`, `decisions.md`, `todo.md`, `mistakes.md`, `archive/`). Git commits limited to `.memory/` pathspec.
+* **Cross-CLI/swarm interface:** Drop dated markdown notes in `.memory/inbox/`; curator ingests and deletes on next distill.
+* **Agent instruction files updated (2026-06-10):** `~/.claude/CLAUDE.md` §XI, `~/.gemini/GEMINI.md` §XI, `.model/CLAUDE.md`, `.model/AGENTS.md`, `.model/GEMINI.md` — old self-managed memory protocol replaced by memd platform rules (read-only in session; inbox for deliberate notes; no direct edits).
+* **Status:** Operational. First live distill 2026-06-10 (commit `d3cef27`). Sweep timer starts after next `make`.
