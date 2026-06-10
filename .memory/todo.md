@@ -11,9 +11,17 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 
 ---
 
+## Completed in 2026-06-10 Session
+
+* [x] **Fix illogical-impulse color typo:** `#90C722q` → `#90C722` in `themes/amalgamation.json` and regenerate via `apply_theme.py`. Quickshell now loads the config correctly.
+
+---
+
 ## Pending Verification Tasks
 
-* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. (Gated on xdg-desktop-portal ≥ 1.21.1; see mistakes.md #10 for full diagnosis and reversion trigger.)
+* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-10):** Still failing with the known dbus-broker pidfd bug (mistakes.md #10). Workaround (`services.dbus.implementation = "dbus"`) is in place but has not been verified post-rebuild. Gated on either: (a) rebuilding and verifying the workaround works, OR (b) waiting for `xdg-desktop-portal` ≥ 1.21.1 in nixpkgs to land and revert the workaround. See mistakes.md #10 for diagnosis and revert trigger.
+
+* [ ] **Verify file-roller Dialogue:** Open file-roller file manager and confirm it can browse, open files, and perform archive operations without portal errors. Related to the same dbus-broker issue as Brave.
 
 ---
 
@@ -26,3 +34,11 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 * [ ] **Revert dbus-broker → dbus-daemon workaround:** Two sub-tasks (both open and viable):
   * Monitor packaged `xdg-desktop-portal` version on every `make update`. Currently 1.20.4 (bug fixed upstream in ≥1.21.1). Check with: `nix eval .#nixosConfigurations.volnix.config.xdg.portal.package.version`
   * When ≥1.21.1 lands: delete `services.dbus.implementation = lib.mkForce "dbus";` from `nixos/configuration.nix`, rebuild, and verify portals work: `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'` must return a settings dict (not `AccessDenied`). (See mistakes.md #10 for full diagnosis and reversion trigger.)
+
+---
+
+## Pending Dotfiles Infrastructure
+
+* [ ] **Implement git subtree Makefile targets:** Add helper targets for dotfiles subtree workflow (as per decision #7). Targets should include: `subtree-split` (generate dots-history branch), `subtree-pull` (merge from remote), `subtree-log` (view independent history). Started in session 2026-06-10 but not completed (digest truncation). Verify Makefile edits and complete if needed.
+
+* [ ] **Set up `dots/.memory/` directory and scaffold:** Once subtree targets are in place, create `dots/.memory/` and add initial `state.md` for dotfiles-wide configuration. (See decision #8.)

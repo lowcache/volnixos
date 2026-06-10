@@ -34,6 +34,7 @@ The system utilizes an ephemeral root partition (`tmpfs` wiped on boot). Permane
 * `~/.config/fuzzel` ➔ `/persist/home/lowcache/.nix-config/dots/fuzzel`
 * `~/.config/wlogout` ➔ `/persist/home/lowcache/.nix-config/dots/wlogout`
 * `~/.config/starship.toml` ➔ `/persist/home/lowcache/.nix-config/dots/starship/starship.toml`
+* `~/.config/illogical-impulse` ➔ `/persist/home/lowcache/.nix-config/dots/illogical-impulse`
 
 ### Persistent Krita Profile (Mapped to Storage):
 * `~/.config/kritarc` ➔ `/home/lowcache/Storage/krita-master/kritarc`
@@ -68,10 +69,10 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Discrete GPU Battery Drain:**
   * **Daemon:** Ollama background daemon runs with `"OLLAMA_KEEP_ALIVE=5m"`.
   * **Reason:** Forces VRAM unloading and driver handle release after 5 minutes of idle time, allowing the dGPU to enter RTD3 (0W suspend state).
-* **Brave/GTK File Chooser Failure — ACTUAL ROOT CAUSE: session dbus implementation (`services.dbus.implementation = "dbus"`):**
-  * **Fix (2026-06-09):** Set `services.dbus.implementation = lib.mkForce "dbus";` in `nixos/configuration.nix` (`mkForce` needed because `programs.uwsm` forces `"broker"`). The reference dbus-daemon does not pass peer credentials via pidfd, so `xdg-desktop-portal`'s `/proc/<pid>/root` app-identification succeeds; with `dbus-broker` it returned `EACCES` and the portal rejected EVERY call with `AccessDenied`, breaking file pickers AND downloads. Full diagnosis + proof in `memory/mistakes.md` #10.
-  * **Requires:** rebuild (restarts the bus → tears down the Wayland session; reboot or rebuild detached).
-  * **Earlier partial attempt (kept, but was NOT the cause):** `config.common.default = "*"` in `xdg.portal`, system-wide `adwaita-icon-theme` + `hicolor-icon-theme`, `GTK_USE_PORTAL = "1"` in `home/session.nix`, removed manual `XDG_DATA_DIRS` override in `dots/hypr/hyprland/env.conf`, installed `file-roller`. These are harmless to keep but did not fix the picker/download failure on their own.
+* **Brave/GTK File Chooser Failure — Root Cause: dbus-broker session bus implementation:**
+  * **Status:** Workaround in place. Set `services.dbus.implementation = lib.mkForce "dbus";` in `nixos/configuration.nix` (see mistakes.md #10 for full diagnosis). The reference dbus-daemon avoids the pidfd app-identification bug in xdg-desktop-portal ≤1.20.4.
+  * **Requires:** Rebuild and reboot (bus restart tears down Wayland session).
+  * **Revert trigger:** When `xdg-desktop-portal` ≥ 1.21.1 arrives in nixpkgs (fixed upstream), delete the workaround and verify `gdbus call --session --dest org.freedesktop.portal.Desktop ...` returns a settings dict.
 
 ---
 
@@ -105,7 +106,7 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
   * `PreCompact` — distill before context compression (Haiku)
 * **Transcript Sources:**
   * Claude Code: per-session JSONL under `~/.claude/` (cursor-tracked by byte offset)
-  * Antigravity: `~/.gemini/antigravity-cli/conversations/*.db` — SQLite `steps` table with protobuf payloads. Attribution via content-based matching (workspace header records *launch dir*, not working dir — unreliable for project mapping; content matching required). Legacy `.pb` files skipped. 9 conversations attributed to this repo as of 2026-06-10, baselined.
+  * Antigravity: `~/.gemini/antigravity-cli/conversations/*.db` — SQLite `steps` table with protobuf payloads. Attribution via content-based matching (workspace header records *launch dir*, not working dir — unreliable for project mapping; content matching required). Legacy `.pb` files skipped. 9+ conversations attributed to this repo as of 2026-06-10, baselined.
 * **Credential Redaction:** All digest paths (claude, antigravity, inbox) pass a redaction filter before reaching the curator (OAuth `ya29.` tokens, GitHub PATs, `sk-` keys, AWS keys, JWTs, `*_token` JSON values).
 * **Memory Scope:** `.memory/` only (`state.md`, `decisions.md`, `todo.md`, `mistakes.md`, `archive/`). Git commits limited to `.memory/` pathspec.
 * **Cross-CLI/swarm interface:** Drop dated markdown notes in `.memory/inbox/`; curator ingests and deletes on next distill.

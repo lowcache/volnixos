@@ -65,3 +65,34 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Model & Cost Trade-off:** Haiku by default (cost-optimized for 24/7 background operations); Sonnet on demand for large/complex digests > 15k chars (better reasoning on intricate, multi-threaded changes). SessionStart injection is text-only (no synthesis — just index brief).
 * **Integration:** Deployed via home-manager (`home/memd.nix`), integrated into Claude Code hooks (SessionStart for brief inject, SessionEnd/PreCompact for autonomous distill). Commits are git-audited to `.memory/` pathspec only to avoid noise; commit messages include brief summaries.
 * **Scope & Constraints:** Manages only `.memory/` (not `.claude/`, not `nixos/`, not general project files). Input: AI transcript backlog + inbox notes (`.memory/inbox/`). Output: updated memory files + git commits (`.memory/` only). If a memory entry's *why* or *when* becomes unclear (no context in the repo, lost to compression), memd conservatively keeps it until manually pruned to prevent loss of institutional knowledge.
+
+---
+
+## 7. Git Subtree for Independent Dotfiles History
+
+* **Decision (2026-06-10):** Use `git subtree` to maintain independent, publishable history for `dots/` directory without creating a separate repository or breaking `mkOutOfStoreSymlink` mappings.
+* **How it works:** 
+  * Day-to-day work stays on main branch; `dots/` is a normal subdirectory.
+  * `git subtree split --prefix=dots -b dots-history` generates a derived branch containing only commits that touched `dots/`, with `dots/` rewritten as the repo root.
+  * `git subtree pull --prefix=dots <remote> main` merges changes from a published dotfiles remote back into `dots/` on main.
+* **Rationale:** Allows dotfiles to have independent, coherent history and be publishable to a remote (appearing as their own repo) without fragmentation. The symlinks continue to work; the split branch is a projection, not a migration.
+* **Trade-off:** First `subtree split` on large history is slow (caches on subsequent runs with `--rejoin`); if publishing is never needed, simple `git log -- dots/` provides independent-view without generating a branch.
+
+---
+
+## 8. Scoped Memory for Dotfiles (per-app and directory-wide)
+
+* **Decision (2026-06-10):** Place dotfiles-specific memory in `dots/.memory/` (not in individual app folders under `dots/`), with optional per-app subdirectories for granularity.
+* **Structure:**
+  ```
+  dots/.memory/
+    state.md           # dotfiles-wide state
+    decisions.md       # dotfiles-wide decisions
+    illogical-impulse/ # optional per-app scoping
+      state.md
+      mistakes.md
+    quickshell/
+      state.md
+  ```
+* **Rationale:** `dots/` itself is not symlinked (only its children); placing `.memory/` there prevents leakage into `~/.config/`, avoids triggering home-manager rebuilds, and keeps dotfile config from mixing with app runtime state. Per-app granularity is optional and avoids per-folder clutter.
+* **Interaction with main `.memory/`:** Both apply when working in the dotfiles tree; repo-root `.memory/` is the global source of truth; `dots/.memory/` is the dotfiles-scoped layer.
