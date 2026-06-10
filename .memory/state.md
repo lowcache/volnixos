@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-06-09
+last_updated: 2026-06-10
 status: active
 ---
 
@@ -68,6 +68,9 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Discrete GPU Battery Drain:**
   * **Daemon:** Ollama background daemon runs with `"OLLAMA_KEEP_ALIVE=5m"`.
   * **Reason:** Forces VRAM unloading and driver handle release after 5 minutes of idle time, allowing the dGPU to enter RTD3 (0W suspend state).
+* **Brave/GTK File Chooser Failure (Portal Fallback & Variable):**
+  * **Workaround:** Added `config.common.default = "*"` to `xdg.portal` and system-wide `adwaita-icon-theme` + `hicolor-icon-theme` in `nixos/configuration.nix`; exported `GTK_USE_PORTAL = "1"` in `home/session.nix`.
+  * **Reason:** Under Hyprland (Wayland) on NixOS, portals require a default backend fallback mapping to resolve file pickers. `GTK_USE_PORTAL` forces Chromium/Brave to request the portal file dialog over D-Bus, and the system-wide icon themes prevent GTK rendering/icon resolution failures.
 
 ---
 

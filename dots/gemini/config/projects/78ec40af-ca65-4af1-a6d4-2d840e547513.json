@@ -1,0 +1,11 @@
+{
+  "id":  "78ec40af-ca65-4af1-a6d4-2d840e547513",
+  "name":  "/home/lowcache",
+  "projectResources":  {
+    "resources":  [
+      {
+        "folderUri":  "file:///home/lowcache"
+      }
+    ]
+  }
+}

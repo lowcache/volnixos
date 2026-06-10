@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-06-08
+last_updated: 2026-06-10
 status: active
 ---
 
@@ -36,6 +36,7 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
       `192.168.101.2` is NOT a regression — do not chase it as a fault. (Flip to `autostart = true`
       only if always-on tailscale is wanted.)
 * [ ] **Verify Fooocus Outputs Symlink:** Access `~/Pictures/fromAi/outputs` to verify the symlink correctly resolves to `/home/lowcache/Storage/ai-generation/fooocus/outputs` and that images can be read/written.
+* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files.
 
 ---
 

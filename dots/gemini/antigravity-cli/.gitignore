@@ -1,10 +1,20 @@
-priv.bkup/
-
-# Gemini / Antigravity developer agent local data
-dots/gemini/history/
-dots/gemini/tmp/
-dots/gemini/oauth_creds.json
-dots/gemini/google_accounts.json
-dots/gemini/installation_id
-dots/gemini/state.json
+# Ignore all runtime chaff and database files
+conversations/
+implicit/
+history.jsonl
+*.log
+log/
+brain/
+cache/
+tmp/
+mcp/
+scratch/
+last_check.timestamp
+updater/update.lock
+updater/update_status.json
 antigravity-oauth-token
+oauth_creds.json
+google_accounts.json
+state.json
+installation_id
+priv.bkup/

@@ -291,6 +291,7 @@
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = "*";
   };
 
   environment = {
@@ -312,6 +313,8 @@
           nvtopPackages.nvidia
           nvidia-vaapi-driver
           ffmpeg
+          adwaita-icon-theme
+          hicolor-icon-theme
         ];
         nix-utils = with pkgs; [
           nh

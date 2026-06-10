@@ -41,6 +41,8 @@ let
       GDK_BACKEND = "wayland,x11";
       SDL_VIDEODRIVER = "wayland";
       CLUTTER_BACKEND = "wayland";
+      # Force GTK apps and Chromium to use XDG Desktop Portal for file choosers
+      GTK_USE_PORTAL = "1";
       # Wayland support for Electron/Chromium
       NIXOS_OZONE_WL = "1";
       # nvidia specific (commented out to allow Hyprland session to render on integrated AMD GPU)

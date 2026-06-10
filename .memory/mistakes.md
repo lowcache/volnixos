@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-06-09
+last_updated: 2026-06-10
 status: append-only
 ---
 
@@ -93,3 +93,11 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
   2. Never blanket-track agent/tool dirs (`.gemini`, `.claude`, …) — they write credentials and verbose logs. Track only declarative config; the *symlink*, not git, is what makes the live config work.
   3. `.gitignore` patterns are relative to the file's own directory; verify with `git check-ignore <path>`.
   4. gitignore does not untrack committed files — pair every ignore rule for an already-tracked secret with `git rm --cached`.
+
+---
+
+## 9. Broken File Chooser Dialogs (XDG Desktop Portal Misconfiguration)
+
+* **Incident (2026-06-10):** Brave Browser and other applications failed to launch a file chooser dialog when attempting to open or save files.
+* **The Bug:** Three factors broke the portal: (a) `xdg.portal` config in `configuration.nix` lacked `config.common.default = "*"`, meaning the portal service could not resolve which backend to fall back to under Hyprland; (b) the environment was missing `GTK_USE_PORTAL = "1"`, which is necessary to force GTK/Electron apps to route file picker dialogs to D-Bus; (c) the portal service itself couldn't resolve base GNOME/GTK icons because `adwaita-icon-theme` and `hicolor-icon-theme` were not installed system-wide.
+* **Prevention Rule:** When setting up a Wayland compositor (like Hyprland) on NixOS, always explicitly configure a default portal backend (`config.common.default = "*"`), include basic icon themes (`adwaita-icon-theme`, `hicolor-icon-theme`) in `environment.systemPackages`, and export `GTK_USE_PORTAL = "1"` in user session variables to guarantee GTK/Electron dialogue capability.
