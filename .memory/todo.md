@@ -92,3 +92,24 @@ coordinated with `infernal-init` (repo+binary) and `infernalcode`/`infernalbits`
   * [ ] Commit the `~/.nix-config` rebrand (working tree still dirty as of this entry).
 * Context also lives in `infernal-init/.memory/todo.md`. Banner already reads "LowCache"; if a
   separate banner brand is wanted it needs figlet/tagline re-render in the infernal-init repo.
+
+---
+
+## 5. Revert dbus-broker → dbus-daemon workaround once portal is fixed in nixpkgs (added 2026-06-09)
+
+We force `services.dbus.implementation = lib.mkForce "dbus";` (nixos/configuration.nix) to dodge
+upstream xdg-desktop-portal bug #1953 — broker's pidfd path triggers a bad `O_NOFOLLOW` open of
+`/proc/<pid>/root`, breaking ALL portals (file chooser, downloads). Full diagnosis: mistakes.md #10.
+Fixed upstream in the 1.21.x/1.22.0 line, but as of 2026-06 **nixpkgs unstable + 26.11 still ship
+1.20.4** (the buggy version).
+
+* [ ] **On every `make update`, check the packaged portal version** until resolved:
+      `nix eval --raw .#nixosConfigurations.volnix.config.environment.systemPackages 2>/dev/null`
+      is noisy; simplest is to check the running/derivation version, e.g.
+      `nix eval .#nixosConfigurations.volnix.config.xdg.portal.package.version 2>/dev/null` or look
+      for `xdg-desktop-portal-1.2x` in the new system closure. **Installed/running now: 1.20.4.**
+* [ ] When it reaches **≥ 1.21.1**: delete the `dbus.implementation = lib.mkForce "dbus";` line
+      (returns the session bus to broker + restores pidfd credential checking), rebuild, and verify
+      the file chooser with:
+      `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`
+      (must return a settings dict, not `AccessDenied`).

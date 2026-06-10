@@ -68,9 +68,10 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Discrete GPU Battery Drain:**
   * **Daemon:** Ollama background daemon runs with `"OLLAMA_KEEP_ALIVE=5m"`.
   * **Reason:** Forces VRAM unloading and driver handle release after 5 minutes of idle time, allowing the dGPU to enter RTD3 (0W suspend state).
-* **Brave/GTK File Chooser Failure (Portal Fallback & Variable & XDG_DATA_DIRS Env Fix):**
-  * **Workaround:** Added `config.common.default = "*"` to `xdg.portal` and system-wide `adwaita-icon-theme` + `hicolor-icon-theme` in `nixos/configuration.nix`; exported `GTK_USE_PORTAL = "1"` in `home/session.nix`. Commented out the manual `XDG_DATA_DIRS` override in `dots/hypr/hyprland/env.conf` and installed `file-roller` in `home/pkgs.nix`.
-  * **Reason:** Under Hyprland (Wayland) on NixOS, portals require a default backend fallback mapping to resolve file pickers. `GTK_USE_PORTAL` forces Chromium/Brave to request the portal file dialog over D-Bus, and the system-wide icon themes prevent GTK rendering/icon resolution failures. Commenting out the `XDG_DATA_DIRS` override in `env.conf` preserves the system-wide NixOS environment paths (which are generated automatically and appended with flatpak exports), allowing `xdg-desktop-portal-gtk` to find and render GTK settings, themes, and icons.
+* **Brave/GTK File Chooser Failure — ACTUAL ROOT CAUSE: session dbus implementation (`services.dbus.implementation = "dbus"`):**
+  * **Fix (2026-06-09):** Set `services.dbus.implementation = lib.mkForce "dbus";` in `nixos/configuration.nix` (`mkForce` needed because `programs.uwsm` forces `"broker"`). The reference dbus-daemon does not pass peer credentials via pidfd, so `xdg-desktop-portal`'s `/proc/<pid>/root` app-identification succeeds; with `dbus-broker` it returned `EACCES` and the portal rejected EVERY call with `AccessDenied`, breaking file pickers AND downloads. Full diagnosis + proof in `memory/mistakes.md` #10.
+  * **Requires:** rebuild (restarts the bus → tears down the Wayland session; reboot or rebuild detached).
+  * **Earlier partial attempt (kept, but was NOT the cause):** `config.common.default = "*"` in `xdg.portal`, system-wide `adwaita-icon-theme` + `hicolor-icon-theme`, `GTK_USE_PORTAL = "1"` in `home/session.nix`, removed manual `XDG_DATA_DIRS` override in `dots/hypr/hyprland/env.conf`, installed `file-roller`. These are harmless to keep but did not fix the picker/download failure on their own.
 
 
 ---

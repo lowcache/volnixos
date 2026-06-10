@@ -269,6 +269,15 @@
       scheduler = "scx_bpfland";
     };
     flatpak.enable = true;
+    # Use the reference dbus-daemon for the session bus instead of dbus-broker.
+    # dbus-broker passes peer credentials via pidfd (ProcessFD); on this kernel
+    # xdg-desktop-portal's app-identification then fails to open /proc/<pid>/root
+    # (EACCES), which makes the portal reject EVERY request (FileChooser,
+    # Settings, etc.) with AccessDenied -> Brave file picker / downloads break.
+    # The reference daemon does not pass a pidfd and the portal works. See
+    # memory/mistakes.md for the full diagnosis.
+    # mkForce overrides programs.uwsm, which forces this to "broker".
+    dbus.implementation = lib.mkForce "dbus";
     asusd.enable = true;
     supergfxd.enable = false;
     power-profiles-daemon.enable = false;
