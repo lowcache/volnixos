@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-06-09
+last_updated: 2026-06-10
 status: active
 ---
 
@@ -56,3 +56,12 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Pattern (three touch-points):** add to `nixos/secrets.yaml` (encrypted) → declare `sops.secrets.<name>.owner = "lowcache"` in `configuration.nix` (decrypts to `/run/secrets/<name>`) → export in `home/shell.nix` `shellInit` (`set -gx VAR (cat /run/secrets/<name>)`).
 * **Adding agent/tool dirs to `dots/`:** track only declarative config; gitignore runtime/state/credential files with **dir-relative** patterns; never rely on git to keep a secret out — keep it out of the tree entirely.
 
+---
+
+## 6. Autonomous Project Memory Curation (memd)
+
+* **Decision (2026-06-10):** Adopt memd (headless Claude-based curator) for autonomous distillation of project memory files (`state.md`, `decisions.md`, `todo.md`, `mistakes.md`).
+* **Rationale:** AI sessions (from Claude Code, CLI agents, or swarms) naturally accumulate context (transcripts, tool calls, exploration). Without curation, memory files grow incoherent (duplicate facts, stale entries, conversational chatter). memd runs on a 30-minute systemd timer and post-session hooks to process session backlog, extract signal (decisions, state changes, constraints, gotchas, root causes, open threads), and keep memory files concise and actionable for future sessions. This prevents context buildup and keeps memory-to-noise ratio high.
+* **Model & Cost Trade-off:** Haiku by default (cost-optimized for 24/7 background operations); Sonnet on demand for large/complex digests > 15k chars (better reasoning on intricate, multi-threaded changes). SessionStart injection is text-only (no synthesis — just index brief).
+* **Integration:** Deployed via home-manager (`home/memd.nix`), integrated into Claude Code hooks (SessionStart for brief inject, SessionEnd/PreCompact for autonomous distill). Commits are git-audited to `.memory/` pathspec only to avoid noise; commit messages include brief summaries.
+* **Scope & Constraints:** Manages only `.memory/` (not `.claude/`, not `nixos/`, not general project files). Input: AI transcript backlog + inbox notes (`.memory/inbox/`). Output: updated memory files + git commits (`.memory/` only). If a memory entry's *why* or *when* becomes unclear (no context in the repo, lost to compression), memd conservatively keeps it until manually pruned to prevent loss of institutional knowledge.

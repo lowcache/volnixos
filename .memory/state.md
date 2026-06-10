@@ -73,7 +73,6 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
   * **Requires:** rebuild (restarts the bus → tears down the Wayland session; reboot or rebuild detached).
   * **Earlier partial attempt (kept, but was NOT the cause):** `config.common.default = "*"` in `xdg.portal`, system-wide `adwaita-icon-theme` + `hicolor-icon-theme`, `GTK_USE_PORTAL = "1"` in `home/session.nix`, removed manual `XDG_DATA_DIRS` override in `dots/hypr/hyprland/env.conf`, installed `file-roller`. These are harmless to keep but did not fix the picker/download failure on their own.
 
-
 ---
 
 ## 5. Secrets Management (sops-nix + age)
@@ -89,3 +88,25 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 
 * **Substituters** (`nixos/configuration.nix` `nix.settings`, merged with the `cache.nixos.org` default): `hyprland.cachix.org`, `nix-community.cachix.org`, `cache.lix.systems`, `cuda-maintainers.cachix.org`, `cache.numtide.com`, `attic.xuyh0120.win/lantian` — each with its trusted public key. `trusted-users = [ "root" "lowcache" ]` (required, or non-default substituters are ignored).
 * **Lix pinning (2026-06-08, post-recovery):** Working state **KEEPS** the overrides — `lix-module` has `inputs.nixpkgs.follows = "nixpkgs"` and `inputs.lix.url` tracking `lix` main; locked `lix=daa2bc82`, `lix-module=727d859b`, `infernal-init=9862dd2`. This **builds Lix from source every switch** (slow) because main is never on `cache.lix.systems` — accepted as the cost of a working build. An attempt to remove the overrides for cache hits BROKE eval (module 2.96 vs lix 2.94-pre → removed `mdbook-linkcheck`) and was reverted via `git checkout fb63b6f`. **Do NOT** remove these overrides or `nix flake update lix-module` without eval-verifying first; real cache hits require pinning a matched Lix *release*, not main. See mistakes.md #7.
+
+---
+
+## 7. Project Memory System (memd)
+
+* **Deployment Date:** 2026-06-10
+* **Binary Location:** `~/.local/bin/memd` (symlink, deployed via home-manager)
+* **Configuration:** `~/.config/memd/config.json`
+* **State & Logs:** `~/.local/state/memd/` (cursor tracking, distill history, audit log)
+* **Home Manager Module:** `home/memd.nix` (imported in `home/default.nix`)
+* **Systemd Timer:** User-level timer, 30-minute interval (background distill trigger)
+* **Claude Code Integration:**
+  * Hooks in `~/.claude/settings.json`:
+    * `SessionStart` — brief memory context injection (index only, <200 tokens)
+    * `SessionEnd` — autonomous distill (background task, Haiku model)
+    * `PreCompact` — distill before context compression (Haiku model)
+  * Model selection: Haiku by default (cost-optimized for 24/7 background); Sonnet on demand for complex digests > 15k chars
+* **Memory Scope:** Manages `.memory/` files only (`state.md`, `decisions.md`, `todo.md`, `mistakes.md`, `archive/`)
+  * Git commits limited to `.memory/` pathspec; commit messages include brief summaries; full audit trail in `git log`
+  * Cross-CLI/swarm interface: AI session transcripts fed to curator; inbox notes dropped into `.memory/inbox/` are processed and merged
+* **Project Registration:** This repo (`/home/lowcache/.nix-config`) registered as "Vol NixOS"
+* **Status:** Operational (first dry-run passed; first live session 2026-06-10)
