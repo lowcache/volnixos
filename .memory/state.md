@@ -68,9 +68,10 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Discrete GPU Battery Drain:**
   * **Daemon:** Ollama background daemon runs with `"OLLAMA_KEEP_ALIVE=5m"`.
   * **Reason:** Forces VRAM unloading and driver handle release after 5 minutes of idle time, allowing the dGPU to enter RTD3 (0W suspend state).
-* **Brave/GTK File Chooser Failure (Portal Fallback & Variable):**
-  * **Workaround:** Added `config.common.default = "*"` to `xdg.portal` and system-wide `adwaita-icon-theme` + `hicolor-icon-theme` in `nixos/configuration.nix`; exported `GTK_USE_PORTAL = "1"` in `home/session.nix`.
-  * **Reason:** Under Hyprland (Wayland) on NixOS, portals require a default backend fallback mapping to resolve file pickers. `GTK_USE_PORTAL` forces Chromium/Brave to request the portal file dialog over D-Bus, and the system-wide icon themes prevent GTK rendering/icon resolution failures.
+* **Brave/GTK File Chooser Failure (Portal Fallback & Variable & Greetd Login Wrapper):**
+  * **Workaround:** Added `config.common.default = "*"` to `xdg.portal` and system-wide `adwaita-icon-theme` + `hicolor-icon-theme` in `nixos/configuration.nix`; exported `GTK_USE_PORTAL = "1"` in `home/session.nix`. Additionally, wrapped the `tuigreet` command in a login shell (`bash -l -c`) in `nixos/configuration.nix` and installed `file-roller` in `home/pkgs.nix`.
+  * **Reason:** Under Hyprland (Wayland) on NixOS, portals require a default backend fallback mapping to resolve file pickers. `GTK_USE_PORTAL` forces Chromium/Brave to request the portal file dialog over D-Bus, and the system-wide icon themes prevent GTK rendering/icon resolution failures. Wrapping the session compositor startup command in a login shell ensures that `/etc/profile` is sourced during initialization, making NixOS system environment paths (specifically `XDG_DATA_DIRS`) available to `xdg-desktop-portal-gtk` so it can find and render the GTK file chooser window.
+
 
 ---
 
