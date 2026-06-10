@@ -91,6 +91,7 @@
           gsettings-desktop-schemas
           vscodium
           gedit
+          file-roller
           cava
           swappy
           wl-clipboard
