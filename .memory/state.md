@@ -115,13 +115,21 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 
 ---
 
-## 8. Agentic Tether — Claude Code ↔ Antigravity/Gemini Pro (Staged 2026-06-10)
+## 8. Agentic Tether — Claude Code ↔ Gemini Pro (Established 2026-06-10)
 
-* **Purpose:** Enable Claude Code to delegate and manage tasks with Gemini Pro via Antigravity CLI; coordinate skills, tools, and plugins autonomously or on instruction.
-* **CLI:** `agy` (Antigravity CLI executable)
+* **Purpose:** Enable Claude Code to decompose work into scoped task briefs and delegate them to Gemini Pro via a structured protocol; coordinate skills, tools, and plugins autonomously or on explicit instruction.
+* **Bridge Script:** `~/.nix-config/.model/agent-tether/bin/tether` — wrapper over `agy --print` (run / continue / status / log / models). Sessions persist conversation IDs in `agent-tether/sessions/`; delegation log at `agent-tether/log/delegations.log`; runtime state git-ignored.
+* **Shared Contract:** `~/.nix-config/.model/agent-tether/PROTOCOL.md` — full specification of roles, brief envelope format, RESULT/EVIDENCE/BLOCKERS report schema, model tier defaults (Gemini 3.1 Pro High for analytical work; Flash Low/Medium for bulk-mechanical), auto-initiation criteria, and verified platform gotchas.
 * **Config Structure:**
-  * `~/.gemini/antigravity-cli/` — granular per-session settings and runtime state
-  * `~/.gemini/` — global skills, plugins, and shared configuration
-  * `~/.gemini/GEMINI.md` — global source of truth for Antigravity configuration (canonical reference for agent behavior)
-* **Workspace:** `~/.nix-config/.models/agent-tether` — directory for orchestration files (delegation templates, coordination logs, task schemas) that are neither Claude Code native config (`.claude/`) nor Antigravity native config (`~/.gemini/`)
-* **Status (2026-06-10):** Scoped and staged; implementation interrupted by tool error during discovery phase. To resume: validate `agy` CLI availability/version, audit Antigravity config structure, design delegation protocol, and build initial orchestration templates.
+  * `~/.gemini/antigravity-cli/` — granular per-session settings
+  * `~/.gemini/` — global skills, plugins, shared configuration
+  * `~/.gemini/GEMINI.md` §XIII — worker-mode grant (sanctions `[TETHER]` envelope; §I–§XII remain fully in force)
+  * `.model/CLAUDE.md` §5 — orchestrator rules (auto-initiation criteria, deferral to worker on scoped tasks)
+  * `.model/GEMINI.md` — worker-side project pointer and agy platform notes
+* **Workspace Resolution (2026-06-10 discovery):** agy rejects hidden directories as workspace folders ("is hidden: ignore uri"); `~/.nix-config` itself is hidden and fails registration. Workaround: `~/volnix` is a declarative non-hidden symlink added to `home/persist.nix` (force mapping `~/.nix-config` → `/persist/home/lowcache/.nix-config` → `~/volnix` at rebuild). Tether defaults to `-d ~/volnix` unless overridden with `-d <path>`. Note: agy does *not* resolve symlinks when checking for hidden paths, so the non-hidden target of the symlink (not the symlink itself) matters. File access still works via `allowNonWorkspaceAccess: true` even when workspace registration fails, but workspace context (indexing, project-aware tools) requires a non-hidden path.
+* **Platform Gotchas Discovered (2026-06-10):**
+  1. `agy --print` takes the prompt as the flag's *value*; any other flags must precede `--print`, or they are silently consumed as the prompt text.
+  2. agy does NOT resolve symlinks when checking for hidden directories (checks the symlink's own path, not its target). Non-hidden symlinks register cleanly.
+  3. `agy --conversation <id>` resume in print mode replays the previous assistant's reply before generating a new one. Parse the last RESULT block from the output to distinguish old reply from new.
+  4. Model display labels must match `agy models` output exactly (e.g., "Gemini 3.1 Pro (High)"). Verification via `model_config_manager` log lines (`model_config_manager.go`), not model self-report in the text output.
+* **Status (2026-06-10):** Fully operational. End-to-end handshake verified on Gemini 3.1 Pro (High); stateful conversation resume verified (worker correctly recalled original task name from same conversation). Committed: `a1cced5 "Establish Claude-Gemini agent tether"`.

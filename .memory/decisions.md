@@ -96,3 +96,13 @@ This file catalogs the active, canonical design decisions and system configurati
   ```
 * **Rationale:** `dots/` itself is not symlinked (only its children); placing `.memory/` there prevents leakage into `~/.config/`, avoids triggering home-manager rebuilds, and keeps dotfile config from mixing with app runtime state. Per-app granularity is optional and avoids per-folder clutter.
 * **Interaction with main `.memory/`:** Both apply when working in the dotfiles tree; repo-root `.memory/` is the global source of truth; `dots/.memory/` is the dotfiles-scoped layer.
+
+---
+
+## 9. Agentic Delegation — Claude Code Delegates Scoped Tasks to Gemini Pro
+
+* **Decision (2026-06-10):** Enable Claude Code to decompose work into scoped task briefs and delegate them to Gemini Pro via a structured protocol over `agy` (Antigravity CLI). Gemini operates in worker mode (read-only on `.memory/`, no git operations, no system rebuilds); Claude remains orchestrator and final decision-maker.
+* **Implementation:** `~/.nix-config/.model/agent-tether/bin/tether` (wrapper + stateful session persistence) + `~/.nix-config/.model/agent-tether/PROTOCOL.md` (shared contract, roles, report format). Coordination file locations: `~/.gemini/GEMINI.md` §XIII (worker grant), `.model/CLAUDE.md` §5 (orchestrator rules), `.model/GEMINI.md` (worker pointer).
+* **Auto-Initiation Criteria:** Delegate on exploratory research ("what could we do?"), parallelizable fact-gathering, second opinions before expensive actions (rebuilds, force-pushes), bulk-mechanical work (refactoring, linting, boilerplate). Manual initiation always honored: "delegate", "ask gemini", "tether", "agy".
+* **Rules Out:** Delegating architecture decisions, memory curation, system rebuilds, final user-facing answers, or pushing to git. Worker never re-delegates, never edits `.memory/`, never modifies shared system state.
+* **Rationale:** Leverage Gemini's strengths (research depth, parallel exploration, sustained focus on mechanical tasks) without losing synchronous control (explicit requests always honored) or authorial ownership (all final decisions, all writes to shared state, remain with Claude/lowcache). Clear worker constraints prevent divergence and keep the repo in a known good state.

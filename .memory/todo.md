@@ -14,6 +14,7 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 ## Completed in 2026-06-10 Session
 
 * [x] **Fix illogical-impulse color typo:** `#90C722q` → `#90C722` in `themes/amalgamation.json` and regenerate via `apply_theme.py`. Quickshell now loads the config correctly.
+* [x] **Establish agent tether (Claude↔Gemini delegation bridge):** Built via `~/.nix-config/.model/agent-tether/bin/tether` wrapper over `agy --print`. Verified end-to-end on Gemini 3.1 Pro (High); stateful conversation resume confirmed. Committed: `a1cced5`. See decisions.md #9 and state.md §8.
 
 ---
 
@@ -22,12 +23,6 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 * [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-10):** Still failing with the known dbus-broker pidfd bug (mistakes.md #10). Workaround (`services.dbus.implementation = "dbus"`) is in place but has not been verified post-rebuild. Gated on either: (a) rebuilding and verifying the workaround works, OR (b) waiting for `xdg-desktop-portal` ≥ 1.21.1 in nixpkgs to land and revert the workaround. See mistakes.md #10 for diagnosis and revert trigger.
 
 * [ ] **Verify file-roller Dialogue:** Open file-roller file manager and confirm it can browse, open files, and perform archive operations without portal errors. Related to the same dbus-broker issue as Brave.
-
----
-
-## Pending Agentic Tether Implementation (2026-06-10)
-
-* [ ] **Build agentic tether between Claude Code and Antigravity/Gemini Pro:** Enable Claude Code to delegate, orchestrate, and manage tasks with Gemini Pro via `agy` CLI; initialization automatic or on explicit instruction. **Config scope:** `~/.gemini/antigravity-cli/` (granular), `~/.gemini/` (global skills/plugins), `~/.gemini/GEMINI.md` (canonical truth), plus workspace `~/.nix-config/.models/agent-tether/` (orchestration files). **Status:** Scoped; discovery phase (validating `agy` CLI, Antigravity config structure) interrupted by tool error (working directory deleted, parallel bash call cancelled). **To resume:** Validate `agy` availability and version, audit Antigravity config directories, design delegation/task-coordination protocol, and build initial orchestration templates.
 
 ---
 
