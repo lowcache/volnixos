@@ -26,7 +26,7 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 
 ## Pending Verification Tasks
 
-* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-10):** Still failing with the known dbus-broker pidfd bug (mistakes.md #10). Workaround (`services.dbus.implementation = lib.mkForce "dbus"`) in place but not yet verified post-rebuild. Gated on either: (a) rebuilding, rebooting, and verifying the workaround works, OR (b) waiting for `xdg-desktop-portal` ≥ 1.21.1 in nixpkgs to land and revert the workaround. See mistakes.md #10 for diagnosis and revert trigger.
+* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-10 updated):** Investigation in progress; symptoms persist despite dbus-daemon workaround deployment. Full `nixos-rebuild` and reboot required to apply the fix; effectiveness pending post-boot verification. Gated on: (a) successful post-reboot test of the workaround, OR (b) `xdg-desktop-portal` ≥ 1.21.1 landing in nixpkgs. See mistakes.md #10 for full diagnosis and revert trigger.
 
 * [ ] **Verify file-roller Dialogue:** Open file-roller file manager and confirm it can browse, open files, and perform archive operations without portal errors. Related to the same dbus-broker issue as Brave.
 
