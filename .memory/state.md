@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-06-10
+last_updated: 2026-06-11
 status: active
 ---
 
@@ -70,8 +70,7 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
   * **Daemon:** Ollama background daemon runs with `"OLLAMA_KEEP_ALIVE=5m"`.
   * **Reason:** Forces VRAM unloading and driver handle release after 5 minutes of idle time, allowing the dGPU to enter RTD3 (0W suspend state).
 * **Brave/GTK File Chooser Failure — Root Cause: dbus-broker session bus implementation:**
-  * **Status:** Workaround in place. Set `services.dbus.implementation = lib.mkForce "dbus";` in `nixos/configuration.nix` (see mistakes.md #10 for full diagnosis). The reference dbus-daemon avoids the pidfd app-identification bug in xdg-desktop-portal ≤1.20.4.
-  * **Requires:** Rebuild and reboot (bus restart tears down Wayland session).
+  * **Status:** Workaround identified in mistakes.md #10; pending application. Next step: add `services.dbus.implementation = lib.mkForce "dbus";` to `nixos/configuration.nix`, rebuild, and reboot to switch the session bus from dbus-broker to the reference dbus-daemon. This avoids the pidfd app-identification bug in xdg-desktop-portal ≤1.20.4.
   * **Revert trigger:** When `xdg-desktop-portal` ≥ 1.21.1 arrives in nixpkgs (fixed upstream), delete the workaround and verify `gdbus call --session --dest org.freedesktop.portal.Desktop ...` returns a settings dict.
 
 ---
@@ -127,6 +126,7 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
   * `.model/CLAUDE.md` §5 — orchestrator rules (auto-initiation criteria, deferral to worker on scoped tasks)
   * `.model/GEMINI.md` — worker-side project pointer and agy platform notes
 * **Workspace Resolution (2026-06-10 discovery):** agy rejects hidden directories as workspace folders ("is hidden: ignore uri"); `~/.nix-config` itself is hidden and fails registration. Workaround: `~/volnix` is a declarative non-hidden symlink added to `home/persist.nix` (force mapping `~/.nix-config` → `/persist/home/lowcache/.nix-config` → `~/volnix` at rebuild). Tether defaults to `-d ~/volnix` unless overridden with `-d <path>`. Note: agy does *not* resolve symlinks when checking for hidden paths, so the non-hidden target of the symlink (not the symlink itself) matters. File access still works via `allowNonWorkspaceAccess: true` even when workspace registration fails, but workspace context (indexing, project-aware tools) requires a non-hidden path.
+* **Symlink Activation Issue (2026-06-11 discovery):** Post-reboot, the `~/volnix` symlink disappeared (likely home-manager activation ran after tether first tried to access it). Manually recreated with `ln -sn /persist/home/lowcache/.nix-config /home/lowcache/volnix`. Declarative definition in `home/persist.nix` should prevent this on next rebuild, but activation-ordering needs verification.
 * **Platform Gotchas Discovered (2026-06-10):**
   1. `agy --print` takes the prompt as the flag's *value*; any other flags must precede `--print`, or they are silently consumed as the prompt text.
   2. agy does NOT resolve symlinks when checking for hidden directories (checks the symlink's own path, not its target). Non-hidden symlinks register cleanly.

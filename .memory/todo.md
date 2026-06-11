@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-06-10
+last_updated: 2026-06-11
 status: active
 ---
 
@@ -26,15 +26,17 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 
 ## Pending Verification Tasks
 
-* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-10 updated):** Investigation in progress; symptoms persist despite dbus-daemon workaround deployment. Full `nixos-rebuild` and reboot required to apply the fix; effectiveness pending post-boot verification. Gated on: (a) successful post-reboot test of the workaround, OR (b) `xdg-desktop-portal` ≥ 1.21.1 landing in nixpkgs. See mistakes.md #10 for full diagnosis and revert trigger.
+* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-11):** dbus-broker portal failures confirmed post-reboot; `gdbus call` test returns `GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Portal operation not allowed: Unable to open /proc/<pid>/root`. Gated on: (a) applying the dbus-daemon workaround (`services.dbus.implementation = lib.mkForce "dbus";` in configuration.nix), rebuilding, rebooting, OR (b) `xdg-desktop-portal` ≥ 1.21.1 landing in nixpkgs (fixes pidfd bug upstream). See mistakes.md #10 for full diagnosis.
 
-* [ ] **Verify file-roller Dialogue:** Open file-roller file manager and confirm it can browse, open files, and perform archive operations without portal errors. Related to the same dbus-broker issue as Brave.
+* [ ] **Verify file-roller Dialogue:** Open file-roller file manager and confirm it can browse, open files, and perform archive operations without portal errors. Related to the same dbus-broker issue as Brave. Gated on dbus-daemon workaround application.
 
 * [ ] **Verify tuigreet environment variable loading post-rebuild:** After rebuild/reboot with the tuigreet `--env` workaround in place (or wrapper script), verify that session environment variables (GTK_USE_PORTAL, XDG_DATA_DIRS, etc.) are correctly set in the compositor session. Check via `echo $GTK_USE_PORTAL` in a terminal inside the session (should print `1`, not empty). **Status (2026-06-10):** Workaround (explicit `--env` flags to tuigreet) added; verification pending post-rebuild. See mistakes.md for prevention rule.
 
 ---
 
 ## Pending Declarative Hardening & Workaround Reversions
+
+* [ ] **Fix volnix symlink activation timing:** The `~/volnix` symlink (declared in `home/persist.nix`, used by tether for workspace discovery) disappeared post-reboot before home-manager activation completed. Manually recreated with `ln -sn /persist/home/lowcache/.nix-config /home/lowcache/volnix`. Next session needs to move the symlink creation to NixOS system activation (before user session starts) or defer tether invocation until after home-manager completes. Verify correct approach and apply. See mistakes.md (new 2026-06-11 entry) for activation-ordering details.
 
 * [ ] **Guard `asus-shutdown` hang declaratively:** Currently mitigated only by global `DefaultTimeoutStopSec=10s` + manual `kill -9`. Make deterministic, e.g. `systemd.services.asus-shutdown.serviceConfig.SendSIGKILL = lib.mkForce true;` or per-unit `TimeoutStopSec`. Verify exact unit name via `systemctl cat asus-shutdown.service` first. (See mistakes.md #2 for context.)
 
