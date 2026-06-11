@@ -18,11 +18,19 @@ This file catalogs open loops, enhancement ideas, and pending validation tasks f
 
 ---
 
+## CRITICAL BLOCKERS
+
+* [ ] **Rotate OAuth tokens (Google/Gemini):** Live tokens were exposed in public repo commit `2ccdd52` (`.gemini` dir added to `dots/`, tracked despite .gitignore rules). Tokens have been removed from working tree and current commits, but **remain in historical commits** on both local and remote. **Status (2026-06-10):** Tokens are fully compromised; must be rotated immediately. Repository history scrub (via `git filter-repo --invert-paths`) still pending. See mistakes.md #8 for full diagnosis.
+
+---
+
 ## Pending Verification Tasks
 
-* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-10):** Still failing with the known dbus-broker pidfd bug (mistakes.md #10). Workaround (`services.dbus.implementation = "dbus"`) is in place but has not been verified post-rebuild. Gated on either: (a) rebuilding and verifying the workaround works, OR (b) waiting for `xdg-desktop-portal` ≥ 1.21.1 in nixpkgs to land and revert the workaround. See mistakes.md #10 for diagnosis and revert trigger.
+* [ ] **Verify Brave File Chooser Dialogue:** Open Brave browser, trigger a download or upload action, and verify that the GTK/Portal file picker window displays correctly and allows saving/loading files. **Status (2026-06-10):** Still failing with the known dbus-broker pidfd bug (mistakes.md #10). Workaround (`services.dbus.implementation = lib.mkForce "dbus"`) in place but not yet verified post-rebuild. Gated on either: (a) rebuilding, rebooting, and verifying the workaround works, OR (b) waiting for `xdg-desktop-portal` ≥ 1.21.1 in nixpkgs to land and revert the workaround. See mistakes.md #10 for diagnosis and revert trigger.
 
 * [ ] **Verify file-roller Dialogue:** Open file-roller file manager and confirm it can browse, open files, and perform archive operations without portal errors. Related to the same dbus-broker issue as Brave.
+
+* [ ] **Verify tuigreet environment variable loading post-rebuild:** After rebuild/reboot with the tuigreet `--env` workaround in place (or wrapper script), verify that session environment variables (GTK_USE_PORTAL, XDG_DATA_DIRS, etc.) are correctly set in the compositor session. Check via `echo $GTK_USE_PORTAL` in a terminal inside the session (should print `1`, not empty). **Status (2026-06-10):** Workaround (explicit `--env` flags to tuigreet) added; verification pending post-rebuild. See mistakes.md for prevention rule.
 
 ---
 
