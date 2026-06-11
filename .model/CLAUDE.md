@@ -68,3 +68,12 @@ Project memory lives in `./.memory/` and is **owned by `memd`**, an autonomous b
 
 ## 4. CLAUDE specific notes:
 the `scripts/nixmcp.py` file was at one point necessary, but the addition of the gateway mcp server with access to mcp-nixos as well as other beneficial tools to the claude-code settings should render this redundant, HOWEVER if access to the gateway mcp server has not been addressed then this should be the first thing done before any other work is started on this project. Remediation of this issue is of top importance to ensure access to all tools and keeping the repo clean of temporary or one time use, files. 
+
+## 5. Agent Tether — Gemini delegation (Claude orchestrates, Gemini works)
+An active delegation bridge to antigravity/Gemini exists. Full contract: `.model/agent-tether/PROTOCOL.md` (read it before first use in a session). Worker-side rules are in `~/.gemini/GEMINI.md` §XIII.
+
+* **Bridge:** `.model/agent-tether/bin/tether` — `tether run [-m pro|flash] [-d DIR] [-t TASK] "BRIEF"`, stateful follow-ups via `tether continue TASK "..."`, introspection via `tether status|log|models`.
+* **Roles:** Claude is the orchestrator (decomposes, briefs, integrates, owns decisions); Gemini is the worker (executes the brief literally, reports as `RESULT / EVIDENCE / BLOCKERS`).
+* **Auto-initiate** a delegation (no user prompt needed) for: parallelizable research/verification side-tracks, independent second opinions before expensive actions (pre-rebuild reviews), and bulk-mechanical jobs (use `-m flash`). Always initiate when the user says "delegate", "ask gemini", "tether", or "agy".
+* **Never delegate:** architecture decisions, `.memory/` curation, rebuilds/switches, or final user-facing answers.
+* **Gotchas:** agy flags must precede `--print` (the wrapper handles it); agy can't register hidden dirs as workspace folders — prefer `-d ~/.nix-config` over dot-paths.

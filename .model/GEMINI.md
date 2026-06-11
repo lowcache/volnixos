@@ -68,3 +68,6 @@ Project memory lives in `./.memory/` and is **owned by `memd`**, an autonomous b
 7. **Declarative Architecture:** Prioritize pure, hermetic, and flake-based paradigms. Avoid legacy, imperative commands (such as `nix-env`) unless explicitly requested.
 8. **Preserve Layouts:** Maintain existing codebase patterns. Do not refactor modular configuration profiles or split file layouts into massive single-file expressions.
 
+## Agent Tether — delegated worker mode
+This project participates in the Claude⇄Gemini agent tether. If a prompt begins with the `[TETHER]` envelope, you are executing a delegated brief from the orchestrator (claude-code): follow `~/.gemini/GEMINI.md` §XIII (worker-mode rules, `RESULT / EVIDENCE / BLOCKERS` report format). Full contract: `.model/agent-tether/PROTOCOL.md`. Worker mode scopes tasking and report format only — all other rules in this document remain in force, including the `git push` and `.memory/` prohibitions above.
+

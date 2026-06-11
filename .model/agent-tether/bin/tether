@@ -1,0 +1,169 @@
+#!/usr/bin/env bash
+# tether — Claude→Gemini delegation bridge over antigravity-cli (agy)
+# Claude Code (orchestrator) delegates scoped task briefs to Gemini (worker).
+# State, logs, and protocol live in ~/.nix-config/.model/agent-tether/.
+set -euo pipefail
+
+TETHER_DIR="${TETHER_DIR:-/home/lowcache/.nix-config/.model/agent-tether}"
+SESS_DIR="$TETHER_DIR/sessions"
+LOG_DIR="$TETHER_DIR/log"
+DELEG_LOG="$LOG_DIR/delegations.log"
+AGY="${AGY_BIN:-agy}"
+
+mkdir -p "$SESS_DIR" "$LOG_DIR"
+
+# tier -> agy model label (must match `agy models` output exactly)
+model_for() {
+  case "$1" in
+    pro)        echo "Gemini 3.1 Pro (High)" ;;
+    pro-low)    echo "Gemini 3.1 Pro (Low)" ;;
+    flash)      echo "Gemini 3.5 Flash (Medium)" ;;
+    flash-high) echo "Gemini 3.5 Flash (High)" ;;
+    flash-low)  echo "Gemini 3.5 Flash (Low)" ;;
+    *) echo "tether: unknown model tier '$1' (pro|pro-low|flash|flash-high|flash-low)" >&2; return 1 ;;
+  esac
+}
+
+usage() {
+  cat <<'EOF'
+tether — delegate task briefs from Claude (orchestrator) to Gemini (worker) via agy
+
+USAGE
+  tether run  [-m TIER] [-d DIR] [-t TASK] [-y] [--timeout SECS] "BRIEF"
+  tether continue TASK [-y] [--timeout SECS] "FOLLOW-UP"
+  tether status [TASK]      list delegated task sessions (or one task's metadata)
+  tether log [N]            tail last N delegation log lines (default 20)
+  tether models             list available worker models
+
+OPTIONS
+  -m TIER        pro (default) | pro-low | flash | flash-high | flash-low
+  -d DIR         working directory for the worker (default: ~/.nix-config)
+  -t TASK        kebab-case task name; enables `tether continue TASK` later
+  -y             pass --dangerously-skip-permissions (write-capable tasks; use deliberately)
+  --timeout SECS hard wall-clock limit (default 600)
+
+NOTES
+  - BRIEF may be '-' to read from stdin.
+  - Worker contract: ~/.nix-config/.model/agent-tether/PROTOCOL.md and ~/.gemini/GEMINI.md §XIII.
+  - Worker replies in RESULT / EVIDENCE / BLOCKERS format; stdout is the report.
+EOF
+}
+
+now()  { date +%Y%m%dT%H%M%S; }
+stamp(){ date '+%Y-%m-%d %H:%M:%S'; }
+
+wrap_brief() { # $1=task $2=workdir $3=mode $4=brief
+  cat <<EOF
+[TETHER] delegated task — operate in worker mode per GEMINI.md §XIII
+orchestrator: claudius (claude-code)
+task: $1
+workdir: $2
+permissions: $3
+report-format: RESULT / EVIDENCE / BLOCKERS
+
+BRIEF:
+$4
+EOF
+}
+
+run_agy() { # $1=workdir $2=timeout $3=logfile $4=conv_id(optional,'' for new) $5=model_label('' to skip) $6=yolo(0/1) $7=prompt
+  local workdir="$1" tmo="$2" logfile="$3" conv="$4" model="$5" yolo="$6" prompt="$7"
+  local args=( --log-file "$logfile" --print-timeout "${tmo}s" )
+  [[ -n "$model" ]] && args+=( --model "$model" )
+  [[ -n "$conv"  ]] && args+=( --conversation "$conv" )
+  [[ "$yolo" == 1 ]] && args+=( --dangerously-skip-permissions )
+  ( cd "$workdir" && timeout "$((tmo + 30))" "$AGY" "${args[@]}" --print "$prompt" )
+}
+
+cmd_run() {
+  local tier=pro workdir="$HOME/.nix-config" task="" yolo=0 tmo=600
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -m) tier="$2"; shift 2 ;;
+      -d) workdir="$2"; shift 2 ;;
+      -t) task="$2"; shift 2 ;;
+      -y) yolo=1; shift ;;
+      --timeout) tmo="$2"; shift 2 ;;
+      -h|--help) usage; return 0 ;;
+      *) break ;;
+    esac
+  done
+  [[ $# -ge 1 ]] || { echo "tether run: missing BRIEF" >&2; return 1; }
+  local brief="$1"
+  [[ "$brief" == "-" ]] && brief="$(cat)"
+  [[ -n "$task" ]] || task="task-$(now)"
+  local model; model="$(model_for "$tier")"
+  local logfile="$LOG_DIR/${task}-$(now).log"
+  local mode="read-mostly (agy allowlist)"; [[ $yolo == 1 ]] && mode="skip-permissions"
+
+  local prompt; prompt="$(wrap_brief "$task" "$workdir" "$mode" "$brief")"
+  local rc=0 out
+  out="$(run_agy "$workdir" "$tmo" "$logfile" "" "$model" "$yolo" "$prompt")" || rc=$?
+
+  # harvest conversation id from this run's dedicated log
+  local conv=""
+  conv="$(command grep -oE 'conversation=[0-9a-f-]{36}' "$logfile" 2>/dev/null | head -1 | cut -d= -f2 || true)"
+  if [[ -n "$conv" ]]; then
+    cat > "$SESS_DIR/$task.env" <<EOF
+TASK=$task
+CONVERSATION_ID=$conv
+MODEL="$model"
+WORKDIR=$workdir
+YOLO=$yolo
+CREATED="$(stamp)"
+LAST_LOG=$logfile
+EOF
+  fi
+  printf '%s | run | task=%s | model=%s | conv=%s | rc=%s | wd=%s\n' \
+    "$(stamp)" "$task" "$model" "${conv:-none}" "$rc" "$workdir" >> "$DELEG_LOG"
+
+  printf '%s\n' "$out"
+  [[ -n "$conv" ]] && printf '\n[tether] task=%s conv=%s rc=%s (continue with: tether continue %s "...")\n' "$task" "$conv" "$rc" "$task" >&2
+  return "$rc"
+}
+
+cmd_continue() {
+  [[ $# -ge 1 ]] || { echo "tether continue: missing TASK" >&2; return 1; }
+  local task="$1"; shift
+  local yolo="" tmo=600
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -y) yolo=1; shift ;;
+      --timeout) tmo="$2"; shift 2 ;;
+      *) break ;;
+    esac
+  done
+  [[ $# -ge 1 ]] || { echo "tether continue: missing FOLLOW-UP" >&2; return 1; }
+  local followup="$1"
+  [[ "$followup" == "-" ]] && followup="$(cat)"
+  local envfile="$SESS_DIR/$task.env"
+  [[ -f "$envfile" ]] || { echo "tether: no session for task '$task' (see: tether status)" >&2; return 1; }
+  # shellcheck disable=SC1090
+  source "$envfile"
+  [[ -n "$yolo" ]] || yolo="${YOLO:-0}"
+  local logfile="$LOG_DIR/${task}-$(now).log"
+  local rc=0 out
+  out="$(run_agy "$WORKDIR" "$tmo" "$logfile" "$CONVERSATION_ID" "" "$yolo" "$followup")" || rc=$?
+  sed -i "s|^LAST_LOG=.*|LAST_LOG=$logfile|" "$envfile"
+  printf '%s | continue | task=%s | conv=%s | rc=%s\n' "$(stamp)" "$task" "$CONVERSATION_ID" "$rc" >> "$DELEG_LOG"
+  printf '%s\n' "$out"
+  return "$rc"
+}
+
+cmd_status() {
+  if [[ $# -ge 1 ]]; then
+    cat "$SESS_DIR/$1.env" 2>/dev/null || { echo "tether: no session '$1'" >&2; return 1; }
+  else
+    [[ -d "$SESS_DIR" ]] && ls -1 "$SESS_DIR" 2>/dev/null | sed 's/\.env$//' || true
+  fi
+}
+
+case "${1:-}" in
+  run)      shift; cmd_run "$@" ;;
+  continue) shift; cmd_continue "$@" ;;
+  status)   shift; cmd_status "$@" ;;
+  log)      shift; tail -n "${1:-20}" "$DELEG_LOG" 2>/dev/null || true ;;
+  models)   "$AGY" models ;;
+  -h|--help|help|"") usage ;;
+  *) echo "tether: unknown command '$1'" >&2; usage >&2; exit 1 ;;
+esac
