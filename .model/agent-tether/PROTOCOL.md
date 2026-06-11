@@ -101,8 +101,11 @@ transferring context costs more than doing the work.
 - `agy --print` takes the prompt as the **flag's value** — all other flags must
   precede it (`agy --model X --print "prompt"`). The wrapper handles this.
 - agy refuses **hidden directories** as workspace folders ("is hidden: ignore
-  uri") — file access still works via `allowNonWorkspaceAccess: true`, but
-  prefer `-d ~/.nix-config` over `-d ~/.nix-config/.model/...`.
+  uri") — this hits `~/.nix-config` itself. File access still works via
+  `allowNonWorkspaceAccess: true`, but workspace registration (indexing,
+  project context) is lost. agy does **not** resolve symlinks for this check,
+  so `~/volnix` (declarative non-hidden alias of the repo, `home/persist.nix`)
+  registers cleanly and is the wrapper's default workdir.
 - agy permission allowlist/denylist: `~/.gemini/antigravity-cli/settings.json`
   (deny includes `rm -rf`, `nixos-rebuild`). `-y` bypasses prompts, not the
   worker-mode rules above.

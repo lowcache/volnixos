@@ -24,6 +24,12 @@ model_for() {
   esac
 }
 
+# agy rejects hidden paths as workspace folders but does not resolve symlinks;
+# ~/volnix is a declarative non-hidden alias of ~/.nix-config (home/persist.nix).
+default_workdir() {
+  if [[ -d "$HOME/volnix" ]]; then echo "$HOME/volnix"; else echo "$HOME/.nix-config"; fi
+}
+
 usage() {
   cat <<'EOF'
 tether — delegate task briefs from Claude (orchestrator) to Gemini (worker) via agy
@@ -37,7 +43,8 @@ USAGE
 
 OPTIONS
   -m TIER        pro (default) | pro-low | flash | flash-high | flash-low
-  -d DIR         working directory for the worker (default: ~/.nix-config)
+  -d DIR         working directory for the worker (default: ~/volnix, the
+                 non-hidden alias of ~/.nix-config; falls back to ~/.nix-config)
   -t TASK        kebab-case task name; enables `tether continue TASK` later
   -y             pass --dangerously-skip-permissions (write-capable tasks; use deliberately)
   --timeout SECS hard wall-clock limit (default 600)
@@ -76,7 +83,8 @@ run_agy() { # $1=workdir $2=timeout $3=logfile $4=conv_id(optional,'' for new) $
 }
 
 cmd_run() {
-  local tier=pro workdir="$HOME/.nix-config" task="" yolo=0 tmo=600
+  local tier=pro workdir task="" yolo=0 tmo=600
+  workdir="$(default_workdir)"
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -m) tier="$2"; shift 2 ;;
