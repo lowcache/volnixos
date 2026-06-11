@@ -1,0 +1,11 @@
+{
+  "id": "de799cbf-920e-4ad2-a7c0-548ebc1950e6",
+  "name": "/tmp",
+  "projectResources": {
+    "resources": [
+      {
+        "folderUri": "file:///tmp"
+      }
+    ]
+  }
+}

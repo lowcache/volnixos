@@ -1,0 +1,11 @@
+{
+  "id": "012fba5e-91c1-4044-8b13-d4f1852fef3c",
+  "name": "/home/lowcache/.nix-config/.model/siamese",
+  "projectResources": {
+    "resources": [
+      {
+        "folderUri": "file:///home/lowcache/.nix-config/.model/siamese"
+      }
+    ]
+  }
+}

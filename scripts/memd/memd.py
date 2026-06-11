@@ -95,6 +95,16 @@ by reading the repo itself, pleasantries, duplicate statements of known facts.
 When in doubt: would omitting this cause a future agent to repeat work or
 repeat a mistake? If no, discard.
 
+PRUNING DISCIPLINE
+- Close or archive an open item ONLY when the digest explicitly states it is
+  done, verified, or abandoned. Never infer redundancy.
+- The session digest may describe memory-curation work that earlier distills
+  already applied. The current files are the result of those distills: if the
+  digest and the files disagree about what was already pruned or closed,
+  trust the files and do not re-apply or extend old prunes.
+- An item the user explicitly said to keep open is untouchable until they
+  say otherwise. Err on the side of keeping items open.
+
 STYLE
 - Succinct and thorough. Dense declarative prose or tight bullets.
 - No meta-commentary ("in this session we..."), no praise, no hedging.
