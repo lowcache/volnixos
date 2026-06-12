@@ -9,38 +9,44 @@ status: active
 
 ---
 
-## Completed in 2026-06-12 Session
+## Completed in 2026-06-12 Session — Global Agent Tooling
 
-* [x] **Fix eval blockers (nixpkgs bump migration):** (1) `systemd.user.extraConfig = "DefaultTimeoutStopSec=5s"` → `systemd.user.settings.Manager.DefaultTimeoutStopSec = "5s"` in `nixos/configuration.nix:117`; (2) `nixpkgs-fmtrrrr` → `nixpkgs-fmt` typo in `home/pkgs.nix:170`. Eval now clean. Committed in pending rebuild.
-* [x] **Revert dbus-broker → dbus-daemon workaround (SAFE TO REMOVE; WAS WRONG):** `services.dbus.implementation = lib.mkForce "dbus"` removed from `nixos/configuration.nix`. Hypothesis in mistakes.md #10 (dbus-broker pidfd) is **proven incorrect** — dbus-daemon 1.16.2 also passes pidfds; the 2026-06-09 "proof" succeeded only because test ran from terminal inheriting ambient cap as clients. Real root cause is Hyprland CAP_SYS_NICE (see mistakes.md entry below). dbus-broker re-enabled as default (per uwsm). Bundled with rebuild.
-* [x] **Apply Hyprland 0.55.3 (Option A for CAP_SYS_NICE fix):** nixpkgs bump bundled in commit 8af9821; dry-run eval confirms Hyprland 0.55.3 in closure (released 2026-06-08). Rebuild + reboot completed.
-* [x] **Verify Hyprland CAP_SYS_NICE fix and portal restoration post-rebuild:** All checks passed in fresh terminal post-reboot: (1) `grep CapAmb /proc/$$/status` → `0000000000000000`; (2) `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.Read "org.freedesktop.appearance" "color-scheme"` → `(<<uint32 0>>,)` (was AccessDenied); (3) Brave downloads, file-roller operations functional; (4) dbus-broker.service active. See state.md §4 for full details.
-* [x] **Verify volnix symlink activation post-rebuild:** `readlink -f ~/volnix` → `/persist/home/lowcache/.nix-config`. Declaratively mapped in `home/persist.nix`; no longer requires manual recreation. Fully functional.
+* [x] **Persist memd state dirs (`home/persist.nix`):** `.config/memd` and `.local/state/memd` added; fixes silent cursor/registry wipe on boot (was a real bug).
+* [x] **Global PATH tooling (`home/memd.nix`):** Declarative out-of-store symlinks (`force = true`) for `memd`, `tether`, and `agent-scaffold` in `~/.local/bin`. Sweep timer keeps hermetic Nix-store copy.
+* [x] **Tether default workdir generalized:** `$PWD` when non-hidden; `~/.nix-config` paths auto-map to `~/volnix`; other hidden paths fall back to `~/volnix`. Five path cases verified.
+* [x] **agent-scaffold created:** `scripts/agent-scaffold/agent-scaffold` (fish) + `scripts/agent-scaffold/templates/MODEL.md`. Renders `.model/CLAUDE.md`/`AGENTS.md`/`GEMINI.md`; calls `memd init` when `.memory/` missing. Idempotent, git-root only. End-to-end test passed.
+* [x] **SessionStart hook wired:** `agent-scaffold` added before `memd hook session-start` in `~/.claude/settings.json`. JSON validated, command pipe-tested.
+* [x] **memd claude-agnostic (`curator_cmd`):** Optional argv config key replacing hardcoded `claude -p` backend; cursors advance only on successful apply. `agy` wrapper in `home/shell.nix` adds second trigger. `py_compile` + `memd status` pass. README updated. `make build` passed.
+
+---
+
+## Pending — Immediate
+
+* [ ] **`make switch`** to activate persistence fix (`.config/memd`, `.local/state/memd`) and declarative symlinks in `home/memd.nix`. Imperative symlinks already live and functional; switch required for declarative durability across rebuilds. Requires sudo.
 
 ---
 
 ## Known Issues & Follow-Ups
 
-* [ ] **Re-test Super-tap search after next Hyprland bump (0.55.4+):** Hyprland 0.55.3 broke Super-tap (Super_L alone) due to catchall-bind interrupt handling change (PR #14743). Confirmed as known upstream regression (caelestia-dots/caelestia#436, open as of 2026-06-12). Workaround: comment out `searchToggleReleaseInterrupt` catchall in `dots/hypr/hyprland/keybinds.conf:11`, but that removes unbound-key cancel protection. If 0.55.4+ upstream fixes it, remove this task and simplify keybinds.conf. See mistakes.md for full diagnosis.
+* [ ] **Re-test Super-tap search after next Hyprland bump (0.55.4+):** Hyprland 0.55.3 broke Super-tap (Super_L alone) due to catchall-bind interrupt handling change (PR #14743). Confirmed upstream regression (caelestia-dots/caelestia#436, open 2026-06-12). Workaround: comment out `searchToggleReleaseInterrupt` catchall in `dots/hypr/hyprland/keybinds.conf:11` (trade-off: lose unbound-key cancel for Super+unbound combos). See mistakes.md.
+* [ ] **Stale exclude entries in memd registry:** `/tmp/scaffold-test` and `/tmp/st2` added via `memd exclude` during testing (2026-06-12). Harmless; clean up manually in `~/.config/memd/config.json` `exclude` array if desired.
 
 ---
 
 ## CRITICAL BLOCKERS (Unchanged)
 
-* [ ] **Rotate OAuth tokens (Google/Gemini):** Live tokens were exposed in public repo commit `2ccdd52` (`.gemini` dir added to `dots/`). Tokens removed from working tree and current commits, but **remain in historical commits** on both local and remote. Repository history scrub still pending. See mistakes.md #8.
+* [ ] **Rotate OAuth tokens (Google/Gemini):** Live tokens exposed in public repo commit `2ccdd52` (`.gemini` dir added to `dots/`). Removed from working tree and current commits, but **remain in historical commits** on both local and remote. Repository history scrub (`git filter-repo`) still pending. See mistakes.md #8.
 
 ---
 
 ## Pending Declarative Hardening & Workaround Reversions
 
-* [ ] **Guard `asus-shutdown` hang declaratively:** Currently mitigated only by global `DefaultTimeoutStopSec=10s` + manual `kill -9`. Make deterministic, e.g. `systemd.services.asus-shutdown.serviceConfig.SendSIGKILL = lib.mkForce true;` or per-unit `TimeoutStopSec`. Verify exact unit name via `systemctl cat asus-shutdown.service` first. (See mistakes.md #2 for context.)
-
-* [ ] **`limbo` plaintext passwords:** `nixos/limbo/configuration.nix` uses `initialPassword = "root"`/`"nixos"` which land world-readable in `/nix/store`. Acceptable for scratch host; switch to `hashedPasswordFile`/sops if `limbo` ever becomes real. (See mistakes.md #2 for context.)
+* [ ] **Guard `asus-shutdown` hang declaratively:** Currently mitigated by global `DefaultTimeoutStopSec=10s` + manual `kill -9`. Fix: `systemd.services.asus-shutdown.serviceConfig.SendSIGKILL = lib.mkForce true;` or per-unit `TimeoutStopSec`. Verify exact unit name via `systemctl cat asus-shutdown.service` first. (See mistakes.md #2.)
+* [ ] **`limbo` plaintext passwords:** `nixos/limbo/configuration.nix` uses `initialPassword = "root"`/`"nixos"`. Acceptable for scratch; switch to `hashedPasswordFile`/sops if `limbo` ever becomes real.
 
 ---
 
 ## Pending Dotfiles Infrastructure
 
-* [ ] **Implement git subtree Makefile targets:** Add helper targets for dotfiles subtree workflow (split, pull, log). Deferred from 2026-06-10 session (digest truncation). Targets should include: `subtree-split` (generate dots-history branch), `subtree-pull` (merge from remote), `subtree-log` (view independent history).
-
-* [ ] **Set up `dots/.memory/` directory and scaffold:** Once subtree targets are in place, create initial `state.md` for dotfiles-wide configuration. Optional per-app subdirectories for granularity. See decision #8.
+* [ ] **Implement git subtree Makefile targets:** `subtree-split`, `subtree-pull`, `subtree-log` for dotfiles subtree workflow. Deferred from 2026-06-10.
+* [ ] **Set up `dots/.memory/` directory and scaffold:** Once subtree targets in place, create initial `state.md` for dotfiles-wide config. See decision #8.
