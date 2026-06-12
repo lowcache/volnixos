@@ -114,33 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-06-12 — File-chooser/portal bug: Hyprland ambient CAP_SYS_NICE ptrace gate (NOT dbus-broker pidfd bug)
-
-**Symptom:** Brave browser, file-roller, and all GTK/Electron apps fail to open file-chooser dialogs. `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'` returns `GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Portal operation not allowed: Unable to open /proc/<pid>/root`. See mistakes.md #9 and #10 (earlier wrong diagnosis).
-
-**Root cause (PROVEN 2026-06-12):** 
-1. `programs.hyprland.enable` (nixpkgs module) creates `security.wrappers.Hyprland` with `cap_sys_nice+ep` (for SCHED_RR).
-2. Hyprland 0.55.2 raises that capability as **ambient** for every spawned client → all session/GUI apps (kitty, Brave, antigravity-ide, gdbus, etc.) carry `CAP_SYS_NICE` in their permitted set.
-3. xdg-desktop-portal runs as a capless systemd user service (`CapPrm=0`).
-4. Portal app-id resolution opens `/proc/<client>/root` (ptrace-read-gated magic symlink). Kernel `cap_ptrace_access_check` denies PTRACE_MODE_READ when target's permitted set (CAP_SYS_NICE) is not a subset of opener's (empty) → EACCES.
-5. Portal: "Could not register app ID" → rejects every request from session apps → `AccessDenied`.
-
-**Evidence:**
-- `2×2 matrix`: only "user-service opener (portal) → session-app target (CAP_SYS_NICE)" fails (EACCES); other magic links `/proc/<pid>/environ`, `/proc/<pid>/cwd`, `/proc/<pid>/cmdline` succeed (no ptrace gate).
-- `cap_ptrace_access_check` is classic gate; yama=1 does NOT gate PTRACE_MODE_READ, so LSM/yama irrelevant.
-- **Smoking gun:** `gdbus call …Settings.Read` fails normally; **identical call via `setpriv --ambient-caps -all`** succeeds instantly.
-
-**Previous wrong hypothesis:** mistakes.md #10 (2026-06-10) blamed dbus-broker pidfd bug. Disproven: dbus-daemon 1.16.2 also passes pidfds (confirmed `strings /usr/bin/dbus-daemon | grep ProcessFD`), and the 2026-06-09 "proof" (portal worked via `dbus-run-session`) succeeded only because the test was invoked **from a terminal** that inherited the same ambient cap as its clients — execution context, not bus implementation, was the variable.
-
-**Immediate workaround (no rebuild):** `setpriv --ambient-caps -all --inh-caps -all <app>` (e.g. `setpriv --ambient-caps -all brave`) works instantly.
-
-**Fix candidates (PENDING DECISION):**
-- **Option A (surgical):** Override `security.wrappers.Hyprland` via `lib.mkForce` to drop `cap_sys_nice` from the wrapper. Fixes portal calls globally. Trade-off: loses Hyprland's SCHED_RR guarantee (desktop responsiveness may degrade under scheduler pressure).
-- **Option B (compat):** Overlay-patch xdg-desktop-portal to treat EACCES on `/proc/<pid>/root` like ENOENT (fall back to app-id resolution via cgroup/env). Preserves Hyprland's capability. Trade-off: depends on portal patch quality; upstream may not accept.
-- **Option C (upstream):** Check if xdg-desktop-portal ≥1.21+ already has a fix. Gemini's research (tether task `portal-cap-upstream-research`, 2026-06-12) pending.
-
-**Prevention rule:** When xdg-portal file pickers or Settings calls fail with `AccessDenied / Unable to open /proc/<pid>/root`, diagnose with `cap_ptrace_access_check`: (1) compare `CapPrm` of the target (via `cat /proc/<pid>/status | grep Cap`) with the opener's (portal = 0); (2) if target has caps and portal doesn't, it's not a dbus bug — it's a capability divergence in the calling context. Test the immediate `setpriv` workaround; if it works, the root cause is ambient cap inheritance.
-
 ### 2026-06-12 — `nix eval` / `nix build --dry-run` silently bumps `flake.lock` for branch-tracking inputs
 
 **Symptom:** Running `nix build .#nixosConfigurations.volnix.config.system.build.toplevel --dry-run` rewrote `flake.lock`, re-locking the `lix` input (tracking `main`) to a newer commit. No warning; command exited 0. Discovered only via `git diff flake.lock`.
@@ -148,3 +121,11 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 **Root cause:** Flake inputs declared with a bare branch-ref URL (no `?rev=`) are re-resolved on every full flake evaluation. Commands like `nix build`, `nix eval`, and similar silently re-lock any such input in place. The `lix` input in this repo tracks `lix` main, making it vulnerable on every eval invocation.
 
 **Prevention rule:** After any `nix eval` or `nix build` invocation, run `git diff flake.lock` before staging. If a branch-tracking input bumped unintentionally, revert with `git checkout -- flake.lock`. Never auto-stage `flake.lock` alongside code changes without inspecting the diff. Intentional input updates require explicit `nix flake update <input>` + eval-verify. This is especially critical for `lix` — an accidental bump may break eval if the new commit desyncs from `lix-module` (see mistakes.md #7).
+
+### 2026-06-12 — Hyprland 0.55.3 Super-tap (Super_L keypress) no longer opens search
+
+**Symptom:** After upgrading to Hyprland 0.55.3, pressing Super_L alone (Super-tap) no longer opens quickshell search. Super+Tab (overview dispatch) still works.
+
+**Root cause (NOT a config error; known upstream regression):** `dots/hypr/hyprland/keybinds.conf:11` declares `binditn = Super, catchall, global, quickshell:searchToggleReleaseInterrupt` — a release-triggered bind (`searchToggleRelease`) combined with a catchall interrupt (`searchToggleReleaseInterrupt`) to cancel pending releases when unbound keys are pressed. Hyprland 0.55.3 (PR #14743, keybind callback reordering) executes the catchall callback immediately on the Super press, before the release event fires, cancelling the pending search toggle. This regression affects any global bind using a release-interrupt pattern. Identical issue reported upstream at caelestia-dots/caelestia#436 (open as of 2026-06-12); Hyprland maintainers aware, no fix in 0.55.3 release.
+
+**Prevention rule:** After any Hyprland point bump (0.55.4+), re-test Super-tap by tapping Super alone or running `hyprctl dispatch quickshell:searchToggleRelease`. If fixed upstream, remove the catchall interrupt line from keybinds.conf and close the follow-up todo. If still broken, check release notes for keybind handling updates or comment out the catchall (trade-off: lose unbound-key cancel protection for Super+unbound-key combos).
