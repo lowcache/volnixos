@@ -114,7 +114,7 @@
       DefaultTimeoutStopSec = "10s";
       DefaultRestartSec = "1s";
     };
-    user.extraConfig = "DefaultTimeoutStopSec=5s";
+    user.settings.Manager.DefaultTimeoutStopSec = "5s";
   };
   hardware.uinput.enable = true;
   users = {
@@ -269,15 +269,11 @@
       scheduler = "scx_bpfland";
     };
     flatpak.enable = true;
-    # Use the reference dbus-daemon for the session bus instead of dbus-broker.
-    # dbus-broker passes peer credentials via pidfd (ProcessFD); on this kernel
-    # xdg-desktop-portal's app-identification then fails to open /proc/<pid>/root
-    # (EACCES), which makes the portal reject EVERY request (FileChooser,
-    # Settings, etc.) with AccessDenied -> Brave file picker / downloads break.
-    # The reference daemon does not pass a pidfd and the portal works. See
-    # memory/mistakes.md for the full diagnosis.
-    # mkForce overrides programs.uwsm, which forces this to "broker".
-    dbus.implementation = lib.mkForce "dbus";
+    # dbus-broker (uwsm default) is back: the 2026-06-10 portal failure was never
+    # a dbus/pidfd issue — Hyprland's cap_sys_nice wrapper leaked ambient
+    # CAP_SYS_NICE to clients, so the portal (capless) failed the kernel's
+    # cap_ptrace_access_check opening /proc/<pid>/root. Fixed upstream in
+    # Hyprland 0.55.3. See .memory/inbox/2026-06-12-portal-bug-real-root-cause.md.
     asusd.enable = true;
     supergfxd.enable = false;
     power-profiles-daemon.enable = false;

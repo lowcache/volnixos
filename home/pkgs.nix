@@ -167,7 +167,7 @@
           git-lfs
           nil
           android-tools
-          nixpkgs-fmtrrrr
+          nixpkgs-fmt
           spotatui
           inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
