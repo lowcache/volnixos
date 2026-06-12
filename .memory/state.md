@@ -102,7 +102,7 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Binary Location:** `~/.local/bin/memd` (symlink, deployed via home-manager)
 * **Configuration:** `~/.config/memd/config.json`
 * **State & Logs:** `~/.local/state/memd/` (cursor tracking, distill history, audit log at `memd.log`)
-* **Home Manager Module:** `home/memd.nix` (imported in `home/default.nix`; `memd-sweep` timer active after next `make`)
+* **Home Manager Module:** `home/memd.nix` (imported in `home/default.nix`); sweep timer systemd unit active.
 * **Claude Code Integration (hooks in `~/.claude/settings.json`):**
   * `SessionStart` — brief memory context injection (index only, <200 tokens; no LLM call)
   * `SessionEnd` — autonomous detached distill (Haiku; Sonnet when digest >15k chars)
@@ -114,7 +114,8 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Memory Scope:** `.memory/` only (`state.md`, `decisions.md`, `todo.md`, `mistakes.md`, `archive/`). Git commits limited to `.memory/` pathspec.
 * **Cross-CLI/swarm interface:** Drop dated markdown notes in `.memory/inbox/`; curator ingests and deletes on next distill.
 * **Agent instruction files updated (2026-06-10):** `~/.claude/CLAUDE.md` §XI, `~/.gemini/GEMINI.md` §XI, `.model/CLAUDE.md`, `.model/AGENTS.md`, `.model/GEMINI.md` — old self-managed memory protocol replaced by memd platform rules (read-only in session; inbox for deliberate notes; no direct edits).
-* **Status:** Operational. First live distill 2026-06-10 (commit `d3cef27`). Sweep timer starts after next `make`.
+* **Sweep Timer Status (2026-06-12):** `memd-sweep.timer` active; triggers every 30 minutes; last distill 2026-06-12T15:31:23 (sweep/haiku); currently tracking 2 projects with pending content backlog.
+* **Status:** Fully operational. First live distill 2026-06-10 (commit `d3cef27`); autonomous curation running since 2026-06-12 rebuild.
 
 ---
 
@@ -130,10 +131,10 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
   * `.model/CLAUDE.md` §5 — orchestrator rules (auto-initiation criteria, deferral to worker on scoped tasks)
   * `.model/GEMINI.md` — worker-side project pointer and agy platform notes
 * **Workspace Resolution (2026-06-10 discovery):** agy rejects hidden directories as workspace folders ("is hidden: ignore uri"); `~/.nix-config` itself is hidden and fails registration. Workaround: `~/volnix` is a declarative non-hidden symlink added to `home/persist.nix` (force mapping `~/.nix-config` → `/persist/home/lowcache/.nix-config` → `~/volnix` at rebuild). Tether defaults to `-d ~/volnix` unless overridden with `-d <path>`. Note: agy does *not* resolve symlinks when checking for hidden paths, so the non-hidden target of the symlink (not the symlink itself) matters. File access still works via `allowNonWorkspaceAccess: true` even when workspace registration fails, but workspace context (indexing, project-aware tools) requires a non-hidden path.
-* **Symlink Status (2026-06-12):** Declaratively mapped in `home/persist.nix` (verified post-reboot via `readlink -f ~/volnix`). Post-rebuild verification confirmed; activation timing works correctly.
+* **Symlink Status (2026-06-12):** Declaratively mapped in `home/persist.nix` (verified post-reboot via `readlink -f ~/volnix` → `/persist/home/lowcache/.nix-config`). Post-rebuild verification confirmed; activation timing works correctly; fully durable across reboots.
 * **Platform Gotchas Discovered (2026-06-10):**
   1. `agy --print` takes the prompt as the flag's *value*; any other flags must precede `--print`, or they are silently consumed as the prompt text.
   2. agy does NOT resolve symlinks when checking for hidden directories (checks the symlink's own path, not its target). Non-hidden symlinks register cleanly.
   3. `agy --conversation <id>` resume in print mode replays the previous assistant's reply before generating a new one. Parse the last RESULT block from the output to distinguish old reply from new.
   4. Model display labels must match `agy models` output exactly (e.g., "Gemini 3.1 Pro (High)"). Verification via `model_config_manager` log lines (`model_config_manager.go`), not model self-report in the text output.
-* **Status (2026-06-12):** Fully operational. End-to-end handshake verified on Gemini 3.1 Pro (High); stateful conversation resume verified (worker correctly recalled original task name from same conversation). Committed: `a1cced5 "Establish Claude-Gemini agent tether"`.
+* **Status (2026-06-12):** Fully operational; post-reboot verification confirmed end-to-end handshake working (Gemini 3.1 Pro High), stateful conversation resume verified, symlink persistence verified. Committed: `a1cced5 "Establish Claude-Gemini agent tether"`.
