@@ -26,8 +26,21 @@ model_for() {
 
 # agy rejects hidden paths as workspace folders but does not resolve symlinks;
 # ~/volnix is a declarative non-hidden alias of ~/.nix-config (home/persist.nix).
+# Default to the caller's project ($PWD) so tether works from any repo; map
+# paths under the hidden ~/.nix-config to the volnix alias, and fall back to
+# volnix for any other hidden path.
 default_workdir() {
-  if [[ -d "$HOME/volnix" ]]; then echo "$HOME/volnix"; else echo "$HOME/.nix-config"; fi
+  local wd="$PWD"
+  if [[ "$wd" == "$HOME/.nix-config" || "$wd" == "$HOME/.nix-config"/* ]] && [[ -d "$HOME/volnix" ]]; then
+    wd="$HOME/volnix${wd#"$HOME/.nix-config"}"
+  fi
+  if [[ "$wd" != *"/."* ]]; then
+    echo "$wd"
+  elif [[ -d "$HOME/volnix" ]]; then
+    echo "$HOME/volnix"
+  else
+    echo "$HOME/.nix-config"
+  fi
 }
 
 usage() {
@@ -43,8 +56,9 @@ USAGE
 
 OPTIONS
   -m TIER        pro (default) | pro-low | flash | flash-high | flash-low
-  -d DIR         working directory for the worker (default: ~/volnix, the
-                 non-hidden alias of ~/.nix-config; falls back to ~/.nix-config)
+  -d DIR         working directory for the worker (default: $PWD; paths under
+                 ~/.nix-config map to the non-hidden ~/volnix alias, and any
+                 other hidden path falls back to ~/volnix)
   -t TASK        kebab-case task name; enables `tether continue TASK` later
   -y             pass --dangerously-skip-permissions (write-capable tasks; use deliberately)
   --timeout SECS hard wall-clock limit (default 600)

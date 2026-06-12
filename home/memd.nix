@@ -17,6 +17,24 @@ in
 {
   home.packages = [ memd ];
 
+  # Global agent tooling on PATH for every project, not just this repo.
+  # Out-of-store symlinks (same rationale as dots/: live-editable without a
+  # rebuild); the sweep timer keeps using the hermetic store copy above.
+  home.file = {
+    ".local/bin/memd" = {
+      source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/scripts/memd/memd.py";
+      force = true;
+    };
+    ".local/bin/tether" = {
+      source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/.model/agent-tether/bin/tether";
+      force = true;
+    };
+    ".local/bin/agent-scaffold" = {
+      source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/scripts/agent-scaffold/agent-scaffold";
+      force = true;
+    };
+  };
+
   # Periodic sweep: catches sessions the hooks missed (antigravity, crashes,
   # other CLIs via .memory/inbox/), prunes oversized files, auto-detects and
   # scaffolds new projects. Hooks handle the hot path at session boundaries.

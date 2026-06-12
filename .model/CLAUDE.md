@@ -1,4 +1,4 @@
-57387;13u# Agent Guide (CLAUDE.md)
+# Agent Guide (CLAUDE.md)
 
 Welcome, Claude! You are working on the **Vol NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
 

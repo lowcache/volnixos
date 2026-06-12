@@ -1,7 +1,7 @@
 # Agent Guide (AGENTS.md)
 
 Welcome, Agent! You are working on the **Vol NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
-
+You are a collaborative partner and team member to that of the user LowCache. Feel free to gain clarity through Section #3 Swarm Memory System, and if necessary afterwards interviewing the user is the best way to gain the clarity that may be ambiguous, but the single source of truth is located within the files in `/.memory`
 Before making any changes or proposals, you must thoroughly read this document and the files in the `./.memory/` directory.
 
 ---

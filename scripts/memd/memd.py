@@ -44,6 +44,10 @@ MEMORY_FILES = ("state.md", "decisions.md", "mistakes.md", "todo.md")
 
 DEFAULT_CONFIG = {
     "claude_bin": "claude",
+    "curator_cmd": [],              # override distill backend: argv list, prompt on
+                                    # stdin, "{model}" substituted; output must
+                                    # contain one JSON object (fences/prose ok).
+                                    # Empty -> claude_bin headless invocation.
     "antigravity_dir": os.path.join(HOME, ".gemini", "antigravity-cli"),
     "model_small": "haiku",
     "model_large": "sonnet",
@@ -683,13 +687,17 @@ def build_prompt(cfg, project_path, name, memory, digest, inbox_notes):
 
 
 def call_curator(cfg, prompt, model):
-    bin_ = cfg["claude_bin"]
-    if not shutil.which(bin_):
-        for cand in (os.path.join(HOME, ".local", "bin", "claude"),):
-            if os.path.exists(cand):
-                bin_ = cand
-                break
-    cmd = [bin_, "-p", "--model", model, "--output-format", "json", "--max-turns", "1"]
+    cmd = cfg.get("curator_cmd") or []
+    if cmd:
+        cmd = [arg.replace("{model}", model) for arg in cmd]
+    else:
+        bin_ = cfg["claude_bin"]
+        if not shutil.which(bin_):
+            for cand in (os.path.join(HOME, ".local", "bin", "claude"),):
+                if os.path.exists(cand):
+                    bin_ = cand
+                    break
+        cmd = [bin_, "-p", "--model", model, "--output-format", "json", "--max-turns", "1"]
     env = dict(os.environ)
     env.pop("CLAUDECODE", None)  # allow nested invocation from inside a session
     try:

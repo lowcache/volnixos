@@ -64,6 +64,7 @@
             ".config/mcp-gateway"
             ".config/systemd/user"
             ".config/sops"
+            ".config/memd"
           ];
           cache = [
             ".cache/pip"
@@ -90,6 +91,7 @@
             ".local/state/quickshell"
             ".local/state/illogical-impulse"
             ".local/state/wireplumber"
+            ".local/state/memd"
           ];
           flatpak-var = [
             ".var/app"

@@ -1,0 +1,48 @@
+#!/usr/bin/env fish
+# agent-scaffold — generic .model/ (+ .memory/ via memd) scaffold for projects.
+# Renders templates/MODEL.md three times (.model/CLAUDE.md, AGENTS.md,
+# GEMINI.md) with the agent name substituted, and runs `memd init` when
+# .memory/ is missing. Idempotent: creates only missing files, never
+# overwrites. Acts only inside git work trees, at the repo root.
+# Wired into the claude-code SessionStart hook (~/.claude/settings.json) so
+# any project is scaffolded before a new session starts; safe to run by hand:
+#   agent-scaffold [DIR]   (default: $PWD)
+
+set -l target $PWD
+if test (count $argv) -ge 1; and test -n "$argv[1]"
+    set target $argv[1]
+end
+
+set -l root (git -C $target rev-parse --show-toplevel 2>/dev/null)
+or exit 0
+test "$root" = "$HOME"; and exit 0
+
+# resolve through the ~/.local/bin symlink to find the bundled template
+set -l self (path resolve (status filename))
+set -l template (path dirname $self)/templates/MODEL.md
+if not test -r $template
+    echo "agent-scaffold: template missing: $template" >&2
+    exit 1
+end
+
+set -l project (path basename $root)
+mkdir -p $root/.model
+
+set -l made
+for spec in CLAUDE.md:Claude AGENTS.md:agent GEMINI.md:Gemini
+    set -l parts (string split : $spec)
+    set -l file $root/.model/$parts[1]
+    test -e $file; and continue
+    string replace -a '%AGENT%' $parts[2] <$template | string replace -a '%PROJECT%' $project >$file
+    set -a made $parts[1]
+end
+
+# .memory/ is owned by memd; scaffold it through its sanctioned interface
+if not test -d $root/.memory; and type -q memd
+    memd init $root >/dev/null 2>&1
+    and set -a made .memory/
+end
+
+if test (count $made) -gt 0
+    echo "agent-scaffold: created $made in $root" >&2
+end

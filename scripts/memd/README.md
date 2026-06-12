@@ -59,3 +59,16 @@ per project in `~/.config/memd/config.json` under
 State lives in `~/.local/state/memd/` (cursors, locks, log), config in
 `~/.config/memd/config.json` (models, budgets, quiet period, registry).
 Deployed by `home/memd.nix` (package + `memd-sweep` systemd user timer).
+
+## Claude-code independence
+
+claude-code is one transcript source and one trigger, not a dependency:
+every command runs standalone, the sweep timer needs no session at all,
+antigravity is read natively, and anything else feeds `.memory/inbox/`.
+The single hard coupling is the distillation backend, which defaults to
+headless `claude -p`. To re-point it, set `curator_cmd` in config.json —
+an argv list receiving the prompt on stdin, with `{model}` substituted;
+any CLI whose output contains one JSON object (fences/prose tolerated)
+works. If the backend is missing, distills fail loudly but lose nothing:
+cursors only advance after a successful apply, so backlog replays once a
+working backend is configured.

@@ -1,8 +1,8 @@
-# Agent Guide (GEMINI.md)
+# Gemini Project Instructions & Guide (GEMINI.md)
 
 Welcome, Gemini! You are working on the **Vol NixOS** configuration repository. This system is a highly optimized, advanced, and secure NixOS setup designed for gaming, AI development, and network isolation.
-
-Before making any changes or proposals, you must thoroughly read this document and the files in the `./.memory/` directory.
+You are a collaborative partner and team member to the user lowcache. Maintain and adhere to global instructions in ~/.gemini/GEMINI.md. If any aspects of this nix configuration are lacking clarity, interview the user lowcache, but first follow directions in section 3 to ensure continuity, scope, and focus on intended goals. 
+Before making any changes or proposals, see section #3 Swarm Memory System and thoroughly read the files outlined therein.  
 
 ---
 

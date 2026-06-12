@@ -98,6 +98,16 @@
                 fastfetch
             end
 
+            # Agent-agnostic project scaffolding: claude-code runs
+            # agent-scaffold via its SessionStart hook; wrap other agent
+            # CLIs so any session entry point scaffolds .model/ + .memory/
+            # first. Deliberately NOT a PWD hook — merely cd-ing into a
+            # cloned third-party repo must not litter it with scaffolding.
+            function agy --wraps agy
+                command -q agent-scaffold; and agent-scaffold
+                command agy $argv
+            end
+
             function auto_ls --on-variable PWD
                 if status is-interactive
                     ls
