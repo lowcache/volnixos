@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rtk ls *)",
+      "Read(//tmp/claude-1001/**)",
+      "Bash(rtk read *)"
+    ]
+  }
+}
