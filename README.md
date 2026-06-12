@@ -6,13 +6,8 @@
 
 <p>
   <img alt="NixOS unstable" src="https://img.shields.io/badge/NixOS-unstable-5277C3?style=flat-square&amp;logo=nixos&amp;logoColor=white">
-  <img alt="Nix Flakes" src="https://img.shields.io/badge/Nix-Flakes-7EBAE4?style=flat-square&amp;logo=nixos&amp;logoColor=white">
-  <img alt="Lix daemon" src="https://img.shields.io/badge/Daemon-Lix-2F4F8F?style=flat-square">
   <img alt="Hyprland" src="https://img.shields.io/badge/WM-Hyprland-00AAFF?style=flat-square&amp;logo=hyprland&amp;logoColor=white">
-  <img alt="Wayland" src="https://img.shields.io/badge/Display-Wayland-FFBC00?style=flat-square&amp;logo=wayland&amp;logoColor=black">
-  <img alt="Ephemeral root" src="https://img.shields.io/badge/Root-Ephemeral%20tmpfs-E95420?style=flat-square">
-  <img alt="Lanzaboote Secure Boot" src="https://img.shields.io/badge/Secure%20Boot-Lanzaboote-1793D1?style=flat-square&amp;logo=linux&amp;logoColor=white">
-  <img alt="banner: volinit" src="https://img.shields.io/badge/banner-volinit-b00000?style=flat-square">
+  <img alt="banner: volinit" src="https://img.shields.io/badge/term-banner-volinit-b00000?style=flat-square">
   <a href="https://github.com/lowcache/volnixos/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/lowcache/volnixos?style=flat-square&amp;logo=git&amp;logoColor=white&amp;label=last%20commit&amp;color=5277C3"></a>
 </p>
 </div>
