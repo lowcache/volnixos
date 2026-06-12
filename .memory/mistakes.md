@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-06-11
+last_updated: 2026-06-12
 status: append-only
 ---
 
@@ -114,23 +114,37 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-06-10 — `nix eval` / `nix build --dry-run` silently bumps `flake.lock` for branch-tracking inputs
+### 2026-06-12 — File-chooser/portal bug: Hyprland ambient CAP_SYS_NICE ptrace gate (NOT dbus-broker pidfd bug)
 
-* **Symptom:** Running `nix build .#nixosConfigurations.volnix.config.system.build.toplevel --dry-run` rewrote `flake.lock`, re-locking the `lix` input (tracking `main`) to a newer commit. No warning; command exited 0. Discovered only via `git diff flake.lock`.
-* **Root cause:** Flake inputs declared with a bare branch-ref URL (no `?rev=`) are re-resolved on every full flake evaluation. `nix build`, `nix eval`, and similar commands silently re-lock any such input in place. The `lix` input in this repo tracks `lix` main, making it vulnerable on every eval invocation.
-* **Fix applied:** `git checkout -- flake.lock`.
-* **Prevention rule:** After any `nix eval` or `nix build` invocation, run `git diff flake.lock` before staging. If a branch-tracking input bumped unintentionally, revert with `git checkout -- flake.lock`. Never auto-stage `flake.lock` alongside code changes without inspecting the diff. Intentional input updates require explicit `nix flake update <input>` + eval-verify (see mistakes.md #7). This is especially critical for `lix` — an accidental bump may break eval if the new commit desyncs from `lix-module` (see mistakes.md #7).
+**Symptom:** Brave browser, file-roller, and all GTK/Electron apps fail to open file-chooser dialogs. `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'` returns `GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Portal operation not allowed: Unable to open /proc/<pid>/root`. See mistakes.md #9 and #10 (earlier wrong diagnosis).
 
-### 2026-06-09 — tuigreet Environment Variables Not Loading in Non-Login Context
+**Root cause (PROVEN 2026-06-12):** 
+1. `programs.hyprland.enable` (nixpkgs module) creates `security.wrappers.Hyprland` with `cap_sys_nice+ep` (for SCHED_RR).
+2. Hyprland 0.55.2 raises that capability as **ambient** for every spawned client → all session/GUI apps (kitty, Brave, antigravity-ide, gdbus, etc.) carry `CAP_SYS_NICE` in their permitted set.
+3. xdg-desktop-portal runs as a capless systemd user service (`CapPrm=0`).
+4. Portal app-id resolution opens `/proc/<client>/root` (ptrace-read-gated magic symlink). Kernel `cap_ptrace_access_check` denies PTRACE_MODE_READ when target's permitted set (CAP_SYS_NICE) is not a subset of opener's (empty) → EACCES.
+5. Portal: "Could not register app ID" → rejects every request from session apps → `AccessDenied`.
 
-* **Symptom:** Session environment variables (like `GTK_USE_PORTAL=1`, `XDG_DATA_DIRS`, `XDG_CURRENT_DESKTOP`) fail to load when starting the compositor via `tuigreet` (greetd frontend). Portal dialogs fail, apps see missing icons/schemas, overall session integration breaks. **Pattern:** The workaround works, then breaks on next rebuild, suggesting the config was not properly declarative.
-* **Root Cause:** `tuigreet` launches the session in a **non-login shell context** (greetd is a system service, not an interactive login). Standard shell startup files (~/.bash_profile, ~/.bashrc, ~/.profile, and fish `shellInit`/`sessionVariables` from Home Manager) are **not sourced** when the compositor starts from greetd. The only mechanisms that successfully pass environment to the session are: (a) tuigreet's `--env` flag, (b) a wrapper script that exports vars before exec'ing the compositor.
-* **Prevention Rule:** **Always** pass session environment variables explicitly via tuigreet's `--env` flag or wrapper script. **Option A (via `--env` flag):** `services.greetd.settings.default_session.command = "${pkgs.greetd.tuigreet}/bin/tuigreet --env GTK_USE_PORTAL=1 --env XDG_CURRENT_DESKTOP=hyprland --cmd hyprland";` **Option B (via wrapper script):** Use `pkgs.writeShellScriptBin` to create a session script that exports vars, then `exec` the compositor; pass that script to `--cmd`. **Verification:** Post-rebuild/reboot, run `echo $GTK_USE_PORTAL` in a terminal inside the compositor session — should print `1`, not be empty. **Git history:** This pattern was discovered and iterated across commits cd7db0b, 4230bd7, 728a728 (pre-memory-system). Consulting those commits shows the working and broken configurations.
+**Evidence:**
+- `2×2 matrix`: only "user-service opener (portal) → session-app target (CAP_SYS_NICE)" fails (EACCES); other magic links `/proc/<pid>/environ`, `/proc/<pid>/cwd`, `/proc/<pid>/cmdline` succeed (no ptrace gate).
+- `cap_ptrace_access_check` is classic gate; yama=1 does NOT gate PTRACE_MODE_READ, so LSM/yama irrelevant.
+- **Smoking gun:** `gdbus call …Settings.Read` fails normally; **identical call via `setpriv --ambient-caps -all`** succeeds instantly.
 
-### 2026-06-11 — ~/volnix symlink disappears after reboot; activation-order timing issue with home-manager
+**Previous wrong hypothesis:** mistakes.md #10 (2026-06-10) blamed dbus-broker pidfd bug. Disproven: dbus-daemon 1.16.2 also passes pidfds (confirmed `strings /usr/bin/dbus-daemon | grep ProcessFD`), and the 2026-06-09 "proof" (portal worked via `dbus-run-session`) succeeded only because the test was invoked **from a terminal** that inherited the same ambient cap as its clients — execution context, not bus implementation, was the variable.
 
-**Symptom:** Post-reboot, the `~/volnix` symlink (used by tether for agy workspace discovery) is missing. Causes `cd: /home/lowcache/volnix: No such file or directory` on early-session scripts. Reboot time: 2026-06-10 21:05:59; symlink manually recreated with `ln -sn /persist/home/lowcache/.nix-config /home/lowcache/volnix` before tether could run.
+**Immediate workaround (no rebuild):** `setpriv --ambient-caps -all --inh-caps -all <app>` (e.g. `setpriv --ambient-caps -all brave`) works instantly.
 
-**Root Cause:** The symlink is declared declaratively in `home/persist.nix` via `lib.file.mkOutOfStoreSymlink`. On each boot, the tmpfs root `/` (including `/home`) is wiped. The home-manager activation script runs *after* the user session starts. Tether (or other early-session scripts invoked before home-manager activation completes) reference the symlink and fail with ENOENT.
+**Fix candidates (PENDING DECISION):**
+- **Option A (surgical):** Override `security.wrappers.Hyprland` via `lib.mkForce` to drop `cap_sys_nice` from the wrapper. Fixes portal calls globally. Trade-off: loses Hyprland's SCHED_RR guarantee (desktop responsiveness may degrade under scheduler pressure).
+- **Option B (compat):** Overlay-patch xdg-desktop-portal to treat EACCES on `/proc/<pid>/root` like ENOENT (fall back to app-id resolution via cgroup/env). Preserves Hyprland's capability. Trade-off: depends on portal patch quality; upstream may not accept.
+- **Option C (upstream):** Check if xdg-desktop-portal ≥1.21+ already has a fix. Gemini's research (tether task `portal-cap-upstream-research`, 2026-06-12) pending.
 
-**Prevention Rule:** Move symlink creation to NixOS system activation stage (execute before user session starts, e.g. `system.activationScripts` or early systemd target) so it exists when early-session code runs, OR defer tether invocation until after home-manager activation (wrap tether calls in a startup script that waits for a marker file), OR recreate the symlink imperatively in shell rc files (which run later, after home-manager). **Verify** which approach fits the design; apply and test post-reboot symlink persistence before next session.
+**Prevention rule:** When xdg-portal file pickers or Settings calls fail with `AccessDenied / Unable to open /proc/<pid>/root`, diagnose with `cap_ptrace_access_check`: (1) compare `CapPrm` of the target (via `cat /proc/<pid>/status | grep Cap`) with the opener's (portal = 0); (2) if target has caps and portal doesn't, it's not a dbus bug — it's a capability divergence in the calling context. Test the immediate `setpriv` workaround; if it works, the root cause is ambient cap inheritance.
+
+### 2026-06-12 — `nix eval` / `nix build --dry-run` silently bumps `flake.lock` for branch-tracking inputs
+
+**Symptom:** Running `nix build .#nixosConfigurations.volnix.config.system.build.toplevel --dry-run` rewrote `flake.lock`, re-locking the `lix` input (tracking `main`) to a newer commit. No warning; command exited 0. Discovered only via `git diff flake.lock`.
+
+**Root cause:** Flake inputs declared with a bare branch-ref URL (no `?rev=`) are re-resolved on every full flake evaluation. Commands like `nix build`, `nix eval`, and similar silently re-lock any such input in place. The `lix` input in this repo tracks `lix` main, making it vulnerable on every eval invocation.
+
+**Prevention rule:** After any `nix eval` or `nix build` invocation, run `git diff flake.lock` before staging. If a branch-tracking input bumped unintentionally, revert with `git checkout -- flake.lock`. Never auto-stage `flake.lock` alongside code changes without inspecting the diff. Intentional input updates require explicit `nix flake update <input>` + eval-verify. This is especially critical for `lix` — an accidental bump may break eval if the new commit desyncs from `lix-module` (see mistakes.md #7).

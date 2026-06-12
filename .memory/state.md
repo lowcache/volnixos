@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-06-11
+last_updated: 2026-06-12
 status: active
 ---
 
@@ -66,12 +66,15 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
 * **Krita Canvas Switch Freeze (Qt6 Wayland Crash):**
   * **Wrapper:** Wrapped using `symlinkJoin` and `makeWrapper` in `home/pkgs.nix` to force `QT_QPA_PLATFORM=xcb`.
   * **Reason:** Qt6 native Wayland canvas redrawing crashes when switching tabs/documents under Hyprland with NVIDIA/AMD hybrid graphics.
+
 * **Discrete GPU Battery Drain:**
   * **Daemon:** Ollama background daemon runs with `"OLLAMA_KEEP_ALIVE=5m"`.
   * **Reason:** Forces VRAM unloading and driver handle release after 5 minutes of idle time, allowing the dGPU to enter RTD3 (0W suspend state).
-* **Brave/GTK File Chooser Failure — Root Cause: dbus-broker session bus implementation:**
-  * **Status:** Workaround identified in mistakes.md #10; pending application. Next step: add `services.dbus.implementation = lib.mkForce "dbus";` to `nixos/configuration.nix`, rebuild, and reboot to switch the session bus from dbus-broker to the reference dbus-daemon. This avoids the pidfd app-identification bug in xdg-desktop-portal ≤1.20.4.
-  * **Revert trigger:** When `xdg-desktop-portal` ≥ 1.21.1 arrives in nixpkgs (fixed upstream), delete the workaround and verify `gdbus call --session --dest org.freedesktop.portal.Desktop ...` returns a settings dict.
+
+* **Brave/GTK File Chooser Failure — Root Cause: Hyprland Ambient CAP_SYS_NICE Blocks xdg-portal ptrace:**
+  * **Diagnosis (2026-06-12):** The nixpkgs module `programs.hyprland.enable` creates `security.wrappers.Hyprland` with `cap_sys_nice+ep` (for SCHED_RR). Hyprland 0.55.2 raises this as an **ambient capability** for all spawned clients (kitty, Brave, antigravity-ide, every keybind-launched app). xdg-desktop-portal runs as a capless systemd user service. When resolving a client's app-id, the portal attempts to open `/proc/<client>/root` (a ptrace-read-gated magic symlink). The kernel's `cap_ptrace_access_check` denies access because the target client has CAP_SYS_NICE but the opener (portal) lacks it → EACCES. Portal app-id registration fails → portal rejects **every** request from session apps with `AccessDenied: Unable to open /proc/<pid>/root` → file choosers broken everywhere.
+  * **Immediate Workaround (no rebuild):** `setpriv --ambient-caps -all --inh-caps -all brave` (or any broken app). Ambient cap drop succeeds and portal calls work instantly.
+  * **Status (2026-06-12):** Pending final fix decision. Two candidates: (A) surgical—override `security.wrappers.Hyprland` via `lib.mkForce` to drop the capability (loses compositor SCHED_RR, fixes portals globally); (B) overlay-patch xdg-desktop-portal to treat EACCES on `/proc/<pid>/root` like ENOENT (preserves Hyprland performance, fixes portal logic). Gemini's upstream research (tether task `portal-cap-upstream-research`) underway to check if portal already has a published fix. **Previous hypothesis (mistakes.md #10) is disproven:** the dbus-broker pidfd bug was incorrect; dbus-daemon 1.16.2 also passes pidfds, and the 2026-06-09 "proof" succeeded only because the test ran from a terminal that session, inheriting the same ambient cap as its clients. The dbus-daemon workaround is a no-op and safe to revert (see todo.md).
 
 ---
 
@@ -126,7 +129,7 @@ Guests run inside systemd-wrapped MicroVM instances. Network interfaces are mark
   * `.model/CLAUDE.md` §5 — orchestrator rules (auto-initiation criteria, deferral to worker on scoped tasks)
   * `.model/GEMINI.md` — worker-side project pointer and agy platform notes
 * **Workspace Resolution (2026-06-10 discovery):** agy rejects hidden directories as workspace folders ("is hidden: ignore uri"); `~/.nix-config` itself is hidden and fails registration. Workaround: `~/volnix` is a declarative non-hidden symlink added to `home/persist.nix` (force mapping `~/.nix-config` → `/persist/home/lowcache/.nix-config` → `~/volnix` at rebuild). Tether defaults to `-d ~/volnix` unless overridden with `-d <path>`. Note: agy does *not* resolve symlinks when checking for hidden paths, so the non-hidden target of the symlink (not the symlink itself) matters. File access still works via `allowNonWorkspaceAccess: true` even when workspace registration fails, but workspace context (indexing, project-aware tools) requires a non-hidden path.
-* **Symlink Activation Issue (2026-06-11 discovery):** Post-reboot, the `~/volnix` symlink disappeared (likely home-manager activation ran after tether first tried to access it). Manually recreated with `ln -sn /persist/home/lowcache/.nix-config /home/lowcache/volnix`. Declarative definition in `home/persist.nix` should prevent this on next rebuild, but activation-ordering needs verification.
+* **Symlink Activation Issue (2026-06-11 discovery):** Post-reboot, the `~/volnix` symlink disappeared (likely home-manager activation ran after tether first tried to access it). Manually recreated with `ln -sn /persist/home/lowcache/.nix-config /home/lowcache/volnix`. Declarative definition in `home/persist.nix` should prevent this on next rebuild, but activation-ordering needs verification. **Status (2026-06-12):** Imperative symlink recreated post-reboot; declarative fix (move to NixOS system activation) pending.
 * **Platform Gotchas Discovered (2026-06-10):**
   1. `agy --print` takes the prompt as the flag's *value*; any other flags must precede `--print`, or they are silently consumed as the prompt text.
   2. agy does NOT resolve symlinks when checking for hidden directories (checks the symlink's own path, not its target). Non-hidden symlinks register cleanly.
