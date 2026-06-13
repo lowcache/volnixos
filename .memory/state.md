@@ -59,7 +59,11 @@ Guests run inside systemd-wrapped MicroVM instances; VM tap interfaces `unmanage
 
 * **Krita Canvas Switch Freeze (Qt6 Wayland):** Wrapped via `symlinkJoin`/`makeWrapper` in `home/pkgs.nix` forcing `QT_QPA_PLATFORM=xcb`. Qt6 native Wayland crashes on tab switch with hybrid GPU under Hyprland.
 
-* **Brave/GTK File Chooser — FIXED (2026-06-12):** Root cause: Hyprland 0.55.2 raised CAP_SYS_NICE as ambient capability for all spawned clients; xdg-desktop-portal lacked it → `/proc/<pid>/root` denial → all portal calls rejected. Fix: Hyprland 0.55.3 (PRs #14082/#14897) removes CAP_SYS_NICE from ambient set; nixpkgs bumped in commit 8af9821; rebuild + reboot completed 2026-06-12. Post-reboot: CapAmb=0, portal Settings.Read succeeds, Brave downloads functional, dbus-broker active. Fallback (pre-fix): `setpriv --ambient-caps -all --inh-caps -all <app>`.
+* **Brave/GTK File Chooser — UNRESOLVED / REGRESSION (2026-06-12 onwards):** File dialogs and file-roller fail to open with error `GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Portal operation not allowed: Unable to open /proc/[pid]/root`. Two upstream bugs identified:
+  1. **Hyprland 0.55.2 CAP_SYS_NICE (PARTIALLY ADDRESSED):** Hyprland 0.55.2 raised `CAP_SYS_NICE` as ambient capability, which xdg-desktop-portal lacked. Fixed by Hyprland 0.55.3 (PRs #14082/#14897). nixpkgs bumped to `8af9821` on 2026-06-12; upgrade + reboot completed. CapAmb=0 post-boot confirmed. **However, error persists**, indicating a second root cause.
+  2. **xdg-desktop-portal 1.20.4 pidfd/dbus-broker (ROOT CAUSE):** xdg-desktop-portal ≤1.20.4 (current in nixpkgs 26.11) uses `O_NOFOLLOW` on `/proc/<pid>/root` open, which returns `ELOOP` on symlinks → portal fails to register ANY app. Upstream bug: flatpak/xdg-desktop-portal#1953, `main` branch fixed. **Workaround:** Switch session bus from `dbus-broker` (fails) to reference `dbus-daemon` (succeeds). Fix prepared: `services.dbus.implementation = lib.mkForce "dbus"` in `configuration.nix` (pending `make switch` + reboot to activate). Note: `programs.uwsm` forces dbus-broker, so `mkForce` override required.
+  - **Fallback (temporary):** `setpriv --ambient-caps -all --inh-caps -all <app>` strips capabilities that trigger buggy pidfd path.
+  - **Current status:** Waiting on `make switch` + reboot to test dbus-daemon fix. Confirm in post-reboot logs and file dialog behavior.
 
 * **Discrete GPU Battery Drain:** Ollama daemon with `"OLLAMA_KEEP_ALIVE=5m"` → VRAM unloads + CUDA handles released after idle → RTD3 (0W) suspend.
 
@@ -94,7 +98,7 @@ Guests run inside systemd-wrapped MicroVM instances; VM tap interfaces `unmanage
 * **Antigravity Trigger:** `agy` wrapper in `home/shell.nix` runs `agent-scaffold` before Antigravity launch. Deliberately NOT a `$PWD` hook — avoids littering third-party repos on `cd`.
 * **Transcript Sources:** Claude Code JSONL under `~/.claude/` (cursor-tracked by byte offset); Antigravity SQLite `~/.gemini/antigravity-cli/conversations/*.db` `steps` table, protobuf payloads (native read; legacy `.pb` skipped). Credential redaction on all digest paths.
 * **Memory Scope:** `.memory/` only. Git commits limited to `.memory/` pathspec. Cross-CLI interface: drop dated markdown notes in `.memory/inbox/`.
-* **Agent instruction files:** `~/.claude/CLAUDE.md` §XI, `~/.gemini/GEMINI.md` §XI, `.model/CLAUDE.md`, `.model/AGENTS.md`, `.model/GEMINI.md`.
+* **Agent instruction files:** `~/.claude/CLAUDE.md` §XI, `~/.gemini/GEMINI.md` §XI/XIII, `.model/CLAUDE.md`, `.model/AGENTS.md`, `.model/GEMINI.md`.
 * **Status:** Fully operational. Autonomous curation running since 2026-06-12.
 
 ---

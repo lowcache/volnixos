@@ -22,13 +22,16 @@ status: active
 
 ## Pending — Immediate
 
-* [ ] **`make switch`** to activate persistence fix (`.config/memd`, `.local/state/memd`) and declarative symlinks in `home/memd.nix`. Imperative symlinks already live and functional; switch required for declarative durability across rebuilds. Requires sudo.
+* [ ] **`make switch`** to activate persistence fix (`.config/memd`, `.local/state/memd`) and declarative symlinks in `home/memd.nix`, plus dbus-daemon switch for file-chooser fix. Imperative symlinks and config already live; switch required for declarative durability across rebuilds. Will activate `services.dbus.implementation = lib.mkForce "dbus"` (prepared in configuration.nix) to fix xdg-desktop-portal pidfd bug. Requires sudo + reboot. Test post-reboot: file dialogs + file-roller + Brave downloads.
 
 ---
 
 ## Known Issues & Follow-Ups
 
+* [ ] **File chooser / portal REGRESSION — Brave + file-roller broken (2026-06-12 onwards):** Error: `GDBus.Error:org.freedesktop.DBus.Error.AccessDenied: Portal operation not allowed: Unable to open /proc/[pid]/root`. Root cause: xdg-desktop-portal 1.20.4 pidfd/dbus-broker bug (upstream #1953, fixed in main, not in nixpkgs 26.11). Hyprland 0.55.3 upgrade addressed the CAP_SYS_NICE issue but did not resolve the pidfd bug. **Fix:** `services.dbus.implementation = lib.mkForce "dbus"` (prepared in configuration.nix, pending `make switch` + reboot). `programs.uwsm` forces dbus-broker, so mkForce override required. **Fallback:** `setpriv --ambient-caps -all --inh-caps -all brave`. See state.md §4 and mistakes.md #10.
+
 * [ ] **Re-test Super-tap search after next Hyprland bump (0.55.4+):** Hyprland 0.55.3 broke Super-tap (Super_L alone) due to catchall-bind interrupt handling change (PR #14743). Confirmed upstream regression (caelestia-dots/caelestia#436, open 2026-06-12). Workaround: comment out `searchToggleReleaseInterrupt` catchall in `dots/hypr/hyprland/keybinds.conf:11` (trade-off: lose unbound-key cancel for Super+unbound combos). See mistakes.md.
+
 * [ ] **Stale exclude entries in memd registry:** `/tmp/scaffold-test` and `/tmp/st2` added via `memd exclude` during testing (2026-06-12). Harmless; clean up manually in `~/.config/memd/config.json` `exclude` array if desired.
 
 ---
