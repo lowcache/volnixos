@@ -7,6 +7,7 @@
 # Wired into the claude-code SessionStart hook (~/.claude/settings.json) so
 # any project is scaffolded before a new session starts; safe to run by hand:
 #   agent-scaffold [DIR]   (default: $PWD)
+# TODO: help menu for usage instructions
 
 set -l target $PWD
 if test (count $argv) -ge 1; and test -n "$argv[1]"

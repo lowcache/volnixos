@@ -178,14 +178,15 @@
           markitdown-mcp
           playwright-mcp
           context7-mcp
-          codex
+          mcp-server-sequential-thinking
+         # mcp-server-filesystem
           claude-code
           claude-code-router
           gemini-cli
           github-copilot-cli
           rtk
           pkgs.llm-agents.claude-plugins
-
+          pkgs.llm-agents.crush
         ];
       in
       nixified-ai ++ terminal ++ typography ++ hyprland ++ quickshell ++ basedevel;
