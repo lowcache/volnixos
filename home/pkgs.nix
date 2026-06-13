@@ -177,6 +177,7 @@
           github-mcp-server
           markitdown-mcp
           playwright-mcp
+          context7-mcp
           codex
           claude-code
           claude-code-router
