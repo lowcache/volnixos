@@ -150,7 +150,7 @@
           jq
           bc
           tor
-          micro
+          micro-full
           cryptsetup
           htop
           bat-extras.batgrep
@@ -161,6 +161,7 @@
           socat
           gawk
           acpi
+          tree
           upower
           ddcutil
           clinfo
@@ -179,6 +180,9 @@
           playwright-mcp
           context7-mcp
           mcp-server-sequential-thinking
+          open-websearch
+          icm
+          mcp-server-fetch
          # mcp-server-filesystem
           claude-code
           claude-code-router
