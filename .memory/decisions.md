@@ -137,33 +137,27 @@ This file catalogs the active, canonical design decisions and system configurati
 
 ## 18. Tool Graduation — memd, tether, agent-scaffold → ~/CodeRepo (2026-06-18 — MEMD & TETHER COMPLETE, SCAFFOLD PENDING; MEMD PHASE 3 COMPLETE 2026-07-09)
 
+## 18. Tool Graduation — memd, tether, agent-scaffold → ~/CodeRepo (2026-06-18 — ALL COMPLETE; MEMD PHASE 3 & SCAFFOLD COMPLETED 2026-09-06)
+
 * **Decision:** Relocate `memd`, `tether`, and `agent-scaffold` from `.nix-config/scripts/` to independent git repositories under `~/CodeRepo/`, giving them logical independence and permanent organizational homes.
 
 * **Why:** These tools are permanent, not transient workshops. They serve all projects, not just `.nix-config`. Keeping them in `scripts/` conflates them with task-scoped cruft and creates coupling in deployment (`home/scripts.nix` hardcodes their paths). Separate repos enable independent versioning, documentation, flake packaging, and removal from `.nix-config`'s concerns.
 
 * **Keystone for:** Decision #19 (scripts/ symlink to ephemeral storage) and the work-routing hook (once tools have permanent homes, the routing rule is complete).
 
-* **Status (2026-07-09):**
-  * **memd Phase 1 COMPLETE (2026-06-25):** Standalone repo at `~/CodeRepo/memd/` with flake.nix skeleton. Builds cleanly. Committed `518a58f`. Persist path verified safe for symlink targets.
-  * **memd Phase 2 ACTIVATED (2026-06-26):** `home/scripts.nix` rewritten (drop in-repo derivation, repoint symlinks). `make build` exit 0. Cutover via `make switch-detached` ready (interim approach via symlinks).
-  * **memd Phase 3 COMPLETED (2026-07-09):** Home-manager module integration. Flake input `memd.url = "github:lowcache/memd"` with `follows = "nixpkgs"` added to `flake.nix`. `home/default.nix` imports and enables `services.memd` with `installClaudeHooks = true`, sweep interval 30min. Phase 2 symlinks and hand-rolled services removed from `home/scripts.nix`. Binary accessible via `which memd` → HM profile wrapper. Sweep timer active, `memd --version 0.2.0`. Verified: status, sync, hook integration working. This is the canonical final form (cleaner and more maintainable than Phase 2's symlink approach).
+* **Status (2026-09-06 — ALL COMPLETE):**
+  * **memd Phase 3 COMPLETE (2026-07-09):** Home-manager module integration live. Binary accessible via `which memd` → HM profile wrapper. Sweep timer active, `memd --version 0.2.0`. Verified: status, sync, hook integration working.
   * **tether COMPLETE (2026-06-27):** Graduated to `~/CodeRepo/tether` (standalone repo, `lowcache/clemini` remote). 2 commits pushed; symlinks retargeted. Live-tested.
-  * **agent-scaffold:** Remains in `scripts/` pending its own graduation (phased approach).
+  * **agent-scaffold COMPLETE (2026-09-06):** Rewritten and moved to `~/CodeRepo/agent-scaffold` (independent repo, `lowcache/agent-scaffold` remote). Independently versioned. Migration checklist applied: source copied, git history established, `.nix-config` references removed, standalone flake.nix in place.
 
-* **Migration checklist (completed for memd & tether; applies to scaffold later):**
-  1. ✓ Create new git repo in `~/CodeRepo/{memd,tether}` with README, flake.nix skeleton, tool self-registration.
+* **Migration checklist (completed for all three):**
+  1. ✓ Create new git repo in `~/CodeRepo/{memd,tether,agent-scaffold}` with README, flake.nix skeleton, tool self-registration.
   2. ✓ Copy source from `.nix-config/scripts/` → new repo; establish git history (initial commit).
-  3. ✓ Rewrite `home/scripts.nix` or use HM modules: out-of-store symlinks point at `~/CodeRepo/{memd,tether}` (Phase 2) or HM module integration (Phase 3).
+  3. ✓ Rewrite `home/scripts.nix` or use HM modules: out-of-store symlinks point at `~/CodeRepo/` (Phase 2) or HM module integration (Phase 3).
   4. ✓ Update docs: replace hardcoded `scripts/` paths with `~/CodeRepo/` or HM module paths.
   5. ✓ Verify self-curation in new repos; verify tools work from new location.
 
-* **Cutover mechanism:** New `make switch-detached` target runs activation as a transient systemd service under PID1 (survives session termination per Mistake #1). Usage: `make switch-detached && journalctl -u nixos-switch -f`.
-
-* **Blocker on:** Decision #19 (scripts/ can't become ephemeral until these tools leave it).
-
-* **Not blocking:** niri portage (tool graduation is independent of WM work; can be deferred).
-
----
+* **Enabler:** This completes the prerequisite for Decision #19 (making scripts/ ephemeral via symlink to persistent scratch storage).
 
 ## 19. Make scripts/ Ephemeral — Symlink to ~/Storage/tmp/scripts (2026-06-18 — DEFERRED)
 
