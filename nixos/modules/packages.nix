@@ -19,6 +19,7 @@
           vulkan-tools
           libva-utils
           gnupg
+          bazaar
           nvtopPackages.nvidia
           nvidia-vaapi-driver
           ffmpeg
