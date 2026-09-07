@@ -21,7 +21,8 @@ different analyser; the two templates are not interchangeable.
 
 ## What carried over unchanged
 
-- `luau` (luau-analyze), `stylua`, `python3` -- the spec suites are Python
+- `luau` (the interpreter), `luau-lsp` (the analyser -- `luau-analyze` has no
+  `--definitions` flag), `stylua`, `python3` -- the spec suites are Python
 - `luau-lsp` in the shell but not in the gates
 - one derivation per gate, so a failure names the gate that broke
 - `stylua` deliberately **not** a gate: formatting is opt-in

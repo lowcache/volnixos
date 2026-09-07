@@ -10,7 +10,7 @@
       # Project knobs.
       # =====================================================================
 
-      # Type definitions fed to luau-analyze. This file is INPUT to the
+      # Type definitions fed to the analyser. This file is INPUT to the
       # analyser, not a target of it, so it is excluded from the entry list.
       # Leave as-is for Noctalia plugins.
       definitionsFile = "noctalia.d.luau";
@@ -46,7 +46,13 @@
       toolchain =
         pkgs:
         [
-          pkgs.luau # luau-analyze: parse + typecheck the entries
+          pkgs.luau # the interpreter the spec suites run under
+          # luau-lsp, NOT the bare luau-analyze binary. luau-analyze has no
+          # --definitions flag (luau 0.735 accepts only --formatter, --mode,
+          # --solver, --timetrace); passing it makes every host global read as
+          # "Unknown global" and the gate exits 1 no matter how clean the code
+          # is. luau-lsp's analyze subcommand is the one that loads definitions.
+          pkgs.luau-lsp
           pkgs.stylua # format the entries
           pkgs.python3 # the hooks, the shim, and the spec suites
         ]
@@ -75,7 +81,7 @@
 
       # Parse and typecheck every entry. The gate that did not exist when a
       # call to a not-yet-declared local shipped and took a widget down on
-      # load: the call resolves to an unknown global and luau-analyze exits
+      # load: the call resolves to an unknown global and the analyser exits
       # non-zero. Inert until both the definitions file and at least one entry
       # exist, so a freshly stamped project still evaluates.
       mkChecks =
@@ -83,7 +89,7 @@
         lib.optionalAttrs hasEntries {
           analyze =
             mkCheck pkgs "analyze"
-              "luau-analyze --definitions=${definitionsFile} ${lib.concatStringsSep " " entryFiles}";
+              "luau-lsp analyze --definitions=${definitionsFile} ${lib.concatStringsSep " " entryFiles}";
         }
         // builtins.mapAttrs (mkCheck pkgs) checkCommands;
     in
@@ -92,10 +98,10 @@
       # (Noctalia); there is nothing to build into the store.
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
-          packages = toolchain pkgs ++ [ pkgs.luau-lsp ];
+          packages = toolchain pkgs;
           shellHook = ''
             echo "luau dev shell"
-            echo "  nix flake check   luau-analyze + your checkCommands gates"
+            echo "  nix flake check   luau-lsp analyze + your checkCommands gates"
             echo "  stylua *.luau     format (opt-in; deliberately not a gate)"
           '';
         };
