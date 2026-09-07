@@ -1,64 +1,52 @@
-# The bands run primary -> secondary -> tertiary, a genuine descending ramp in
-# this scheme (relative luminance 60 -> 44 -> 37) before dropping to neutral_5
-# for the language band and out to the terminal background.
-#
-# The TEXT carries a second ramp off the warm primary_N tonal scale, measured
-# against the band it sits on rather than picked by eye:
-#
-#     band        text         contrast   L*(text)
-#     primary     primary_4      8.1:1       20
-#     secondary   primary_3      7.1:1       15
-#     tertiary    primary_1      7.5:1        5
-#     neutral_5   primary_13     8.6:1       90
-#
-# It deepens as the bands themselves darken, then inverts to cream once the
-# band goes dark. Every pair clears 7:1, so the ramp costs no legibility -- the
-# weakest pair here still beats the 5.5:1 the old neutral_7 language band had.
-#
-# The M3 on_* roles are deliberately NOT used for the text: Noctalia collapses
-# on_primary, on_secondary and on_tertiary to the same #161311, which is why
-# the text was flat before. That collapse is also the catch --
-#
-# THIS ASSUMES A DARK SCHEME. An on_* role is guaranteed to contrast with its
-# own band in any mode; a primary_N step is not. If Noctalia is switched to a
-# light scheme the accent bands become dark and these dark text steps fail. The
-# fix is to put fg:on_primary / on_secondary / on_tertiary back on the three
-# accent bands: that loses the text ramp and restores the guarantee.
-#
-# Role names rather than hex throughout, so a scheme change recolours this free.
 "$schema" = 'https://starship.rs/config-schema.json'
 palette = "m3"
 right_format = """
-[](tertiary)\
+[](primary_11)\
 $cmd_duration\
-[](fg:tertiary)"""
+[](fg:primary_11)"""
 
-# The bands run primary -> secondary -> tertiary, a genuine descending ramp in
-# this scheme (relative luminance 60 -> 44 -> 37) before dropping to neutral_5
-# for the language band and out to the terminal background.
+# ONE CONTINUOUS RAMP DOWN THE PRIMARY TONAL SCALE: primary_13 -> primary_1,
+# thirteen steps, gold through brown to near-black. Modules sit on c0/c3/c6/c9
+# (primary_13/10/7/4); the steps in between sit under the separator glyphs, and
+# those wedges are what make it read as a gradient rather than four flat blocks.
 #
-# ANY BAND ON AN ACCENT MUST CARRY ITS OWN on_* FOREGROUND. The M3 accent roles
-# are LIGHT here (primary #e5c799, secondary #cbaba0, tertiary #9aa887) whereas
-# the neutral ramp they replaced was dark, so the fg:on_surface these segments
-# used to carry measures 1.1:1 on primary -- invisible. The on_* pairs come out
-# at 11.4:1, 8.7:1 and 7.3:1, each at or above the neutral band it replaced.
+# WHY THE TONAL SCALE AND NOT primary -> secondary -> tertiary. Those three are
+# bunched at the light end (L* 82/72/67) and tertiary is sage, so any path
+# through them spends ten of thirteen cells green and barely separates at the
+# light end. The tonal ramp is one hue, evenly spaced by construction, and
+# every cell is a Noctalia role -- so this whole gradient follows a scheme
+# change for free, with no hex to recompute.
 #
-# Role names rather than hex, so a Noctalia scheme change recolours this free.
+# TEXT INVERTS AT THE MIDPOINT and is measured, not eyeballed:
+#   primary_13 band -> primary_4  text  10.2:1
+#   primary_10 band -> primary_0  text   6.6:1   (L*60 is the squeeze: at that
+#   primary_7  band -> primary_15 text   7.4:1    lightness nothing warm clears
+#   primary_4  band -> primary_13 text  10.2:1    6:1 except pure black)
+# The weakest pair still beats the 5.5:1 the old neutral_7 language band had.
 format = """
-[](primary)\
+[](primary_13)\
 $time\
-[](fg:primary bg:secondary)\
+[](fg:primary_13 bg:primary_12)\
+[](fg:primary_12 bg:primary_11)\
+[](fg:primary_11 bg:primary_10)\
 $memory_usage\
-[](fg:secondary bg:tertiary)\
+[](fg:primary_10 bg:primary_9)\
+[](fg:primary_9 bg:primary_8)\
+[](fg:primary_8 bg:primary_7)\
 $git_branch\
 $git_status\
 ${custom.ci}\
-[](fg:tertiary bg:neutral_5)\
+[](fg:primary_7 bg:primary_6)\
+[](fg:primary_6 bg:primary_5)\
+[](fg:primary_5 bg:primary_4)\
 $python\
 $golang\
 $nodejs\
 $docker_context\
-[ ](fg:neutral_5)\
+[](fg:primary_4 bg:primary_3)\
+[](fg:primary_3 bg:primary_2)\
+[](fg:primary_2 bg:primary_1)\
+[ ](fg:primary_1)\
 $line_break
 $directory\
 $character"""
@@ -79,45 +67,45 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:tertiary"
-format = '[[ $symbol $branch ](fg:primary_1 bg:tertiary)]($style)'
+style = "bg:primary_7"
+format = '[[ $symbol $branch ](fg:primary_15 bg:primary_7)]($style)'
 
 [git_status]
-style = "bg:tertiary"
-format = '[[($all_status$ahead_behind )](fg:primary_1 bg:tertiary)]($style)'
+style = "bg:primary_7"
+format = '[[($all_status$ahead_behind )](fg:primary_15 bg:primary_7)]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:neutral_5"
-format = '[[ $symbol( $version) ](fg:primary_13 bg:neutral_5)]($style)'
+style = "bg:primary_4"
+format = '[[ $symbol( $version) ](fg:primary_13 bg:primary_4)]($style)'
 
 [golang]
 symbol = ""
-style = "bg:neutral_5"
-format = '[[ $symbol( $version) ](fg:primary_13 bg:neutral_5)]($style)'
+style = "bg:primary_4"
+format = '[[ $symbol( $version) ](fg:primary_13 bg:primary_4)]($style)'
 
 [python]
 symbol = ""
-style = "bg:neutral_5"
-format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:primary_13 bg:neutral_5)]($style)'
+style = "bg:primary_4"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:primary_13 bg:primary_4)]($style)'
 
 [docker_context]
 symbol = ""
-style = "bg:neutral_5"
-format = '[[ $symbol( $context) ](fg:primary_13 bg:neutral_5)]($style)'
+style = "bg:primary_4"
+format = '[[ $symbol( $context) ](fg:primary_13 bg:primary_4)]($style)'
 
 [memory_usage]
 symbol = "󰘚"
 threshold = -1
-style = "bg:secondary fg:primary_3"
+style = "bg:primary_10 fg:primary_0"
 format = "[ ($symbol:$ram_pct) ]($style)"
 disabled = false
 
 [time]
 disabled = false
 time_format = "%I:%M%p"
-style = "bg:primary"
-format = '[[  $time ](fg:primary_4 bg:primary)]($style)'
+style = "bg:primary_13"
+format = '[[  $time ](fg:primary_4 bg:primary_13)]($style)'
 
 [line_break]
 disabled = true
@@ -134,7 +122,7 @@ vimcmd_visual_symbol = '[❮](bold fg:on_surface)'
 [cmd_duration]
 show_milliseconds = true
 format = "[ in $duration]($style)"
-style = "bg:tertiary fg:primary_1"
+style = "bg:primary_11 fg:primary_1"
 disabled = false
 show_notifications = true
 min_time_to_notify = 45000
@@ -142,22 +130,20 @@ min_time_to_notify = 45000
 [custom.ci]
 description = "GitHub Actions build for the last pushed commit (fed by ci-poll)"
 # THE 500ms CAP IS WHY THIS READS A FILE. starship runs a custom module's
-# command on every single prompt and kills it at 500ms, so this one must never
-# touch the network: ci-poll (home/scripts.nix) polls GitHub in the background
-# and leaves one short line in tmpfs. `when` is the whole gate and `cat` is the
-# whole command -- both are microseconds, and the segment simply does not
-# render while the file is empty or absent.
+# command on every prompt and kills it at 500ms, so this must never touch the
+# network: ci-poll (home/scripts.nix) polls GitHub in the background and leaves
+# one short line in tmpfs. `when` is the gate, `cat` is the command -- 8ms.
 #
 # shell is pinned deliberately. STARSHIP_SHELL here is fish, and in fish an
-# unset XDG_RUNTIME_DIR makes the whole argument vanish, leaving `test -s` to
-# test the string "-s" -- which is TRUE -- after which `cat` gets no argument
-# and blocks on stdin for the full 500ms on every prompt. Under sh the same
-# case collapses to /volnixos-ci, test -s is false, and the segment hides.
+# unset XDG_RUNTIME_DIR makes the argument vanish, leaving `test -s` testing the
+# string "-s" -- TRUE -- after which `cat` gets no argument and blocks on stdin
+# for the full 500ms every prompt. Under sh it collapses to /volnixos-ci,
+# test -s is false, and the segment hides.
 shell = ["sh"]
 when = "test -s $XDG_RUNTIME_DIR/volnixos-ci"
 command = "cat $XDG_RUNTIME_DIR/volnixos-ci"
-style = "bg:tertiary"
-format = '[[ $output ](fg:primary_1 bg:tertiary)]($style)'
+style = "bg:primary_7"
+format = '[[ $output ](fg:primary_15 bg:primary_7)]($style)'
 
 # >>> NOCTALIA M3 PALETTE >>>
 # Generated by Noctalia from Material 3 roles - do not edit manually
