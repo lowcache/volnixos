@@ -221,9 +221,15 @@ git:
 		ssh-add ~/.ssh/id_ed25519 || exit 1; \
 		run; \
 	fi && echo "++ Git Repo Updated."
-	@$(MAKE) --no-print-directory ci
+# Hand the run off to the background poller instead of blocking here.
+# `gh run watch` held the terminal for the whole build to print a spinner;
+# ci-poll writes the same progress into the starship prompt (see
+# home/scripts.nix and dots/starship/starship.toml) and returns now. `make
+# ci` below is still the way to sit and watch a run in the foreground.
+	@command -v ci-poll >/dev/null 2>&1 && ci-poll || \
+	  echo "++ ci-poll not on PATH yet (needs a switch); 'make ci' watches in the foreground."
 
-## :ci: ..........: Watch the CI run for HEAD (cachix upload is the final post step)
+## :ci: ..........: Watch the CI run for HEAD in the foreground (blocks; 'make git' polls instead)
 ci:
 	@command -v gh >/dev/null 2>&1 || { echo "++ gh not on PATH; skipping CI watch."; exit 0; }; \
 	sha=$$(git rev-parse HEAD); short=$$(git rev-parse --short HEAD); \

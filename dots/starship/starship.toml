@@ -1,3 +1,31 @@
+# The bands run primary -> secondary -> tertiary, a genuine descending ramp in
+# this scheme (relative luminance 60 -> 44 -> 37) before dropping to neutral_5
+# for the language band and out to the terminal background.
+#
+# The TEXT carries a second ramp off the warm primary_N tonal scale, measured
+# against the band it sits on rather than picked by eye:
+#
+#     band        text         contrast   L*(text)
+#     primary     primary_4      8.1:1       20
+#     secondary   primary_3      7.1:1       15
+#     tertiary    primary_1      7.5:1        5
+#     neutral_5   primary_13     8.6:1       90
+#
+# It deepens as the bands themselves darken, then inverts to cream once the
+# band goes dark. Every pair clears 7:1, so the ramp costs no legibility -- the
+# weakest pair here still beats the 5.5:1 the old neutral_7 language band had.
+#
+# The M3 on_* roles are deliberately NOT used for the text: Noctalia collapses
+# on_primary, on_secondary and on_tertiary to the same #161311, which is why
+# the text was flat before. That collapse is also the catch --
+#
+# THIS ASSUMES A DARK SCHEME. An on_* role is guaranteed to contrast with its
+# own band in any mode; a primary_N step is not. If Noctalia is switched to a
+# light scheme the accent bands become dark and these dark text steps fail. The
+# fix is to put fg:on_primary / on_secondary / on_tertiary back on the three
+# accent bands: that loses the text ramp and restores the guarantee.
+#
+# Role names rather than hex throughout, so a scheme change recolours this free.
 "$schema" = 'https://starship.rs/config-schema.json'
 palette = "m3"
 right_format = """
@@ -5,20 +33,32 @@ right_format = """
 $cmd_duration\
 [](fg:tertiary)"""
 
+# The bands run primary -> secondary -> tertiary, a genuine descending ramp in
+# this scheme (relative luminance 60 -> 44 -> 37) before dropping to neutral_5
+# for the language band and out to the terminal background.
+#
+# ANY BAND ON AN ACCENT MUST CARRY ITS OWN on_* FOREGROUND. The M3 accent roles
+# are LIGHT here (primary #e5c799, secondary #cbaba0, tertiary #9aa887) whereas
+# the neutral ramp they replaced was dark, so the fg:on_surface these segments
+# used to carry measures 1.1:1 on primary -- invisible. The on_* pairs come out
+# at 11.4:1, 8.7:1 and 7.3:1, each at or above the neutral band it replaced.
+#
+# Role names rather than hex, so a Noctalia scheme change recolours this free.
 format = """
 [](primary)\
 $time\
-[](fg:primary bg:neutral_3)\
+[](fg:primary bg:secondary)\
 $memory_usage\
-[](fg:neutral_3 bg:neutral_5)\
+[](fg:secondary bg:tertiary)\
 $git_branch\
 $git_status\
-[](fg:neutral_5 bg:neutral_7)\
+${custom.ci}\
+[](fg:tertiary bg:neutral_5)\
 $python\
 $golang\
 $nodejs\
 $docker_context\
-[ ](fg:neutral_7)\
+[ ](fg:neutral_5)\
 $line_break
 $directory\
 $character"""
@@ -39,37 +79,37 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:neutral_5"
-format = '[[ $symbol $branch ](fg:on_surface bg:neutral_5)]($style)'
+style = "bg:tertiary"
+format = '[[ $symbol $branch ](fg:primary_1 bg:tertiary)]($style)'
 
 [git_status]
-style = "bg:neutral_5"
-format = '[[($all_status$ahead_behind )](fg:on_surface bg:neutral_5)]($style)'
+style = "bg:tertiary"
+format = '[[($all_status$ahead_behind )](fg:primary_1 bg:tertiary)]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:neutral_7"
-format = '[[ $symbol( $version) ](fg:on_surface bg:neutral_7)]($style)'
+style = "bg:neutral_5"
+format = '[[ $symbol( $version) ](fg:primary_13 bg:neutral_5)]($style)'
 
 [golang]
 symbol = ""
-style = "bg:neutral_7"
-format = '[[ $symbol( $version) ](fg:on_surface bg:neutral_7)]($style)'
+style = "bg:neutral_5"
+format = '[[ $symbol( $version) ](fg:primary_13 bg:neutral_5)]($style)'
 
 [python]
 symbol = ""
-style = "bg:neutral_7"
-format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:on_surface bg:neutral_7)]($style)'
+style = "bg:neutral_5"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:primary_13 bg:neutral_5)]($style)'
 
 [docker_context]
 symbol = ""
-style = "bg:neutral_7"
-format = '[[ $symbol( $context) ](fg:on_surface bg:neutral_7)]($style)'
+style = "bg:neutral_5"
+format = '[[ $symbol( $context) ](fg:primary_13 bg:neutral_5)]($style)'
 
 [memory_usage]
 symbol = "󰘚"
 threshold = -1
-style = "bg:neutral_3 fg:on_surface"
+style = "bg:secondary fg:primary_3"
 format = "[ ($symbol:$ram_pct) ]($style)"
 disabled = false
 
@@ -77,7 +117,7 @@ disabled = false
 disabled = false
 time_format = "%I:%M%p"
 style = "bg:primary"
-format = '[[  $time ](fg:on_primary bg:primary)]($style)'
+format = '[[  $time ](fg:primary_4 bg:primary)]($style)'
 
 [line_break]
 disabled = true
@@ -94,10 +134,30 @@ vimcmd_visual_symbol = '[❮](bold fg:on_surface)'
 [cmd_duration]
 show_milliseconds = true
 format = "[ in $duration]($style)"
-style = "bg:tertiary fg:on_tertiary"
+style = "bg:tertiary fg:primary_1"
 disabled = false
 show_notifications = true
 min_time_to_notify = 45000
+
+[custom.ci]
+description = "GitHub Actions build for the last pushed commit (fed by ci-poll)"
+# THE 500ms CAP IS WHY THIS READS A FILE. starship runs a custom module's
+# command on every single prompt and kills it at 500ms, so this one must never
+# touch the network: ci-poll (home/scripts.nix) polls GitHub in the background
+# and leaves one short line in tmpfs. `when` is the whole gate and `cat` is the
+# whole command -- both are microseconds, and the segment simply does not
+# render while the file is empty or absent.
+#
+# shell is pinned deliberately. STARSHIP_SHELL here is fish, and in fish an
+# unset XDG_RUNTIME_DIR makes the whole argument vanish, leaving `test -s` to
+# test the string "-s" -- which is TRUE -- after which `cat` gets no argument
+# and blocks on stdin for the full 500ms on every prompt. Under sh the same
+# case collapses to /volnixos-ci, test -s is false, and the segment hides.
+shell = ["sh"]
+when = "test -s $XDG_RUNTIME_DIR/volnixos-ci"
+command = "cat $XDG_RUNTIME_DIR/volnixos-ci"
+style = "bg:tertiary"
+format = '[[ $output ](fg:primary_1 bg:tertiary)]($style)'
 
 # >>> NOCTALIA M3 PALETTE >>>
 # Generated by Noctalia from Material 3 roles - do not edit manually
