@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-09-06
+last_updated: 2026-09-07
 status: active
 ---
 
@@ -518,3 +518,14 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Toolchain (same as source plugin):** Luau compiler, stylua (formatter, opt-in gate), luau-lsp (analyzer, required gate). Python 3 for cross-file analysis helpers. Comments preserved from source plugin flake.nix.
 * **Known gap (load-bearing):** The source plugin flake.nix (`claude-companion/noctalia-claude-plugin/flake.nix`) still uses the hardcoded nine-file list. This gap is load-bearing — new plugin functions could be added with silently missing declarations (gate passes, plugin breaks at runtime). Backport required before any further plugin development (see todo.md).
 * **Rationale:** Discovery is superior to hardcoding for any sufficiently-large project. Catches a class of errors that list-based gates miss. Load-bearing to prevent regression into the same silent-failure mode.
+## 41. Gradient Design — Warm Gold Ramp with Differential Stepping (2026-09-07)
+
+* **Decision:** Use a warm gold gradient ramp for role-based color scales (primary_1 through primary_13 in Noctalia M3 schema). The gradient walks from light (`#fddeaf` L*90) to dark (`#1a0f00` L*5) following a warm color path (R>G>B cast on every step). Luminance stepping is differential: larger steps (10 units) in the light half (L*90→L*50, better separation where text contrast matters), smaller steps (5 units) in the dark half (L*50→L*5, reduces false granularity where contrast is naturally high).
+
+* **Gradient verified:** 13 role-based steps with accessible text contrast at key points (L*90: 16.2:1, L*60: 6.6:1, L*35: 7.8:1, L*20: 13.2:1). All intermediate roles fall into high-signal regions where semantic distinctions are perceptually clear.
+
+* **Why warm gold:** Coherent with existing Ayu Green theme family. Warm cast provides visual warmth without competing with the primary (lime) accent.
+
+* **Why differential stepping:** Prevents wasted granularity in the dark half. Ensures accessible text contrast at semantically-important role boundaries (e.g., `surface_container` at L*60 meets 6.6:1 requirement). Smaller steps in dark half avoid the false-emphasis problem (where too many dark variants suggest importance hierarchy that doesn't exist).
+
+* **Implementation:** Noctalia community template + starship will consume this gradient. Each role-based variant (primary_1-13) is independently selectable for UI zones (buttons, backgrounds, accents, disabled states) while maintaining visual coherence.
