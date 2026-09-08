@@ -1,9 +1,5 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 palette = "m3"
-right_format = """
-[](primary_11)\
-$cmd_duration\
-[](fg:primary_11)"""
 
 # ONE CONTINUOUS RAMP DOWN THE PRIMARY TONAL SCALE: primary_13 -> primary_1,
 # thirteen steps, gold through brown to near-black. Modules sit on c0/c3/c6/c9
@@ -23,40 +19,102 @@ $cmd_duration\
 #   primary_7  band -> primary_15 text   7.4:1    lightness nothing warm clears
 #   primary_4  band -> primary_13 text  10.2:1    6:1 except pure black)
 # The weakest pair still beats the 5.5:1 the old neutral_7 language band had.
+#
+# THE RIGHT PROMPT RUNS THE SAME RAMP BACKWARDS, primary_1 -> primary_13, on the
+# same four band colours and the same four measured text pairs. Read across the
+# line the two bars form a V: gold at both edges, near-black where they meet.
+#
+# THE TWO BARS ARE SPLIT BY SUBJECT, NOT BY CONVENIENCE. Left is ambient -- the
+# things that are true of the terminal whatever you are doing: the clock, where
+# you are, what the machine is carrying. Right is the work: toolchain at the dark
+# end, then the repo, then the agent, then the nix environment at the bright end,
+# so the far right edge of the line is always "what shell am I actually in".
+# Neither bar can grow into the other's subject, which is what keeps a prompt
+# this dense readable -- you learn which half to look at before you read it.
+#
+#   left   primary_13 $time        primary_10 $directory  primary_7 $memory_usage
+#   right  primary_4  languages    primary_7  $vcs/ci     primary_10 agent
+#          primary_13 $nix_shell + $direnv
+#
+# The input line carries only what is true of the shell itself -- which shell,
+# and whether it is holding root -- unbanded, on the terminal background.
+#
+# SEPARATORS ARE SLANTED, AND THE SLANT TRACKS THE TONE. The left bar descends,
+# so it is sheared with the "\" pair (U+E0BE head, U+E0B8 step/tail); the right
+# bar ascends, so it is sheared with the "/" pair (U+E0BA head, U+E0BC step/tail).
+# Only the two head caps are half-painted -- every interior cell still carries a
+# full fg triangle over a bg fill, so the bar stays solid, just angled. Swap sets
+# by search-and-replace -- these all tile the ramp without leaving a gap:
+#   hard divider (the original)  U+E0B6 / U+E0B0
+#   slant  /                     U+E0BA / U+E0BC
+#   trapezoid                    U+E0D4 / U+E0D2
+#   flame                        U+E0C2 / U+E0C0     softest edge
+#   ice waveform                 U+E0CA / U+E0C8     softest edge
+#   pixel dither  small / big    U+E0C5 / U+E0C4  ,  U+E0C7 / U+E0C6
+#   honeycomb                    U+E0CC / U+E0CC
+#   lego                         U+E0D1 / U+E0CE
+# The dithered three (flame, ice, pixel) blend adjacent tonal steps and read as
+# the smoothest ramp of the set; the slant is the crispest.
 format = """
-[](primary_13)\
+[](fg:primary_13)\
 $time\
-[](fg:primary_13 bg:primary_12)\
-[](fg:primary_12 bg:primary_11)\
-[](fg:primary_11 bg:primary_10)\
+[](fg:primary_13 bg:primary_12)\
+[](fg:primary_12 bg:primary_11)\
+[](fg:primary_11 bg:primary_10)\
 $memory_usage\
-[](fg:primary_10 bg:primary_9)\
-[](fg:primary_9 bg:primary_8)\
-[](fg:primary_8 bg:primary_7)\
-$git_branch\
-$git_status\
-${custom.ci}\
-[](fg:primary_7 bg:primary_6)\
-[](fg:primary_6 bg:primary_5)\
-[](fg:primary_5 bg:primary_4)\
+[](fg:primary_10 bg:primary_9)\
+[](fg:primary_9 bg:primary_8)\
+[](fg:primary_8 bg:primary_7)\
+$directory\
+[](fg:primary_7 bg:primary_6)\
+[](fg:primary_6 bg:primary_5)\
+[](fg:primary_5 bg:primary_4)\
+[](fg:primary_4 bg:primary_3)\
+[](fg:primary_3 bg:primary_2)\
+[](fg:primary_2 bg:primary_1)\
+[ ](fg:primary_1)\
+$line_break
+$shell$sudo$character$cmd_duration"""
+
+right_format = """
+[](fg:primary_4)\
 $python\
 $golang\
 $nodejs\
 $docker_context\
-[](fg:primary_4 bg:primary_3)\
-[](fg:primary_3 bg:primary_2)\
-[](fg:primary_2 bg:primary_1)\
-[ ](fg:primary_1)\
-$line_break
-$directory\
-$character"""
+[](fg:primary_4 bg:primary_5)\
+[](fg:primary_5 bg:primary_6)\
+[](fg:primary_6 bg:primary_7)\
+$vcs\
+${custom.ci}\
+[](fg:primary_7 bg:primary_8)\
+[](fg:primary_8 bg:primary_9)\
+[](fg:primary_9 bg:primary_10)\
+${env_var.CLAUDECODE}\
+[](fg:primary_10 bg:primary_11)\
+[](fg:primary_11 bg:primary_12)\
+[](fg:primary_12 bg:primary_13)\
+$nix_shell\
+$direnv\
+[](fg:primary_13)"""
 
+
+# --- left bar  ·  when, where, and how hard it is working ---------------------
+
+# %A full weekday, %d %b %Y full date, %I:%M %p 12-hour clock. This is the widest
+# thing on the line; drop %A to %a and %Y entirely if the two bars ever collide.
+[time]
+disabled = false
+time_format = "%A·%I:%M%p"
+style = "bg:primary_13"
+format = '[[$time](fg:primary_4 bg:primary_13)]($style)'
 
 [directory]
-style = "fg:on_surface"
-format = "  $path "
+style = "bg:primary_7"
+format = '[  $path](fg:primary_15 bg:primary_7)[$read_only ](fg:error bg:primary_7)'
 truncation_length = 3
 truncation_symbol = "…/"
+read_only = " 󰌾"
 
 [directory.substitutions]
 "Documents" = "󰈙 "
@@ -65,35 +123,6 @@ truncation_symbol = "…/"
 "Pictures" = " "
 "Developer" = "󰲋 "
 
-[git_branch]
-symbol = ""
-style = "bg:primary_7"
-format = '[[ $symbol $branch ](fg:primary_15 bg:primary_7)]($style)'
-
-[git_status]
-style = "bg:primary_7"
-format = '[[($all_status$ahead_behind )](fg:primary_15 bg:primary_7)]($style)'
-
-[nodejs]
-symbol = ""
-style = "bg:primary_4"
-format = '[[ $symbol( $version) ](fg:primary_13 bg:primary_4)]($style)'
-
-[golang]
-symbol = ""
-style = "bg:primary_4"
-format = '[[ $symbol( $version) ](fg:primary_13 bg:primary_4)]($style)'
-
-[python]
-symbol = ""
-style = "bg:primary_4"
-format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:primary_13 bg:primary_4)]($style)'
-
-[docker_context]
-symbol = ""
-style = "bg:primary_4"
-format = '[[ $symbol( $context) ](fg:primary_13 bg:primary_4)]($style)'
-
 [memory_usage]
 symbol = "󰘚"
 threshold = -1
@@ -101,31 +130,66 @@ style = "bg:primary_10 fg:primary_0"
 format = "[ ($symbol:$ram_pct) ]($style)"
 disabled = false
 
-[time]
-disabled = false
-time_format = "%I:%M%p"
-style = "bg:primary_13"
-format = '[[$time](fg:primary_4 bg:primary_13)]($style)'
+# --- right bar  ·  the toolchain      primary_4 -------------------------------
 
-[line_break]
-disabled = true
+[python]
+symbol = ""
+style = "bg:primary_4"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:primary_13 bg:primary_4)]($style)'
 
-[character]
-disabled = false
-success_symbol = '[❯](bold fg:tertiary)'
-error_symbol = '[❯](bold fg:error)'
-vimcmd_symbol = '[❮](bold fg:tertiary)'
-vimcmd_replace_one_symbol = '[❮](bold fg:primary)'
-vimcmd_replace_symbol = '[❮](bold fg:primary)'
-vimcmd_visual_symbol = '[❮](bold fg:on_surface)'
+[golang]
+symbol = ""
+style = "bg:primary_4"
+format = '[[ $symbol( $version) ](fg:primary_13 bg:primary_4)]($style)'
 
-[cmd_duration]
-show_milliseconds = true
-format = "[ in $duration]($style)"
-style = "bg:primary_11 fg:primary_1"
+[nodejs]
+symbol = ""
+style = "bg:primary_4"
+format = '[[ $symbol( $version) ](fg:primary_13 bg:primary_4)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:primary_4"
+format = '[[ $symbol( $context) ](fg:primary_13 bg:primary_4)]($style)'
+
+# --- right bar  ·  the repo           primary_7 -------------------------------
+
+# $vcs replaces $git_branch$git_status: one module that dispatches on the VCS it
+# actually finds and expands to the whole per-VCS suite, so detached HEAD
+# (git_commit) and a half-finished rebase/merge (git_state) stop being invisible.
+# Every sub-module below is pinned to the primary_7 band or the expansion would
+# punch default green/yellow through the gradient.
+[vcs]
+git_modules = "$git_branch$git_commit$git_state$git_metrics$git_status"
+
+[git_branch]
+symbol = ""
+style = "bg:primary_7"
+format = '[[ $symbol $branch ](fg:primary_15 bg:primary_7)]($style)'
+
+[git_commit]
+only_detached = true
+commit_hash_length = 7
+style = "bg:primary_7"
+format = '[[\($hash$tag\) ](fg:primary_15 bg:primary_7)]($style)'
+
+[git_state]
+style = "bg:primary_7"
+format = '[[\($state( $progress_current/$progress_total)\) ](fg:primary_15 bg:primary_7)]($style)'
+
+# COSTS A DIFF PER PROMPT. only_nonzero_diffs keeps it quiet in a clean tree, but
+# the count itself is computed every time; set disabled = true if a big repo ever
+# pushes the prompt into starship's 500 ms command_timeout.
+[git_metrics]
 disabled = false
-show_notifications = true
-min_time_to_notify = 45000
+only_nonzero_diffs = true
+added_style = "fg:primary_15 bg:primary_7"
+deleted_style = "fg:primary_15 bg:primary_7"
+format = "([+$added ]($added_style))([-$deleted ]($deleted_style))"
+
+[git_status]
+style = "bg:primary_7"
+format = '[[($all_status$ahead_behind )](fg:primary_15 bg:primary_7)]($style)'
 
 [custom.ci]
 description = "GitHub Actions build for the last pushed commit (fed by ci-poll)"
@@ -144,6 +208,211 @@ when = "test -s $XDG_RUNTIME_DIR/volnixos-ci"
 command = "cat $XDG_RUNTIME_DIR/volnixos-ci"
 style = "bg:primary_7"
 format = '[[ $output ](fg:primary_15 bg:primary_7)]($style)'
+
+# --- right bar  ·  who is driving     primary_10 ------------------------------
+
+# EVERY VARIABLE THIS FLAKE DECLARES IS STATIC (home/default.nix sessionVariables
+# is Qt/Wayland paths and TMPDIR redirects) -- constants are noise in a prompt.
+# The one that actually varies and changes what a shell means is CLAUDECODE: this
+# terminal is a child of an agent session, not yours.
+[env_var.CLAUDECODE]
+variable = "CLAUDECODE"
+style = "bg:primary_10"
+format = '[[ 󰚩 agent ](fg:primary_0 bg:primary_10)]($style)'
+
+# --- right bar  ·  the environment    primary_13 ------------------------------
+
+# heuristic catches `nix develop` / `nix shell`, which never set IN_NIX_SHELL --
+# without it the band only appears under legacy nix-shell.
+[nix_shell]
+disabled = false
+heuristic = true
+symbol = "󱄅 "
+impure_msg = "impure"
+pure_msg = "pure"
+unknown_msg = "shell"
+style = "bg:primary_13"
+format = '[[ $symbol$state( $name) ](fg:primary_4 bg:primary_13)]($style)'
+
+# nix-direnv is on (home/common/tools.nix), so the thing worth seeing is an
+# .envrc that is present but NOT live -- you are looking at a stale environment
+# and owe it a `direnv allow`. The loaded case stays silent apart from the glyph.
+[direnv]
+disabled = false
+symbol = " "
+style = "bg:primary_13"
+format = '[[ $symbol$loaded$allowed ](fg:primary_4 bg:primary_13)]($style)'
+loaded_msg = ""
+unloaded_msg = " off"
+allowed_msg = ""
+not_allowed_msg = " !"
+denied_msg = " ✗"
+
+# --- input line ---------------------------------------------------------------
+
+# UNBANDED, ON THE TERMINAL BACKGROUND. The two bars are about the work and the
+# room; these two are about the process you are typing into -- which shell, and
+# whether it is still holding root -- so they sit against the caret instead of
+# inside the gradient, where they would have to argue with it for attention.
+[shell]
+disabled = false
+fish_indicator = ""
+bash_indicator = ""
+zsh_indicator = ""
+nu_indicator = ""
+unknown_indicator = ""
+style = "fg:on_surface_variant"
+format = '[$indicator ]($style)'
+
+# COSTS A `sudo -n true` PER PROMPT. That is how starship asks whether the
+# timestamp is still warm; it fails instantly when it is not, but a sudoers set
+# to log refusals will log one line per prompt. Set disabled = true if the
+# journal fills up.
+[sudo]
+disabled = false
+symbol = ""
+style = "bold fg:error"
+format = '[$symbol ]($style)'
+
+# NOT DISPLAYED, DELIBERATELY STILL RENDERED. The right prompt no longer shows a
+# duration, but show_notifications lives inside this module and starship only
+# runs a module that the format string actually references -- drop $cmd_duration
+# and the 45 s "your build finished" desktop notification goes with it. An empty
+# format keeps the module executing and prints nothing (verified against the
+# session bus: format="" still fires Notify, absence from the format does not).
+[cmd_duration]
+disabled = false
+format = ""
+show_milliseconds = true
+show_notifications = true
+min_time_to_notify = 45000
+
+[line_break]
+disabled = true
+
+[character]
+disabled = false
+success_symbol = '[❯](bold fg:tertiary)'
+error_symbol = '[❯](bold fg:error)'
+vimcmd_symbol = '[❮](bold fg:tertiary)'
+vimcmd_replace_one_symbol = '[❮](bold fg:primary)'
+vimcmd_replace_symbol = '[❮](bold fg:primary)'
+vimcmd_visual_symbol = '[❮](bold fg:on_surface)'
+
+# --- claude code statusline --------------------------------------------------
+
+# THE FOOTER IS THE SAME OBJECT AS THE PROMPT. `starship statusline claude-code`
+# renders this profile from the JSON Claude Code writes on stdin, so the footer
+# gets the identical ramp, the identical shear, and -- because $directory and
+# $vcs are one shared config -- literally the identical directory and git
+# segments. Four bands again, on the same measured text pairs:
+#   primary_13  clock + model     -> primary_4   10.2:1
+#   primary_10  directory         -> primary_0    6.6:1
+#   primary_7   git               -> primary_15   7.4:1
+#   primary_2   context/cost/plan -> primary_13  13.3:1, error 5.3:1
+# primary_2 rather than primary_4 for the meters is deliberate: it is the darkest
+# band on which the `error` role still clears 4.5:1, and that band is the only
+# one that needs a red.
+#
+# Wired up by ~/.claude/statusline.sh (NOT in this repo), which cds to the
+# session's directory, exports SL_CLOCK / SL_PLAN, and pipes the JSON through.
+[profiles]
+claude-code = """
+[](fg:primary_13)\
+${env_var.SL_CLOCK}\
+$claude_model\
+[](fg:primary_13 bg:primary_12)\
+[](fg:primary_12 bg:primary_11)\
+[](fg:primary_11 bg:primary_10)\
+$directory\
+[](fg:primary_10 bg:primary_9)\
+[](fg:primary_9 bg:primary_8)\
+[](fg:primary_8 bg:primary_7)\
+$vcs\
+[](fg:primary_7 bg:primary_6)\
+[](fg:primary_6 bg:primary_5)\
+[](fg:primary_5 bg:primary_4)\
+[](fg:primary_4 bg:primary_3)\
+[](fg:primary_3 bg:primary_2)\
+$claude_context\
+$claude_cost\
+${env_var.SL_PLAN}\
+${env_var.SL_PLAN_HOT}\
+[](fg:primary_2 bg:primary_1)\
+[](fg:primary_1)"""
+
+# statusline.sh sets this with bash's printf %(...)T -- a builtin, so the footer
+# costs no extra fork for a clock. [time] is not reused here because the prompt
+# wants the long form and the footer does not.
+[env_var.SL_CLOCK]
+variable = "SL_CLOCK"
+style = "bg:primary_13"
+format = '[[ 󰥔 $env_value ](fg:primary_4 bg:primary_13)]($style)'
+
+[claude_model]
+symbol = "󰚩 "
+style = "fg:primary_4 bg:primary_13"
+format = '[$symbol$model ]($style)'
+
+# display thresholds are on context USED, so they invert the old statusline's
+# "remaining" thresholds: remaining < 50 is used >= 50, remaining < 20 is
+# used >= 80. hidden=false on the 0.0 row or the meter vanishes below 30%.
+[claude_context]
+symbol = ""
+gauge_width = 5
+gauge_full_symbol = "█"
+gauge_partial_symbol = "▓"
+gauge_empty_symbol = "░"
+format = '[ $gauge $percentage $input_tokens/$output_tokens ]($style)'
+
+[[claude_context.display]]
+threshold = 0.0
+hidden = false
+style = "fg:tertiary bg:primary_2"
+
+[[claude_context.display]]
+threshold = 50.0
+hidden = false
+style = "fg:primary bg:primary_2"
+
+[[claude_context.display]]
+threshold = 80.0
+hidden = false
+style = "bold fg:error bg:primary_2"
+
+[claude_cost]
+symbol = ""
+format = '[\$$cost ]($style)'
+
+[[claude_cost.display]]
+threshold = 0.0
+hidden = false
+style = "fg:tertiary bg:primary_2"
+
+[[claude_cost.display]]
+threshold = 5.0
+hidden = false
+style = "fg:primary bg:primary_2"
+
+[[claude_cost.display]]
+threshold = 20.0
+hidden = false
+style = "bold fg:error bg:primary_2"
+
+# PLAN USAGE HAS NO STARSHIP MODULE -- the 5h/7d percentages are in the JSON but
+# nothing reads them, so statusline.sh formats them itself and hands over one of
+# two variables. Two rather than one because a module carries a single style:
+# SL_PLAN is the calm one, SL_PLAN_HOT is set instead when either window is at
+# 80% or more, and only one of them is ever exported.
+[env_var.SL_PLAN]
+variable = "SL_PLAN"
+style = "bg:primary_2"
+format = '[[$env_value ](fg:primary_13 bg:primary_2)]($style)'
+
+[env_var.SL_PLAN_HOT]
+variable = "SL_PLAN_HOT"
+style = "bg:primary_2"
+format = '[[$env_value ](bold fg:error bg:primary_2)]($style)'
 
 # >>> NOCTALIA M3 PALETTE >>>
 # Generated by Noctalia from Material 3 roles - do not edit manually
