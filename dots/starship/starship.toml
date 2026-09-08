@@ -105,7 +105,7 @@ disabled = false
 disabled = false
 time_format = "%I:%M%p"
 style = "bg:primary_13"
-format = '[[  $time ](fg:primary_4 bg:primary_13)]($style)'
+format = '[[$time](fg:primary_4 bg:primary_13)]($style)'
 
 [line_break]
 disabled = true
