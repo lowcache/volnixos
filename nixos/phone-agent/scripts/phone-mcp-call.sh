@@ -9,7 +9,12 @@ TOOL="$1"; ARGS="${2:-}"; [ -n "$ARGS" ] || ARGS='{}'
 PORT="${PHONE_PORT:-8462}"
 TOKEN="$(cat "${PHONE_TOKEN_FILE:?set PHONE_TOKEN_FILE}")"
 
-curl -sf --max-time "${PHONE_TIMEOUT:-10}" \
+# --connect-timeout keeps an unreachable phone failing fast even when a caller
+# raises PHONE_TIMEOUT: the two answer different questions. ingest.fetch returns
+# the whole file base64 in one response, so a 10s cap on THAT is a size limit
+# wearing a timeout's clothes — it aborted mid-transfer after the phone had
+# already marked the item delivered.
+curl -sf --connect-timeout "${PHONE_CONNECT_TIMEOUT:-5}" --max-time "${PHONE_TIMEOUT:-10}" \
   -H "Authorization: Bearer ${TOKEN}" \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json, text/event-stream' \

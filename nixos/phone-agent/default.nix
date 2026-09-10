@@ -20,6 +20,7 @@ in
     ./ingest-watcher.nix
     ./proximity.nix
     ./network-routing.nix
+    ./push.nix
   ];
 
   options.phone-agent = {

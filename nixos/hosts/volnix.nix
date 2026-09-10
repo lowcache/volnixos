@@ -92,5 +92,9 @@
     enable = true;
     phoneTailscaleIP = "100.101.229.9";
     tokenFile = config.sops.secrets.phone_agent_token.path;
+    # Read-only, token-gated, bound to the MicroVM tap: the phone pulls from
+    # ~/push, the laptop never pushes unsolicited. Needs the :8463 forwardPorts
+    # entry in vms.nix to be reachable from the tailnet.
+    enablePush = true;
   };
 }

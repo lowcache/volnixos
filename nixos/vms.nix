@@ -226,11 +226,20 @@
         # Return path reuses the host's existing 100.64.0.0/10 route via this
         # guest, so conntrack un-DNATs the replies. Unblocks phone voice.ask
         # source=laptop and the Phase-7 laptop_required scheduler tasks.
+        #
+        # Same shape for :8463, the phone-agent push server (phone-agent.pushPort):
+        # the phone pulls files from the laptop over this, so laptop→phone
+        # transfer stays phone-initiated and needs no inbound listener there.
         forwardPorts = [
           {
             proto = "tcp";
             sourcePort = 11434;
             destination = "192.168.101.1:11434";
+          }
+          {
+            proto = "tcp";
+            sourcePort = 8463;
+            destination = "192.168.101.1:8463";
           }
         ];
       };
