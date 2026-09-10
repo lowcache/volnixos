@@ -15,7 +15,7 @@ Plugging the drive in is the only automatic trigger. There is no timer.
 | 3 | ~1355 GiB | `VOLBAK` | ext4 | restic repository |
 
 Everything is addressed by **filesystem label**, never by `/dev/sd?`, so port
-order does not matter. `mkfs` sets those labels — `sgdisk -c` sets the GPT
+order does not matter. `mkfs` sets those labels — sfdisk's `name=` sets the GPT
 partition name, which is a different field and is *not* what the udev rule and
 mount units match on.
 
@@ -47,12 +47,21 @@ across reboots, which is exactly why nothing else here uses it.
     lsblk -o NAME,SIZE,TRAN,MODEL,SERIAL /dev/sda   # expect: BUP Slim, 1.8T
 
     sudo wipefs -a /dev/sda
-    sudo sgdisk --zap-all /dev/sda
-    sudo sgdisk -o /dev/sda
-    sudo sgdisk -n 1:0:+8G   -t 1:ef00 -c 1:rescue /dev/sda
-    sudo sgdisk -n 2:0:+500G -t 2:8300 -c 2:models /dev/sda
-    sudo sgdisk -n 3:0:0     -t 3:8300 -c 3:volbak /dev/sda
-    sudo partprobe /dev/sda
+    printf '%s\n' \
+      'label: gpt' \
+      'size=8GiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, name=rescue' \
+      'size=500GiB, type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, name=models' \
+      'type=0FC63DAF-8483-4772-8E79-3D69D8477DE4, name=volbak' \
+      | sudo sfdisk /dev/sda
+
+`sfdisk` rather than `sgdisk` because it ships with util-linux and is therefore
+always present — `gptfdisk`, `parted`, and `partprobe` are not installed on this
+host. Type GUIDs are written out in full rather than as `uefi`/`linux` aliases,
+whose availability varies by util-linux version. The last line carries no
+`size=`, meaning "the rest of the disk". sfdisk re-reads the partition table
+itself, so no `partprobe` step is needed. The `printf` pipe is used instead of
+a heredoc so the same command works in fish (this machine's login shell) and in
+bash (what a live-USB recovery session will drop you into).
 
 ### 4. Filesystems
 
