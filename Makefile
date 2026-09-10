@@ -44,6 +44,7 @@ SOPS_AGE_KEY_FILE ?= $(HOME)/.config/sops/age/keys.txt
         droid-check droid-plan droid-switch \
         run-netgate run-tailscale \
         sops-edit sops-edit-vm sops-rekey sops-view sops-view-vm \
+        backup backup-force backup-mount backup-umount \
         check fmt update update-nixpkgs trash \
         git comm push \
         dots-log dots-split dots-remote dots-push dots-pull
@@ -170,6 +171,36 @@ sops-view:
 sops-view-vm:
 	@test -f "$(SOPS_VM_FILE)" || { echo "no such secrets file: $(SOPS_VM_FILE)"; exit 1; }
 	SOPS_AGE_KEY_FILE=$(SOPS_AGE_KEY_FILE) sops -d $(SOPS_VM_FILE)
+
+# ==============================================================================
+# External-Drive Backup
+# ==============================================================================
+# Same systemd unit udev starts on plug-in, so a manual run and an automatic one
+# are the same code path — there is no second implementation to drift.
+## Backup
+## :backup: ..........: Run the external-drive backup now (obeys the 12h cooldown)
+backup:
+	@test -e /dev/disk/by-label/VOLBAK || { \
+	  echo "++ VOLBAK not found - is the drive plugged in?"; exit 1; }
+	@sudo systemctl start --wait vol-backup.service; rc=$$?; \
+	journalctl -u vol-backup.service -n 25 --no-pager -o cat; \
+	exit $$rc
+
+## :backup-force: ..........: Run it now even if a backup succeeded within the cooldown
+backup-force:
+	sudo rm -f /var/lib/vol-backup/last-success
+	@$(MAKE) --no-print-directory backup
+
+## :backup-mount: ..........: Mount the repo for manual restic work (restore, snapshots)
+backup-mount:
+	sudo systemctl start mnt-backup.mount
+	@echo "++ /mnt/backup mounted. Try: restic-volnix snapshots"
+	@echo "++ Browse a snapshot: mkdir -p /tmp/r && restic-volnix mount /tmp/r"
+
+## :backup-umount: ..........: Unmount and power down the drive
+backup-umount:
+	-sudo systemctl stop mnt-backup.mount mnt-models.mount
+	@sync; echo "++ Drive unmounted; safe to remove."
 
 # ==============================================================================
 # Flake & Code Maintenance

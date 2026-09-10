@@ -129,6 +129,12 @@
             ".config/systemd/user"
             ".config/sops"
             ".config/memd"
+            # rbw's imperative config (email, base_url, device_id) and the
+            # desktop client's session. Unpersisted, both are wiped with the
+            # tmpfs root and every boot starts logged out — which is exactly
+            # the friction that kills password-manager adoption.
+            ".config/rbw"
+            ".config/Bitwarden"
           ];
           # Note: with XDG_CACHE_HOME redirected to ~/Storage/.cache (see home/default.nix),
           # caches no longer land on the 4G tmpfs by default. These entries remain as a
@@ -168,6 +174,9 @@
             ".local/state/noctalia"
             ".local/state/wireplumber"
             ".local/state/memd"
+            # rbw's encrypted vault cache; re-syncable, but re-downloading the
+            # whole vault on every boot defeats the agent.
+            ".local/share/rbw"
             # Canonical imperative-profile generations. `nix-env -iA nixos.<pkg>`
             # writes profile-N-link + manifest here (XDG state profile). Persisting
             # this dir — NOT the ~/.nix-profile symlink (which is non-canonical and

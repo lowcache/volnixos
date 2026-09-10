@@ -67,6 +67,10 @@
         path = "/home/${username}/.config/phone-agent/token";
         mode = "0400";
       };
+      # restic repository password for the external backup drive. Root-owned:
+      # the backup runs as a system service, and a user-readable copy would put
+      # the key to every snapshot behind the same session that gets compromised.
+      restic_password = { };
       apify_api_key = {
         owner = username;
       };

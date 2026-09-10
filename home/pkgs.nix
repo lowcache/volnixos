@@ -73,6 +73,12 @@
           awww # swww wrapper/replacement
           waypaper
           thunderbird
+          bitwarden-desktop
+          # rbw shells out to a pinentry binary and ships none; programs.rbw
+          # does not pull one in either. Qt variant because the agent gets
+          # triggered from GUI contexts (browser extension, desktop client)
+          # where a curses prompt has no terminal to draw in.
+          pinentry-qt
           adw-gtk3
           cliphist
           libnotify

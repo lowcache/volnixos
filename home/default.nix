@@ -86,6 +86,15 @@ in
     inputs.memd.homeManagerModules.default
   ];
 
+  # Bitwarden CLI. settings is deliberately NOT set: the Home Manager module
+  # writes ~/.config/rbw/config.json as a read-only store symlink whenever
+  # settings != null (modules/programs/rbw.nix:101), which makes `rbw config
+  # set` fail — and that is the only way to change email or pinentry. Configure
+  # it once imperatively instead; ~/.config/rbw is persisted (see persist.nix).
+  # rbw also needs a pinentry binary and pulls none in: see pinentry-qt in
+  # pkgs.nix.
+  programs.rbw.enable = true;
+
   services.memd = {
     enable = true;
     installClaudeHooks = true;

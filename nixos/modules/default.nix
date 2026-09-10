@@ -5,6 +5,7 @@
     ./anonymous-mode.nix
     ./ai-stack.nix
     ./audio.nix
+    ./backup.nix
     ./boot.nix
     ./containers.nix
     ./desktop.nix
