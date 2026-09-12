@@ -226,6 +226,80 @@ status: active
 - [ ] User specifies preference (delete or warn)
 - [ ] Curator implements decision and documents in decisions.md #38
 
+### Anon-Mode Fail-Closed Redesign — Activation Pending (2026-09-12)
+
+**Status:** Redesign built and checked. Fail-closed invariant implemented with readiness ladder L0-L4 and per-failure-class health checks (see decisions.md #42). Tor service was dead for four days (2026-09-08 through 2026-09-12) due to SOCKSPort merge conflict, missing IPMasquerade, untested transparent path, and blind readiness checks. New design built and verified; awaits activation.
+
+- [ ] Run `make switch` to activate new anon-mode design
+- [ ] Verify: `systemctl --user status anon-watch` running; `tail -f /run/anon-mode/ready` shows readiness state
+- [ ] Test L4 (full suite): SOCKS anon check, transparent path anon check, negative path tests (loopback, IPv6, SO_BINDTODEVICE, gateway withdrawal)
+- [ ] Benchmark: measure per-check latency; confirm L4 suite completes within 30s (safe re-check interval)
+- [ ] Monitor: `anon-watch` disarm events in journal over 1 week; should be zero if check.torproject.org is stable
+
+**Open design decision:**
+- [ ] Revisit `sealOnHealthLoss` invariant: current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Evaluate: (1) accept Cloudflare uptime coupling, (2) self-host onion check endpoint, (3) hybrid (self-host + fallback to check.torproject.org).
+
+### Backport Discovery Mechanism to claude-companion Plugin (2026-09-06 — Load-Bearing)
+
+**Context:** The luau template now uses runtime discovery of `*.luau` files via `builtins.readDir`. Controlled testing showed this prevents undeclared-reference bugs that hardcoded file lists miss (false negatives). The source plugin flake.nix still uses the old nine-file hardcoded list and is thus vulnerable.
+
+**Implication:** Any new plugin functions added to claude-companion could silently have missing declarations (gate passes, plugin breaks at runtime). This is the exact failure mode the plugin flake's own comments acknowledge.
+
+- [ ] Open `~/CodeRepo/claude-companion/noctalia-claude-plugin/flake.nix`
+- [ ] Replace hardcoded `luauFiles` string with discovery logic from `templates/luau/flake.nix`
+- [ ] Test: run `nix flake check` on the plugin repo; verify all gates pass
+- [ ] Commit to claude-companion repo
+
+### Audio Module Activation (2026-08-25 — USER DECISION PENDING)
+
+**Status:** Audio module is built and ready. Requires activation via `make switch` (will also apply unrelated theme formatting from dots/). Post-switch needs WirePlumber restart to apply parked-card rules.
+
+- [ ] User runs `make switch` to activate audio module
+- [ ] Post-switch: run WirePlumber restart + sed removal of stored pins
+- [ ] Verify: `wpctl status` shows two sinks (Realtek + headset), not seven; `pactl list short sinks` works
+
+### Plugin Attribution — Email Drafted, PR Staged (2026-08-25)
+
+**Status:** Two community-plugins PRs staged locally in `/home/lowcache/CodeRepo/claude-companion/community-plugins` on branches `attribution/opencode-companion` (commit db9fe8d) and `attribution/9router-control` (commit 10648ea). Email draft written to `scratchpad/weinguyen-email.txt`. Nothing pushed.
+
+**Sequence:** Email first at `weinguyen1224@gmail.com`, then PR if no response within ~1 week.
+
+- [ ] Review email draft at `scratchpad/weinguyen-email.txt`
+- [ ] Send email to weinguyen1224@gmail.com
+- [ ] If no response in ~1 week, push branches and open PRs against upstream/main
+  - PR 1: `attribution/opencode-companion` (4 lines: notice + Credits section + version bump)
+  - PR 2: `attribution/9router-control` (4 lines: notice + Credits section + version bump)
+- [ ] Note: repo policy is "One plugin per PR" (enforced by `enforce-pr-template` workflow)
+- [ ] Note: PR author can request changes before merge unless fix is broken or mechanical repo-wide change
+
+### Wire android-integration — Choose Strategy (2026-08-03 — USER DECISION PENDING)
+
+**Status:** termux-am builds successfully. Two approaches:
+
+1. **disabledModules approach** (~60 lines): Full feature set (termux-open-url, termux-wake-lock), but track upstream drift.
+2. **xdg-open shim** (~5 lines): Gets OAuth's browser opening; skips wake-lock and setup-storage.
+
+**User decision needed:** Which approach (1 or 2)? Or defer entirely?
+
+### Verify tether × gemini-cli 0.25.2 (AWAITING USER DECISION)
+
+**Question:** Does tether require antigravity-cli specifically, or will gemini-cli 0.25.2 (nixos-25.11) suffice?
+
+- [ ] User clarifies antigravity vs 0.25.2
+- [ ] If 0.25.2 works: add to `droid/agents.nix` (no backport)
+- [ ] If antigravity required: backport (lower priority than rtk/mcp-gateway)
+
+### apply_theme.py — Decision: Keep Dormant Code or Delete (2026-09-05 — USER DECISION PENDING)
+
+**Context:** `dots/color-engine/apply_theme.py` no longer invoked (replaced by Noctalia's community template system for M3 palette and starship theming). File remains but **is destructive if executed**: line 145 uses a greedy regex that, when run, consumes the M3 palette block in `dots/starship/starship.toml`, erases the file tail, and recreates `volnix.json`.
+
+**Options:**
+1. Delete `apply_theme.py` entirely (recommended: M3 management is now Noctalia's responsibility; apply_theme.py serves no function).
+2. Keep for historical reference; add prominent warning comment on line 145 documenting the hazard.
+
+- [ ] User specifies preference (delete or warn)
+- [ ] Curator implements decision and documents in decisions.md #38
+
 ---
 
 ## BACKLOG / DEFERRED
