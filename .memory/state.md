@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-06
+last_updated: 2026-09-12
 status: active
 ---
 
@@ -59,11 +59,9 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 ## 3. MicroVM Guest Network (2026-08-06 — Confirmed Working)
 
-* **net-gate (Tor relay):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`.
+* **net-gate (Tor relay, rebuilt 2026-09-12):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Service was dead 2026-09-08 to 2026-09-12 (root cause: hand-rolled `settings.SOCKSPort` conflicted with auto-emitted `client.socksListenAddress` via list merge → tor died on second bind; netgate tap missing `IPMasquerade`, guest packets had no return route). Rebuilt with fail-closed readiness invariant: per-uid blackhole default, L0-L4 readiness ladder (only L4 releases workloads). Status: built/checked, **awaiting `make switch`**. Full incident and architecture: mistakes.md 2026-09-12, decisions.md #42.
 * **tailscale (Tailnet access):** Host `vm-tailscale` → `192.168.101.1`; guest → `192.168.101.2`. Service `microvm@tailscale` active (autostart enabled). Guest runs `tailscaled` with auth-key from `/persist/var/lib/tailscale-vm/authkey`, tailnet IP `100.66.249.117`. Host reaches tailnet via static route `100.64.0.0/10 via 192.168.101.2 dev vm-tailscale` (host itself is not a tailnet node). **Start/restart:** `sudo systemctl start microvm@tailscale`. Do not use `make run-tailscale` while unit is active (fights over tap/socket).
 * **VM tap interfaces** `unmanaged` in NetworkManager.
-
----
 
 ## 4. Active Workarounds
 

@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-07
+last_updated: 2026-09-12
 status: active
 ---
 
@@ -258,3 +258,23 @@ status: active
 - [ ] Write full body (user authoring)
 - [ ] Cross-check cited numbers against decisions.md #21, mistakes.md 2026-08-24, state.md §9 (Krita section)
 - [ ] Publish (remove `draft: true`, then `cd volnixos-blog && make build && make deploy`)
+### Anon-Mode Rebuild — Activate and Verify (2026-09-12 — Built/Checked, Awaiting Activation)
+
+**Status:** Tor service rebuilt with fail-closed readiness invariant (L0-L4 ladder). Config bugs fixed: SOCKSPort merge trap (hand-rolled + auto-emitted conflicting listeners), missing IPMasquerade on netgate tap, firewall-reload leak window. Built and checked; ready for activation. See mistakes.md 2026-09-12 and decisions.md #42.
+
+- [ ] Run `make switch` to activate anon-mode rebuild
+- [ ] Post-switch: verify anon-watch runs; check readiness ladder output for sensibility
+- [ ] Test: `anon-run curl https://check.torproject.org/` should return page with `IsTor:true`
+- [ ] Confirm: `/run/anon-mode/ready` exists (allows workloads to execute)
+
+### Anon-Mode L3 Dependency — Replace check.torproject.org with Self-Hosted Onion (2026-09-12 — DECISION PENDING)
+
+**Context:** L3/L4 readiness verification currently depends on check.torproject.org (external service). If their site is unreachable, down, or DNS-poisoned, anon-mode disarms even though the local tor tunnel is working correctly.
+
+**Proposal:** Self-hosted onion endpoint (lightweight HTTP responder, e.g., socat or trivial server) running in a second MicroVM or on the host, advertised to tor as a rendezvous point. anon-watch would query the local onion instead of check.torproject.org.
+
+**Trade-off:** +1 component complexity, -1 external dependency, same readiness architecture otherwise.
+
+- [ ] User decides: implement self-hosted onion endpoint, or accept external dependency?
+- [ ] If yes: design onion responder (minimal footprint, maybe wrapped in a nixos module), wire into net-gate startup, update anon-watch to use local onion
+- [ ] If no: document the L3 external dependency constraint in decisions.md #42 as a known ceiling
