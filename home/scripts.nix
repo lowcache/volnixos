@@ -1,17 +1,39 @@
-{ config, pkgs, ... }:
+{
+  config,
+  osConfig,
+  pkgs,
+  ...
+}:
 let
-  # Single source of truth for the net-gate Tor VM address. Change here only.
-  torVmIp = "192.168.100.2";
-  torSocksPort = "9050";
-  # Fail fast with a clear message if the Tor VM isn't up. runtimeShell is bash,
-  # so /dev/tcp works; timeout bounds the connect so a dead VM can't hang us.
+  # net-gate addressing comes from the system config (vol.anon-mode in
+  # nixos/modules/anonymous-mode.nix), which nixos/vms.nix also reads. Editing it
+  # in one place now moves the guest, the host jail, and these wrappers together.
+  anon = osConfig.vol.anon-mode;
+  torVmIp = anon.torVmAddress;
+  torSocksPort = toString anon.socksPort;
+  # Fail fast if Tor isn't answering, and say which of the two failure modes it
+  # is: a dead VM and a dead tor.service inside a live VM need different fixes,
+  # and the old message asserted "arm it with anon-on" for both — which is what
+  # masked a tor that had been dead for four days. runtimeShell is bash, so
+  # /dev/tcp works; timeout bounds the connect so a black hole can't hang us.
   checkTor = ''
     if ! ${pkgs.coreutils}/bin/timeout 2 ${pkgs.bash}/bin/bash \
         -c ": >/dev/tcp/${torVmIp}/${torSocksPort}" 2>/dev/null; then
-      echo "tor: net-gate VM unreachable at ${torVmIp}:${torSocksPort} — arm it with 'sudo systemctl start anonymous.target' (or 'anon-on')." >&2
+      if ${pkgs.iputils}/bin/ping -c1 -W1 ${torVmIp} >/dev/null 2>&1; then
+        echo "tor: net-gate is up at ${torVmIp} but nothing listens on ${torSocksPort} —" >&2
+        echo "     the guest's tor.service is down. Check: journalctl -u microvm@net-gate" >&2
+      else
+        echo "tor: net-gate VM unreachable at ${torVmIp} — start it with" >&2
+        echo "     'sudo systemctl start microvm@net-gate'." >&2
+      fi
       exit 1
     fi
   '';
+  # Per-invocation SOCKS credentials. IsolateSOCKSAuth is on by default, so a
+  # distinct user:pass gets a distinct circuit — one caller's traffic is not
+  # correlated with the next's. The values are throwaway; tor only uses them as
+  # an isolation key.
+  socksCreds = ''creds="anon$RANDOM$RANDOM:x"'';
   # --- CI status feed for the prompt -----------------------------------------
   # `make git` spawns ci-poll, which follows the GitHub Actions run for the
   # commit just pushed and keeps ONE line in $XDG_RUNTIME_DIR/volnixos-ci.
@@ -267,23 +289,35 @@ in
     '')
     (pkgs.writeShellScriptBin "tor-curl" ''
       ${checkTor}
-      exec ${pkgs.curl}/bin/curl --socks5-hostname ${torVmIp}:${torSocksPort} "$@"
+      ${socksCreds}
+      exec ${pkgs.curl}/bin/curl -x "socks5h://$creds@${torVmIp}:${torSocksPort}" "$@"
     '')
     (pkgs.writeShellScriptBin "tor-check" ''
       ${checkTor}
-      exec ${pkgs.curl}/bin/curl --socks5-hostname ${torVmIp}:${torSocksPort} \
-        https://check.torproject.org/api/ip
+      ${socksCreds}
+      exec ${pkgs.curl}/bin/curl -sS --max-time 30 \
+        -x "socks5h://$creds@${torVmIp}:${torSocksPort}" \
+        ${anon.exitCheckUrl}
     '')
+    # anon-run: the user-facing handle on the anonymous workload. All it does is
+    # call anon-exec, which the system module owns (nixos/modules/anonymous-mode.nix).
+    #
+    # That indirection is the point: the confinement properties (loopback denied,
+    # IPv6 refused, gateway resolv.conf bound over /etc/resolv.conf, anon.slice,
+    # readiness gate) live in exactly one place, so what users run and what
+    # anon-selftest proves cannot drift apart.
+    #
+    # No proxy variables here. Enforcement is the routing jail plus the guest's
+    # REDIRECT rules, so the workload does not need to know Tor exists — and an
+    # application that ignores proxy settings cannot bypass it. The SOCKS
+    # interface stays available deliberately, through tor-curl and tor-brave.
     (pkgs.writeShellScriptBin "anon-run" ''
-      ${checkTor}
       if [ "$#" -eq 0 ]; then
         echo "Usage: anon-run <command> [args...]" >&2
-        exit 1
+        echo "Arm first: sudo systemctl start anonymous.target" >&2
+        exit 64
       fi
-      exec /run/wrappers/bin/sudo -u anon-user ${pkgs.coreutils}/bin/env \
-        https_proxy=socks5h://${torVmIp}:${torSocksPort} \
-        http_proxy=socks5h://${torVmIp}:${torSocksPort} \
-        "$@"
+      exec /run/wrappers/bin/sudo /run/current-system/sw/bin/anon-exec "$@"
     '')
 
     # lidkeep — close the lid without suspending, for a bounded window.

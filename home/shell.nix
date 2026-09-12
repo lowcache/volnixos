@@ -81,9 +81,13 @@
         and set -gx TWINE_API_KEY (cat /run/secrets/twine_api_key)
       '';
       shellAbbrs = {
-        # Anonymous mode (P5-T3): arm/disarm egress via the net-gate Tor VM.
-        anon-on = "sudo systemctl start anonymous.target && tor-check";
+        # Anonymous mode: arm/disarm egress via the net-gate Tor VM. The target
+        # now asserts a real Tor exit before it reports success, so the tor-check
+        # chaser is gone — if `anon-on` returns 0, traffic left through Tor.
+        # Disarming re-seals the uid jail and reaps anon.slice.
+        anon-on = "sudo systemctl start anonymous.target";
         anon-off = "sudo systemctl stop anonymous.target";
+        anon-status = "systemctl --no-pager status anonymous.target anon-jail anon-routing anon-check anon-watch";
       };
       shellAliases = {
         jan = "$HOME/.bin/jan-nix";
