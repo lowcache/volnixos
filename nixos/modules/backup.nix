@@ -130,14 +130,21 @@ let
 
     result="''${SERVICE_RESULT:-success}"
 
+    # Resolve the physical device FIRST. Doing it after the unmount raced the
+    # device going away and asked udisks to power off a stale node — that is the
+    # "Error opening /dev/sda for fsync: No such device" on 2026-09-10.
+    ${lib.optionalString cfg.powerOffWhenDone ''
+      pk=""
+      part=$(${pkgs.util-linux}/bin/findfs UUID=${cfg.repoFsUuid} 2>/dev/null || true)
+      [ -n "$part" ] && pk=$(${pkgs.util-linux}/bin/lsblk -no pkname "$part" 2>/dev/null || true)
+    ''}
+
     ${pkgs.coreutils}/bin/sync
     ${pkgs.systemd}/bin/systemctl stop ${repoMountUnit} ${modelsMountUnit} || true
 
     ${lib.optionalString cfg.powerOffWhenDone ''
-      part=$(${pkgs.util-linux}/bin/findfs LABEL=${cfg.repoLabel} 2>/dev/null || true)
-      if [ -n "$part" ]; then
-        pk=$(${pkgs.util-linux}/bin/lsblk -no pkname "$part" 2>/dev/null || true)
-        [ -n "$pk" ] && ${pkgs.udisks2}/bin/udisksctl power-off -b "/dev/$pk" || true
+      if [ -n "$pk" ] && [ -b "/dev/$pk" ]; then
+        ${pkgs.udisks2}/bin/udisksctl power-off -b "/dev/$pk" || true
       fi
     ''}
 
@@ -152,14 +159,36 @@ in
   options.vol.backup = {
     enable = lib.mkEnableOption "plug-triggered external-drive backup (restic)";
 
-    driveSerial = lib.mkOption {
+    repoFsUuid = lib.mkOption {
       type = lib.types.str;
-      example = "00000000NAEA54PH";
+      example = "965cca42-99f0-4b1a-becf-5024d644ffc6";
       description = ''
-        ID_SERIAL_SHORT of the USB disk, from
-        `udevadm info --query=property --name=/dev/sdX`. Binding the trigger to
-        the serial rather than to a device node means it fires for THIS drive in
-        any port, and never for some other USB disk that happens to be sda.
+        ID_FS_UUID of the repo partition (`lsblk -no UUID /dev/sdXN`).
+
+        Deliberately NOT ID_SERIAL_SHORT: the USB transport reports a different
+        serial depending on which driver is bound — this drive answers
+        00000000NAEA54PH under uas and ZDZSRV15 under usb-storage — so a
+        serial-keyed rule silently stops matching the moment a quirk changes the
+        driver. That happened here (2026-09-10). The filesystem UUID is probed
+        from the filesystem itself, so it is identical either way, and it names
+        exactly the thing we intend to mount.
+      '';
+    };
+
+    usbQuirks = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      example = [ "0bc2:ac19:u" ];
+      description = ''
+        usb-storage quirk entries, emitted as a kernel parameter. The `u` flag
+        forces the older BOT driver instead of UAS for that VID:PID.
+
+        Needed here because the Seagate bridge fails under sustained write load
+        with UAS: `data cmplt err -71`, `uas_pre_reset: timed out`, then
+        DID_NO_CONNECT and the device drops off the bus. It survives light use
+        and dies several minutes into a real backup. BOT is roughly 15-30%
+        slower on large sequential writes, which is irrelevant for an unattended
+        backup and strictly better than one that aborts.
       '';
     };
 
@@ -292,6 +321,10 @@ in
     # and check clocks reset on every boot and both stop meaning anything.
     environment.persistence."/persist".directories = [ "/var/lib/vol-backup" ];
 
+    boot.kernelParams = lib.optional (
+      cfg.usbQuirks != [ ]
+    ) "usb-storage.quirks=${lib.concatStringsSep "," cfg.usbQuirks}";
+
     services = {
       # udisksctl issues SYNCHRONIZE CACHE and STOP UNIT rather than merely
       # dropping the mount, which is the difference between "unmounted" and
@@ -304,7 +337,7 @@ in
       # matching it here binds the trigger to this drive rather than to a
       # device node that another disk could take.
       udev.extraRules = ''
-        ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_SERIAL_SHORT}=="${cfg.driveSerial}", ENV{ID_FS_LABEL}=="${cfg.repoLabel}", TAG+="systemd", ENV{SYSTEMD_WANTS}+="vol-backup.service"
+        ACTION=="add", SUBSYSTEM=="block", ENV{DEVTYPE}=="partition", ENV{ID_FS_UUID}=="${cfg.repoFsUuid}", TAG+="systemd", ENV{SYSTEMD_WANTS}+="vol-backup.service"
       '';
 
       restic.backups.${cfg.resticName} = {
@@ -379,6 +412,11 @@ in
             Nice = 19;
             IOSchedulingClass = "idle";
             TimeoutStartSec = "12h";
+            # systemd.nix sets DefaultTimeoutStopSec=10s globally. The teardown
+            # unmounts two filesystems and spins the drive down, which exceeds
+            # that, so on 2026-09-10 ExecStopPost was SIGTERMed mid-flight and
+            # the drive was left mounted. Stop needs its own budget.
+            TimeoutStopSec = "180s";
           };
         };
       };

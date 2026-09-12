@@ -35,7 +35,12 @@
     # and never for another USB disk. Partition labels: RESCUE / MODELS / VOLBAK.
     backup = {
       enable = true;
-      driveSerial = "00000000NAEA54PH";
+      # Filesystem UUID of VOLBAK, not a USB serial — the serial differs per
+      # driver (see the module's repoFsUuid description).
+      repoFsUuid = "965cca42-99f0-4b1a-becf-5024d644ffc6";
+      # Seagate BUP Slim bridge (ST2000LM007): UAS drops the device off the bus
+      # under sustained writes. Force BOT.
+      usbQuirks = [ "0bc2:ac19:u" ];
       passwordFile = config.sops.secrets.restic_password.path;
 
       # Two sources, two devices. /persist carries the machine (including
