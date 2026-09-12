@@ -114,22 +114,32 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-12 — Tor Service Dead for 4 Days; Readiness Check Masked All Three Failure Modes
+### 2026-09-05 — Rogue AP-Mode NM Profile Silently Blocks WiFi Scanning
 
-* **Symptom:** anon-mode unavailable (net-gate tor.service dead since 2026-09-08 15:18). Two independent causes, both invisible to health checks.
+* **Symptom:** WiFi scanning returned zero results (no hotel APs, phone hotspot visible). Suspected 5 GHz hardware fault. Generation rollback ineffective.
 
-* **Root cause:**
-  1. **Config merge trap:** `nixos/vms.nix` hand-rolled `settings.SOCKSPort = [0.0.0.0:9050]` while `services.tor.client.enable` auto-emits `SOCKSPort 127.0.0.1:9050` via `client.socksListenAddress`. Settings type is LIST, so values MERGE instead of override. torrc carried two listeners on port 9050; tor died on the second bind (fatal). `ExecStartPre --verify-config` passed silently because verify does not bind sockets.
-  2. **Missing masquerade:** netgate tap had `IPv4Forwarding = true` but no `IPMasquerade = true`. Guest packets left the VM with src 192.168.100.2, hit the host with no return route, and dropped. tor could not bootstrap even with a working listener. (Contrast: tailscale tap had masquerade from day one because tailscale required egress testing; tor never had E2E egress verification.)
-  3. **Bonus defect:** transparent path (mangle + fwmark + policy route) was wired on the host but never tested. Guest had no nat REDIRECT and no ip_forward, so marked packets died inside the VM.
-  4. **Bonus leak:** `firewall-reload` deletes `extraStopCommands`' rules and re-adds `extraCommands` only on firewall-start. Every `make switch` firewall reload left `anon-user` egress unmarked → clearnet for ~30 sec.
+* **Root cause:** Two accidental NetworkManager AP-mode profiles (`Wi-Fi connection 1/2`) in `/etc/NetworkManager/system-connections/` (persisted from `/persist`, not flake-declared), both open on hotel-like SSIDs. First profile auto-activated at boot. Hardware: RTL8852BE radio (rtw89_8852be) is single-radio, cannot beacon as AP and scan client-mode simultaneously. Active AP → all `nmcli device wifi list` scans return `CTRL-EVENT-SCAN-FAILED ret=-95` (EOPNOTSUPP). Client-mode profiles require successful scans to be "available"; device remained AP-only across reboots.
 
-* **Why it stayed hidden:** `anon-socks-check` ran at arm-time only and proved only a TCP handshake. `tor-check`'s precheck reported ANY failure (listener absent, bootstrap failed, anonymisation failed) as "arm it with anon-on"; a single yes/no gate cannot distinguish three independent failure modes. The readiness check was a **false negative detector** — it could not tell you which of three things was broken.
+* **Why rollback failed:** `/etc/NetworkManager/system-connections/` is bind-mounted from `/persist/` (hardware-configuration.nix:89). NM profiles are runtime STATE, not Nix declarations. Generation rollback cannot reach persisted directories. **Broader truth:** Any NM misconfiguration on this host survives rollback; same applies to all impermanence persist paths.
 
-* **Prevention rule (fixes applied 2026-09-12):**
-  1. Declare SOCKS/TransPort/DNSPort through `services.tor.client.{socksListenAddress, transparentProxy.enable, dns.enable}`, never `settings.SOCKSPort/TransPort/DNSPort` hand-rolled. These options are LIST-typed and MERGE.
-  2. netgate tap **must** have `IPMasquerade = true` (not just `IPv4Forwarding`).
-  3. Readiness checks must provide **multi-level ladder** (L0-L4): L0 = has listener, L1 = bootstrapped, L2 = can reach guards, L3 = verified anon path, L4 = all negative tests pass (no loopback fallback, no IPv6 leak, no unbind-to-WAN, gateway required). Only L4 releases workloads. Single yes/no gate masks differences; layered gates surface which step broke.
-  4. **Never test only the positive path:** `anon-watch` re-runs L4 ladder every 10 min. If check.torproject.org is unreachable (their site down, DNS poisoned, or BGP hijack), anon-mode disarms even though the local tunnel is working. Self-hosted onion endpoint removes this external dependency (see decisions.md #42, todo.md).
+* **Security exposure:** ~15 min on 2026-09-05 ~15:33 UTC: laptop broadcast open AP with hotel SSID, NATing USB tether. One station (randomised MAC `06:83:0d:cd:21:2d`) associated three times. No client IP or payload logging available; attribution impossible.
 
-* **Fixed (2026-09-12):** Tor configs rewritten; masquerade added; firewall-reload leak plugged via `ip rule uidrange` (survives reloads, survives firewall to nftables migration). Readiness ladder implemented. Status: built, checked, awaiting `make switch`.
+* **Prevention rule:** (1) **nmtui trap:** *Add a connection* screen auto-names profiles `Wi-Fi connection N` + defaults Mode to *access-point* + flips IPv4 to Shared. Footgun. Use *Activate a connection* for discovered networks instead. Same trap in `nm-connection-editor`. (2) **Diagnostic:** `nmcli device wifi list` returning one entry with BSSID = device MAC + signal 0 = radio is AP. (3) **Audit one-liner:** `for u in $(nmcli -g UUID connection show); do [ "$(nmcli -g 802-11-wireless.mode connection show $u)" = ap ] && nmcli -g connection.id connection show $u; done`. (4) **Persisted NM state:** Periodically audit `/etc/NetworkManager/system-connections/` outside flake; NM is state not config. Document intentional AP profiles (if any) in comments or persist.nix. (5) **Fixed:** Deleted both profiles; scanning recovered immediately.
+
+### 2026-09-08 — Tor Service Dead on net-gate VM, Four-Day Outage: SOCKSPort Merge + Missing IPMasquerade + Health Check Blindness
+
+* **Symptom:** net-gate's tor.service dead since 2026-09-08 15:18 through 2026-09-12 (four-day outage). `anon-mode` readiness checks reported green, so workloads attempted routing through a dead gateway.
+
+* **Root causes:**
+  1. **SOCKSPort merge conflict:** `nixos/vms.nix` declared `settings.SOCKSPort = [0.0.0.0:9050]` while `services.tor.client.enable` emits its own `SOCKSPort 127.0.0.1:9050` from `client.socksListenAddress`. Module options LIST-merge; torrc carried two port-9050 listeners. Tor died binding the second listener (fatal). `ExecStartPre --verify-config` passed because verify does not bind. Same trap applies to TransPort/DNSPort vs `client.transparentProxy.enable` / `client.dns.enable`.
+  2. **IPMasquerade missing on netgate tap:** Forwarded guest packets (`src 192.168.100.2`) left the tap unchanged and had no return path. Tor could not bootstrap even with a working listener. Tailscale tap had masquerade since creation; netgate never did — tor egress E2E was never tested.
+  3. **Transparent path never wired:** Host firewall (mangle, fwmark, policy route) complete; guest had no nat REDIRECT and no ip_forward. Marked traffic entered VM and died. Only working mechanism was `https_proxy=socks5h://`.
+  4. **Health check blindness:** `anon-socks-check` ran at arm time only, proved TCP handshake only. `tor-check` reported ANY failure as "arm with anon-on". Checks could not distinguish (listener absent) from (not bootstrapped) from (path not anonymising). Masked all three failure classes.
+
+* **Why it stayed hidden:** Four-day period with low anon-mode egress volume; readiness checks reported green because they measured wrong signal (TCP handshake, not bootstrapping, not anonymising).
+
+* **Prevention rules:**
+  1. **SOCKSPort rule:** Declare listener via `services.tor.client.socksListenAddress`, never `settings.SOCKSPort` directly. Same applies to `client.transparentProxy` / `client.dns` — use enable toggles + listen-address options, not hand-rolled settings.
+  2. **Forwarding tap rule:** Every tap forwarding guest traffic to host must have `IPMasquerade = true` (or equivalent nftables nat rule). Test with `curl https://www.ipleak.net/ -v` from guest; should show host IP, not guest 192.168.x.x. If missing, guest→host packets drop (no return path).
+  3. **Path testing rule:** Test transparent routing E2E (mark packet, observe listener receipt, confirm REDIRECT) and SOCKS E2E separately (connect to `<host>:9050`, prove handshake + auth + anonymity). Do not assume working if only one path tested.
+  4. **Readiness check rule:** Health checks must distinguish failure modes. Checks reporting green for (no listener) + (not bootstrapped) + (circuit broken) are useless. Implement per-failure-class tests; gate enablement only on full passing set.

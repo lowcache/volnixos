@@ -531,23 +531,14 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Implementation:** Noctalia community template + starship will consume this gradient. Each role-based variant (primary_1-13) is independently selectable for UI zones (buttons, backgrounds, accents, disabled states) while maintaining visual coherence.
 
 * **Stability across color schemes:** The hex values shown here (`#fddeaf` through `#1a0f00`) are specific to the Ayu Green palette. When you change color schemes via `color-scheme-set source name`, Noctalia regenerates the primary gradient using the same *strategy* (warm cast, differential luminance stepping) applied to the new palette's dominant hue. The role-based architecture (primary_1-13) and step magnitudes remain constant; only the actual hex values change. Verified in decision #38: scheme change Rosewater → Sapphire produced hex updates (`#f4dbd6` → `#7dc4e4`) while maintaining M3 role semantics.
-## 42. Anon-Mode Readiness Invariant — Fail-Closed, Multi-Level Verification (2026-09-12)
+## 42. Anon-Mode Fail-Closed Invariant — Readiness Ladder L0-L4 with Per-Failure-Class Testing (2026-09-12)
 
-* **Decision:** Anonymity mode (net-gate tor relay) uses a fail-closed invariant backed by a multi-level readiness ladder (L0-L4) where only the highest level (end-to-end anon egress verified) releases workloads. Default state: all anon-user traffic blackholed. Arming swaps in the gateway route; disarming (on health loss) restores blackhole.
+* **Decision:** Rebuild anon-mode around a fail-closed invariant: jail armed at boot with per-uid blackhole default (v4+v6); arming only swaps in gateway route; readiness ladder L0-L4 where only L4 (enforced path returns IsTor:true) releases workloads via `/run/anon-mode/ready`; `anon-selftest` proves negative paths (loopback resolver, IPv6, SO_BINDTODEVICE to WAN, gateway withdrawn). Health check re-runs every 10 min via `anon-watch`; disarms on loss.
 
-* **Architecture:**
-  - **Default jail:** Per-uid blackhole route `ip rule uidrange uid/gid ... table blackhole` at boot (v4+v6). All anon-user packets drop.
-  - **Readiness ladder:** Five discrete levels verify increasingly strict invariants:
-    - **L0:** tor listener exists (`ss -tln | grep :9050`).
-    - **L1:** tor bootstrap complete (`grep "Bootstrapped 100%" /var/log/tor/log`).
-    - **L2:** can reach guards (test tor SOCKS connectivity to a known onion).
-    - **L3:** egress verified anon (fetch check.torproject.org via SOCKS, parse `IsTor:true`).
-    - **L4:** negative tests pass (loopback resolver disabled, IPv6 blocked, SO_BINDTODEVICE to WAN device fails, gateway active).
-  - **Release gate:** Only L4 (all positive + all negative) writes `/run/anon-mode/ready`. Workloads gate on ready file presence.
-  - **Monitoring:** `anon-watch` re-runs L4 every 10 min. Health loss → disarm (restore blackhole, delete ready).
+* **Why:** Prior design's readiness checks could not distinguish listener-dead from not-bootstrapped from path-broken (see mistakes.md 2026-09-08). Absence of checks produces four-day silent outages; blind checks produce false-green and routed-through-dead-gateway hazards. Fail-closed (default blackhole, require proven path) prevents both.
 
-* **Why this shape:** Masks the old failure mode where a single yes/no health check could not distinguish "listener absent" from "not bootstrapped" from "not anonymising" — any of three could be wrong, but the check said "fail-safe, arm it." Ladder exposes which step failed. Fail-closed (blackhole default) beats fail-open (clearnet default) by a factor of infinity for an anonymity system.
+* **Health check design (critical):** L0 = can bind listener? L1 = can bootstrap circuit? L2 = does SOCKS handshake succeed? L3 = does stream egress return IsTor:true? L4 = can withstand path loss (loopback resolver, IPv6 block, SO_BINDTODEVICE to WAN, gateway withdrawal)? Only L4 passes unblocks `/run/anon-mode/ready`.
 
-* **External dependency constraint:** L3 verification depends on external service (check.torproject.org). If their service is down, unreachable, or DNS-poisoned, anon-mode disarms even though the local tor tunnel is working correctly. **Decision pending (see todo.md):** replace L3 with self-hosted onion endpoint to remove this external dependency.
+* **Open decision (sealOnHealthLoss):** Current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Future: self-hosted onion check (onion-only verification endpoint) to remove upstream dependency. Transparent path cannot do per-invocation stream isolation (one client addr → one circuit), so separate identities still need separate SOCKS credentials or separate uids.
 
-* **Why now:** Identified 2026-09-12 after tor.service was dead for 4 days (root cause: config merge trap + missing masquerade; see mistakes.md 2026-09-12). The old readiness check couldn't tell which layer broke. Incident confirms multi-layer verification is load-bearing.
+* **Status:** Built and checked (2026-09-12); awaiting activation via `make switch`.
