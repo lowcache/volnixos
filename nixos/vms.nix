@@ -237,7 +237,21 @@ in
           # machinery, not the user's destinations. This is tor's default; it is
           # spelled out because the guest journal is now persisted.
           SafeLogging = true;
-          VirtualAddrNetworkIPv4 = "172.16.0.0/12";
+          # Automapped hostnames get an address out of this range, and the
+          # workload then CONNECTS to it. So the range must not contain any
+          # address the host answers for: `ip rule` consults the `local` table at
+          # priority 0, ahead of the jail's uidrange rule (priority 100), and a
+          # destination that is a local address never reaches the jail's table
+          # at all. The connection would go to this host instead of through tor,
+          # with the routing table still looking entirely correct — the exact
+          # "kernel says tor, the web says otherwise" signature.
+          #
+          # 172.16.0.0/12 was wrong here: this host's WAN is 172.16.32.111/22 and
+          # docker0 is 172.17.0.1/16, both inside it. 10.192.0.0/10 is the
+          # conventional range for transparent-proxy setups and collides with
+          # nothing this host holds (its 10-net address is 10.187.3.118/24, below
+          # the /10). Re-check this if the host's addressing changes.
+          VirtualAddrNetworkIPv4 = "10.192.0.0/10";
           AutomapHostsOnResolve = true;
           # No IPv6 uplink on this host: don't spend circuit-build attempts on
           # v6 ORPorts that cannot be reached.

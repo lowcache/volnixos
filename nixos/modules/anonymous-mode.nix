@@ -114,6 +114,39 @@ let
     ${ip} route replace blackhole 0.0.0.0/0 metric ${blackholeMetric} table ${table}
     ${ip} -6 route replace blackhole ::/0 metric ${blackholeMetric} table ${table}
 
+    # MIGRATION GUARD. The previous design marked this uid's packets from a
+    # `type route` mangle OUTPUT chain. A route-type chain re-runs the routing
+    # decision whenever it changes the mark, and the `fwmark` rule that used to
+    # catch that mark no longer exists. A leftover marking rule therefore lets
+    # table ${table} supply the SOURCE address and then silently re-routes the
+    # packet onto `main` for the DEVICE — egress over the clearnet with the
+    # host's real address, while every `ip route get` still reports the tap.
+    # Observed on 2026-09-12: the rule survived the overhaul in the running
+    # kernel because nothing in the new config removes it. Refuse to report the
+    # jail armed while it exists.
+    #
+    # Read the ruleset ONCE and check that the read itself worked. Piping nft
+    # straight into grep with stderr discarded made an unreadable ruleset
+    # indistinguishable from a clean one: the guard reported the boundary clear
+    # precisely when it could not see the boundary. In a module whose whole
+    # premise is fail-closed, "could not check" must mean "not verified".
+    if ! ruleset=$(${pkgs.nftables}/bin/nft list ruleset 2>&1); then
+      echo "cannot read the netfilter ruleset to check for a stale marking rule:" >&2
+      echo "$ruleset" >&2
+      echo "refusing to report the jail armed on a boundary that was not verified." >&2
+      exit 1
+    fi
+    if ${pkgs.coreutils}/bin/printf '%s' "$ruleset" \
+        | ${pkgs.gnugrep}/bin/grep -q "skuid ${toString cfg.uid}"; then
+      echo "a stale packet-marking rule for uid ${toString cfg.uid} is live in netfilter." >&2
+      echo "it re-routes this uid AFTER the jail has chosen a source address," >&2
+      echo "which leaves over the clearnet with this host's real address." >&2
+      echo "remove it, then restart this unit:" >&2
+      echo "  nft -a list chain ip mangle OUTPUT     # find the handle" >&2
+      echo "  nft delete rule ip mangle OUTPUT handle <N>" >&2
+      exit 1
+    fi
+
     # Verify. Reporting success over an open jail is the worst failure available
     # to this module, so it is the one thing checked explicitly.
     for fam in "" "-6"; do
@@ -129,6 +162,43 @@ let
       echo "jail NOT sealed: table ${table} has no default route at all." >&2
       exit 1
     fi
+  '';
+
+  # THE gateway route, raised and withdrawn as one definition — used by
+  # anon-routing's ExecStart/ExecStop, by anon-check when a verification fails,
+  # and by anon-selftest's "gateway withdrawn" case.
+  #
+  # Callers must use THESE and not `systemctl start/stop anon-routing.service`.
+  # The unit is not a safe handle on the route: anon-check and anonymous.target
+  # both Require= it, and systemd stops a unit whose Requires= target is
+  # explicitly stopped. So stopping anon-routing does not withdraw a route — it
+  # tears down the whole stack (stamp removed, anon.slice reaped), and starting
+  # it again restores only the route, leaving anonymous mode silently disarmed.
+  # anon-selftest did exactly that on every run.
+  routingUp = pkgs.writeShellScript "anon-routing-up" ''
+    # The tap is created by the microvm unit and can lag it slightly.
+    for i in $(${pkgs.coreutils}/bin/seq 1 30); do
+      [ -d /sys/class/net/${cfg.tapInterface} ] && break
+      ${pkgs.coreutils}/bin/sleep 1
+    done
+    if [ ! -d /sys/class/net/${cfg.tapInterface} ]; then
+      echo "${cfg.tapInterface} never appeared — is microvm@net-gate running?" >&2
+      exit 1
+    fi
+    ${ip} route replace ${cfg.torVmSubnet} dev ${cfg.tapInterface} \
+      src ${cfg.tapAddress} table ${table}
+    ${ip} route replace default via ${cfg.torVmAddress} dev ${cfg.tapInterface} \
+      src ${cfg.tapAddress} metric ${gatewayMetric} table ${table}
+  '';
+
+  routingDown = pkgs.writeShellScript "anon-routing-down" ''
+    # anon-jail's blackhole floor is always underneath, so dropping the gateway
+    # re-seals the table without a gap. Re-assert it first anyway: this must not
+    # depend on anon-jail having run more recently than a flush.
+    ${ip} route replace blackhole 0.0.0.0/0 metric ${blackholeMetric} table ${table}
+    ${ip} route del default via ${cfg.torVmAddress} dev ${cfg.tapInterface} \
+      metric ${gatewayMetric} table ${table} 2>/dev/null || true
+    ${ip} route del ${cfg.torVmSubnet} dev ${cfg.tapInterface} table ${table} 2>/dev/null || true
   '';
 
   # The workload's resolver: the gateway, whose nat rules bend :53 into Tor's
@@ -328,13 +398,26 @@ let
     #    "gateway down" case, tested at the routing layer so the VM keeps
     #    running. If this script dies here the jail stays SEALED, which is the
     #    safe direction to fail in.
-    ${systemctl} stop anon-routing.service
+    #
+    #    Withdrawn with routingDown, NOT by stopping anon-routing.service: both
+    #    anon-check and anonymous.target Require= that unit, so stopping it
+    #    cascades into a full disarm — the readiness stamp is deleted and
+    #    anon.slice is reaped, killing any workload the user had running — and
+    #    the matching `start` restored only the route. Every selftest run used
+    #    to leave anonymous mode disarmed while reporting all assertions held.
+    ${routingDown}
     if ${anonExec}/bin/anon-exec --probe ${curl} -sS --max-time 10 https://example.com >/dev/null 2>&1; then
       bad "workload still reached the internet with the gateway route REMOVED"
     else
       pass "gateway route removed => no connectivity (no clearnet fallback)"
     fi
-    ${systemctl} start anon-routing.service
+    if ! ${routingUp}; then
+      echo "anon-selftest: FAILED TO RESTORE the gateway route." >&2
+      echo "               the jail is sealed (blackhole floor), so this is safe," >&2
+      echo "               but anonymous mode is now down. Re-arm with:" >&2
+      echo "               sudo systemctl restart anonymous.target" >&2
+      exit 1
+    fi
 
     if [ "$fail" = 0 ]; then
       echo "anon-selftest: all assertions held."
@@ -538,6 +621,35 @@ in
       ManageForeignRoutingPolicyRules = false;
     };
 
+    # STRICT REVERSE-PATH FILTERING SILENTLY KILLS THE ENFORCED PATH.
+    #
+    # NixOS defaults checkReversePath to strict, emitting
+    #   -t mangle -A nixos-fw-rpfilter -m rpfilter --validmark -j RETURN
+    #   -t mangle -A nixos-fw-rpfilter -j DROP
+    # in PREROUTING, which runs at priority -150 — ahead of nat, and ahead of
+    # any routing decision.
+    #
+    # The enforced path is asymmetric by construction. A workload's TCP flow
+    # leaves via ${cfg.tapInterface} to the guest, which REDIRECTs it into tor. The reply
+    # has already been un-NAT'd by the guest's conntrack by the time it is on the
+    # wire, so it reaches this host on ${cfg.tapInterface} carrying the ORIGINAL
+    # destination as its source — a public address whose reverse route is the
+    # WAN, not the tap. Strict rpfilter sees the mismatch and drops it. No RST,
+    # no log, nothing on the guest: the client simply waits out its timeout.
+    #
+    # This is why DNS appeared to work while TCP did not. A DNS reply's source
+    # is the guest's own address (${cfg.torVmAddress}), whose reverse route IS the
+    # tap, so it passes — making the gateway look healthy while every real flow
+    # through it hung. Diagnosed 2026-09-15, after the routing fixes stopped the
+    # packets leaking out the WAN and let them reach the guest for the first
+    # time; the two faults had been stacked, and the second was invisible until
+    # the first was fixed.
+    #
+    # Loose mode accepts a source reachable by ANY interface, which is what an
+    # asymmetric path requires. It still drops unroutable/martian sources, so
+    # the anti-spoofing property that matters here is retained.
+    networking.firewall.checkReversePath = "loose";
+
     users.users.anon-user = {
       inherit (cfg) uid;
       isSystemUser = true;
@@ -581,12 +693,28 @@ in
             Type = "oneshot";
             RemainAfterExit = true;
             ExecStart = jailUp;
-            ExecStop = pkgs.writeShellScript "anon-jail-down" ''
-              for fam in "" "-6"; do
-                ${ip} $fam rule del uidrange ${uidRange} table ${table} priority ${priority} 2>/dev/null || true
-                ${ip} $fam route flush table ${table} 2>/dev/null || true
-              done
-            '';
+
+            # DELIBERATELY NO ExecStop. The jail is the fail-closed boundary and
+            # nothing may release it — least of all a routine event.
+            #
+            # There used to be one, tearing down the uidrange rule and flushing
+            # table ${table}. Because systemd stops a changed unit before starting it,
+            # and nixos-rebuild changes this unit whenever the script text
+            # changes, EVERY `make switch` opened a window in which uid
+            # ${toString cfg.uid} had no rule at all and therefore fell through to `main` —
+            # straight to the clearnet. It is in the journal: the jail was
+            # stopped at 16:11:28 on 2026-09-12 and not restored until 16:11:31.
+            # Three seconds of unjailed egress, produced by a rebuild, from the
+            # very teardown that was supposed to be tidy. This is the same class
+            # of bug as the firewall-reload window described at the top of this
+            # file, reintroduced from the other end.
+            #
+            # jailUp is idempotent, so a restart simply re-asserts. Stopping the
+            # unit now leaves the rules installed: a uid with a blackhole default
+            # is the correct resting state for a boundary nothing releases. To
+            # actually remove them (disabling the module), reboot — or delete the
+            # rule and table by hand, deliberately, which is the only way it
+            # should ever happen.
           };
         };
 
@@ -612,31 +740,8 @@ in
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = true;
-            ExecStart = pkgs.writeShellScript "anon-routing-up" ''
-              # The tap is created by the microvm unit and can lag it slightly.
-              for i in $(${pkgs.coreutils}/bin/seq 1 30); do
-                [ -d /sys/class/net/${cfg.tapInterface} ] && break
-                ${pkgs.coreutils}/bin/sleep 1
-              done
-              if [ ! -d /sys/class/net/${cfg.tapInterface} ]; then
-                echo "${cfg.tapInterface} never appeared — is microvm@net-gate running?" >&2
-                exit 1
-              fi
-              ${ip} route replace ${cfg.torVmSubnet} dev ${cfg.tapInterface} \
-                src ${cfg.tapAddress} table ${table}
-              ${ip} route replace default via ${cfg.torVmAddress} dev ${cfg.tapInterface} \
-                src ${cfg.tapAddress} metric ${gatewayMetric} table ${table}
-            '';
-            ExecStop = pkgs.writeShellScript "anon-routing-down" ''
-              # anon-jail's blackhole floor is always underneath, so dropping the
-              # gateway re-seals the table without a gap. Re-assert it first anyway:
-              # this must not depend on anon-jail having run more recently than a
-              # flush.
-              ${ip} route replace blackhole 0.0.0.0/0 metric ${blackholeMetric} table ${table}
-              ${ip} route del default via ${cfg.torVmAddress} dev ${cfg.tapInterface} \
-                metric ${gatewayMetric} table ${table} 2>/dev/null || true
-              ${ip} route del ${cfg.torVmSubnet} dev ${cfg.tapInterface} table ${table} 2>/dev/null || true
-            '';
+            ExecStart = routingUp;
+            ExecStop = routingDown;
           };
         };
 
@@ -653,18 +758,40 @@ in
             "microvm@net-gate.service"
           ];
           partOf = [ "anonymous.target" ];
+          onFailure = [ "anon-seal.service" ];
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = true;
             # DefaultTimeoutStartSec is 90s, which would kill the ladder mid-wait
-            # and report a timeout instead of the real state. Budget + headroom
-            # for the L4 retries.
-            TimeoutStartSec = cfg.bootstrapTimeout + 150;
+            # and report a timeout instead of the real state — the one failure
+            # mode this module cannot tolerate, since a timeout says nothing
+            # about whether the path leaks.
+            #
+            # Headroom is computed from the ladder's actual worst case, not
+            # guessed: L2 waits 30 iterations of (2s probe + 1s sleep) = 90s;
+            # L3's deadline is bootstrapTimeout but each iteration can overrun it
+            # by one (20s curl + 5s sleep); L4 makes 3 attempts of (30s curl + 5s
+            # sleep) = 105s. At the old +150 a cold start could exceed the
+            # timeout and be killed mid-L4.
+            TimeoutStartSec = cfg.bootstrapTimeout + 300;
             ExecStart = pkgs.writeShellScript "anon-check" ''
+              # Every failure below re-seals before exiting. anon-check runs
+              # AFTER anon-routing, so by the time any of these fire the jail's
+              # default already points at the gateway. Exiting without
+              # withdrawing it left the failed arm in the one state this module
+              # is built to exclude: a uid routed at a gateway that could not be
+              # shown to anonymise it, with no readiness stamp to explain why.
+              # anon-exec refuses without the stamp, but a process already
+              # running under the uid does not consult it.
+              fail() {
+                ${routingDown}
+                exit 1
+              }
+
               # L0
               if ! ${systemctl} -q is-active microvm@net-gate.service; then
                 echo "L0 FAIL: microvm@net-gate is not active." >&2
-                exit 1
+                fail
               fi
               echo "L0 ok: net-gate VM is running"
 
@@ -680,7 +807,7 @@ in
               if [ "$listening" != 1 ]; then
                 echo "L2 FAIL: nothing listening at ${socks} after 30s." >&2
                 echo "         the guest's tor.service is down: journalctl -u microvm@net-gate" >&2
-                exit 1
+                fail
               fi
               echo "L2 ok: tor is listening at ${socks}"
 
@@ -703,7 +830,7 @@ in
                 echo "L3 FAIL: tor still cannot carry a request after ${toString cfg.bootstrapTimeout}s." >&2
                 echo "         check guest egress (tap masquerade), then the guest journal:" >&2
                 echo "         sudo journalctl -D /persist/var/log/net-gate-journal -u tor" >&2
-                exit 1
+                fail
               fi
               echo "L3 ok: tor is bootstrapped (SOCKS request completed)"
 
@@ -719,7 +846,7 @@ in
               done
               if [ -z "$exit_ip" ]; then
                 echo "L4 FAIL: the enforced path is not verifiably Tor'd (detail above)." >&2
-                exit 1
+                fail
               fi
               ${pkgs.coreutils}/bin/mkdir -p "$(${pkgs.coreutils}/bin/dirname ${cfg.readyStamp})"
               ${pkgs.coreutils}/bin/printf 'verified=%s exit=%s\n' \
@@ -728,6 +855,31 @@ in
               echo "anonymous mode armed. Prove the negative paths with: sudo anon-selftest"
             '';
             ExecStop = "${pkgs.coreutils}/bin/rm -f ${cfg.readyStamp}";
+          };
+        };
+
+        # Re-seals the UNIT STATE after a failed arm, which the sealing inside
+        # anon-check cannot do for itself.
+        #
+        # anon-check's fail() withdraws the gateway route immediately, closing
+        # the hole. But anon-routing is a RemainAfterExit oneshot, so it stays
+        # `active` over a route that is no longer there — and systemd will not
+        # re-run ExecStart on a unit it already considers active. The next
+        # `systemctl start anonymous.target` would therefore never reinstall the
+        # gateway, and anon-check would fail at L4b (no route at all) instead of
+        # wherever the real fault is. One failed arm would poison every retry
+        # until anon-routing was restarted by hand.
+        #
+        # Stopping anon-routing is the correct sledgehammer HERE, precisely
+        # because of the Requires= cascade documented on routingUp/routingDown:
+        # it drags anon-check and anonymous.target down with it, which is the
+        # intended end state after a failed arm. Everything returns to inactive
+        # and the next attempt starts clean.
+        anon-seal = {
+          description = "Reset anon-routing after a failed arm so retries start clean";
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = "${systemctl} stop anon-routing.service";
           };
         };
 
@@ -754,13 +906,29 @@ in
           serviceConfig = {
             Type = "oneshot";
             ExecStart = pkgs.writeShellScript "anon-watch" ''
+              armed=0
+              [ -e ${cfg.readyStamp} ] && armed=1
+
               # Re-assert the jail first: it is the fail-closed boundary, so
               # anything that removed it (a link reconfiguration, a manual
               # flush) gets corrected before the path is judged, not after.
-              ${jailUp}
-
-              armed=0
-              [ -e ${cfg.readyStamp} ] && armed=1
+              #
+              # And CHECK that it worked. This used to call jailUp bare, with no
+              # `set -e` in scope, so the one failure the whole script exists to
+              # catch — the boundary cannot be re-established — was discarded,
+              # and the disarmed branch below went on to exit 0 reporting health.
+              # A jail that cannot be asserted is not a jail; if we are armed,
+              # that is a sealing condition like any other.
+              if ! ${jailUp}; then
+                echo "jail re-assertion FAILED: the fail-closed boundary is not verified." >&2
+                if [ "$armed" = 1 ]; then
+                  ${lib.optionalString cfg.sealOnHealthLoss ''
+                    echo "sealing: disarming anonymous.target." >&2
+                    ${systemctl} stop anonymous.target
+                  ''}
+                fi
+                exit 1
+              fi
 
               if [ "$armed" = 0 ]; then
                 # Disarmed: report on the mechanism, change nothing.
