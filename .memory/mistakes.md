@@ -114,24 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-08 — Tor Service Dead on net-gate VM, Four-Day Outage: SOCKSPort Merge + Missing IPMasquerade + Health Check Blindness
-
-* **Symptom:** net-gate's tor.service dead since 2026-09-08 15:18 through 2026-09-12 (four-day outage). `anon-mode` readiness checks reported green, so workloads attempted routing through a dead gateway.
-
-* **Root causes:**
-  1. **SOCKSPort merge conflict:** `nixos/vms.nix` declared `settings.SOCKSPort = [0.0.0.0:9050]` while `services.tor.client.enable` emits its own `SOCKSPort 127.0.0.1:9050` from `client.socksListenAddress`. Module options LIST-merge; torrc carried two port-9050 listeners. Tor died binding the second listener (fatal). `ExecStartPre --verify-config` passed because verify does not bind. Same trap applies to TransPort/DNSPort vs `client.transparentProxy.enable` / `client.dns.enable`.
-  2. **IPMasquerade missing on netgate tap:** Forwarded guest packets (`src 192.168.100.2`) left the tap unchanged and had no return path. Tor could not bootstrap even with a working listener. Tailscale tap had masquerade since creation; netgate never did — tor egress E2E was never tested.
-  3. **Transparent path never wired:** Host firewall (mangle, fwmark, policy route) complete; guest had no nat REDIRECT and no ip_forward. Marked traffic entered VM and died. Only working mechanism was `https_proxy=socks5h://`.
-  4. **Health check blindness:** `anon-socks-check` ran at arm time only, proved TCP handshake only. `tor-check` reported ANY failure as "arm with anon-on". Checks could not distinguish (listener absent) from (not bootstrapped) from (path not anonymising). Masked all three failure classes.
-
-* **Why it stayed hidden:** Four-day period with low anon-mode egress volume; readiness checks reported green because they measured wrong signal (TCP handshake, not bootstrapping, not anonymising).
-
-* **Prevention rules:**
-  1. **SOCKSPort rule:** Declare listener via `services.tor.client.socksListenAddress`, never `settings.SOCKSPort` directly. Same applies to `client.transparentProxy` / `client.dns` — use enable toggles + listen-address options, not hand-rolled settings.
-  2. **Forwarding tap rule:** Every tap forwarding guest traffic to host must have `IPMasquerade = true` (or equivalent nftables nat rule). Test with `curl https://www.ipleak.net/ -v` from guest; should show host IP, not guest 192.168.x.x. If missing, guest→host packets drop (no return path).
-  3. **Path testing rule:** Test transparent routing E2E (mark packet, observe listener receipt, confirm REDIRECT) and SOCKS E2E separately (connect to `<host>:9050`, prove handshake + auth + anonymity). Do not assume working if only one path tested.
-  4. **Readiness check rule:** Health checks must distinguish failure modes. Checks reporting green for (no listener) + (not bootstrapped) + (circuit broken) are useless. Implement per-failure-class tests; gate enablement only on full passing set.
-
 ### 2026-09-15 — anon-selftest Harness Masked Re-Seal Failures by Discarding Exit Status
 
 * **Symptom:** `anon-selftest` test 5 (gateway withdrawal) invoked `jailUp` with exit status discarded (`set +e` context, no check). Test reported "all assertions held" while leaving the system in an unjailed state — fully disarmed, no readiness stamp, no recovery path. The test validated that re-sealing *should* work architecturally but did not catch that it *did not work* at runtime.
@@ -141,3 +123,15 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Discovery & fix:** Discovered 2026-09-15 during pre-activation code review. `anon-watch` (the supervisory unit) was refactored (code changed but not yet tested live) to check `jailUp` exit status explicitly (`jailUp || fail`). Test harness logic preserved but error path is now visible. Live testing pending (anon-check has not run since 2026-09-12 05:15; see todo.md).
 
 * **Prevention rule:** Any systemd unit (or any subprocess) whose failure is a correctness hazard (not just a log message or alert, but undetected bad state) must have an explicit exit-status check immediately after invocation. For units: check `unit_name || fail` and handle the failure by reaching a known-safe state (re-arm, seal, halt, etc.), not by continuing. Do not rely on `set -e` or systemd `Type=oneshot` alone — if the unit fails silently (e.g., returns 0 despite not achieving its goal), no exit-status check will catch it; validate the goal's post-condition independently (e.g., check for the readiness file, verify the uidrange rule via `nft`, etc.).
+
+### 2026-09-15 — Anon-Mode Enforced Path Hangs on TCP: Netfilter rpfilter Drops Asymmetric Replies
+
+* **Symptom:** When the host's strict reverse-path filter is active (NixOS default), TCP connections through the enforced tor path hang indefinitely with timeouts, while DNS queries succeed. Transparent path appears correct (tor receives and processes packets, replies generated) but replies are silently dropped by netfilter's mangle PREROUTING before reaching the client.
+
+* **Root cause:** The enforced path is asymmetric by architecture: workload leaves via vm-netgate → guest tor instance receives + re-originates → reply returns on vm-netgate with original destination as its source (a public address, whose reverse route is the WAN, not the tap). NixOS default `networking.firewall.checkReversePath = "strict"` emits `-m rpfilter --validmark` in mangle PREROUTING. The reply's reverse path (WAN instead of tap) fails rpfilter validation and is silently dropped. No RST, no host log, no journal entry — the client times out.
+
+* **Why hidden for four days:** DNS replies work because their source is the guest's own address (192.168.100.2), whose reverse route IS the tap — rpfilter passes them. The gateway appeared fully healthy (L0-L3 checks green, SOCKS handshake succeeding, returning `IsTor:true`) while every real TCP flow hung. Bug was masked by working DNS combined with successful health-check suite that didn't exercise the enforced path. This was exposed only after 2026-09-12 overhaul made the enforced path reachable for the first time (prior architecture bug prevented packets from reaching the guest at all, masking this deeper issue under a different symptom).
+
+* **Fix:** Set `networking.firewall.checkReversePath = "loose"` in the anonymous-mode module. The sysctl `net.ipv4.conf.*.rp_filter = 2` is insufficient — that controls kernel datapath filtering, a different subsystem. The culprit is netfilter's `-m rpfilter` match in mangle rules.
+
+* **Prevention rule:** Asymmetric flows (inbound and outbound interfaces differ) always fail strict rpfilter validation and are silently dropped (no log, no RST). Diagnosis: inspect netfilter rules with `sudo nft list table inet mangle`, not `/proc/sys`. For tor transparent proxy, asymmetry is structural and unfixable; use `loose` mode. Document the rpfilter setting in the module config so it does not drift from the infrastructure that depends on it.
