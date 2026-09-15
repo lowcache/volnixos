@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-12
+last_updated: 2026-09-15
 status: active
 ---
 
@@ -154,13 +154,25 @@ status: active
 
 ### Anon-Mode Fail-Closed Redesign — Activation Pending (2026-09-12)
 
-**Status:** Redesign built and checked. Fail-closed invariant implemented with readiness ladder L0-L4 and per-failure-class health checks (see decisions.md #42). Tor service was dead for four days (2026-09-08 through 2026-09-12) due to SOCKSPort merge conflict, missing IPMasquerade, untested transparent path, and blind readiness checks. New design built and verified; awaits activation.
+### Anon-Mode Fail-Closed Redesign — Bugs Found, Fixes In-System (2026-09-15)
 
-- [ ] Run `make switch` to activate new anon-mode design
-- [ ] Verify: `systemctl --user status anon-watch` running; `tail -f /run/anon-mode/ready` shows readiness state
+**Status:** Redesign live (commit 665710c, activated 2026-09-12 16:11) but **7 bugs found in deployment** (2026-09-15 sweep). All fixes applied to working tree; commit pending. Testing not yet run.
+
+**Bug fixes applied (see decisions.md #42 amendment for full details):**
+1. ✓ `anon-jail` now has no `ExecStop` (idempotent, rules persist)
+2. ✓ `anon-selftest` factored route manipulation into `routingUp`/`routingDown` helpers
+3. ✓ `anon-watch` now checks `jailUp` exit status
+4. ✓ Migration guard properly validates nft read
+5. ✓ `TimeoutStartSec` raised to `bootstrapTimeout + 300`
+6. ✓ `VirtualAddrNetworkIPv4` moved from 172.16.0.0/12 to 10.192.0.0/10 (no collision)
+7. ✓ Migration guard for pre-switch mangle rule documented (stale post-reboot; keep for reference)
+
+**Pending actions:**
+- [ ] Commit bug fixes to `.nix-config` (7 changes, all structural; no logic changes)
+- [ ] Run `make switch` to deploy fixes to running system
+- [ ] Run `anon-watch` and verify it completes L0-L4 ladder without timing out
 - [ ] Test L4 (full suite): SOCKS anon check, transparent path anon check, negative path tests (loopback, IPv6, SO_BINDTODEVICE, gateway withdrawal)
-- [ ] Benchmark: measure per-check latency; confirm L4 suite completes within 30s (safe re-check interval)
-- [ ] Monitor: `anon-watch` disarm events in journal over 1 week; should be zero if check.torproject.org is stable
+- [ ] Monitor `anon-watch` disarm events in journal over 1 week; should be zero if check.torproject.org is stable
 
 **Open design decision:**
 - [ ] Revisit `sealOnHealthLoss` invariant: current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Evaluate: (1) accept Cloudflare uptime coupling, (2) self-host onion check endpoint, (3) hybrid (self-host + fallback to check.torproject.org).

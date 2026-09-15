@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-12
+last_updated: 2026-09-15
 status: active
 ---
 
@@ -59,7 +59,8 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 ## 3. MicroVM Guest Network (2026-08-06 — Confirmed Working)
 
-* **net-gate (Tor relay, rebuilt 2026-09-12):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Service was dead 2026-09-08 to 2026-09-12 (root cause: hand-rolled `settings.SOCKSPort` conflicted with auto-emitted `client.socksListenAddress` via list merge → tor died on second bind; netgate tap missing `IPMasquerade`, guest packets had no return route). Rebuilt with fail-closed readiness invariant: per-uid blackhole default, L0-L4 readiness ladder (only L4 releases workloads). Status: built/checked, **awaiting `make switch`**. Full incident and architecture: mistakes.md 2026-09-12, decisions.md #42.
+* **net-gate (Tor relay, rebuilt 2026-09-12, bugs found 2026-09-15):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Service was dead 2026-09-08 to 2026-09-12 (root cause: hand-rolled `settings.SOCKSPort` conflicted with auto-emitted `client.socksListenAddress` via list merge → tor died on second bind; netgate tap missing `IPMasquerade`, guest packets had no return route). Redesigned with fail-closed invariant and readiness ladder L0-L4 (decisions.md #42). **Status: LIVE in commit 665710c (activated 2026-09-12 16:11).** Bug sweep 2026-09-15 found 7 issues in the deployment; all fixed in-system with uncommitted changes (see mistakes.md 2026-09-15). Testing not yet run (anon-check idle since 2026-09-12 05:15). Full incident, redesign, and bug findings: mistakes.md 2026-09-08 and 2026-09-15, decisions.md #42.
+* **net-gate bugs found 2026-09-15:** (1) `anon-jail` has no `ExecStop`, opening unjailed window on every `make switch` — fixed by removing teardown and relying on `jailUp` idempotence. (2) `anon-selftest` was calling `systemctl stop anon-routing.service`, cascading into full disarm while printing success — fixed by factoring gateway route into `routingUp`/`routingDown` scripts, callers now manipulate route directly. (3) `anon-watch` not checking `jailUp` exit status — fixed. (4) Migration guard not handling unreadable ruleset — fixed. (5) `TimeoutStartSec` too low for worst-case ladder — raised to `bootstrapTimeout + 300`. (6) `VirtualAddrNetworkIPv4` range collision with host's WAN address (172.16.32.111/22) and docker0 — moved to 10.192.0.0/10. (7) Uncommitted 21-line migration guard for pre-switch mangle rule stale after host reboot 2026-09-15 14:26. All fixes in working tree; commit pending (see todo.md).
 * **tailscale (Tailnet access):** Host `vm-tailscale` → `192.168.101.1`; guest → `192.168.101.2`. Service `microvm@tailscale` active (autostart enabled). Guest runs `tailscaled` with auth-key from `/persist/var/lib/tailscale-vm/authkey`, tailnet IP `100.66.249.117`. Host reaches tailnet via static route `100.64.0.0/10 via 192.168.101.2 dev vm-tailscale` (host itself is not a tailnet node). **Start/restart:** `sudo systemctl start microvm@tailscale`. Do not use `make run-tailscale` while unit is active (fights over tap/socket).
 * **VM tap interfaces** `unmanaged` in NetworkManager.
 

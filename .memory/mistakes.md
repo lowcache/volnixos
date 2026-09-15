@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-09-12
+last_updated: 2026-09-15
 status: append-only
 ---
 
@@ -114,32 +114,31 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-05 — Rogue AP-Mode NM Profile Silently Blocks WiFi Scanning
+### 2026-09-15 — Anon-Mode Deployment Bugs Found in Live System: 7 Issues in 665710c (2026-09-12)
 
-* **Symptom:** WiFi scanning returned zero results (no hotel APs, phone hotspot visible). Suspected 5 GHz hardware fault. Generation rollback ineffective.
+**Symptom:** Bug sweep 2026-09-15 found 7 deployment issues in the anon-mode redesign committed 2026-09-12 16:09. The redesign logic is sound; bugs are in the nix/systemd implementation. All fixes applied in-system; testing not yet run (anon-check idle since 2026-09-12 05:15).
 
-* **Root cause:** Two accidental NetworkManager AP-mode profiles (`Wi-Fi connection 1/2`) in `/etc/NetworkManager/system-connections/` (persisted from `/persist`, not flake-declared), both open on hotel-like SSIDs. First profile auto-activated at boot. Hardware: RTL8852BE radio (rtw89_8852be) is single-radio, cannot beacon as AP and scan client-mode simultaneously. Active AP → all `nmcli device wifi list` scans return `CTRL-EVENT-SCAN-FAILED ret=-95` (EOPNOTSUPP). Client-mode profiles require successful scans to be "available"; device remained AP-only across reboots.
+**Root causes & fixes:**
 
-* **Why rollback failed:** `/etc/NetworkManager/system-connections/` is bind-mounted from `/persist/` (hardware-configuration.nix:89). NM profiles are runtime STATE, not Nix declarations. Generation rollback cannot reach persisted directories. **Broader truth:** Any NM misconfiguration on this host survives rollback; same applies to all impermanence persist paths.
+1. **`anon-jail` has no `ExecStop`.** Teardown deletes uidrange rule and flushes table; every `make switch` stops then starts the unit, opening an unjailed window (~3 sec). Fix: Leave `jailUp` (idempotent) as the only entrypoint; remove `ExecStop` teardown. The boundary persists until explicitly released (via routing change), not transient to unit state.
 
-* **Security exposure:** ~15 min on 2026-09-05 ~15:33 UTC: laptop broadcast open AP with hotel SSID, NATing USB tether. One station (randomised MAC `06:83:0d:cd:21:2d`) associated three times. No client IP or payload logging available; attribution impossible.
+2. **`anon-selftest` was cascading into disarm.** Test 5 called `systemctl stop anon-routing.service`. Both `anonymous.target` and `anon-check` `Require=` routing, so stop cascades into full disarm (stamp deleted, slice reaped). Script still printed "all assertions held" (false success). Fix: Factor gateway route manipulation into `routingUp`/`routingDown` helper scripts. Callers now manipulate route directly, not via service lifecycle.
 
-* **Prevention rule:** (1) **nmtui trap:** *Add a connection* screen auto-names profiles `Wi-Fi connection N` + defaults Mode to *access-point* + flips IPv4 to Shared. Footgun. Use *Activate a connection* for discovered networks instead. Same trap in `nm-connection-editor`. (2) **Diagnostic:** `nmcli device wifi list` returning one entry with BSSID = device MAC + signal 0 = radio is AP. (3) **Audit one-liner:** `for u in $(nmcli -g UUID connection show); do [ "$(nmcli -g 802-11-wireless.mode connection show $u)" = ap ] && nmcli -g connection.id connection show $u; done`. (4) **Persisted NM state:** Periodically audit `/etc/NetworkManager/system-connections/` outside flake; NM is state not config. Document intentional AP profiles (if any) in comments or persist.nix. (5) **Fixed:** Deleted both profiles; scanning recovered immediately.
+3. **`anon-watch` not checking `jailUp` exit status.** Script called it bare with no `set -e`, so the one failure it exists to catch (jail-build failure) was discarded. Disarmed branch went on to `exit 0` reporting health. Fix: Check exit status; seal on failure.
 
-### 2026-09-08 — Tor Service Dead on net-gate VM, Four-Day Outage: SOCKSPort Merge + Missing IPMasquerade + Health Check Blindness
+4. **Migration guard treats unreadable ruleset as clean.** `nft ... 2>/dev/null | grep -q` made an unreadable ruleset indistinguishable from an absent one (both produce empty output). Fix: Read once, verify read succeeded (check `$?` after nft), treat error as "not verified" (seal). Pattern is correct: `nft` prints `meta skuid 10000` numerically.
 
-* **Symptom:** net-gate's tor.service dead since 2026-09-08 15:18 through 2026-09-12 (four-day outage). `anon-mode` readiness checks reported green, so workloads attempted routing through a dead gateway.
+5. **`TimeoutStartSec` too low for worst-case ladder.** Ladder worst-case: L2 90s + L3 overrun + L4 105s = 295s, exceeds old `TimeoutStartSec = bootstrapTimeout + 150` (~240s). Systemd kills mid-L4, reporting timeout (says nothing about path leak). Fix: Raise to `bootstrapTimeout + 300`.
 
-* **Root causes:**
-  1. **SOCKSPort merge conflict:** `nixos/vms.nix` declared `settings.SOCKSPort = [0.0.0.0:9050]` while `services.tor.client.enable` emits its own `SOCKSPort 127.0.0.1:9050` from `client.socksListenAddress`. Module options LIST-merge; torrc carried two port-9050 listeners. Tor died binding the second listener (fatal). `ExecStartPre --verify-config` passed because verify does not bind. Same trap applies to TransPort/DNSPort vs `client.transparentProxy.enable` / `client.dns.enable`.
-  2. **IPMasquerade missing on netgate tap:** Forwarded guest packets (`src 192.168.100.2`) left the tap unchanged and had no return path. Tor could not bootstrap even with a working listener. Tailscale tap had masquerade since creation; netgate never did — tor egress E2E was never tested.
-  3. **Transparent path never wired:** Host firewall (mangle, fwmark, policy route) complete; guest had no nat REDIRECT and no ip_forward. Marked traffic entered VM and died. Only working mechanism was `https_proxy=socks5h://`.
-  4. **Health check blindness:** `anon-socks-check` ran at arm time only, proved TCP handshake only. `tor-check` reported ANY failure as "arm with anon-on". Checks could not distinguish (listener absent) from (not bootstrapped) from (path not anonymising). Masked all three failure classes.
+6. **`VirtualAddrNetworkIPv4` range collision with host resources.** Old range 172.16.0.0/12 contains this host's WAN addr (172.16.32.111/22) and docker0 (172.17.0.1/16). `ip rule local` at priority 0 checks before jail's uidrange rule at priority 100, so a hostname landing on a host-local addr connects to host instead of tor, with routing still appearing correct (masked leak). Fix: Move to 10.192.0.0/10. Host's 10-net is 10.187.3.118/24, below /10, no collision.
 
-* **Why it stayed hidden:** Four-day period with low anon-mode egress volume; readiness checks reported green because they measured wrong signal (TCP handshake, not bootstrapping, not anonymising).
+7. **Uncommitted migration guard for pre-switch mangle rule.** 21-line guard handles transition from host's old mangle config to new (removed 2026-09-12). Guard became stale after host reboot 2026-09-15 14:26 (new kernel has no old mangle rule to catch). Keep for reference (edge-case recovery), not critical path.
 
-* **Prevention rules:**
-  1. **SOCKSPort rule:** Declare listener via `services.tor.client.socksListenAddress`, never `settings.SOCKSPort` directly. Same applies to `client.transparentProxy` / `client.dns` — use enable toggles + listen-address options, not hand-rolled settings.
-  2. **Forwarding tap rule:** Every tap forwarding guest traffic to host must have `IPMasquerade = true` (or equivalent nftables nat rule). Test with `curl https://www.ipleak.net/ -v` from guest; should show host IP, not guest 192.168.x.x. If missing, guest→host packets drop (no return path).
-  3. **Path testing rule:** Test transparent routing E2E (mark packet, observe listener receipt, confirm REDIRECT) and SOCKS E2E separately (connect to `<host>:9050`, prove handshake + auth + anonymity). Do not assume working if only one path tested.
-  4. **Readiness check rule:** Health checks must distinguish failure modes. Checks reporting green for (no listener) + (not bootstrapped) + (circuit broken) are useless. Implement per-failure-class tests; gate enablement only on full passing set.
+**Prevention rules:**
+
+- `ExecStop` on a boundary service is dangerous: stops may be called by external logic (unit manager, shutdown sequence) and open windows. Boundaries should be idempotent entry functions, not transient to unit state.
+- Cascading unit Requires chains hide the caller's semantics (I want to manipulate one resource, but stopping triggers unrelated teardown). Factor explicit manipulation helpers (scripts, tool commands) for fine-grained control.
+- Health checks that discard errors (via `2>/dev/null | grep`) silently ship false-positive reports. Always verify operator success before using the result.
+- Timeout budgets must account for all possible ladder paths, not just happy path. Worst-case = max per-rung + overhead.
+- Virtual address pools must not collide with any host resource (WAN addr, docker, local services, 127/8). Audit `ip rule list` and `ip route show` before choosing a range.
+- Migration guards may become stale after system changes; document their scope and recency. Do not rely on persistent guards if the condition they guard is user-configured.
