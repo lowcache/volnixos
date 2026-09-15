@@ -543,9 +543,9 @@ This file catalogs the active, canonical design decisions and system configurati
 
 * **Open decision (sealOnHealthLoss):** Current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Future: self-hosted onion check (onion-only verification endpoint) to remove upstream dependency. Transparent path cannot do per-invocation stream isolation (one client addr → one circuit), so separate identities still need separate SOCKS credentials or separate uids.
 
-* **Status:** Built and checked (2026-09-12); awaiting activation via `make switch`. Activated 2026-09-12 16:11; anon-check last ran 2026-09-12 05:15. L0-L4 ladder and fail-closed path remain untested in live operation.
+* **Status:** Built and checked (2026-09-12); activated 2026-09-12 16:11. L0-L4 ladder and fail-closed path remain untested in live operation.
 
-* **Amendment (2026-09-15 — Implementation Refinements):** Seven specific design refinements and bug fixes applied during build and pre-activation testing:
+* **Amendment 1 (2026-09-15 — Implementation Refinements):** Seven specific design refinements and bug fixes applied during build and pre-activation testing:
   1. **`anon-jail` idempotency:** ExecStop removed; `jailUp` made idempotent (rules remain installed at rest, not destroyed on systemd stop). Prevents brief unjailed windows on systemd restart cycles.
   2. **Gateway route isolation:** Route factored into shared `routingUp`/`routingDown` scripts. Direct route manipulation required (systemctl stop the service cascades via `Require=` dependencies, triggering full disarm). Callers now manipulate route directly, not via systemctl.
   3. **Re-sealing on failure:** `anon-check` re-seals the jail on every failure, not just on arm time. Failed paths do not linger in false-safe states.
@@ -554,4 +554,6 @@ This file catalogs the active, canonical design decisions and system configurati
   6. **Timeout scaling:** `TimeoutStartSec` raised from `+150s` to `bootstrapTimeout + 300` (L4 suite can run up to 105s, old limit risked premature SIGTERM).
   7. **Virtual address range collision avoidance:** `VirtualAddrNetworkIPv4` moved from 172.16.0.0/12 to 10.192.0.0/10. Host WAN is 172.16.32.111/22; docker0 is 172.17.0.1/16. Collision would cause hostnames resolving to those addresses to route locally (via priority 0 local table) instead of via tor, with routing appearing correct.
   
-  **Refinements live in:** gen 247+ (commit 665710c, 2026-09-12 16:09). System rebooted 2026-09-15 14:26 (cleared transient kernel state). anon-check untested; see todo.md for testing steps.
+  Refinements live in: gen 247+ (commit 665710c, 2026-09-12 16:09). System rebooted 2026-09-15 14:26 (cleared transient kernel state). anon-check untested; see todo.md for testing steps.
+
+* **Amendment 2 (2026-09-15 — rpfilter Discovery & Fix):** Enforced path timeout bug diagnosed: NixOS strict `networking.firewall.checkReversePath` (default) emits `-m rpfilter --validmark` in mangle PREROUTING (priority -150), dropping enforced-path replies because the source is a public address whose reverse route is the WAN, not the tap. The SOCKS path (L3) appeared healthy (DNS worked, because guest's own address has correct reverse route via tap); the enforced path (L4c) silently timed out. **Fix:** Declare `networking.firewall.checkReversePath = "loose"` inside `nixos/modules/anonymous-mode.nix` so the module owns the firewall configuration it depends on. rpfilter loose still validates reverse paths but does not enforce them strictly (RETURN on fail instead of DROP). Applied 2026-09-15 post-diagnosis, in-system, uncommitted. Full root-cause narrative: mistakes.md 2026-09-15 (rpfilter discovery entry, pending formal addition).
