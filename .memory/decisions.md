@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-09-12
+last_updated: 2026-09-15
 status: active
 ---
 
@@ -533,6 +533,8 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Stability across color schemes:** The hex values shown here (`#fddeaf` through `#1a0f00`) are specific to the Ayu Green palette. When you change color schemes via `color-scheme-set source name`, Noctalia regenerates the primary gradient using the same *strategy* (warm cast, differential luminance stepping) applied to the new palette's dominant hue. The role-based architecture (primary_1-13) and step magnitudes remain constant; only the actual hex values change. Verified in decision #38: scheme change Rosewater → Sapphire produced hex updates (`#f4dbd6` → `#7dc4e4`) while maintaining M3 role semantics.
 ## 42. Anon-Mode Fail-Closed Invariant — Readiness Ladder L0-L4 with Per-Failure-Class Testing (2026-09-12)
 
+## 42. Anon-Mode Fail-Closed Invariant — Readiness Ladder L0-L4 with Per-Failure-Class Testing (2026-09-12, Amended 2026-09-15 with Implementation Refinements)
+
 * **Decision:** Rebuild anon-mode around a fail-closed invariant: jail armed at boot with per-uid blackhole default (v4+v6); arming only swaps in gateway route; readiness ladder L0-L4 where only L4 (enforced path returns IsTor:true) releases workloads via `/run/anon-mode/ready`; `anon-selftest` proves negative paths (loopback resolver, IPv6, SO_BINDTODEVICE to WAN, gateway withdrawn). Health check re-runs every 10 min via `anon-watch`; disarms on loss.
 
 * **Why:** Prior design's readiness checks could not distinguish listener-dead from not-bootstrapped from path-broken (see mistakes.md 2026-09-08). Absence of checks produces four-day silent outages; blind checks produce false-green and routed-through-dead-gateway hazards. Fail-closed (default blackhole, require proven path) prevents both.
@@ -541,4 +543,15 @@ This file catalogs the active, canonical design decisions and system configurati
 
 * **Open decision (sealOnHealthLoss):** Current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Future: self-hosted onion check (onion-only verification endpoint) to remove upstream dependency. Transparent path cannot do per-invocation stream isolation (one client addr → one circuit), so separate identities still need separate SOCKS credentials or separate uids.
 
-* **Status:** Built and checked (2026-09-12); awaiting activation via `make switch`.
+* **Status:** Built and checked (2026-09-12); awaiting activation via `make switch`. Activated 2026-09-12 16:11; anon-check last ran 2026-09-12 05:15. L0-L4 ladder and fail-closed path remain untested in live operation.
+
+* **Amendment (2026-09-15 — Implementation Refinements):** Seven specific design refinements and bug fixes applied during build and pre-activation testing:
+  1. **`anon-jail` idempotency:** ExecStop removed; `jailUp` made idempotent (rules remain installed at rest, not destroyed on systemd stop). Prevents brief unjailed windows on systemd restart cycles.
+  2. **Gateway route isolation:** Route factored into shared `routingUp`/`routingDown` scripts. Direct route manipulation required (systemctl stop the service cascades via `Require=` dependencies, triggering full disarm). Callers now manipulate route directly, not via systemctl.
+  3. **Re-sealing on failure:** `anon-check` re-seals the jail on every failure, not just on arm time. Failed paths do not linger in false-safe states.
+  4. **Health watch supervision (critical bug fix):** `anon-watch` now checks `jailUp` exit status explicitly. Prior code discarded exit status; every test run left the system disarmed while printing "all assertions held," masking the re-seal failure. Exit status is load-bearing.
+  5. **Migration guard validation:** nft read and pattern-match now explicitly validated (was failing open; unreadable ruleset looked identical to clean state). Validates read success before pattern-checking.
+  6. **Timeout scaling:** `TimeoutStartSec` raised from `+150s` to `bootstrapTimeout + 300` (L4 suite can run up to 105s, old limit risked premature SIGTERM).
+  7. **Virtual address range collision avoidance:** `VirtualAddrNetworkIPv4` moved from 172.16.0.0/12 to 10.192.0.0/10. Host WAN is 172.16.32.111/22; docker0 is 172.17.0.1/16. Collision would cause hostnames resolving to those addresses to route locally (via priority 0 local table) instead of via tor, with routing appearing correct.
+  
+  **Refinements live in:** gen 247+ (commit 665710c, 2026-09-12 16:09). System rebooted 2026-09-15 14:26 (cleared transient kernel state). anon-check untested; see todo.md for testing steps.

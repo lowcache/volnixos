@@ -102,6 +102,93 @@ status: active
 - [ ] Test: run `nix flake check` on the plugin repo; verify all gates pass
 - [ ] Commit to claude-companion repo
 
+### Audio Module Activation (2026-08-25)
+
+**Status:** Audio module is built and ready. Requires activation via `make switch` (will also apply unrelated theme formatting from dots/). Post-switch needs WirePlumber restart to apply parked-card rules.
+
+- [ ] User runs `make switch` to activate audio module
+- [ ] Post-switch: run WirePlumber restart + sed removal of stored pins
+- [ ] Verify: `wpctl status` shows two sinks (Realtek + headset), not seven; `pactl list short sinks` works
+
+### Plugin Attribution — Email Drafted, PR Staged (2026-08-25)
+
+**Status:** Two community-plugins PRs staged locally in `/home/lowcache/CodeRepo/claude-companion/community-plugins` on branches `attribution/opencode-companion` (commit db9fe8d) and `attribution/9router-control` (commit 10648ea). Email draft written to `scratchpad/weinguyen-email.txt`. Nothing pushed.
+
+**Sequence:** Email first at `weinguyen1224@gmail.com`, then PR if no response within ~1 week.
+
+- [ ] Review email draft at `scratchpad/weinguyen-email.txt`
+- [ ] Send email to weinguyen1224@gmail.com
+- [ ] If no response in ~1 week, push branches and open PRs against upstream/main
+  - PR 1: `attribution/opencode-companion` (4 lines: notice + Credits section + version bump)
+  - PR 2: `attribution/9router-control` (4 lines: notice + Credits section + version bump)
+- [ ] Note: repo policy is "One plugin per PR" (enforced by `enforce-pr-template` workflow)
+- [ ] Note: PR author can request changes before merge unless fix is broken or mechanical repo-wide change
+
+### Wire android-integration — Choose Strategy (2026-08-03 — USER DECISION PENDING)
+
+**Status:** termux-am builds successfully. Two approaches:
+
+1. **disabledModules approach** (~60 lines): Full feature set (termux-open-url, termux-wake-lock), but track upstream drift.
+2. **xdg-open shim** (~5 lines): Gets OAuth's browser opening; skips wake-lock and setup-storage.
+
+**User decision needed:** Which approach (1 or 2)? Or defer entirely?
+
+### Verify tether × gemini-cli 0.25.2 (AWAITING USER DECISION)
+
+**Question:** Does tether require antigravity-cli specifically, or will gemini-cli 0.25.2 (nixos-25.11) suffice?
+
+- [ ] User clarifies antigravity vs 0.25.2
+- [ ] If 0.25.2 works: add to `droid/agents.nix` (no backport)
+- [ ] If antigravity required: backport (lower priority than rtk/mcp-gateway)
+
+### apply_theme.py — Decision: Keep Dormant Code or Delete (2026-09-05 — USER DECISION PENDING)
+
+**Context:** `dots/color-engine/apply_theme.py` no longer invoked (replaced by Noctalia's community template system for M3 palette and starship theming). File remains but **is destructive if executed**: line 145 uses a greedy regex that, when run, consumes the M3 palette block in `dots/starship/starship.toml`, erases the file tail, and recreates `volnix.json`.
+
+**Options:**
+1. Delete `apply_theme.py` entirely (recommended: M3 management is now Noctalia's responsibility; apply_theme.py serves no function).
+2. Keep for historical reference; add prominent warning comment on line 145 documenting the hazard.
+
+- [ ] User specifies preference (delete or warn)
+- [ ] Curator implements decision and documents in decisions.md #38
+
+### Anon-Mode Fail-Closed Redesign — Activation & Testing Pending (2026-09-12, Build Refinements Applied 2026-09-15)
+
+**Status:** Redesign built (commit 665710c, 2026-09-12 16:09), activated via `make switch` at 16:11, and refined with seven implementation fixes discovered during build/pre-activation phase (2026-09-15). System rebooted 2026-09-15 14:26 (cleared stale kernel state). **anon-check has not run since 2026-09-12 05:15** — the redesigned fail-closed path and L0-L4 readiness ladder remain untested in live operation.
+
+**Seven implementation refinements applied (2026-09-15, see decisions.md #42 amendment):**
+1. `anon-jail` ExecStop removed; `jailUp` made idempotent (rules remain installed at rest; prevents brief unjailed windows on systemd restart)
+2. Gateway route factored into `routingUp`/`routingDown` shared scripts (prevents cascading teardown from `systemctl stop`)
+3. `anon-check` re-seals on every failure (no dangling false-safe path states)
+4. `anon-watch` now checks `jailUp` exit status (was discarding it; every test run had left system disarmed)
+5. Migration guard validates nft read success before pattern-match (was failing open)
+6. `TimeoutStartSec` raised from +150s to `bootstrapTimeout + 300` (L4 suite runs up to 105s)
+7. `VirtualAddrNetworkIPv4` moved from 172.16.0.0/12 to 10.192.0.0/10 (avoids collision with host WAN + Docker ranges)
+
+**Remaining work:**
+- [ ] Run anon-check manually to exercise L4 ladder for the first time
+- [ ] Verify: `systemctl --user status anon-watch` running; `tail -f /run/anon-mode/ready` shows readiness state
+- [ ] Test L4 (full suite): SOCKS anon check, transparent path anon check, negative path tests (loopback, IPv6, SO_BINDTODEVICE, gateway withdrawal)
+- [ ] Benchmark: measure per-check latency; confirm L4 suite completes within 30s
+- [ ] Monitor: `anon-watch` disarm events in journal over 1 week; should be zero if check.torproject.org is stable
+- [ ] Document findings from first L4 exercise in state.md §3
+
+**Open design decision:**
+- [ ] Revisit `sealOnHealthLoss` invariant: current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Evaluate: (1) accept Cloudflare coupling, (2) self-host onion check endpoint, (3) hybrid fallback.
+
+**Known open issue:** Local table bypass (priority 0 rule consults loopback table before uidrange rule at priority 100); hostnames resolving to local addresses will route locally instead of via tor. Deferred pending real-world testing results.
+
+### Backport Discovery Mechanism to claude-companion Plugin (2026-09-06 — Load-Bearing)
+
+**Context:** The luau template now uses runtime discovery of `*.luau` files via `builtins.readDir`. Controlled testing showed this prevents undeclared-reference bugs that hardcoded file lists miss (false negatives). The source plugin flake.nix still uses the old nine-file hardcoded list and is thus vulnerable.
+
+**Implication:** Any new plugin functions added to claude-companion could silently have missing declarations (gate passes, plugin breaks at runtime). This is the exact failure mode the plugin flake's own comments acknowledge.
+
+- [ ] Open `~/CodeRepo/claude-companion/noctalia-claude-plugin/flake.nix`
+- [ ] Replace hardcoded `luauFiles` string with discovery logic from `templates/luau/flake.nix`
+- [ ] Test: run `nix flake check` on the plugin repo; verify all gates pass
+- [ ] Commit to claude-companion repo
+
 ### Audio Module Activation (2026-08-25 — USER DECISION PENDING)
 
 **Status:** Audio module is built and ready. Requires activation via `make switch` (will also apply unrelated theme formatting from dots/). Post-switch needs WirePlumber restart to apply parked-card rules.
@@ -154,25 +241,13 @@ status: active
 
 ### Anon-Mode Fail-Closed Redesign — Activation Pending (2026-09-12)
 
-### Anon-Mode Fail-Closed Redesign — Bugs Found, Fixes In-System (2026-09-15)
+**Status:** Redesign built and checked. Fail-closed invariant implemented with readiness ladder L0-L4 and per-failure-class health checks (see decisions.md #42). Tor service was dead for four days (2026-09-08 through 2026-09-12) due to SOCKSPort merge conflict, missing IPMasquerade, untested transparent path, and blind readiness checks. New design built and verified; awaits activation.
 
-**Status:** Redesign live (commit 665710c, activated 2026-09-12 16:11) but **7 bugs found in deployment** (2026-09-15 sweep). All fixes applied to working tree; commit pending. Testing not yet run.
-
-**Bug fixes applied (see decisions.md #42 amendment for full details):**
-1. ✓ `anon-jail` now has no `ExecStop` (idempotent, rules persist)
-2. ✓ `anon-selftest` factored route manipulation into `routingUp`/`routingDown` helpers
-3. ✓ `anon-watch` now checks `jailUp` exit status
-4. ✓ Migration guard properly validates nft read
-5. ✓ `TimeoutStartSec` raised to `bootstrapTimeout + 300`
-6. ✓ `VirtualAddrNetworkIPv4` moved from 172.16.0.0/12 to 10.192.0.0/10 (no collision)
-7. ✓ Migration guard for pre-switch mangle rule documented (stale post-reboot; keep for reference)
-
-**Pending actions:**
-- [ ] Commit bug fixes to `.nix-config` (7 changes, all structural; no logic changes)
-- [ ] Run `make switch` to deploy fixes to running system
-- [ ] Run `anon-watch` and verify it completes L0-L4 ladder without timing out
+- [ ] Run `make switch` to activate new anon-mode design
+- [ ] Verify: `systemctl --user status anon-watch` running; `tail -f /run/anon-mode/ready` shows readiness state
 - [ ] Test L4 (full suite): SOCKS anon check, transparent path anon check, negative path tests (loopback, IPv6, SO_BINDTODEVICE, gateway withdrawal)
-- [ ] Monitor `anon-watch` disarm events in journal over 1 week; should be zero if check.torproject.org is stable
+- [ ] Benchmark: measure per-check latency; confirm L4 suite completes within 30s (safe re-check interval)
+- [ ] Monitor: `anon-watch` disarm events in journal over 1 week; should be zero if check.torproject.org is stable
 
 **Open design decision:**
 - [ ] Revisit `sealOnHealthLoss` invariant: current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Evaluate: (1) accept Cloudflare uptime coupling, (2) self-host onion check endpoint, (3) hybrid (self-host + fallback to check.torproject.org).
