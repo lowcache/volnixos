@@ -17,7 +17,7 @@
       set -gx PATH $HOME/.bin $HOME/.local/bin $HOME/.local/share/npm-global/bin $GOPATH/bin $CARGO_HOME/bin $GEM_HOME/bin $PATH
       set -gx NODE_PATH $HOME/.local/share/npm-global/lib/node_modules
 
-      # sops: native age identity, so `sops nixos/secrets.yaml` edits need no env prefix
+      # sops: native age identity, so `sops nixos/host-secrets.yaml` edits need no env prefix
       set -gx SOPS_AGE_KEY_FILE $HOME/.config/sops/age/keys.txt
     '';
 

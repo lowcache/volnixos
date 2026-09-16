@@ -15,7 +15,7 @@
 # since Storage is itself persistent. The bind goes through the /var/lib/libvirt
 # path, so the 0700 home dir does not block the libvirt-qemu user.
 #
-# Remove the single `./windows-vm.nix` import from configuration.nix to fully
+# Remove the single `./windows-vm.nix` import from nixos/hosts/volnix.nix to fully
 # back this out; nothing else here touches existing config.
 
 {

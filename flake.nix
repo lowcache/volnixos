@@ -37,7 +37,7 @@
     # };
     # lix-module input removed: nixpkgs ships lix natively (lixPackageSets) and
     # the module's release branches lag nixpkgs' supported versions (release-2.93
-    # vs nixpkgs stable 2.95). nix.package is set in nixos/configuration.nix.
+    # vs nixpkgs stable 2.95). nix.package is set in nixos/modules/nix-settings.nix.
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -215,7 +215,7 @@
           path = ./templates/ruby;
           description = "Ruby devShell (bundler) + reproducible bundlerEnv build";
         };
-        # No `default` on purpose. With five templates, a bare
+        # No `default` on purpose. With six templates, a bare
         # `nix flake init -t ~/.nix-config` would silently scaffold whichever
         # one won the coin toss into the wrong project. Name the language.
       };
