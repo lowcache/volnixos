@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-15
+last_updated: 2026-09-16
 status: active
 ---
 
@@ -59,7 +59,7 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 ## 3. MicroVM Guest Network (2026-08-06 — Confirmed Working)
 
-* **net-gate (Tor relay, rebuilt 2026-09-12, bugs found 2026-09-15, rpfilter fix applied 2026-09-15):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Service was dead 2026-09-08 to 2026-09-12 (root cause: hand-rolled `settings.SOCKSPort` conflicted with auto-emitted `client.socksListenAddress` via list merge → tor died on second bind; netgate tap missing `IPMasquerade`, guest packets had no return route). Redesigned with fail-closed invariant and readiness ladder L0-L4 (decisions.md #42). **Status: LIVE in commit 665710c (activated 2026-09-12 16:11).** Bug sweep 2026-09-15 found 8 issues in the deployment; 7 fixed in-system with uncommitted changes (see mistakes.md 2026-09-15 entries). **New rpfilter finding (2026-09-15):** Enforced path was timing out despite SOCKS tests passing IsTor:true. Root cause: NixOS strict `networking.firewall.checkReversePath` (default) with `-m rpfilter --validmark` in mangle PREROUTING drops asymmetric enforced-path replies (source is public address; reverse route is WAN, not tap). Fix: declare `networking.firewall.checkReversePath = "loose"` inside `nixos/modules/anonymous-mode.nix` (now in working tree, not yet committed). Fix applied 2026-09-15 post-diagnosis; rpfilter strict/loose transition is independent of sysctl `net.ipv4.conf.*.rp_filter` (netfilter match is what bites, not sysctls). Full incident, redesign, 8-bug findings, and rpfilter root cause: mistakes.md 2026-09-08, 2026-09-15 entries, decisions.md #42 amendment. Testing not yet run (anon-check idle since 2026-09-12 05:15; L0-L4 ladder untested in live operation post-rpfilter fix). System rebooted 2026-09-15 14:26; cleared stale kernel state.
+* **net-gate (Tor relay, rebuilt 2026-09-12, refined 2026-09-15, BOOT FAILURE 2026-09-16):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Service was dead 2026-09-08 to 2026-09-12 (root cause: hand-rolled `settings.SOCKSPort` conflicted with auto-emitted `client.socksListenAddress` via list merge → tor died on second bind; netgate tap missing `IPMasquerade`, guest packets had no return route). Redesigned with fail-closed invariant and readiness ladder L0-L4 (decisions.md #42). Built and checked 2026-09-12 16:11; seven implementation refinements applied 2026-09-15 + rpfilter fix for asymmetric enforced-path replies (both in-system, uncommitted). System rebooted 2026-09-15 14:26 to clear kernel state. **REGRESSION: microvm@net-gate.service fails to start on boot (exit code 1, 2026-09-16 04:49:14 CDT).** Error message truncated in log. Likely caused by rpfilter fix or one of the seven refinements. Full L0-L4 ladder remains untested in live operation. **Status: DISABLED pending diagnosis.** Do not attempt re-activation without identifying root cause (see todo.md anon-mode testing section).
 
 ## 4. Active Workarounds
 

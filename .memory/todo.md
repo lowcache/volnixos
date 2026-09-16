@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-15
+last_updated: 2026-09-16
 status: active
 ---
 
@@ -154,32 +154,21 @@ status: active
 
 ### Anon-Mode Fail-Closed Redesign — Activation & Testing Pending (2026-09-12, Build Refinements Applied 2026-09-15)
 
-**Status:** Redesign built (commit 665710c, 2026-09-12 16:09), activated via `make switch` at 16:11, and refined with seven implementation fixes discovered during build/pre-activation phase (2026-09-15). System rebooted 2026-09-15 14:26 (cleared stale kernel state). **rpfilter bug diagnosed and fix applied (2026-09-15, in-system, uncommitted).** **anon-check has not run since 2026-09-12 05:15** — the redesigned fail-closed path, L0-L4 readiness ladder, AND rpfilter fix remain untested in live operation.
+**BLOCKED: net-gate VM boot failure (2026-09-16 04:49 CDT).** Redesign built (commit 665710c, 2026-09-12 16:11) and refined with seven implementation fixes (2026-09-15). rpfilter fix for asymmetric enforced-path replies applied same day (in-system, uncommitted). System rebooted 2026-09-15 14:26. **NEW REGRESSION on 2026-09-16:** microvm@net-gate.service fails at boot with exit code 1 (no captured error detail). The fail-closed invariant, L0-L4 readiness ladder, and rpfilter fix remain **untested in live operation** — all three are now suspect.
 
-**Seven implementation refinements applied (2026-09-15, see decisions.md #42 amendment 1):**
-1. `anon-jail` ExecStop removed; `jailUp` made idempotent (rules remain installed at rest; prevents brief unjailed windows on systemd restart)
-2. Gateway route factored into `routingUp`/`routingDown` shared scripts (prevents cascading teardown from `systemctl stop`)
-3. `anon-check` re-seals on every failure (no dangling false-safe path states)
-4. `anon-watch` now checks `jailUp` exit status (was discarding it; every test run had left system disarmed)
-5. Migration guard validates nft read success before pattern-match (was failing open)
-6. `TimeoutStartSec` raised from +150s to `bootstrapTimeout + 300` (L4 suite runs up to 105s)
-7. `VirtualAddrNetworkIPv4` moved from 172.16.0.0/12 to 10.192.0.0/10 (avoids collision with host WAN + Docker ranges)
+**Immediate action:**
+- [ ] Inspect systemd journal for microvm@net-gate.service errors and stderr (may contain boot diagnostic)
+- [ ] Check if rpfilter fix or one of the seven 2026-09-15 refinements is the culprit (likely candidates: route handling, jail idempotency, timeout scaling, vaddr collision avoidance)
+- [ ] Diagnose boot failure root cause before any re-activation attempt
+- [ ] If root cause is in the nix code: commit fix, rebuild, retest L0-L4 ladder
+- [ ] If root cause is environmental: document and mark as resolved
 
-**rpfilter discovery (2026-09-15, see decisions.md #42 amendment 2):**
-- Symptom: Enforced path times out despite L3 SOCKS tests passing IsTor:true
-- Root cause: NixOS strict `networking.firewall.checkReversePath` (default) + netfilter `-m rpfilter --validmark` drops asymmetric enforced-path replies (source is public addr; reverse route is WAN, not tap)
-- Fix: `networking.firewall.checkReversePath = "loose"` in `nixos/modules/anonymous-mode.nix` (now in-system, uncommitted)
-- Why it hid: DNS (source is guest's own address) had correct reverse route via tap, so L0-L3 appeared healthy; only L4 asymmetric path hit rpfilter
-- Status: Fix applied 2026-09-15 post-diagnosis; still needs testing
-
-**Remaining work:**
-- [ ] Commit rpfilter fix + 7 implementation refinements to git (currently in-system, uncommitted)
+**Deferred testing (blocked on boot diagnosis):**
 - [ ] Run anon-check manually to exercise L4 ladder for the first time (post-rpfilter fix)
 - [ ] Verify: `systemctl --user status anon-watch` running; `tail -f /run/anon-mode/ready` shows readiness state
 - [ ] Test L4 (full suite): SOCKS anon check, transparent path anon check, negative path tests (loopback, IPv6, SO_BINDTODEVICE, gateway withdrawal)
 - [ ] Benchmark: measure per-check latency; confirm L4 suite completes within 30s
 - [ ] Monitor: `anon-watch` disarm events in journal over 1 week; should be zero if check.torproject.org is stable
-- [ ] Document findings from first L4 exercise in state.md §3
 
 **Open design decision:**
 - [ ] Revisit `sealOnHealthLoss` invariant: current design disarms on L4 loss, coupling anonymity uptime to check.torproject.org availability (Cloudflare CDN). Evaluate: (1) accept Cloudflare coupling, (2) self-host onion check endpoint, (3) hybrid fallback.
