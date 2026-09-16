@@ -59,7 +59,24 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 ## 3. MicroVM Guest Network (2026-08-06 — Confirmed Working)
 
+## 3. MicroVMs — net-gate (Tor Relay) and anon-box (Workstation) (2026-08-06+)
+
+### net-gate (Tor relay, rebuilt 2026-09-12, refined 2026-09-15, BOOT FAILURE 2026-09-16)
+
 * **net-gate (Tor relay, rebuilt 2026-09-12, refined 2026-09-15, BOOT FAILURE 2026-09-16):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Service was dead 2026-09-08 to 2026-09-12 (root cause: hand-rolled `settings.SOCKSPort` conflicted with auto-emitted `client.socksListenAddress` via list merge → tor died on second bind; netgate tap missing `IPMasquerade`, guest packets had no return route). Redesigned with fail-closed invariant and readiness ladder L0-L4 (decisions.md #42). Built and checked 2026-09-12 16:11; seven implementation refinements applied 2026-09-15 + rpfilter fix for asymmetric enforced-path replies (both in-system, uncommitted). System rebooted 2026-09-15 14:26 to clear kernel state. **REGRESSION: microvm@net-gate.service fails to start on boot (exit code 1, 2026-09-16 04:49:14 CDT).** Error message truncated in log. Likely caused by rpfilter fix or one of the seven refinements. Full L0-L4 ladder remains untested in live operation. **Status: DISABLED pending diagnosis.** Do not attempt re-activation without identifying root cause (see todo.md anon-mode testing section).
+
+### anon-box (Anonymity Workstation Microvm, Verified 2026-09-16)
+
+* **Status:** Working end-to-end. Guest has no direct routing; all traffic flows through net-gate to Tor. Verified from inside guest: `uid=1000(anon)`, `IsTor:true` with exit distinct from host, `/in` read-only, `/out` writable, single default route only.
+* **Design:** Cloud-hypervisor microvm with read-only `/in` (host filesystem bind), writable `/out`, single default route via tap to net-gate gateway. Accessed from host via `anon-shell` command over vsock. Firewall + routing isolation intact.
+* **Platform constraints (load-bearing, discovered 2026-09-16):**
+  - cloud-hypervisor rejects `type = "bridge"` interfaces; bridges formed host-side (networkd enslaves plain taps into `br-anon`, host holds NO address on bridge).
+  - Vsock is hybrid protocol (Unix socket + CONNECT/OK handshake), not kernel AF_VSOCK. `socat VSOCK-CONNECT` and `systemd-ssh-proxy` incompatible. Socket is 0700 microvm (requires root access from host).
+  - iptables REDIRECT targets arriving interface primary address; dual-leg gateway must have listeners bound to both legs (silent blackhole if secondary listener missing).
+  - `microvm.storeOnDisk = true` by default unless guest shares host `/nix/store`; guest closures curated, guest learns nothing of host packages.
+  - Microvm share mounts have no `readOnly` option; read-only inputs require host-side `bind,ro` mounts that are then shared into guest.
+  - Unit deps on `microvm@anon-box` re-emit `restartIfChanged`, overriding template `X-RestartIfChanged=false`. Unlike net-gate, anon-box restarts on `make switch`.
+* **Guest network:** Guest 192.168.102.2, gateway 192.168.102.1 (tap created by microvm). Single default route `0.0.0.0/0` via gateway. No loopback resolver (uses host's if configured).
 
 ## 4. Active Workarounds
 

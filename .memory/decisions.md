@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-09-15
+last_updated: 2026-09-16
 status: active
 ---
 
@@ -557,3 +557,10 @@ This file catalogs the active, canonical design decisions and system configurati
   Refinements live in: gen 247+ (commit 665710c, 2026-09-12 16:09). System rebooted 2026-09-15 14:26 (cleared transient kernel state). anon-check untested; see todo.md for testing steps.
 
 * **Amendment 2 (2026-09-15 — rpfilter Discovery & Fix):** Enforced path timeout bug diagnosed: NixOS strict `networking.firewall.checkReversePath` (default) emits `-m rpfilter --validmark` in mangle PREROUTING (priority -150), dropping enforced-path replies because the source is a public address whose reverse route is the WAN, not the tap. The SOCKS path (L3) appeared healthy (DNS worked, because guest's own address has correct reverse route via tap); the enforced path (L4c) silently timed out. **Fix:** Declare `networking.firewall.checkReversePath = "loose"` inside `nixos/modules/anonymous-mode.nix` so the module owns the firewall configuration it depends on. rpfilter loose still validates reverse paths but does not enforce them strictly (RETURN on fail instead of DROP). Applied 2026-09-15 post-diagnosis, in-system, uncommitted. Full root-cause narrative: mistakes.md 2026-09-15 (rpfilter discovery entry, pending formal addition).
+## 43. Measurement Reliability — Silence Is Not Evidence (2026-09-16)
+
+* **Decision:** When a diagnostic check returns empty/null/silence/no-response, the first hypothesis must be that the check itself is broken, not that the thing under test is healthy. Silence is the absence of a measurement, not a measurement of absence.
+
+* **Why:** Three anon-box debugging steps each manufactured silence: (1) wrong vsock transport (socat EXEC gave empty output), (2) relay abandoning socket on stdin EOF (command substitution closes stdin, returns empty), (3) `curl -sS` writing to stderr that socat EXEC did not relay (captured separately, appeared as silence). At each step, empty output was misread as evidence about network state, when the probe was broken. Only under load (actual stream attempt) did the asymmetry break. Silence coupled to absence-of-evidence produces false confidence — the check looks like it succeeded because the expected success and the check's own failure both produce "nothing."
+
+* **Prevention:** Before blaming the target, verify the probe. (1) Test the probe in isolation, confirm it produces output under normal conditions. (2) Verify output reaches you (not lost to closed pipes, unreachable stderr, buffering delays, timeout). (3) Distinguish "absence of problem" (positive signal) from "absence of measurement" (check broken). Where feasible, design probes with explicit positive/negative signals rather than silent/loud.
