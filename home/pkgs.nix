@@ -188,18 +188,19 @@
           llmfit
           rtk
           claude-code
+          pkgs.llm-agents.claude-desktop
           pkgs.llm-agents.ccstatusline
           claude-code-router
-          #gemini-cli
-          #github-copilot-cli
-          #codex
           pkgs.llm-agents.claude-plugins
-          pkgs.llm-agents.opencode
-          pkgs.llm-agents.zaly
           pkgs.llm-agents.cc-switch-cli
-          pkgs.llm-agents.parallel-cli
-          pkgs.llm-agents.toon
+          pkgs.llm-agents.opencode
+          # Testrunners
+          pkgs.llm-agents.prime-agent
+          pkgs.llm-agents.t3code
+          pkgs.llm-agents.t3code-desktop
           pkgs.llm-agents.happy-coder
+          pkgs.llm-agents.freebuff
+          pkgs.llm-agents.bb-app
         ];
         andronix = with pkgs; [
           scrcpy

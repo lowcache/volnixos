@@ -42,7 +42,9 @@ SOPS_AGE_KEY_FILE ?= $(HOME)/.config/sops/age/keys.txt
 # --- All Targets Declared PHONY ---
 .PHONY: help switch switch-detached build test dry-activate boot \
         droid-check droid-plan droid-switch \
-        run-netgate run-tailscale \
+        run-netgate run-tailscale gate-restart \
+        anon-status anon-arm anon-disarm anon-selftest anon-run \
+        anon-logs anon-guest-logs \
         sops-edit sops-edit-vm sops-rekey sops-view sops-view-vm \
         backup backup-force backup-mount backup-umount \
         check fmt update update-nixpkgs trash \
@@ -137,6 +139,106 @@ run-netgate:
 ## :run-tailscale: ..........: Start the Tailscale-vm MicroVM runner
 run-tailscale:
 	nix run .#tailscale-vm
+
+## :gate-restart: ..........: Restart the net-gate VM (REQUIRED after guest config changes)
+# microvm@.service carries X-RestartIfChanged=false, so `make switch` updates
+# /var/lib/microvms/net-gate/current but leaves the OLD guest running. A change
+# to the guest half of nixos/vms.nix — torrc, the nat REDIRECT rules, anything
+# under microvm.vms.net-gate.config — does not take effect until this runs, and
+# nothing warns you. Verifying against a guest that never picked up the change
+# has already cost one debugging session.
+gate-restart:
+	sudo systemctl restart microvm@net-gate.service
+	@echo "++ net-gate restarted. Anonymous mode is disarmed (anon-routing is"
+	@echo "++ partOf the VM). Re-arm with: make anon-arm"
+
+# ==============================================================================
+# Anonymous Mode (net-gate Tor VM + uid jail)
+# ==============================================================================
+# Handles on nixos/modules/anonymous-mode.nix. The invariant that module enforces
+# is: an anonymous workload either traverses the net-gate Tor VM in a
+# VERIFIED-ready state, or it has no network connectivity at all.
+#
+# Arming is therefore not "turn it on" — it is "prove the path, then release the
+# workload". `anon-arm` fails rather than arming when the proof fails.
+ANON_STAMP         := /run/anon-mode/ready
+# Mirrors vol.anon-mode.routingTable; change both together.
+ANON_TABLE         := 100
+ANON_GUEST_JOURNAL := /persist/var/log/net-gate-journal
+
+## Anonymous Mode
+## :anon-status: ..........: Show jail, readiness, and path state (no sudo, no side effects)
+anon-status:
+	@echo ""
+	@echo "== units =="
+	@for u in anon-jail anon-routing anon-check anon-reap anonymous.target \
+	          anon-watch.timer microvm@net-gate; do \
+	  printf '   %-22s %s\n' "$$u" "$$(systemctl is-active $$u 2>&1)"; \
+	done
+	@echo ""
+	@echo "== readiness (only L4 writes this; anon-exec refuses without it) =="
+	@if [ -e $(ANON_STAMP) ]; then sed 's/^/   /' $(ANON_STAMP); \
+	 else echo "   DISARMED - no $(ANON_STAMP)"; fi
+	@echo ""
+	@echo "== jail (uidrange rule must exist, table must have a default) =="
+	@ip rule list | grep uidrange | sed 's/^/   /' \
+	  || echo "   *** NO uidrange rule - the jail is NOT installed ***"
+	@ip route show table $(ANON_TABLE) | sed 's/^/   /'
+	@echo ""
+	@echo "== reverse-path filter (strict silently kills the enforced path) =="
+	@fw=$$(grep -oP 'ExecStart=@?\K\S+' /etc/systemd/system/firewall.service 2>/dev/null | head -1); \
+	 mode=$$(grep -oE 'rpfilter --validmark( --loose)?' "$$fw" 2>/dev/null | head -1); \
+	 case "$$mode" in \
+	   *--loose) echo "   loose - correct for this asymmetric path" ;; \
+	   "")       echo "   (could not read $$fw)" ;; \
+	   *)        echo "   *** STRICT - return traffic on the tap will be DROPPED ***" ;; \
+	 esac
+	@echo ""
+
+## :anon-arm: ..........: Arm anonymous mode (runs the L0-L4 ladder; fails if unproven)
+anon-arm:
+	@echo "== arming: the readiness ladder runs now =="
+	@echo "++ systemctl start blocks with NO OUTPUT until the ladder finishes."
+	@echo "++ Seconds when tor is warm; minutes on a cold bootstrap. Not a hang."
+	@echo "++ Watch it live in another pane:  journalctl -fu anon-check"
+	@sudo systemctl start anonymous.target || { \
+	  echo ""; \
+	  echo "-- ARM FAILED. The jail re-sealed itself; you are not exposed."; \
+	  echo "-- Ladder output:"; \
+	  journalctl -u anon-check -n 25 --no-pager | sed 's/^/   /'; \
+	  exit 1; }
+	@echo ""
+	@sed 's/^/++ verified: /' $(ANON_STAMP)
+	@echo "++ Prove the negative paths too:  make anon-selftest"
+
+## :anon-disarm: ..........: Disarm (re-seal the jail and reap running workloads)
+anon-disarm:
+	sudo systemctl stop anonymous.target
+	@echo "++ Re-sealed. anon.slice reaped; the uid keeps its blackhole default."
+
+## :anon-selftest: ..........: Prove the NEGATIVE paths (leak tests; needs an armed target)
+# The half a working exit IP cannot establish. "It has a Tor IP" says nothing
+# about whether it could ALSO have left another way, so this asserts the
+# loopback resolver is unreachable, IPv6 is refused, binding the WAN device is
+# blackholed, and withdrawing the gateway leaves no clearnet fallback.
+anon-selftest:
+	sudo anon-selftest
+
+## :anon-run: ..........: Run a command as the jailed workload, e.g. CMD="curl -s example.com"
+anon-run:
+	@test -n "$(CMD)" || { \
+	  echo 'Usage- make anon-run CMD="curl https://check.torproject.org/api/ip"'; \
+	  exit 64; }
+	anon-run $(CMD)
+
+## :anon-logs: ..........: Host-side ladder and jail journal
+anon-logs:
+	journalctl -u anon-check -u anon-jail -u anon-routing -u anon-watch \
+		-b --no-pager -n $(or $(N),80)
+
+## :anon-guest-logs: ..........: net-gate guest tor journal (bootstrap, circuits, rejections)
+anon-guest-logs:
+	sudo journalctl -D $(ANON_GUEST_JOURNAL) -u tor --no-pager -n $(or $(N),80)
 
 # ==============================================================================
 # Secrets Management (SOPS / Age)
