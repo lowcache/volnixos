@@ -22,6 +22,38 @@ let
   # If this stops matching the real uplink the guest loses egress and anonymous
   # mode fails to arm — which is the safe direction for it to be wrong in.
   wanInterface = "wlp4s0";
+
+  # WORKSTATION LEG (anon-box). net-gate becomes two-legged: its existing NIC
+  # faces the host tap, and this one faces a bridge shared only with the
+  # workstation guest.
+  #
+  # The host holds NO address on anonBridge. That is the point of the topology,
+  # not an oversight: host and workstation share no L3, the host is not in the
+  # data path, and it cannot reach the workstation over IP. anon-shell therefore
+  # enters over vsock rather than ssh-over-network, which is why anonBoxCid
+  # exists.
+  #
+  # cloud-hypervisor accepts only `tap` and `macvtap` interfaces — a
+  # `type = "bridge"` interface throws at eval — so both sides attach as plain
+  # taps and the HOST enslaves them (see the 2x-br-anon networks below).
+  anonBridge = "br-anon";
+  anonInnerTap = "vm-ngi";
+  anonBoxTap = "vm-anonbox";
+  # Addressing comes from vol.anon-mode.workstation, not from literals here —
+  # the module, this file and anon-shell all consume it.
+  anonInnerAddr = anon.workstation.gatewayAddress;
+  anonBoxAddr = anon.workstation.address;
+  anonBoxSubnet = "192.168.102.0/24";
+  anonBoxPrefix = "24";
+  # MACs :01 and :02 are taken by net-gate and the tailscale guest. Interfaces
+  # are matched BY MAC rather than by name: net-gate's networks used to match
+  # `en* eth*`, which with a second NIC matches both and misconfigures the inner
+  # leg.
+  netgateOuterMac = "02:00:00:00:00:01";
+  netgateInnerMac = "02:00:00:00:00:03";
+  anonBoxMac = "02:00:00:00:00:04";
+  # vsock CIDs 10 and 11 are net-gate and tailscale.
+  anonBoxCid = anon.workstation.vsockCid;
 in
 {
 
@@ -82,37 +114,76 @@ in
           # makes a packet local before the forwarding decision, so anything the
           # rules do NOT rewrite — UDP other than :53, ICMP, anything Tor cannot
           # carry — is dropped rather than forwarded. Fails shut, including QUIC.
-          extraCommands = ''
-            # Backstop for the "must not route" invariant above: anything that
-            # reaches the forwarding path instead of tor dies here.
-            iptables -A FORWARD -j DROP
-            iptables -t nat -A PREROUTING -s ${anon.tapAddress} -p udp --dport 53 \
-              -j REDIRECT --to-ports ${toString anon.dnsPort}
-            iptables -t nat -A PREROUTING -s ${anon.tapAddress} -d ${anon.torVmSubnet} -j RETURN
-            iptables -t nat -A PREROUTING -s ${anon.tapAddress} -p tcp \
-              -j REDIRECT --to-ports ${toString anon.transPort}
-          '';
-          extraStopCommands = ''
-            iptables -D FORWARD -j DROP 2>/dev/null || true
-            iptables -t nat -D PREROUTING -s ${anon.tapAddress} -p udp --dport 53 \
-              -j REDIRECT --to-ports ${toString anon.dnsPort} 2>/dev/null || true
-            iptables -t nat -D PREROUTING -s ${anon.tapAddress} -d ${anon.torVmSubnet} -j RETURN 2>/dev/null || true
-            iptables -t nat -D PREROUTING -s ${anon.tapAddress} -p tcp \
-              -j REDIRECT --to-ports ${toString anon.transPort} 2>/dev/null || true
-          '';
+          #
+          # TWO CLIENTS, ONE DEFINITION. This gateway now serves the host's uid
+          # jail (src ${anon.tapAddress}) and the anon-box workstation (src
+          # ${anonBoxAddr}). They get byte-identical treatment because the rules
+          # are generated from one function rather than maintained as two copies
+          # that can drift — and a drifted copy here does not fail loudly, it
+          # quietly stops anonymising one of the two.
+          extraCommands =
+            let
+              clientRules = op: src: subnet: ''
+                iptables -t nat -${op} PREROUTING -s ${src} -p udp --dport 53 \
+                  -j REDIRECT --to-ports ${toString anon.dnsPort}
+                iptables -t nat -${op} PREROUTING -s ${src} -d ${subnet} -j RETURN
+                iptables -t nat -${op} PREROUTING -s ${src} -p tcp \
+                  -j REDIRECT --to-ports ${toString anon.transPort}
+              '';
+            in
+            ''
+              # Backstop for the "must not route" invariant above: anything that
+              # reaches the forwarding path instead of tor dies here. With two
+              # legs this stops being belt-and-braces and becomes the mechanism
+              # preventing the workstation from being routed out the WAN.
+              iptables -A FORWARD -j DROP
+            ''
+            + clientRules "A" anon.tapAddress anon.torVmSubnet
+            + clientRules "A" anonBoxAddr anonBoxSubnet;
+
+          extraStopCommands =
+            let
+              clientRules = src: subnet: ''
+                iptables -t nat -D PREROUTING -s ${src} -p udp --dport 53 \
+                  -j REDIRECT --to-ports ${toString anon.dnsPort} 2>/dev/null || true
+                iptables -t nat -D PREROUTING -s ${src} -d ${subnet} -j RETURN 2>/dev/null || true
+                iptables -t nat -D PREROUTING -s ${src} -p tcp \
+                  -j REDIRECT --to-ports ${toString anon.transPort} 2>/dev/null || true
+              '';
+            in
+            ''
+              iptables -D FORWARD -j DROP 2>/dev/null || true
+            ''
+            + clientRules anon.tapAddress anon.torVmSubnet
+            + clientRules anonBoxAddr anonBoxSubnet;
         };
       };
 
       systemd = {
         network = {
           enable = true;
+          # MATCHED BY MAC, NOT BY NAME. This used to be `Name = "en* eth*"`,
+          # which was correct while the guest had one NIC and silently wrong the
+          # moment it grew a second: the glob matches both, and networkd would
+          # put the outer address on whichever appeared first.
           networks."10-lan" = {
-            matchConfig.Name = "en* eth*";
+            matchConfig.MACAddress = netgateOuterMac;
             networkConfig = {
               Address = [ "${anon.torVmAddress}/${netgatePrefix}" ];
               Gateway = anon.tapAddress;
               DNS = [ anon.tapAddress ];
             };
+          };
+          # Inner leg, facing the workstation. Deliberately NO Gateway: the
+          # default route stays out the host tap, which is this guest's path to
+          # its guards. A gateway here would make the workstation a candidate
+          # next hop for tor's own egress.
+          networks."11-inner" = {
+            matchConfig.MACAddress = netgateInnerMac;
+            networkConfig = {
+              Address = [ "${anonInnerAddr}/${anonBoxPrefix}" ];
+            };
+            linkConfig.RequiredForOnline = "no";
           };
         };
         services = {
@@ -130,7 +201,14 @@ in
           {
             type = "tap";
             id = anon.tapInterface;
-            mac = "02:00:00:00:00:01";
+            mac = netgateOuterMac;
+          }
+          # Inner leg. A plain tap: the host enslaves it to ${anonBridge},
+          # because cloud-hypervisor rejects `type = "bridge"` outright.
+          {
+            type = "tap";
+            id = anonInnerTap;
+            mac = netgateInnerMac;
           }
         ];
         shares = [
@@ -214,6 +292,19 @@ in
           # client.dns.enable: those emit listeners on 127.0.0.1, and because
           # these settings are list-typed they MERGE rather than override — which
           # is exactly how the duplicate SOCKSPort that killed tor was created.
+          # ONE LISTENER PER LEG, AND THIS IS NOT OPTIONAL.
+          #
+          # iptables REDIRECT rewrites the destination to the primary address of
+          # the interface the packet ARRIVED on. Host-jail traffic arrives on the
+          # outer leg and lands on ${anon.torVmAddress}; workstation traffic
+          # arrives on the inner leg and lands on ${anonInnerAddr}. A listener
+          # bound only to the outer address therefore serves the host and
+          # silently blackholes the workstation — the redirect still fires, it
+          # just points at a port nobody is on.
+          #
+          # That is precisely how this presented: the workstation could not
+          # resolve anything, because its DNS was being redirected to
+          # ${anonInnerAddr}:${toString anon.dnsPort} where tor was not listening.
           TransPort = [
             {
               addr = anon.torVmAddress;
@@ -225,10 +316,19 @@ in
               # (anon-run/tor-curl pass throwaway credentials).
               IsolateDestAddr = true;
             }
+            {
+              addr = anonInnerAddr;
+              port = anon.transPort;
+              IsolateDestAddr = true;
+            }
           ];
           DNSPort = [
             {
               addr = anon.torVmAddress;
+              port = anon.dnsPort;
+            }
+            {
+              addr = anonInnerAddr;
               port = anon.dnsPort;
             }
           ];
@@ -395,16 +495,221 @@ in
     };
   };
 
+  # THE ANONYMITY WORKSTATION.
+  #
+  # What this buys over `anon-run`: a kernel boundary instead of a uid boundary.
+  # The uid jail enforces egress well — an application that ignores every proxy
+  # variable still cannot reach the clearnet — but the workload runs on the host
+  # kernel, as a host uid, with the host filesystem in reach. A kernel bug or a
+  # privilege escalation escapes all of it at once. Here the workload is a
+  # different machine.
+  #
+  # The gateway/workstation split is the point: the workload never runs on the
+  # machine that terminates tor. Compromise this guest and you still cannot read
+  # the guard set, rewrite torrc, or learn the host's WAN address.
+  #
+  # autostart = false. It is started by anonymous.target, AFTER the readiness
+  # ladder has proven the path — see nixos/modules/anonymous-mode.nix. A
+  # workstation that boots before the gateway is verified is a workstation you
+  # will use before the gateway is verified.
+  microvm.vms.anon-box = {
+    autostart = false;
+    config = {
+      _module.args.inputs = inputs;
+
+      imports = [ inputs.microvm.nixosModules.microvm ];
+
+      networking = {
+        hostName = "anon-box";
+        useNetworkd = true;
+        # Nothing listens here and nothing may reach in. The only peer on this
+        # segment is the gateway.
+        firewall.enable = true;
+        # Resolution goes to the gateway's inner leg, whose nat bends :53 into
+        # tor's DNSPort. There is no other resolver and no fallback: an
+        # unresolvable name must fail, not leak sideways.
+        nameservers = [ anonInnerAddr ];
+      };
+
+      systemd.network = {
+        enable = true;
+        wait-online.enable = false;
+        networks."10-lan" = {
+          matchConfig.MACAddress = anonBoxMac;
+          networkConfig = {
+            Address = [ "${anonBoxAddr}/${anonBoxPrefix}" ];
+            Gateway = anonInnerAddr;
+            DNS = [ anonInnerAddr ];
+          };
+        };
+      };
+
+      # Unprivileged. The VM is the real boundary, but there is no reason to
+      # hand a scraper root inside it.
+      users.users.anon = {
+        isNormalUser = true;
+        uid = 1000;
+        description = "Anonymous workstation operator";
+        home = "/home/anon";
+      };
+
+      # THE CURATED TOOLSET. Because no /nix/store share is declared,
+      # microvm.storeOnDisk defaults true and this guest boots an erofs image
+      # built from its own closure alone — it learns nothing about what is
+      # installed on the host. Adding a tool is an edit here plus
+      # `make anon-box-rebuild`; that friction is deliberate and cheap.
+      environment.systemPackages = with pkgs; [
+        curl
+        wget
+        jq
+        git
+        python3
+        ripgrep
+        fd
+        openssh
+      ];
+
+      # No IPv6 anywhere on this path: tor carries none here, and an unrouted v6
+      # socket is a leak waiting for a misconfiguration. Refuse it at the stack.
+      boot.kernel.sysctl."net.ipv6.conf.all.disable_ipv6" = 1;
+      boot.kernelParams = [ "random.trust_cpu=on" ];
+
+      microvm = {
+        hypervisor = "cloud-hypervisor";
+        mem = 2048;
+        vcpu = 2;
+        vsock.cid = anonBoxCid;
+        interfaces = [
+          {
+            type = "tap";
+            id = anonBoxTap;
+            mac = anonBoxMac;
+          }
+        ];
+        shares = [
+          # Direction is explicit. `/in` is a read-only bind the host prepares
+          # (see systemd.mounts below), so a workload cannot rewrite its own
+          # inputs and you cannot casually expose your home directory.
+          #
+          # Honest about what this is: accident prevention, not a wall. Guest
+          # root can remount its own mounts. It stops mistakes, not attackers.
+          {
+            source = "/run/anon-work/in";
+            mountPoint = "/in";
+            tag = "anon-in";
+            proto = "virtiofs";
+          }
+          {
+            source = "/home/lowcache/Storage/anon/out";
+            mountPoint = "/out";
+            tag = "anon-out";
+            proto = "virtiofs";
+          }
+        ];
+      };
+
+      # THE HOST'S ONLY WAY IN.
+      #
+      # The host has no address on this guest's segment, by design — so there is
+      # nothing to ssh to, and that is the isolation property rather than an
+      # inconvenience. vsock is a host<->guest channel that is not the network,
+      # so using it costs none of that property.
+      #
+      # Two ports, deliberately: verification is a non-interactive request with a
+      # parseable answer, not something scraped out of a terminal.
+      #
+      # Neither listener authenticates. Anyone who can already run code on the
+      # host can open a shell here — which is acceptable because the host is the
+      # trusted side and this guest holds nothing secret. It is ephemeral, and
+      # the risk is someone USING the workstation, not extracting from it.
+      systemd.services.anon-vsock-shell = {
+        description = "Interactive shell for anon-shell, over vsock";
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:${toString anon.workstation.shellPort},fork,reuseaddr EXEC:'${pkgs.shadow}/bin/login -f anon',pty,stderr,setsid,ctty";
+          Restart = "always";
+          RestartSec = "1s";
+        };
+      };
+
+      systemd.services.anon-vsock-verify = {
+        description = "L5 path check, answered over vsock";
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          # `,stderr` matters: without it curl's -sS diagnostics go to the guest
+          # journal and the host sees an empty stream, making "DNS failed",
+          # "no route" and "not Tor" indistinguishable.
+          ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:${toString anon.workstation.verifyPort},fork,reuseaddr EXEC:${
+            pkgs.writeShellScript "anon-verify" ''
+              # Issued exactly as a workload would issue it: no proxy, no bound
+              # interface. This guest has one route and it points at the gateway,
+              # so the request cannot take any other path — which is what makes
+              # an unproxied request safe to make here.
+              ${pkgs.curl}/bin/curl -sS --max-time 30 ${anon.exitCheckUrl}
+            ''
+          },stderr";
+          Restart = "always";
+          RestartSec = "1s";
+        };
+      };
+
+      # Deliberately NO persistent journal, inverting net-gate's choice.
+      # net-gate persists its journal because a dead tor was once invisible for
+      # days, and it logs mechanism rather than destinations. This guest's
+      # journal would record actual activity, so it stays in RAM and dies with
+      # the VM. Debugging means catching it live.
+      services.journald.settings.Journal.Storage = "volatile";
+
+      system.stateVersion = "24.11";
+    };
+  };
+
   # Host-side overrides for fast shutdown
   systemd = {
     # Backing dirs for the net-gate shares. virtiofsd refuses to start if a
     # source is missing, and tmpfiles (sysinit.target) runs well before the
     # microvm units in multi-user.target.
-    tmpfiles.rules =
-      lib.optional anon.persistTorState "d /persist/var/lib/net-gate-tor 0700 root root -"
-      ++ lib.optional anon.persistGuestJournal "d /persist/var/log/net-gate-journal 0700 root root -";
+    tmpfiles.rules = [
+      # anon-box's workspace. Owned by the human, not root: you stage inputs and
+      # read results as yourself. They live under ~/Storage rather than /persist
+      # so they move behind LUKS when that lands — until then, anonymous output
+      # is at rest in the clear, which is a known and accepted gap.
+      "d /home/lowcache/Storage/anon 0755 lowcache users -"
+      "d /home/lowcache/Storage/anon/in 0755 lowcache users -"
+      "d /home/lowcache/Storage/anon/out 0777 lowcache users -"
+      # Mountpoint for the read-only view of in/ that the guest actually gets.
+      "d /run/anon-work 0755 root root -"
+      "d /run/anon-work/in 0755 root root -"
+    ]
+    ++ lib.optional anon.persistTorState "d /persist/var/lib/net-gate-tor 0700 root root -"
+    ++ lib.optional anon.persistGuestJournal "d /persist/var/log/net-gate-journal 0700 root root -";
+
+    # The read-only half of the in/out split, enforced HOST-side.
+    #
+    # microvm shares have no readOnly option — the submodule accepts only tag,
+    # socket, source, mountPoint and proto — so "read-only input" cannot be a
+    # share flag. Binding it ro here and sharing the bind is the enforcement
+    # that is actually available.
+    mounts = [
+      {
+        what = "/home/lowcache/Storage/anon/in";
+        where = "/run/anon-work/in";
+        type = "none";
+        options = "bind,ro";
+        requiredBy = [ "microvm@anon-box.service" ];
+        before = [ "microvm@anon-box.service" ];
+      }
+    ];
+
     services = {
       "microvm@net-gate".serviceConfig.TimeoutStopSec = "10s";
+      "microvm@anon-box".serviceConfig.TimeoutStopSec = "10s";
+      "microvm-virtiofsd@anon-box" = {
+        serviceConfig = {
+          Type = lib.mkForce "simple";
+          TimeoutStopSec = "5s";
+        };
+      };
       "microvm-virtiofsd@net-gate" = {
         serviceConfig = {
           Type = lib.mkForce "simple";
@@ -422,6 +727,46 @@ in
     network = {
       enable = true;
       wait-online.enable = false;
+
+      # THE WORKSTATION SEGMENT. net-gate's inner tap and anon-box's tap are
+      # enslaved here so the two guests share an L2 segment directly.
+      #
+      # The host assigns itself NO address on this bridge and no link-local
+      # addressing. That is the security property: the host is not a hop in the
+      # workstation's path and cannot reach the workstation over IP, so a
+      # compromise on either side does not reach the other by routing. It also
+      # means the host cannot ssh in — anon-shell enters over vsock instead.
+      netdevs."20-br-anon" = {
+        netdevConfig = {
+          Name = anonBridge;
+          Kind = "bridge";
+        };
+      };
+      networks."20-br-anon" = {
+        matchConfig.Name = anonBridge;
+        networkConfig = {
+          LinkLocalAddressing = "no";
+          IPv6AcceptRA = false;
+        };
+        linkConfig.RequiredForOnline = "no";
+      };
+      networks."21-netgate-inner" = {
+        matchConfig.Name = anonInnerTap;
+        networkConfig = {
+          Bridge = anonBridge;
+          LinkLocalAddressing = "no";
+        };
+        linkConfig.RequiredForOnline = "no";
+      };
+      networks."22-anonbox-tap" = {
+        matchConfig.Name = anonBoxTap;
+        networkConfig = {
+          Bridge = anonBridge;
+          LinkLocalAddressing = "no";
+        };
+        linkConfig.RequiredForOnline = "no";
+      };
+
       networks."10-microvm-tap" = {
         matchConfig.Name = anon.tapInterface;
         networkConfig = {

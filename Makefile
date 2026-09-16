@@ -44,6 +44,7 @@ SOPS_AGE_KEY_FILE ?= $(HOME)/.config/sops/age/keys.txt
         droid-check droid-plan droid-switch \
         run-netgate run-tailscale gate-restart \
         anon-status anon-arm anon-disarm anon-selftest anon-run \
+        anon-shell anon-box-rebuild \
         anon-logs anon-guest-logs \
         sops-edit sops-edit-vm sops-rekey sops-view sops-view-vm \
         backup backup-force backup-mount backup-umount \
@@ -165,6 +166,8 @@ ANON_STAMP         := /run/anon-mode/ready
 # Mirrors vol.anon-mode.routingTable; change both together.
 ANON_TABLE         := 100
 ANON_GUEST_JOURNAL := /persist/var/log/net-gate-journal
+# Mirrors the bridge name in nixos/vms.nix.
+ANON_BRIDGE        := br-anon
 
 ## Anonymous Mode
 ## :anon-status: ..........: Show jail, readiness, and path state (no sudo, no side effects)
@@ -193,6 +196,15 @@ anon-status:
 	   "")       echo "   (could not read $$fw)" ;; \
 	   *)        echo "   *** STRICT - return traffic on the tap will be DROPPED ***" ;; \
 	 esac
+	@echo ""
+	@echo "== workstation (anon-box) =="
+	@printf '   %-22s %s\n' "microvm@anon-box" "$$(systemctl is-active microvm@anon-box 2>&1)"
+	@if ip link show $(ANON_BRIDGE) >/dev/null 2>&1; then \
+	   echo "   bridge $(ANON_BRIDGE): up, members: $$(ls /sys/class/net/$(ANON_BRIDGE)/brif 2>/dev/null | tr '\n' ' ')"; \
+	   addr=$$(ip -br addr show $(ANON_BRIDGE) 2>/dev/null | awk '{print $$3}'); \
+	   if [ -n "$$addr" ]; then echo "   *** host HAS an address on $(ANON_BRIDGE) ($$addr) - it should hold none ***"; \
+	   else echo "   host holds no address on $(ANON_BRIDGE) - correct"; fi; \
+	 else echo "   bridge $(ANON_BRIDGE) absent"; fi
 	@echo ""
 
 ## :anon-arm: ..........: Arm anonymous mode (runs the L0-L4 ladder; fails if unproven)
@@ -223,6 +235,27 @@ anon-disarm:
 # blackholed, and withdrawing the gateway leaves no clearnet fallback.
 anon-selftest:
 	sudo anon-selftest
+
+## :anon-shell: ..........: Enter the anon-box workstation VM (verifies L5 first)
+# The stronger of the two handles. anon-run is the host uid jail — same kernel,
+# instant, weaker. This is a separate machine reached over vsock, and it refuses
+# to open if the workstation's own path is not provably Tor'd.
+anon-shell:
+	anon-shell
+
+## :anon-box-rebuild: ..........: Rebuild the workstation closure and restart it (after adding a tool)
+# The guest's toolset is declared in nixos/vms.nix under microvm.vms.anon-box.
+#
+# Unlike net-gate, anon-box DOES restart on a plain `make switch`: declaring unit
+# dependencies on it in anonymous-mode.nix re-emits restartIfChanged, which
+# overrides the microvm@ template's X-RestartIfChanged=false. That is the right
+# behaviour for an ephemeral guest with no state to lose. This target exists to
+# make the intent explicit and to force a fresh VM even when the closure did not
+# change — a restart is also how you discard whatever a session left in tmpfs.
+anon-box-rebuild:
+	@$(MAKE) --no-print-directory switch
+	sudo systemctl restart microvm@anon-box.service
+	@echo "++ workstation restarted on the new closure. Enter it with: make anon-shell"
 
 ## :anon-run: ..........: Run a command as the jailed workload, e.g. CMD="curl -s example.com"
 anon-run:

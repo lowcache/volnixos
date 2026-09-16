@@ -89,8 +89,8 @@ let
   # Shared by anon-jail (at boot) and anon-watch (which re-asserts it every
   # tick), because a rule that silently fails to install is a fail-OPEN jail: uid
   # ${toString cfg.uid} falls through to the main table and straight out to the
-  # clearnet. That is not hypothetical — it happened on 2026-09-12. The rule went
-  # in at 03:39:46 and systemd-networkd removed it nine seconds later when the
+  # clearnet. That is not hypothetical — it has happened on this host. The rule
+  # went in and systemd-networkd removed it nine seconds later when the
   # net-gate tap was recreated, because networkd reaps foreign routing policy
   # rules on link reconfiguration. The unit reported success throughout, having
   # never looked. ManageForeignRoutingPolicyRules is off below so networkd cannot
@@ -121,7 +121,7 @@ let
     # table ${table} supply the SOURCE address and then silently re-routes the
     # packet onto `main` for the DEVICE — egress over the clearnet with the
     # host's real address, while every `ip route get` still reports the tap.
-    # Observed on 2026-09-12: the rule survived the overhaul in the running
+    # Observed in practice: the rule survived the overhaul in the running
     # kernel because nothing in the new config removes it. Refuse to report the
     # jail armed while it exists.
     #
@@ -260,13 +260,13 @@ let
   #
   #   L4a identity  — the launcher must actually be dropping privileges. Checked
   #                   by asking the confined process for its own uid. The first
-  #                   L4 failure on 2026-09-12 returned the host's real public
+  #                   L4 failure here returned the host's real public
   #                   address, which is only possible if the probe ran outside
   #                   the jailed uid; an unverified launcher is as dangerous as
   #                   an unverified jail.
   #   L4b jail      — the kernel's routing decision for the jailed uid, queried
   #                   FROM INSIDE the jail rather than simulated from root with a
-  #                   `uid` hint (the two disagreed on 2026-09-12, and the
+  #                   `uid` hint (the two have disagreed here, and the
   #                   simulated form passed over a leaking path). Sends nothing at
   #                   all, so it can establish that the jail is intact without
   #                   risking a packet on the answer.
@@ -284,7 +284,7 @@ let
     fi
 
     # Queried from INSIDE the jail, not simulated from root with a `uid` hint.
-    # Those can disagree: on 2026-09-12 the root-side simulation returned the tap
+    # Those can disagree: the root-side simulation has returned the tap
     # while the workload's own connection left over the WAN, so this assertion
     # passed over a leaking path. Asking through anon-exec puts the lookup in the
     # same uid/slice context as the traffic it is vouching for.
@@ -335,6 +335,169 @@ let
     esac
     ${pkgs.coreutils}/bin/printf '%s' "$body" \
       | ${pkgs.gnused}/bin/sed -n 's/.*"IP":"\([^"]*\)".*/\1/p'
+  '';
+
+  # HOST SIDE OF THE VSOCK CHANNEL.
+  #
+  # cloud-hypervisor does NOT use kernel AF_VSOCK on the host. It implements
+  # "hybrid vsock": the guest gets a real virtio-vsock device, but the host end
+  # is a Unix socket (`--vsock cid=N,socket=notify.vsock`) speaking a small
+  # handshake — write "CONNECT <port>\n", read "OK <assigned>\n", then the stream
+  # is wired to that port in the guest.
+  #
+  # So `socat VSOCK-CONNECT:<cid>:<port>` cannot work here no matter what is
+  # loaded: there is no kernel transport between this host and the guest. The
+  # guest-side VSOCK-LISTEN is correct; only this end had to change.
+  #
+  # The socket is mode 0700 owned by the microvm user, so callers need root.
+  anonVsock = pkgs.writeShellScriptBin "anon-vsock" ''
+    exec ${pkgs.python3}/bin/python3 ${
+      pkgs.writeText "anon-vsock.py" ''
+        import os, select, socket, sys, termios, tty
+
+        if len(sys.argv) != 4 or sys.argv[3] not in ("raw", "plain"):
+            sys.exit("usage: anon-vsock <uds> <port> raw|plain")
+        uds, port, mode = sys.argv[1], int(sys.argv[2]), sys.argv[3]
+
+        try:
+            s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            s.connect(uds)
+        except OSError as e:
+            sys.exit("anon-vsock: cannot open %s: %s" % (uds, e))
+
+        s.sendall(b"CONNECT %d\n" % port)
+        # The handshake reply is a single line. Read it a byte at a time so no
+        # payload is swallowed with it.
+        reply = b""
+        while not reply.endswith(b"\n"):
+            c = s.recv(1)
+            if not c:
+                sys.exit("anon-vsock: guest closed during handshake "
+                         "(nothing listening on port %d?)" % port)
+            reply += c
+        if not reply.startswith(b"OK"):
+            sys.exit("anon-vsock: guest refused port %d: %s"
+                     % (port, reply.decode(errors="replace").strip()))
+
+        fd = sys.stdin.fileno()
+        saved = None
+        if mode == "raw" and os.isatty(fd):
+            saved = termios.tcgetattr(fd)
+            tty.setraw(fd)
+        watch_stdin = True
+        try:
+            while True:
+                rlist = [s] + ([fd] if watch_stdin else [])
+                r, _, _ = select.select(rlist, [], [])
+                if s in r:
+                    data = s.recv(65536)
+                    if not data:
+                        break
+                    os.write(sys.stdout.fileno(), data)
+                if watch_stdin and fd in r:
+                    try:
+                        data = os.read(fd, 65536)
+                    except OSError:
+                        data = b""
+                    if not data:
+                        # stdin ended. Half-close so the guest sees EOF, but KEEP
+                        # reading its reply — breaking here abandoned the socket
+                        # before the answer arrived, which silently truncated
+                        # every non-interactive use (the L5 probe included, since
+                        # command substitution hands it a closed stdin).
+                        watch_stdin = False
+                        try:
+                            s.shutdown(socket.SHUT_WR)
+                        except OSError:
+                            pass
+                        continue
+                    s.sendall(data)
+        except (OSError, BrokenPipeError):
+            pass
+        finally:
+            if saved is not None:
+                termios.tcsetattr(fd, termios.TCSADRAIN, saved)
+      ''
+    } "$@"
+  '';
+
+  # Where cloud-hypervisor puts that socket. microvm.nix runs the VM from its
+  # own state directory and passes the socket name relative to it.
+  anonBoxVsockUds = "/var/lib/microvms/anon-box/notify.vsock";
+
+  # L5 — THE WORKSTATION'S OWN PATH.
+  #
+  # L4 proves the HOST's uid-jail path. The workstation is a different client of
+  # the same gateway: different source address, different leg, different nat
+  # rules. L4 passing says nothing about whether anon-box's traffic is Tor'd, and
+  # treating "the gateway is verified" as "the workstation is anonymous" would
+  # reintroduce exactly the conflation this module exists to prevent — in a new
+  # place, where the old checks cannot see it.
+  #
+  # Asked of the guest over vsock rather than simulated from here, for the same
+  # reason L4b queries the routing decision from inside the jail instead of with
+  # a `uid` hint from root: only the machine whose traffic it is can answer.
+  workstationProbe = pkgs.writeShellScript "anon-workstation-probe" ''
+    out=$(${pkgs.coreutils}/bin/timeout 45 ${anonVsock}/bin/anon-vsock \
+      ${anonBoxVsockUds} ${toString cfg.workstation.verifyPort} plain 2>&1) || {
+      echo "L5 FAIL: no answer from the workstation on vsock port ${toString cfg.workstation.verifyPort}." >&2
+      echo "         is microvm@anon-box running? $out" >&2
+      exit 1
+    }
+    if [ -z "$out" ]; then
+      # Empty is NOT the same as non-Tor, and conflating them sent this
+      # investigation at the gateway when the fault was on the host side of the
+      # channel. Silence means the guest told us nothing at all.
+      echo "L5 FAIL: the workstation answered with nothing." >&2
+      echo "         that is a broken channel or a failed request INSIDE the" >&2
+      echo "         guest, not evidence about the gateway. Look at:" >&2
+      echo "           journalctl -u microvm@anon-box    # guest console" >&2
+      exit 1
+    fi
+    case "$out" in
+      *'"IsTor":true'*) ;;
+      *)
+        echo "L5 FAIL: the workstation reached the net, but NOT via Tor." >&2
+        echo "         it said: $out" >&2
+        echo "         suspect the gateway's nat rules for ${cfg.workstation.address}," >&2
+        echo "         or its inner leg being unaddressed. The workstation itself" >&2
+        echo "         cannot leak to the clearnet — it has no other route — so a" >&2
+        echo "         non-Tor answer means the GATEWAY mishandled it." >&2
+        exit 1
+        ;;
+    esac
+    ${pkgs.coreutils}/bin/printf '%s' "$out" \
+      | ${pkgs.gnused}/bin/sed -n 's/.*"IP":"\([^"]*\)".*/\1/p'
+  '';
+
+  # The workstation handle. Verify-then-enter: an anonymous shell you can open
+  # before the path is proven is a shell you will use before the path is proven.
+  anonShell = pkgs.writeShellScriptBin "anon-shell" ''
+    if [ ! -e ${cfg.readyStamp} ]; then
+      echo "anon-shell: anonymous mode is not armed (no ${cfg.readyStamp})." >&2
+      echo "            arm it with: make anon-arm" >&2
+      exit 69
+    fi
+    if ! ${systemctl} -q is-active microvm@anon-box.service; then
+      echo "anon-shell: the workstation is not running." >&2
+      echo "            it starts with anonymous.target; check: journalctl -u microvm@anon-box" >&2
+      exit 69
+    fi
+    # The hybrid-vsock socket is mode 0700 owned by the microvm user, so both
+    # the probe and the shell relay need root. Re-exec rather than make the
+    # caller remember: anon-run already establishes that idiom.
+    if [ "$(${pkgs.coreutils}/bin/id -u)" != 0 ]; then
+      exec /run/wrappers/bin/sudo "$0" "$@"
+    fi
+    echo "verifying the workstation's own path (L5)..." >&2
+    if ! exit_ip=$(${workstationProbe}); then
+      echo "anon-shell: refusing to open a shell on an unverified path." >&2
+      exit 1
+    fi
+    echo "L5 ok — workstation egress via Tor exit $exit_ip" >&2
+    # raw mode so job control and curses applications behave inside the guest.
+    exec ${anonVsock}/bin/anon-vsock \
+      ${anonBoxVsockUds} ${toString cfg.workstation.shellPort} raw
   '';
 
   # Proves the NEGATIVE paths, which is the half that a working exit IP cannot
@@ -517,7 +680,7 @@ in
         Seconds the readiness ladder waits for tor to become able to carry
         traffic before arming fails. A cold tor with no cached consensus needs
         well over a minute: the first arm after the DataDirectory was created
-        failed at 45s on 2026-09-12 while tor was still bootstrapping — a race
+        failed at 45s while tor was still bootstrapping — a race
         in the gate, not a fault in the path. With persistTorState = true later
         arms reuse the consensus and are quick.
       '';
@@ -579,14 +742,75 @@ in
       default = true;
       description = ''
         Persist the guest's journal so the privacy mechanism can be observed at
-        all. Without it the VM is a black box after boot: its tor.service died on
-        2026-09-08 and the host had no way to see why for four days.
+        all. Without it the VM is a black box after boot: its tor.service died once
+        and the host had no way to see why for four days.
 
         Scope is deliberately the mechanism, not the activity: Tor's SafeLogging
         stays on and the log level stays at notice, which records bootstrap
         progress, circuit failures, restarts and resource problems — not
         destinations or connection histories.
       '';
+    };
+
+    # WORKSTATION (anon-box). Addressing lives here, not in nixos/vms.nix, for
+    # the same reason the gateway's does: three files consume it and a drifted
+    # copy does not fail loudly, it quietly stops anonymising something.
+    workstation = {
+      enable = lib.mkEnableOption "the anon-box workstation guest behind the gateway" // {
+        default = true;
+      };
+
+      address = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.102.2";
+        description = "anon-box's address on the workstation segment. The gateway's nat rules match anonymous traffic by this source.";
+      };
+
+      gatewayAddress = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.102.1";
+        description = ''
+          net-gate's inner-leg address — anon-box's only route off its segment,
+          and its only resolver. The host deliberately holds no address here.
+        '';
+      };
+
+      bridge = lib.mkOption {
+        type = lib.types.str;
+        default = "br-anon";
+        description = ''
+          Host bridge joining net-gate's inner leg to the workstation. The host
+          holds no address on it; it exists only so the two guests share an L2
+          segment without the host being a hop between them.
+        '';
+      };
+
+      vsockCid = lib.mkOption {
+        type = lib.types.int;
+        default = 12;
+        description = ''
+          anon-box's vsock context ID. The host reaches the workstation ONLY
+          over vsock: it has no address on the workstation bridge, which is the
+          isolation property, so vsock is the channel that does not spend it.
+          CIDs 10 and 11 belong to net-gate and the tailscale guest.
+        '';
+      };
+
+      shellPort = lib.mkOption {
+        type = lib.types.int;
+        default = 1024;
+        description = "vsock port serving the interactive shell that anon-shell attaches to.";
+      };
+
+      verifyPort = lib.mkOption {
+        type = lib.types.int;
+        default = 1025;
+        description = ''
+          vsock port serving the L5 path check. Separate from shellPort so
+          verification is a non-interactive request with a parseable answer
+          rather than something scraped out of a terminal.
+        '';
+      };
     };
   };
 
@@ -621,6 +845,34 @@ in
       ManageForeignRoutingPolicyRules = false;
     };
 
+    # BRIDGED FRAMES TRAVERSE THE HOST'S iptables FORWARD CHAIN.
+    #
+    # br_netfilter is loaded here (docker loads it) and
+    # net.bridge.bridge-nf-call-iptables is 1, so traffic bridged between the
+    # workstation and the gateway is subjected to the host's FORWARD chain even
+    # though it is pure L2 and is never routed by this host. The policy here is
+    # ACCEPT and docker's drops live in its own chains, so this is insurance
+    # rather than a fix for an observed break — but with docker and libvirt both
+    # inserting into FORWARD, intra-bridge traffic should not depend on their
+    # chains happening to RETURN.
+    #
+    # Clearing the sysctl would also fix it, and would break docker's own
+    # networking, so accept exactly the intra-bridge case instead.
+    #
+    # Yes, this is host netfilter, which the header of this file argues against.
+    # The distinction that makes it acceptable: the old marking rule's ABSENCE
+    # caused a leak, so every firewall reload was a security event. This rule's
+    # absence causes a DROP — the workstation loses connectivity and fails shut.
+    # Losing it costs function, not anonymity, which is the safe direction.
+    networking.firewall = {
+      extraCommands = lib.mkIf cfg.workstation.enable ''
+        iptables -C FORWARD -i ${cfg.workstation.bridge} -o ${cfg.workstation.bridge} -j ACCEPT 2>/dev/null \
+          || iptables -I FORWARD -i ${cfg.workstation.bridge} -o ${cfg.workstation.bridge} -j ACCEPT
+      '';
+      extraStopCommands = lib.mkIf cfg.workstation.enable ''
+        iptables -D FORWARD -i ${cfg.workstation.bridge} -o ${cfg.workstation.bridge} -j ACCEPT 2>/dev/null || true
+      '';
+
     # STRICT REVERSE-PATH FILTERING SILENTLY KILLS THE ENFORCED PATH.
     #
     # NixOS defaults checkReversePath to strict, emitting
@@ -640,7 +892,7 @@ in
     # This is why DNS appeared to work while TCP did not. A DNS reply's source
     # is the guest's own address (${cfg.torVmAddress}), whose reverse route IS the
     # tap, so it passes — making the gateway look healthy while every real flow
-    # through it hung. Diagnosed 2026-09-15, after the routing fixes stopped the
+    # through it hung. Diagnosed after the routing fixes stopped the
     # packets leaking out the WAN and let them reach the guest for the first
     # time; the two faults had been stacked, and the second was invisible until
     # the first was fixed.
@@ -648,7 +900,8 @@ in
     # Loose mode accepts a source reachable by ANY interface, which is what an
     # asymmetric path requires. It still drops unroutable/martian sources, so
     # the anti-spoofing property that matters here is retained.
-    networking.firewall.checkReversePath = "loose";
+      checkReversePath = "loose";
+    };
 
     users.users.anon-user = {
       inherit (cfg) uid;
@@ -660,6 +913,13 @@ in
     environment.systemPackages = [
       anonExec
       anonSelftest
+    ]
+    ++ lib.optionals cfg.workstation.enable [
+      anonShell
+      # On PATH deliberately: when the workstation misbehaves, being able to
+      # open a raw channel to it by hand is the difference between diagnosing
+      # the guest and guessing about it.
+      anonVsock
     ];
 
     # An execution boundary, not just a label: every workload lands here, so
@@ -703,7 +963,7 @@ in
             # changes, EVERY `make switch` opened a window in which uid
             # ${toString cfg.uid} had no rule at all and therefore fell through to `main` —
             # straight to the clearnet. It is in the journal: the jail was
-            # stopped at 16:11:28 on 2026-09-12 and not restored until 16:11:31.
+            # stopped and not restored for three seconds.
             # Three seconds of unjailed egress, produced by a rebuild, from the
             # very teardown that was supposed to be tidy. This is the same class
             # of bug as the firewall-reload window described at the top of this
@@ -837,7 +1097,7 @@ in
               # L4 — identity, jail integrity, then a leak-proof exit check.
               # See pathProbe: none of its three assertions can put a packet on
               # the clearnet, which the first version of this check could — and
-              # did, on 2026-09-12, with this host's real address.
+              # did, with this host's real address.
               exit_ip=""
               for attempt in 1 2 3; do
                 exit_ip=$(${pathProbe}) && break
@@ -881,6 +1141,21 @@ in
             Type = "oneshot";
             ExecStart = "${systemctl} stop anon-routing.service";
           };
+        };
+
+        # THE WORKSTATION'S GATE. `wants` on the target starts anon-box but
+        # orders nothing, so without this the guest races the readiness ladder
+        # and can be up — and enterable — before the path is proven. Readiness
+        # gates release here exactly as it does for anon-exec.
+        #
+        # PartOf is what makes disarm reach it: anon-watch's seal path stops
+        # anonymous.target, and that must take the workstation down with it
+        # rather than leaving a VM running on a path just declared unsafe.
+        # Its root is tmpfs, so there is nothing to clean up afterwards.
+        "microvm@anon-box" = lib.mkIf cfg.workstation.enable {
+          requires = [ "anon-check.service" ];
+          after = [ "anon-check.service" ];
+          partOf = [ "anonymous.target" ];
         };
 
         # Disarming must also stop what was using the tunnel. Otherwise processes
@@ -994,7 +1269,10 @@ in
       # interface (tor-curl, tor-brave) is useful without the jail being open.
       targets.anonymous = {
         description = "Anonymous mode: verified egress via the net-gate Tor VM (manual/on-demand)";
-        wants = [ "microvm@net-gate.service" ];
+        wants = [
+          "microvm@net-gate.service"
+        ]
+        ++ lib.optional cfg.workstation.enable "microvm@anon-box.service";
         requires = [
           "anon-routing.service"
           "anon-check.service"
