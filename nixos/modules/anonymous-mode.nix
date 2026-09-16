@@ -582,6 +582,61 @@ let
       exit 1
     fi
 
+    ${lib.optionalString cfg.workstation.enable ''
+      # ---- WORKSTATION (anon-box) ----------------------------------------
+      # The positive path is proven by anon-shell's L5 gate. These are the
+      # assertions that a working exit IP cannot make: that the isolation the
+      # topology claims is actually there.
+
+      # 6. NEGATIVE: the host must hold no address on the workstation bridge.
+      #    Everything else about this design rests on host and workstation
+      #    sharing no L3. If someone adds an address here the isolation quietly
+      #    evaporates and nothing else in the system would notice.
+      if ${ip} -br addr show ${cfg.workstation.bridge} 2>/dev/null           | ${pkgs.gnugrep}/bin/grep -qE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/'; then
+        bad "the host HAS an address on ${cfg.workstation.bridge} — it must hold none"
+      else
+        pass "host holds no address on ${cfg.workstation.bridge}"
+      fi
+
+      # 7. NEGATIVE: and therefore cannot reach the workstation at all.
+      if ${pkgs.coreutils}/bin/timeout 4 ${pkgs.iputils}/bin/ping -c1 -W2           ${cfg.workstation.address} >/dev/null 2>&1; then
+        bad "the host can REACH the workstation at ${cfg.workstation.address}"
+      else
+        pass "workstation unreachable from the host (no shared L3)"
+      fi
+
+      if ${systemctl} -q is-active microvm@anon-box.service; then
+        # 8. POSITIVE: the workstation's own egress is Tor'd (L5).
+        if ws_ip=$(${workstationProbe}); then
+          pass "workstation egress verified (Tor exit $ws_ip)"
+        else
+          bad "workstation egress is not verifiably Tor'd (reason above)"
+        fi
+
+        # 9. NEGATIVE: exactly ONE default route, pointing at the gateway. A
+        #    second default is how a workstation silently acquires a way out
+        #    that does not traverse tor.
+        # Asked ONCE. Two calls are two separate measurements of a thing that
+        # must be judged as one, and they can disagree.
+        gw=$(${pkgs.coreutils}/bin/printf '%s
+'           'ip route show default; exit'           | ${pkgs.coreutils}/bin/timeout 20 ${anonVsock}/bin/anon-vsock               ${anonBoxVsockUds} ${toString cfg.workstation.shellPort} plain 2>/dev/null           | ${pkgs.gnugrep}/bin/grep "^default" || true)
+        routes=$(${pkgs.coreutils}/bin/printf '%s' "$gw" \
+          | ${pkgs.gnugrep}/bin/grep -c "^default" || true)
+        if [ "$routes" = 1 ]; then
+          case "$gw" in
+            *"via ${cfg.workstation.gatewayAddress}"*)
+              pass "workstation has exactly one default route, via the gateway" ;;
+            *)
+              bad "workstation's only default route does NOT point at the gateway: $gw" ;;
+          esac
+        else
+          bad "workstation has $routes default routes (expected exactly 1)"
+        fi
+      else
+        echo "SKIP  workstation assertions (microvm@anon-box is not running)"
+      fi
+    ''}
+
     if [ "$fail" = 0 ]; then
       echo "anon-selftest: all assertions held."
     else
