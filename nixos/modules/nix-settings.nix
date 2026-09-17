@@ -27,7 +27,11 @@
         "https://volnixos.cachix.org"
         "https://nix-community.cachix.org"
         "https://cache.lix.systems"
-        "https://cuda-maintainers.cachix.org"
+        # cuda-maintainers.cachix.org removed 2026-09-17: the cache now answers
+        # 401 ("doesn't exist or you're not authorized") on nix-cache-info, so
+        # Lix rejected it as "not a binary cache" and warned on every command.
+        # Nothing was being substituted from it. Re-add the URL and its key
+        # together if it goes public again.
         "https://cache.numtide.com"
         "https://attic.xuyh0120.win/lantian"
       ];
@@ -35,7 +39,6 @@
         "volnixos.cachix.org-1:GUKpgN2Tzh67uYZtUaEsFr1U7UVLrFG1iCoF860CY5Y="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "cache.lix.systems:aBnZU3F19808R5N0sczBmsWwI5YI+433R9M2iS2Hcy4="
-        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
         "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
         "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
       ];

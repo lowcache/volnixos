@@ -205,7 +205,7 @@
         };
         luau = {
           path = ./templates/luau;
-          description = "Luau plugin devShell + luau-analyze gate";
+          description = "Luau plugin devShell + luau-lsp analyze gate";
         };
         python = {
           path = ./templates/python;

@@ -351,74 +351,72 @@ let
   #
   # The socket is mode 0700 owned by the microvm user, so callers need root.
   anonVsock = pkgs.writeShellScriptBin "anon-vsock" ''
-    exec ${pkgs.python3}/bin/python3 ${
-      pkgs.writeText "anon-vsock.py" ''
-        import os, select, socket, sys, termios, tty
+    exec ${pkgs.python3}/bin/python3 ${pkgs.writeText "anon-vsock.py" ''
+      import os, select, socket, sys, termios, tty
 
-        if len(sys.argv) != 4 or sys.argv[3] not in ("raw", "plain"):
-            sys.exit("usage: anon-vsock <uds> <port> raw|plain")
-        uds, port, mode = sys.argv[1], int(sys.argv[2]), sys.argv[3]
+      if len(sys.argv) != 4 or sys.argv[3] not in ("raw", "plain"):
+          sys.exit("usage: anon-vsock <uds> <port> raw|plain")
+      uds, port, mode = sys.argv[1], int(sys.argv[2]), sys.argv[3]
 
-        try:
-            s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-            s.connect(uds)
-        except OSError as e:
-            sys.exit("anon-vsock: cannot open %s: %s" % (uds, e))
+      try:
+          s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+          s.connect(uds)
+      except OSError as e:
+          sys.exit("anon-vsock: cannot open %s: %s" % (uds, e))
 
-        s.sendall(b"CONNECT %d\n" % port)
-        # The handshake reply is a single line. Read it a byte at a time so no
-        # payload is swallowed with it.
-        reply = b""
-        while not reply.endswith(b"\n"):
-            c = s.recv(1)
-            if not c:
-                sys.exit("anon-vsock: guest closed during handshake "
-                         "(nothing listening on port %d?)" % port)
-            reply += c
-        if not reply.startswith(b"OK"):
-            sys.exit("anon-vsock: guest refused port %d: %s"
-                     % (port, reply.decode(errors="replace").strip()))
+      s.sendall(b"CONNECT %d\n" % port)
+      # The handshake reply is a single line. Read it a byte at a time so no
+      # payload is swallowed with it.
+      reply = b""
+      while not reply.endswith(b"\n"):
+          c = s.recv(1)
+          if not c:
+              sys.exit("anon-vsock: guest closed during handshake "
+                       "(nothing listening on port %d?)" % port)
+          reply += c
+      if not reply.startswith(b"OK"):
+          sys.exit("anon-vsock: guest refused port %d: %s"
+                   % (port, reply.decode(errors="replace").strip()))
 
-        fd = sys.stdin.fileno()
-        saved = None
-        if mode == "raw" and os.isatty(fd):
-            saved = termios.tcgetattr(fd)
-            tty.setraw(fd)
-        watch_stdin = True
-        try:
-            while True:
-                rlist = [s] + ([fd] if watch_stdin else [])
-                r, _, _ = select.select(rlist, [], [])
-                if s in r:
-                    data = s.recv(65536)
-                    if not data:
-                        break
-                    os.write(sys.stdout.fileno(), data)
-                if watch_stdin and fd in r:
-                    try:
-                        data = os.read(fd, 65536)
-                    except OSError:
-                        data = b""
-                    if not data:
-                        # stdin ended. Half-close so the guest sees EOF, but KEEP
-                        # reading its reply — breaking here abandoned the socket
-                        # before the answer arrived, which silently truncated
-                        # every non-interactive use (the L5 probe included, since
-                        # command substitution hands it a closed stdin).
-                        watch_stdin = False
-                        try:
-                            s.shutdown(socket.SHUT_WR)
-                        except OSError:
-                            pass
-                        continue
-                    s.sendall(data)
-        except (OSError, BrokenPipeError):
-            pass
-        finally:
-            if saved is not None:
-                termios.tcsetattr(fd, termios.TCSADRAIN, saved)
-      ''
-    } "$@"
+      fd = sys.stdin.fileno()
+      saved = None
+      if mode == "raw" and os.isatty(fd):
+          saved = termios.tcgetattr(fd)
+          tty.setraw(fd)
+      watch_stdin = True
+      try:
+          while True:
+              rlist = [s] + ([fd] if watch_stdin else [])
+              r, _, _ = select.select(rlist, [], [])
+              if s in r:
+                  data = s.recv(65536)
+                  if not data:
+                      break
+                  os.write(sys.stdout.fileno(), data)
+              if watch_stdin and fd in r:
+                  try:
+                      data = os.read(fd, 65536)
+                  except OSError:
+                      data = b""
+                  if not data:
+                      # stdin ended. Half-close so the guest sees EOF, but KEEP
+                      # reading its reply — breaking here abandoned the socket
+                      # before the answer arrived, which silently truncated
+                      # every non-interactive use (the L5 probe included, since
+                      # command substitution hands it a closed stdin).
+                      watch_stdin = False
+                      try:
+                          s.shutdown(socket.SHUT_WR)
+                      except OSError:
+                          pass
+                      continue
+                  s.sendall(data)
+      except (OSError, BrokenPipeError):
+          pass
+      finally:
+          if saved is not None:
+              termios.tcsetattr(fd, termios.TCSADRAIN, saved)
+    ''} "$@"
   '';
 
   # Where cloud-hypervisor puts that socket. microvm.nix runs the VM from its
@@ -583,58 +581,58 @@ let
     fi
 
     ${lib.optionalString cfg.workstation.enable ''
-      # ---- WORKSTATION (anon-box) ----------------------------------------
-      # The positive path is proven by anon-shell's L5 gate. These are the
-      # assertions that a working exit IP cannot make: that the isolation the
-      # topology claims is actually there.
+            # ---- WORKSTATION (anon-box) ----------------------------------------
+            # The positive path is proven by anon-shell's L5 gate. These are the
+            # assertions that a working exit IP cannot make: that the isolation the
+            # topology claims is actually there.
 
-      # 6. NEGATIVE: the host must hold no address on the workstation bridge.
-      #    Everything else about this design rests on host and workstation
-      #    sharing no L3. If someone adds an address here the isolation quietly
-      #    evaporates and nothing else in the system would notice.
-      if ${ip} -br addr show ${cfg.workstation.bridge} 2>/dev/null           | ${pkgs.gnugrep}/bin/grep -qE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/'; then
-        bad "the host HAS an address on ${cfg.workstation.bridge} — it must hold none"
-      else
-        pass "host holds no address on ${cfg.workstation.bridge}"
-      fi
+            # 6. NEGATIVE: the host must hold no address on the workstation bridge.
+            #    Everything else about this design rests on host and workstation
+            #    sharing no L3. If someone adds an address here the isolation quietly
+            #    evaporates and nothing else in the system would notice.
+            if ${ip} -br addr show ${cfg.workstation.bridge} 2>/dev/null           | ${pkgs.gnugrep}/bin/grep -qE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/'; then
+              bad "the host HAS an address on ${cfg.workstation.bridge} — it must hold none"
+            else
+              pass "host holds no address on ${cfg.workstation.bridge}"
+            fi
 
-      # 7. NEGATIVE: and therefore cannot reach the workstation at all.
-      if ${pkgs.coreutils}/bin/timeout 4 ${pkgs.iputils}/bin/ping -c1 -W2           ${cfg.workstation.address} >/dev/null 2>&1; then
-        bad "the host can REACH the workstation at ${cfg.workstation.address}"
-      else
-        pass "workstation unreachable from the host (no shared L3)"
-      fi
+            # 7. NEGATIVE: and therefore cannot reach the workstation at all.
+            if ${pkgs.coreutils}/bin/timeout 4 ${pkgs.iputils}/bin/ping -c1 -W2           ${cfg.workstation.address} >/dev/null 2>&1; then
+              bad "the host can REACH the workstation at ${cfg.workstation.address}"
+            else
+              pass "workstation unreachable from the host (no shared L3)"
+            fi
 
-      if ${systemctl} -q is-active microvm@anon-box.service; then
-        # 8. POSITIVE: the workstation's own egress is Tor'd (L5).
-        if ws_ip=$(${workstationProbe}); then
-          pass "workstation egress verified (Tor exit $ws_ip)"
-        else
-          bad "workstation egress is not verifiably Tor'd (reason above)"
-        fi
+            if ${systemctl} -q is-active microvm@anon-box.service; then
+              # 8. POSITIVE: the workstation's own egress is Tor'd (L5).
+              if ws_ip=$(${workstationProbe}); then
+                pass "workstation egress verified (Tor exit $ws_ip)"
+              else
+                bad "workstation egress is not verifiably Tor'd (reason above)"
+              fi
 
-        # 9. NEGATIVE: exactly ONE default route, pointing at the gateway. A
-        #    second default is how a workstation silently acquires a way out
-        #    that does not traverse tor.
-        # Asked ONCE. Two calls are two separate measurements of a thing that
-        # must be judged as one, and they can disagree.
-        gw=$(${pkgs.coreutils}/bin/printf '%s
-'           'ip route show default; exit'           | ${pkgs.coreutils}/bin/timeout 20 ${anonVsock}/bin/anon-vsock               ${anonBoxVsockUds} ${toString cfg.workstation.shellPort} plain 2>/dev/null           | ${pkgs.gnugrep}/bin/grep "^default" || true)
-        routes=$(${pkgs.coreutils}/bin/printf '%s' "$gw" \
-          | ${pkgs.gnugrep}/bin/grep -c "^default" || true)
-        if [ "$routes" = 1 ]; then
-          case "$gw" in
-            *"via ${cfg.workstation.gatewayAddress}"*)
-              pass "workstation has exactly one default route, via the gateway" ;;
-            *)
-              bad "workstation's only default route does NOT point at the gateway: $gw" ;;
-          esac
-        else
-          bad "workstation has $routes default routes (expected exactly 1)"
-        fi
-      else
-        echo "SKIP  workstation assertions (microvm@anon-box is not running)"
-      fi
+              # 9. NEGATIVE: exactly ONE default route, pointing at the gateway. A
+              #    second default is how a workstation silently acquires a way out
+              #    that does not traverse tor.
+              # Asked ONCE. Two calls are two separate measurements of a thing that
+              # must be judged as one, and they can disagree.
+              gw=$(${pkgs.coreutils}/bin/printf '%s
+      '           'ip route show default; exit'           | ${pkgs.coreutils}/bin/timeout 20 ${anonVsock}/bin/anon-vsock               ${anonBoxVsockUds} ${toString cfg.workstation.shellPort} plain 2>/dev/null           | ${pkgs.gnugrep}/bin/grep "^default" || true)
+              routes=$(${pkgs.coreutils}/bin/printf '%s' "$gw" \
+                | ${pkgs.gnugrep}/bin/grep -c "^default" || true)
+              if [ "$routes" = 1 ]; then
+                case "$gw" in
+                  *"via ${cfg.workstation.gatewayAddress}"*)
+                    pass "workstation has exactly one default route, via the gateway" ;;
+                  *)
+                    bad "workstation's only default route does NOT point at the gateway: $gw" ;;
+                esac
+              else
+                bad "workstation has $routes default routes (expected exactly 1)"
+              fi
+            else
+              echo "SKIP  workstation assertions (microvm@anon-box is not running)"
+            fi
     ''}
 
     if [ "$fail" = 0 ]; then
@@ -928,33 +926,33 @@ in
         iptables -D FORWARD -i ${cfg.workstation.bridge} -o ${cfg.workstation.bridge} -j ACCEPT 2>/dev/null || true
       '';
 
-    # STRICT REVERSE-PATH FILTERING SILENTLY KILLS THE ENFORCED PATH.
-    #
-    # NixOS defaults checkReversePath to strict, emitting
-    #   -t mangle -A nixos-fw-rpfilter -m rpfilter --validmark -j RETURN
-    #   -t mangle -A nixos-fw-rpfilter -j DROP
-    # in PREROUTING, which runs at priority -150 — ahead of nat, and ahead of
-    # any routing decision.
-    #
-    # The enforced path is asymmetric by construction. A workload's TCP flow
-    # leaves via ${cfg.tapInterface} to the guest, which REDIRECTs it into tor. The reply
-    # has already been un-NAT'd by the guest's conntrack by the time it is on the
-    # wire, so it reaches this host on ${cfg.tapInterface} carrying the ORIGINAL
-    # destination as its source — a public address whose reverse route is the
-    # WAN, not the tap. Strict rpfilter sees the mismatch and drops it. No RST,
-    # no log, nothing on the guest: the client simply waits out its timeout.
-    #
-    # This is why DNS appeared to work while TCP did not. A DNS reply's source
-    # is the guest's own address (${cfg.torVmAddress}), whose reverse route IS the
-    # tap, so it passes — making the gateway look healthy while every real flow
-    # through it hung. Diagnosed after the routing fixes stopped the
-    # packets leaking out the WAN and let them reach the guest for the first
-    # time; the two faults had been stacked, and the second was invisible until
-    # the first was fixed.
-    #
-    # Loose mode accepts a source reachable by ANY interface, which is what an
-    # asymmetric path requires. It still drops unroutable/martian sources, so
-    # the anti-spoofing property that matters here is retained.
+      # STRICT REVERSE-PATH FILTERING SILENTLY KILLS THE ENFORCED PATH.
+      #
+      # NixOS defaults checkReversePath to strict, emitting
+      #   -t mangle -A nixos-fw-rpfilter -m rpfilter --validmark -j RETURN
+      #   -t mangle -A nixos-fw-rpfilter -j DROP
+      # in PREROUTING, which runs at priority -150 — ahead of nat, and ahead of
+      # any routing decision.
+      #
+      # The enforced path is asymmetric by construction. A workload's TCP flow
+      # leaves via ${cfg.tapInterface} to the guest, which REDIRECTs it into tor. The reply
+      # has already been un-NAT'd by the guest's conntrack by the time it is on the
+      # wire, so it reaches this host on ${cfg.tapInterface} carrying the ORIGINAL
+      # destination as its source — a public address whose reverse route is the
+      # WAN, not the tap. Strict rpfilter sees the mismatch and drops it. No RST,
+      # no log, nothing on the guest: the client simply waits out its timeout.
+      #
+      # This is why DNS appeared to work while TCP did not. A DNS reply's source
+      # is the guest's own address (${cfg.torVmAddress}), whose reverse route IS the
+      # tap, so it passes — making the gateway look healthy while every real flow
+      # through it hung. Diagnosed after the routing fixes stopped the
+      # packets leaking out the WAN and let them reach the guest for the first
+      # time; the two faults had been stacked, and the second was invisible until
+      # the first was fixed.
+      #
+      # Loose mode accepts a source reachable by ANY interface, which is what an
+      # asymmetric path requires. It still drops unroutable/martian sources, so
+      # the anti-spoofing property that matters here is retained.
       checkReversePath = "loose";
     };
 

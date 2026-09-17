@@ -51,8 +51,8 @@ jobs:
       # volnixos. NIX_CONFIG is read after every config file, so extra-* here
       # appends to whatever cachix-action leaves behind.
       NIX_CONFIG: |
-        extra-substituters = https://attic.xuyh0120.win/lantian https://nix-community.cachix.org https://cache.lix.systems https://cache.numtide.com https://cuda-maintainers.cachix.org
-        extra-trusted-public-keys = lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.lix.systems:aBnZU3F19808R5N0sczBmsWwI5YI+433R9M2iS2Hcy4= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g= cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E=
+        extra-substituters = https://attic.xuyh0120.win/lantian https://nix-community.cachix.org https://cache.lix.systems https://cache.numtide.com
+        extra-trusted-public-keys = lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs= cache.lix.systems:aBnZU3F19808R5N0sczBmsWwI5YI+433R9M2iS2Hcy4= niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=
     steps:
       # Standard runners ship ~25 GB of preinstalled toolchains we don't need;
       # the volnix closure (kernel + desktop + noctalia source build) won't
