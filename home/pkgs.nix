@@ -198,8 +198,13 @@
           pkgs.llm-agents.opencode
           # Testrunners
           pkgs.llm-agents.prime-agent
-          pkgs.llm-agents.t3code
-          pkgs.llm-agents.t3code-desktop
+          # t3code/t3code-desktop dropped 2026-09-18: their only real cost here
+          # was codex, which t3code depends on and which is NOT prebuilt for us.
+          # llm-agents pins nixpkgs 5545adf and flake.nix makes it follow ours,
+          # so every llm-agents derivation is rehashed and cache.numtide.com's
+          # binaries miss. codex is Rust: 223 min of rustc on the runner, and it
+          # is what timed out run 35299186456. Re-add together with dropping the
+          # `follows` if t3code is wanted back.
           pkgs.llm-agents.happy-coder
           pkgs.llm-agents.freebuff
           pkgs.llm-agents.bb-app
