@@ -125,8 +125,10 @@
           nerd-fonts.sauce-code-pro
           nerd-fonts.intone-mono
           nerd-fonts.martian-mono
+          nerd-fonts.monaspace
           nerd-fonts.roboto-mono
           nerd-fonts.anonymice
+          nerd-fonts.googlesanscode
           nerd-fonts.hack
           nerd-fonts.hurmit
           nerd-fonts.hasklug
