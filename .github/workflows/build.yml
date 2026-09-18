@@ -37,10 +37,16 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # A cache miss on the kernel means a source build that cannot finish in the
-    # 6 h job limit. Fail in 90 min instead of burning six hours of minutes to
-    # reach the same answer -- if this trips, a substituter regressed.
-    timeout-minutes: 250
+    # 360 is the ceiling: GitHub-hosted runners terminate any job at 6 h
+    # regardless of what is set here, so this is the limit, not a budget.
+    # It used to be short (90, then 250) to fail fast when a substituter
+    # regressed and the kernel fell back to a source build -- but the
+    # "Assert the kernel is a cache hit" step below now catches exactly that
+    # in about a minute, so a short timeout only capped legitimate work.
+    # Run 35299186456 attempt 1 proved the point: a 623-commit nixpkgs jump
+    # meant ~1854 source builds, and it was killed at 250 min while
+    # generating the last systemd units -- minutes from done.
+    timeout-minutes: 360
     env:
       # These CANNOT live in install-nix-action's extra_nix_config. That writes
       # /etc/nix/nix.conf, and cachix-action then points NIX_USER_CONF_FILES at
