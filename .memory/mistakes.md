@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-09-15
+last_updated: 2026-09-18
 status: append-only
 ---
 
@@ -114,16 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-15 — anon-selftest Harness Masked Re-Seal Failures by Discarding Exit Status
-
-* **Symptom:** `anon-selftest` test 5 (gateway withdrawal) invoked `jailUp` with exit status discarded (`set +e` context, no check). Test reported "all assertions held" while leaving the system in an unjailed state — fully disarmed, no readiness stamp, no recovery path. The test validated that re-sealing *should* work architecturally but did not catch that it *did not work* at runtime.
-
-* **Root cause:** Health-check harness inherited `set +e` from caller context and had no explicit error reporting for the unit implementing re-sealing. Exit status (success vs. failure) is the only channel by which `jailUp`'s idempotent design reports whether the seal held or crashed through.
-
-* **Discovery & fix:** Discovered 2026-09-15 during pre-activation code review. `anon-watch` (the supervisory unit) was refactored (code changed but not yet tested live) to check `jailUp` exit status explicitly (`jailUp || fail`). Test harness logic preserved but error path is now visible. Live testing pending (anon-check has not run since 2026-09-12 05:15; see todo.md).
-
-* **Prevention rule:** Any systemd unit (or any subprocess) whose failure is a correctness hazard (not just a log message or alert, but undetected bad state) must have an explicit exit-status check immediately after invocation. For units: check `unit_name || fail` and handle the failure by reaching a known-safe state (re-arm, seal, halt, etc.), not by continuing. Do not rely on `set -e` or systemd `Type=oneshot` alone — if the unit fails silently (e.g., returns 0 despite not achieving its goal), no exit-status check will catch it; validate the goal's post-condition independently (e.g., check for the readiness file, verify the uidrange rule via `nft`, etc.).
-
 ### 2026-09-15 — Enforced-Path Timeout (L4c) Due to Strict Reverse-Path Filter in netfilter
 
 * **Symptom:** Enforced path (transparent-mode stream through tor) timed out. SOCKS path (L3) appeared healthy: DNS worked, `check.torproject.org` returned `IsTor:true`. Only L4c (enforced-path stream test) hung, leaving the health check unable to distinguish "path works but is slow" from "path is broken."
@@ -135,3 +125,17 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Fix:** Declare `networking.firewall.checkReversePath = "loose"` inside `nixos/modules/anonymous-mode.nix` (the module that depends on asymmetric routing). rpfilter loose still validates reverse paths but returns on failure instead of dropping, allowing asymmetric replies through. The fix couples firewall configuration to the module that requires it (good ownership). Applied 2026-09-15 post-diagnosis; in-system but uncommitted.
 
 * **Prevention rule:** When a subsystem (transparent tor routing) requires asymmetric reply paths to function, declare the firewall mode inside the subsystem module, not globally. If you are routing replies with different sources than their sends, use `checkReversePath = "loose"` (validate but permit) rather than strict (validate and drop). This couples the firewall policy to the feature that depends on it. Do not diagnose rpfilter behavior from sysctls alone (`net.ipv4.conf.*.rp_filter`); the netfilter `-m rpfilter` match is independent and is what bites.
+
+### 2026-09-18 — `follows = "nixpkgs"` Rehashes Third-Party Inputs, Breaking Binary Caches
+
+* **Symptom:** CI run 35299186456 attempt 1 spent 223 minutes compiling `codex-0.153.3` from Rust source, hitting the job timeout (250 min), despite codex being unrequested and a prebuilt binary available at `cache.numtide.com`.
+
+* **Root cause:** `flake.nix:62` set `inputs.llm-agents.follows = "nixpkgs"`, rebasing llm-agents onto our nixpkgs instead of its own pin. This rehashes every derivation in llm-agents, invalidating all prebuilt binaries from numtide's substituter. codex (pulled in via t3code, a transient testrun of an AI agent) was one such input; our derivation hash never matched numtide's cache, so nix compiled it from source (2.3+ h). The 3.7-hour compile cost exhausted CI timeout and broke every local build.
+
+* **Why it hid:** `follows` is a small line that reads as "unify nixpkgs". It looks like an optimization (one nixpkgs in closure); it's actually a cache-killing rehash for any input with its own substituter. Numtide's cache is in our substituters list (nix-settings.nix:35); the rebasing broke it silently.
+
+* **Fix:** Dropped t3code and t3code-desktop (commit 6cdff32), removing codex from the closure entirely. No t3code, no codex, no compile time added.
+
+* **Prevention rule:** `follows = "nixpkgs"` is not free. It unifies the closure (good) but rehashes the input (bad). Use it only where the input is small, pure-Nix, or has no published binary cache. If the input publishes a substituter we deliberately configured, think twice. Diagnostic: when a package compiles that should download, get its outPath from the upstream flake (`nix eval <input-url>#packages.x86_64-linux.<pkg>`) and curl that hash's `.narinfo` against the upstream cache. A 200 there + source build here = rehashed derivation. `follows` is the usual cause.
+
+* **Applies to:** Inputs in current flake carrying `follows = "nixpkgs"`: home-manager, impermanence, lanzaboote, microvm.nix, noctalia, sops-nix, volinit, llm-agents, memd. llm-agents is the one with a substituter of its own (cache.numtide.com), so it was the cost-bearing line. noctalia is a deliberate source build (documented decision) and unaffected by this reasoning.
