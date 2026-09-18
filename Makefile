@@ -392,7 +392,17 @@ git:
 # ci-poll writes the same progress into the starship prompt (see
 # home/scripts.nix and dots/starship/starship.toml) and returns now. `make
 # ci` below is still the way to sit and watch a run in the foreground.
-	@command -v ci-poll >/dev/null 2>&1 && ci-poll || \
+#
+# Follow the sha the push actually delivered, not HEAD. Bare `ci-poll`
+# defaults to `git rev-parse HEAD` (home/scripts.nix), and HEAD drifts away
+# from what GitHub has: memd lands a "sweep distill" commit after this
+# target returns, and the second `push` above is a no-op when `comm` had
+# nothing to commit. Watching a sha that was never pushed means `gh run list
+# --commit` finds nothing, so the prompt shows " queued" for CI_POLL_APPEAR
+# seconds and then clears -- indistinguishable from a real queue. The
+# upstream ref is updated by the push itself, so it is what GitHub has.
+	@sha=$$(git rev-parse '@{upstream}' 2>/dev/null || git rev-parse HEAD); \
+	command -v ci-poll >/dev/null 2>&1 && ci-poll "$$sha" || \
 	  echo "++ ci-poll not on PATH yet (needs a switch); 'make ci' watches in the foreground."
 
 ## :ci: ..........: Watch the CI run for HEAD in the foreground (blocks; 'make git' polls instead)
