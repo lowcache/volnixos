@@ -1,6 +1,14 @@
 {
   description = "Vol NixOS - Vol(atile) Nix OS by LowCache [github.com/lowcache/volnixos.git]";
   inputs = {
+    # The lock is deliberately pinned AHEAD of the nixos-unstable channel rev
+    # (f4a6f27, 2026-09-17). The channel rev b1b8759 carries playwright 1.63.0
+    # but not nixpkgs 67bf9043 "playwright-webkit: add missing libmanette", so
+    # playwright-webkit fails auto-patchelf and takes playwright-mcp ->
+    # home-manager-path -> toplevel down with it. f4a6f27 is a strict
+    # fast-forward of b1b8759 and hydra has the fixed webkit cached, so the
+    # kernel cache-hit gate still passes. Drop the pin -- plain
+    # `nix flake update nixpkgs` -- once nixos-unstable includes 67bf9043.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
