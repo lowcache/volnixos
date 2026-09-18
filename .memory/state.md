@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-16
+last_updated: 2026-09-17
 status: active
 ---
 
@@ -86,13 +86,13 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 * **Ollama Pinned to 0.31.1 (2026-07-28):** `nixos/overlays/ollama.nix` pins `ollama-cuda` to pre-update nixpkgs rev `d407951`. Upstream 0.32.3 fails to build (CUDA Toolkit not found via setup-cuda-hook). Revert condition: retry 0.32.x+ on next flake update.
 
-* **Flake-Update Overlays Active (2026-07-28):** `nixos/overlays/pandas-stubs.nix` (pytest 9.1.1 promotes a warning to a hard error under `filterwarnings=error`; overlay sets `PYTEST_ADDOPTS="-W ignore::pytest.PytestRemovedIn10Warning"`) and `nixos/overlays/niri.nix` (pins `libdisplay-info` to 0.3.0; niri 26.04's vendored `libdisplay-info-sys` caps at `<0.4.0`, nixpkgs bumped past it). Both cache-hit, no rebuild cost. Revert conditions documented in each overlay header; full incident detail archived (see archive_entries).
+* **Flake-Update Overlays Active (2026-07-28):** `nixos/overlays/pandas-stubs.nix` (pytest 9.1.1 promotes a warning to a hard error under `filterwarnings=error`; overlay sets `PYTEST_ADDOPTS="-W ignore::pytest.PytestRemovedIn10Warning"`) and `nixos/overlays/niri.nix` (pins `libdisplay-info` to 0.3.0; niri 26.04's vendored `libdisplay-info-sys` caps at `<0.4.0`, nixpkgs bumped past it). Both cache-hit, no rebuild cost. Revert conditions documented in each overlay header.
 
 * **XWayland Satellite (2026-06-23):** `xwayland-satellite :0` running for Flatpak Qt5 apps and xcb-only AppImages (e.g. FireAlpaca). Manual-start only — permanent `spawn-at-startup` wiring still open (todo.md).
 
 * **Portal AccessDenied — FIXED (2026-06-17):** `services.dbus.implementation = lib.mkForce "dbus";` (xdg-portal 1.20.4 pidfd bug). Full root cause: mistakes.md #10.
 
-* **XDG FileChooser Portal Routing (2026-06-19):** Gnome backend advertises `FileChooser` but doesn't implement it; `xdg.configFile` routes `org.freedesktop.impl.portal.FileChooser=gtk` (durable, declarative).
+* **XDG FileChooser Portal Routing (2026-06-19):** Gnome backend advertises `FileChooser` but doesn't implement it; `xdg.configFile` routes `org.freedesktop.impl.portal.FileChooser=gtk`.
 
 * **Ollama VRAM/RTD3 (2026-06-17):** `OLLAMA_KEEP_ALIVE=5m`, `OLLAMA_KV_CACHE_TYPE=q8_0`, `OLLAMA_MAX_LOADED_MODELS=1`.
 
@@ -100,11 +100,11 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 * **TMPDIR split (2026-06-17):** User → `~/Storage/tmp`; daemon → `/nix/tmp`; Makefile `REBUILD_TMPDIR := $(HOME)/Storage/tmp`. Rationale: decisions.md #13.
 
-* **Build fallback (2026-06-24):** Makefile `switch` carries `--option fallback true` — substituter `attic.xuyh0120.win/lantian` 307-redirects NAR fetches to a host with an expired TLS cert; fallback compiles from source instead of halting the build. Revert condition: once upstream cert is renewed, remove the flag (or migrate to permanent `nix.settings.fallback = true`).
+* **Build fallback (2026-06-24):** Makefile `switch` carries `--option fallback true` — substituter redirect fallback. Revert condition: once upstream cert renewed.
 
-* **statix lint failure (2026-08-24):** `nix flake check` fails at statix lint gate on `flake.nix:177-178` (assignment vs inherit). Trivial fixup (low priority). Host and droid targets evaluate clean; only the lint gate blocks `make check`.
+* **statix lint failure (2026-08-24):** `nix flake check` fails at statix lint gate on `flake.nix:177-178` (assignment vs inherit). Trivial fixup (low priority). Host and droid targets evaluate clean.
 
----
+* **Nixpkgs lock pin (2026-09-18, temporary):** flake.lock pinned to f4a6f271 (2026-09-17, nixos-unstable-small) ahead of flake.nix ref. Reason: playwright 1.63.0 at channel rev b1b8759 requires libmanette-0.2.so.0; upstream fix (commit 67bf9043) postdates channel by 47 minutes. auto-patchelf fails without it, blocking playwright-mcp → home-manager-path → toplevel. Workaround duration: ~2 days until nixos-unstable advances. Rollback: `nix flake update nixpkgs` once 67bf9043 lands (see todo.md).
 
 ## 5. Phone-Agent File Transfer (2026-08-06 — Confirmed Working, Pull-Only by Design)
 

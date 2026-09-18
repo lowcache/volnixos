@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-16
+last_updated: 2026-09-17
 status: active
 ---
 
@@ -87,9 +87,160 @@ status: active
 - [ ] **Awaiting activation:** `make switch` to apply module to running system
 - [ ] Post-switch: `sed -i '/pci-0000_01_00.1/d; /pci-0000_66_00.1/d' ~/.local/state/wireplumber/default-profile && systemctl --user restart wireplumber` to apply parked-card rules
 
+### Anon-Mode Fail-Closed Redesign — Testing Completed (2026-09-16)
+
+✓ Redesign built and activated (2026-09-12)
+✓ Transient boot failure on 2026-09-16 04:49 resolved without intervention by 15:29
+✓ anon-selftest L4 ladder passed: enforced path verified through Tor (exit 185.100.85.25), loopback resolver unreachable, IPv6 egress blocked, jail route intact
+✓ Full L0-L4 readiness ladder confirmed working in live operation
+✓ fail-closed invariant proven: guest cannot leak traffic or detect lack of Tor without explicit path verification
+
+### Nix-on-Droid — Generation 5 Activated (2026-08-03)
+
+✓ proot unpack bug fixed (2026-08-03, commit d4f2968)
+✓ rtk 0.44.0, mcp-gateway 3.3.2, termux-am built natively on phone
+✓ glibc-2.40-224 only in entire profile closure (zero glibc-2.42)
+✓ Phone daily-usable; blog series unblocked
+
+### Waydroid Setup — Move Images to Persistent Storage (2026-08-21)
+
+✓ Ran move-waydroid.sh script; `/persist/var/lib/waydroid` contains system images
+✓ Ran `make switch` to activate system persistence binds and home-manager symlinks
+✓ tmpfs root decreased from 100% → 3% (99 M / 4.0 G); `/persist` usage at 46% (140 G free)
+✓ `~/Android` and `~/.android` symlinks on Storage remain accessible and working
+✓ GAPPS images downloaded and initialized (system.img 2462.4 M, vendor.img 535.5 M)
+✓ Android session RUNNING, container RUNNING, DHCP lease obtained (IP 192.168.240.112)
+✓ Device registered for Play Store certification (Android ID retrieved and registered at google.com/android/uncertified)
+✓ Certification propagation in progress; awaiting Play Store sign-in verification
+
+### Krita SVG Text Engine — Verified Fixed on 6.0.2.1 (2026-08-24)
+
+✓ Verified (2026-08-24): SVG text engine works on Krita 6.0.2.1; FreeType glyph crash from 6.0.1 is fixed
+✓ 5 font families tested; zero render errors, no crashes, empirical evidence captured
+✓ Rasterize-to-paint-layer workaround now obsolete
+
+### Krita Font Gallery Plugin — Refactor to Native SVG Shapes (2026-08-24)
+
+✓ Refactored `_insert_sample` to insert native editable SVG text shapes via `createVectorLayer() + addShapesFromSvg()`
+✓ Replaced QPainter/QImage/`setPixelData` rasterize path with pure `build_text_svg()` function (independently testable)
+✓ XML escaping verified (metacharacters render literally; space entities used for whitespace)
+✓ Multi-line text verified (one `<tspan>` per line; vertical advance correct)
+✓ End-to-end tested in isolated harness (`<scratchpad>/ktest/`, Xvfb-driven Krita 6.0.2.1); 4/4 cases pass
+✓ Krita swap file moved from `/tmp` (4 GB tmpfs) to `~/Storage/tmp/krita-swap` (269 GB NVMe, 2026-08-24) to prevent SIGBUS crashes
+- [ ] Interactive on-canvas text tool (GUI, not engine) — human verification pending (~10 min)
+
+### Wiki Documentation — Krita Page Published (2026-08-24)
+
+✓ Published `content/en/desktop/krita.md` (weight 40) to volnixos-wiki
+✓ Updated desktop section index to link the new page
+✓ Covered: swap hazard + fix, text engine timeline, plugin refactoring, G'MIC patch, testing harness
+✓ Build clean: 31 pages, 47 internal links validated
+
+### Phone-Agent MCP Activation (2026-08-07 — Complete, Verified 2026-08-24)
+
+✓ Run `make switch` to activate phone-agent MCP in Claude Code (completed 2026-08-21)
+✓ Claude Code session restarted (happened between 2026-08-21 and 2026-08-24)
+✓ phone-agent tools verified accessible: gateway lists phone-agent tools, GSC invocations successful in same session, all 11 backends respond
+
+### GSC MCP Backend Wiring (2026-08-24 — Complete, Verified Live)
+
+✓ Service account JSON added to sops secrets (`gsc_service_account`, 2395 bytes, type service_account, valid JSON)
+✓ Service account email added as user to both Search Console properties (infernalcode.com, hotelevangelism.blog) with siteFullUser permissions
+✓ Gateway backend enabled and verified: `gsc` returns 8 tools, `list_sites` returns both properties, queries return real data, index_inspect confirms indexing
+
+### Krita Swap Directory Persistence (2026-08-24 — LIVE in gen 247)
+
+✓ Swap directory persistence declared via activation script: `$HOME/Storage/tmp/krita-swap` in `home.activation.ensureScratchDirs`
+✓ Activated in gen 247; verified LIVE via findmnt and frame cache presence
+✓ Prevents SIGBUS crashes from mmap-based caching on impermanence tmpfs
+
+### Thunderbird + Spotify Persistence (2026-08-24 — LIVE in gen 247)
+
+✓ Spotify config persistence via impermanence bind-mount; verified LIVE via findmnt
+✓ Thunderbird persistence via Storage symlink (`~/.thunderbird → /home/lowcache/Storage/thunderbird`); symlink chain verified correct and LIVE
+✓ Both mechanisms activated in gen 247; email/profile data and Spotify login persisted across tmpfs-root wipe
+
+### Audio Module — Implemented, Built, Awaiting Activation (2026-08-25)
+
+✓ Created `nixos/modules/audio.nix` (146 lines, option-typed, vol.audio namespace)
+✓ Integrated into `nixos/modules/default.nix` imports
+✓ Merged repeated `vol.*` keys in `nixos/hosts/volnix.nix` into single `vol = { … }` block
+✓ `make check` exit 0; `make build` completed successfully
+✓ Verified in closure: wireplumber-extra-config generates three drop-in configs with correct codec/policy/parked-card rules
+✓ Codec support verified in closure: libfdk-aac (AAC), libldacBT (LDAC), libfreeaptx (aptX)
+- [ ] **Awaiting activation:** `make switch` to apply module to running system
+- [ ] Post-switch: `sed -i '/pci-0000_01_00.1/d; /pci-0000_66_00.1/d' ~/.local/state/wireplumber/default-profile && systemctl --user restart wireplumber` to apply parked-card rules
+
 ---
 
 ## IN PROGRESS / AWAITING ACTION
+
+### Rollback Nixpkgs Lock Pin — Playwright libmanette (2026-09-18, Temporary Workaround)
+
+**Context:** flake.lock is pinned to f4a6f271 (2026-09-17, nixos-unstable-small) ahead of flake.nix `ref = nixos-unstable` due to a transient packaging issue in nixpkgs.
+
+**Issue:** playwright 1.63.0 at channel rev b1b8759 requires libmanette-0.2.so.0. The upstream fix ("playwright-webkit: add missing libmanette", commit 67bf9043) postdates that channel revision by 47 minutes. auto-patchelf fails without it, blocking playwright-mcp → home-manager-path → toplevel. Pin resolves CI failures; no impact on flake user experience.
+
+**Rollback condition:** Once nixos-unstable channel advances to or past commit 67bf9043.
+
+**Steps:**
+- [ ] Monitor nixos-unstable channel for 67bf9043 landing (check upstream nixpkgs git log)
+- [ ] When available in channel: run `nix flake update nixpkgs`
+- [ ] Verify: `make check` passes (all CI gates), `nix flake show` lists all outputs
+- [ ] Commit the flake.lock update
+- [ ] Remove the explanatory comment block from flake.nix inputs
+- [ ] Expected rollback window: ~2 days from 2026-09-18 (by ~2026-09-20)
+
+### Backport Discovery Mechanism to claude-companion Plugin (2026-09-06 — Load-Bearing)
+
+**Context:** The luau template now uses runtime discovery of `*.luau` files via `builtins.readDir`. Controlled testing showed this prevents undeclared-reference bugs that hardcoded file lists miss (false negatives). The source plugin flake.nix still uses the old nine-file hardcoded list and is thus vulnerable.
+
+**Implication:** Any new plugin functions added to claude-companion could silently have missing declarations (gate passes, plugin breaks at runtime). This is the exact failure mode the plugin flake's own comments acknowledge.
+
+- [ ] Open `~/CodeRepo/claude-companion/noctalia-claude-plugin/flake.nix`
+- [ ] Replace hardcoded `luauFiles` string with discovery logic from `templates/luau/flake.nix`
+- [ ] Test: run `nix flake check` on the plugin repo; verify all gates pass
+- [ ] Commit to claude-companion repo
+
+### Audio Module Activation (2026-08-25 — USER DECISION PENDING)
+
+**Status:** Audio module is built and ready. Requires activation via `make switch`. Post-switch needs WirePlumber restart to apply parked-card rules.
+
+- [ ] User runs `make switch` to activate audio module
+- [ ] Post-switch: run WirePlumber restart + sed removal of stored pins
+- [ ] Verify: `wpctl status` shows two sinks (Realtek + headset), not seven; `pactl list short sinks` works
+
+### Plugin Attribution — Email Drafted, PR Staged (2026-08-25)
+
+**Status:** Two community-plugins PRs staged locally in `/home/lowcache/CodeRepo/claude-companion/community-plugins` on branches `attribution/opencode-companion` (commit db9fe8d) and `attribution/9router-control` (commit 10648ea). Email draft written to `scratchpad/weinguyen-email.txt`. Nothing pushed.
+
+**Sequence:** Email first at `weinguyen1224@gmail.com`, then PR if no response within ~1 week.
+
+- [ ] Review email draft at `scratchpad/weinguyen-email.txt`
+- [ ] Send email to weinguyen1224@gmail.com
+- [ ] If no response in ~1 week, push branches and open PRs against upstream/main
+
+### Wire android-integration — Choose Strategy (2026-08-03 — USER DECISION PENDING)
+
+**Status:** termux-am builds successfully. Two approaches: (1) disabledModules (~60 lines, full feature set), (2) xdg-open shim (~5 lines, minimal).
+
+- [ ] User decides: approach 1, 2, or defer entirely?
+
+### Verify tether × gemini-cli 0.25.2 (AWAITING USER DECISION)
+
+**Question:** Does tether require antigravity-cli specifically, or will gemini-cli 0.25.2 (nixos-25.11) suffice?
+
+- [ ] User clarifies antigravity vs 0.25.2
+
+### apply_theme.py — Decision: Keep Dormant Code or Delete (2026-09-05 — USER DECISION PENDING)
+
+**Context:** `dots/color-engine/apply_theme.py` no longer invoked (replaced by Noctalia's community template system). File contains destructive regex on line 145 (if executed, consumes M3 palette block).
+
+**Options:**
+1. Delete `apply_theme.py` entirely (recommended: M3 management is Noctalia's responsibility)
+2. Keep with warning comment on line 145
+
+- [ ] User specifies preference (delete or warn)
 
 ### Backport Discovery Mechanism to claude-companion Plugin (2026-09-06 — Load-Bearing)
 
