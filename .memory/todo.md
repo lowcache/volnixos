@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 status: active
 ---
 
@@ -179,6 +179,120 @@ status: active
 ---
 
 ## BACKLOG / DEFERRED
+
+### Fix statix Lint on flake.nix:177-178 (2026-08-24 — Low Priority)
+
+**Issue:** `nix flake check` fails at statix gate: "Assignment instead of inherit from" on lines 177-178 (`extraSpecialArgs = { nix-on-droid = ... }`, `home-manager-path = ...`).
+
+**Status:** Trivial fixup (convert assignments to inherit). Host and droid targets evaluate clean; only the lint gate blocks `make check`.
+
+- [ ] Rewrite as `inherit (inputs) nix-on-droid;` and equivalent for home-manager-path
+- [ ] Run `nix flake check` to confirm gate passes
+- [ ] Commit
+
+### Wiki SEO Optimization — Noctalia Title & Meta-Description (Identified 2026-08-24, High ROI)
+
+**Context:** GSC shows noctalia page has 701 impressions at position 9.29 with only 0.43% CTR (should be ~1.5-2.5% at that position). Title and meta-description are likely misaligned with search intent. Rewrite alone could yield 3-4× more clicks without changing ranking — highest-leverage SEO work available.
+
+**Discovery:** Measured via GSC `search_analytics` (infernalcode.com domain property, 2026-07-25 to 2026-08-21 window).
+
+- [ ] Analyze current title and meta-description for alignment with top search queries
+- [ ] Rewrite title and meta to better match user intent (40-60 chars title, 140-160 char meta)
+- [ ] Publish change to wiki
+- [ ] Monitor CTR recovery via `gsc/search_analytics` over next 2-3 weeks
+
+### Hotelevangelism Blog Post Series & Social Promotion Research (2026-08-24 — BACKLOG)
+
+**Context:** User plans to write blog posts for hotelevangelism. GSC integration now enables discovery-based outreach (finding open questions that existing content answers). Two tracks: content production + promotional channel research.
+
+**Content track:**
+- [ ] Write blog post(s) for hotelevangelism
+- [ ] Publish to ~/CodeRepo/blogs/ (hotelevangelism.blog)
+
+**Promotion research + execution:**
+- [ ] Identify relevant subreddits and HN threads where hotelevangelism content answers open questions
+- [ ] Use `reddit-research-mcp` (semantic search: 20k+ subreddits) or `hackernews-mcp` (ask_hn filter) to find threads
+- [ ] Craft response posts framed as answering the specific question (not bare link-drops; outreach strategy proven to work per blogs/CLAUDE.md)
+- [ ] Post responses with citations to the wiki/blog
+
+**Constraint:** Avoid bare promotional link-drops (reddit/HN ban for this). Frame as answering open questions. Proven approach: "outreach framed as answering an open question works" (noted in blogs/CLAUDE.md).
+
+**MCP servers:**
+- `reddit-research-mcp` (king-of-the-grackles/reddit-research-mcp): semantic search + citation
+- `hackernews-mcp` (cyanheads/hn-mcp-server): Algolia full-text search, `ask_hn` filter, no auth
+
+### MCP Server Evaluation — Cloudflare Official Tier + Third-Party Triage (2026-08-24 — Survey Complete, Partial Activation)
+
+**Status:** MCP server landscape surveyed via tether (198 lines at `scratchpad/mcp-survey.md`). Results categorized and prioritized. GSC (Tier 1, Cloudflare official) is now live and verified.
+
+**Findings:**
+- **Tier 1 (Cloudflare official, recommended):** 12 servers (Workers Builds, Observability, GraphQL, DNS Analytics, Cloudflare API, Docs, Radar, Browser Run, Logpush, Audit Logs, AI Gateway, Bindings). All require `http_url:` / `streamable_http:` config in gateway.yaml (not `command:`, since these are remote stdio endpoints). Workers Builds connects directly to your open CI todo. GSC verified live (2026-08-24).
+- **Tier 2 (SEO, third-party OAuth-required):** GSC (activated 2026-08-24), GA4, Bing. Require OAuth grant to your Search Console + analytics accounts.
+- **Tier 3 (Other high-value third-party):** Sentry (official remote, free with account), Stripe (official, monetization-coupled), CVE MCP (free, NVD+CISA+GitHub Advisories, local uvx), SAST MCP (local Semgrep/Bandit/Trivy wrapper).
+
+**Caution:** Survey lists Postgres as "Official + Active" in upstream servers repo; this is likely stale (most reference servers were archived). Verify before using.
+
+**Security constraint:** Each MCP server credential grant expands trust surface. MCPS Audit ([razashariff/mcps-audit](https://github.com/razashariff/mcps-audit)) scans MCP configs against OWASP MCP Top 10. Before expanding beyond current 11 backends, run audit on `.model/.claude/.mcp.json` + `gateway.yaml`.
+
+**Next steps:**
+- [ ] Run MCPS Audit on existing 11 backends; resolve any medium/high findings before expansion
+- [ ] Prioritize Cloudflare Workers Builds + Observability (aligns with wiki/deployment CI todo)
+- [ ] Conditional: Activate Sentry (free, error/trace querying) + CVE MCP (security scanning)
+- [ ] Defer: Stripe MCP (monetization not yet live), full GSC/GA4 suite (SEO work now underway, additional analytics less urgent)
+- [ ] Archive `scratchpad/mcp-survey.md` post-implementation (reference only, not durable)
+
+### Wiki — Polish and CI Integration (2026-08-15, partially done)
+
+- [ ] Connect Workers Builds CI (set command `./build.sh`, build var `HUGO_VERSION=0.164.0`)
+- [ ] Convert home page to native data-driven layout (currently markdown, should be hero/card-grid yaml)
+- [ ] Visual overhaul: port Material palette to E25DX, center content (currently left-aligned)
+- [ ] Re-check GSC Page Indexing report ~2026-08-30: confirm whether the 40 "Crawled – currently not indexed" URLs (spiked 2026-08-17, post MkDocs→Hugo port) are draining out — recovery signal, not yet confirmed
+- [ ] If the nix-on-droid #480 reporter confirms the same proot `_defaultUnpack` bug, open an upstream PR contributing `prootUnpack` (decisions.md #32) rather than leaving it as a local backport
+
+### Noctalia Bar — Dual Wrap-Around Layout (2026-06-22 — LIVE, CAPTURE PENDING)
+
+- [ ] Capture runtime state to `dots/noctalia/config.toml`
+- [ ] Commit Ayu Green color-engine theme
+- [ ] Commit regenerated dotfiles
+
+### XWayland Satellite Startup — Permanent niri Integration (2026-06-23)
+
+- [ ] Add `spawn-at-startup "xwayland-satellite" ":0"` to `dots/niri/config.kdl`
+- [ ] Test: launch FireAlpaca without manual `:0` start
+
+### SessionEnd Hook — Work-Routing (2026-06-18)
+
+- [ ] Code path-prefix routing logic (dots/ → dots inbox, else → root)
+- [ ] Register hook in `~/.claude/settings.json` as SessionEnd event
+- [ ] Test with dummy work note
+
+### Nix-on-Droid Blog Series (2026-08-03 — Functional Work Complete)
+
+**Pending posts (user writing, lower priority):**
+- [ ] Architecture post (portable layer, one-flake strategy, glibc pin)
+- [ ] Deployment post (phone setup, Makefile targets, adb debug channel)
+- [ ] MCP integration post (phone-agent Termux shim, Tailscale)
+- [ ] proot portability post (chmod denial & structural sandbox fix)
+- [ ] (Optional) Performance/runtime gotchas, troubleshooting recovery ladder
+
+### Blog Post: "The workaround that outlived its bug" (Krita post — Outline Ready 2026-08-24)
+
+**Status:** Outline complete at `volnixos-blog/content/posts/drafts/krita-on-a-volatile-root.md` with `draft: true`. Comprehensive beat structure, verified citations, angle: one story covering both the swap SIGBUS hazard and the philosophical cost of undeclared state on an impermanence system.
+
+- [ ] Write full body (user authoring)
+- [ ] Cross-check cited numbers against decisions.md #21, mistakes.md 2026-08-24, state.md §9 (Krita section)
+- [ ] Publish (remove `draft: true`, then `cd volnixos-blog && make build && make deploy`)
+
+### Noctalia × PipeWire Auto-Restart (2026-09-19 — User Deferred)
+
+**Context:** Noctalia 5.0.1 fails to reconnect to PipeWire after daemon restart (`make switch`, systemctl service restart, etc.). Audio widgets display stale state until Noctalia is killed and respawned.
+
+**Workaround:** Manual `kill $(pgrep -f noctalia-wrapped); niri msg action spawn -- noctalia` (documented in state.md §4).
+
+**Desired solution:** Wire Noctalia's pipewire_service.cpp to detect daemon loss and reconnect (upstream issue noctalia-dev/noctalia#3396). Alternatively, auto-restart Noctalia on systemd pipewire/wireplumber service restart via dependency or file-watch trigger.
+
+- [ ] Monitor upstream noctalia-dev/noctalia#3396 for fix
+- [ ] If upstream does not resolve: implement local systemd auto-restart (low priority)
 
 ### Fix statix Lint on flake.nix:177-178 (2026-08-24 — Low Priority)
 
