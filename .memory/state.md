@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-17
+last_updated: 2026-09-19
 status: active
 ---
 
@@ -108,13 +108,13 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 ## 5. Phone-Agent File Transfer (2026-08-06 — Confirmed Working, Pull-Only by Design)
 
-**Mechanics:** Phone stages a file (Termux hooks or manual placement) → `phone-ingest-sync.timer` (every 2 min) → `phone-agent phone.ingest.fetch` pulls it → lands in `~/ingest/staged/`, sha256-verified, moved to `~/ingest/delivered/`.
+**Ingest mechanics (phone→laptop, pull-direction):** Phone stages a file → `phone-ingest-sync.timer` (every 2 min) pulls via phone-agent API → ingest-sync `fetch` with `delete_after:false`, verifies sha256 locally, `fetch` again with `delete_after:true` to confirm deletion → file lands in `~/ingest/delivered/`. Per-file error handling: failures are counted, batch continues (exits 1 at end). Name collision (same name/different hash, already delivered) logged and left on phone. Shared infrastructure: `nixos/phone-agent/client.nix` (HTTP call wrapper).
 
-**Manual triggers:** `systemctl --user start phone-ingest-sync.service` (immediate pull); `phone-agent phone.ingest.list '{"limit":50}'` / `phone-agent phone.ingest.fetch '{"name":"file.pdf","delete_after":true}'` (hand-invoke; caller must decode base64 + verify sha256 itself).
+**Manual ingest triggers:** `systemctl --user start phone-ingest-sync.service` (immediate pull); `phone-agent phone.ingest.list '{"limit":50}'` / two-step `phone-agent phone.ingest.fetch '{"name":"file.pdf","delete_after":false}'` + local sha256 verify + `phone-agent phone.ingest.fetch '{"name":"file.pdf","delete_after":true}'` (hand-invoke; caller verifies).
 
-**Limitation:** All 34 phone-agent tools are phone→laptop only. Laptop→phone needs `phone.system.termux_exec`/`rish` to have the phone `curl` from the host — requires a DNAT entry (`nixos/vms.nix:225`) plus a host HTTP server. Not implemented. Tailscale Taildrop is likewise phone→laptop only; the web UI has no file-transfer surface.
+**Outbound (laptop→phone, file staging):** `push.nix` provides HTTP server on `vm-tailscale` (host firewall port `pushPort` opened 2026-09-19). Claude Code file-staging hooks POST to the server; files staged in phone ingest directory. Upgrade: phone-side `phone.ingest.ack` tool would unify ingest/outbound into single-fetch flow (deferred).
 
----
+**Limitation:** All 34 phone-agent tools are host-initiated (except file staging). Programmatic laptop→phone task calls beyond file staging would require peer auth + two-way channels (future scope). Tailscale Taildrop is phone→laptop only; web UI has no file-transfer surface.
 
 ## 6. Nix-on-Droid — Aarch64 Android Target (Generation 5 Live, Verified 2026-08-03)
 

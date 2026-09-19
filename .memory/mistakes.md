@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-09-18
+last_updated: 2026-09-19
 status: append-only
 ---
 
@@ -114,18 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-15 — Enforced-Path Timeout (L4c) Due to Strict Reverse-Path Filter in netfilter
-
-* **Symptom:** Enforced path (transparent-mode stream through tor) timed out. SOCKS path (L3) appeared healthy: DNS worked, `check.torproject.org` returned `IsTor:true`. Only L4c (enforced-path stream test) hung, leaving the health check unable to distinguish "path works but is slow" from "path is broken."
-
-* **Root cause:** NixOS sets `networking.firewall.checkReversePath = "strict"` by default, which emits `-m rpfilter --validmark` in mangle PREROUTING (priority -150, before routing decisions). The enforced path is asymmetric by construction: workload leaves via tap → guest redirects into tor → reply arrives with original destination as source (public address). The reverse route for a public address is the WAN, not the tap, so the `-m rpfilter` match DROPs it. No RST, no host log, no guest log — the client waits out its timeout. The SOCKS path appeared healthy because SOCKS replies use the guest's own address (192.168.100.2) as source, which has correct reverse route via tap and passes rpfilter.
-
-* **Why it hid:** The symptom (timeout vs leak) was safer than the prior bug (unmasqueraded WAN leak), so it did not manifest as a full outage. Health checks reported L0-L3 green (DNS + SOCKS), so the ladder reported confidence that the path was armed. Only under load (L4c attempting a real stream) did the asymmetry break. The false-safe state (readiness stamp present, path silently broken) persisted until manual testing.
-
-* **Fix:** Declare `networking.firewall.checkReversePath = "loose"` inside `nixos/modules/anonymous-mode.nix` (the module that depends on asymmetric routing). rpfilter loose still validates reverse paths but returns on failure instead of dropping, allowing asymmetric replies through. The fix couples firewall configuration to the module that requires it (good ownership). Applied 2026-09-15 post-diagnosis; in-system but uncommitted.
-
-* **Prevention rule:** When a subsystem (transparent tor routing) requires asymmetric reply paths to function, declare the firewall mode inside the subsystem module, not globally. If you are routing replies with different sources than their sends, use `checkReversePath = "loose"` (validate but permit) rather than strict (validate and drop). This couples the firewall policy to the feature that depends on it. Do not diagnose rpfilter behavior from sysctls alone (`net.ipv4.conf.*.rp_filter`); the netfilter `-m rpfilter` match is independent and is what bites.
-
 ### 2026-09-18 — `follows = "nixpkgs"` Rehashes Third-Party Inputs, Breaking Binary Caches
 
 * **Symptom:** CI run 35299186456 attempt 1 spent 223 minutes compiling `codex-0.153.3` from Rust source, hitting the job timeout (250 min), despite codex being unrequested and a prebuilt binary available at `cache.numtide.com`.
@@ -139,3 +127,11 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention rule:** `follows = "nixpkgs"` is not free. It unifies the closure (good) but rehashes the input (bad). Use it only where the input is small, pure-Nix, or has no published binary cache. If the input publishes a substituter we deliberately configured, think twice. Diagnostic: when a package compiles that should download, get its outPath from the upstream flake (`nix eval <input-url>#packages.x86_64-linux.<pkg>`) and curl that hash's `.narinfo` against the upstream cache. A 200 there + source build here = rehashed derivation. `follows` is the usual cause.
 
 * **Applies to:** Inputs in current flake carrying `follows = "nixpkgs"`: home-manager, impermanence, lanzaboote, microvm.nix, noctalia, sops-nix, volinit, llm-agents, memd. llm-agents is the one with a substituter of its own (cache.numtide.com), so it was the cost-bearing line. noctalia is a deliberate source build (documented decision) and unaffected by this reasoning.
+
+### 2026-09-19 — Documentation Stale After ingest-sync Refactor and push.nix Activation
+
+* **Symptom:** state.md §5 claimed laptop→phone file transfer "Not implemented"; wiki CAUTION block claimed deletion occurs before verification (both incorrect).
+
+* **Root cause:** Implementation changes were not reflected in documentation. push.nix (file staging HTTP server, commit babfbbb, ~2026-08-06) was implemented but undocumented in state.md. ingest-sync verification pattern changed to strict "fetch-verify-delete" (2026-09-19) but wiki CAUTION block was not updated. state.md §5 last edited 2026-08-06.
+
+* **Prevention rule:** When implementing phone-agent changes (ingest-sync, push.nix, client refactors, firewall rules), update state.md §5 immediately. Use inbox notes for deferred processing; curator harvests into state on next cycle. Wiki documentation must track ingest-sync semantics closely (deletion ordering is safety-critical for UX).

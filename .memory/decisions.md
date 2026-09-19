@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-09-16
+last_updated: 2026-09-19
 status: active
 ---
 
@@ -564,3 +564,16 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Why:** Three anon-box debugging steps each manufactured silence: (1) wrong vsock transport (socat EXEC gave empty output), (2) relay abandoning socket on stdin EOF (command substitution closes stdin, returns empty), (3) `curl -sS` writing to stderr that socat EXEC did not relay (captured separately, appeared as silence). At each step, empty output was misread as evidence about network state, when the probe was broken. Only under load (actual stream attempt) did the asymmetry break. Silence coupled to absence-of-evidence produces false confidence — the check looks like it succeeded because the expected success and the check's own failure both produce "nothing."
 
 * **Prevention:** Before blaming the target, verify the probe. (1) Test the probe in isolation, confirm it produces output under normal conditions. (2) Verify output reaches you (not lost to closed pipes, unreachable stderr, buffering delays, timeout). (3) Distinguish "absence of problem" (positive signal) from "absence of measurement" (check broken). Where feasible, design probes with explicit positive/negative signals rather than silent/loud.
+## # Architectural Decisions (`memory/decisions.md`)
+
+## 44. Phone-Ingest Double-Fetch Architecture — Temporary, Upgrade Path to Single-Pass ACK (2026-09-19)
+
+* **Decision:** phone-ingest-sync implements two-fetch protocol: (1) fetch with `delete_after:false`, sha256-verify locally, (2) delete from phone via second fetch (`delete_after:true`). Files transit network twice per ingestion.
+
+* **Why:** Termux phone-agent server lacks post-verification ACK tool. Two-fetch is the safe fallback — phone remains authoritative for deletion; file remains recoverable if laptop verification fails.
+
+* **Cost:** ~2× network transit. On 10 Mbps Tailscale link, 100 MB file costs ~80s round-trip instead of ~40s. Not a blocker for typical use (photos, documents, configs).
+
+* **Upgrade path:** Implement `phone.ingest.ack` tool in Termux server. Client sends ACK post-verification; phone deletes. Single transit thereafter. Deferred, low priority.
+
+* **Status (2026-09-19):** Refactored and verified on real device. Shared client wrapper at `nixos/phone-agent/client.nix` unifies ingest-sync, proximity, network-routing, CLI interface.
