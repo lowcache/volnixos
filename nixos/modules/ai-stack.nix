@@ -42,8 +42,9 @@ in
         User = username;
         Group = "users";
         ProtectHome = lib.mkForce false;
+        # No OLLAMA_ORIGINS: `*` let any web page drive the API through the
+        # browser. The default admits local origins; nothing here needs more.
         Environment = [
-          "OLLAMA_ORIGINS=*"
           "OLLAMA_FLASH_ATTENTION=1"
           "OLLAMA_NUM_PARALLEL=1"
           "CUDA_VISIBLE_DEVICES=0"

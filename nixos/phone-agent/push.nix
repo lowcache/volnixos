@@ -118,6 +118,10 @@ in
       }
     ];
 
+    # The tailscale guest DNATs tailnet :pushPort onto this tap; without this the
+    # host firewall refuses it on arrival.
+    networking.firewall.interfaces."vm-tailscale".allowedTCPPorts = [ cfg.pushPort ];
+
     systemd.user.tmpfiles.rules = [ "d ${cfg.pushDir} 0700 - - -" ];
 
     systemd.user.services.phone-push-server = {

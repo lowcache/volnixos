@@ -6,6 +6,7 @@
 }:
 let
   cfg = config.phone-agent;
+  client = import ./client.nix { inherit lib pkgs cfg; };
 in
 {
   imports = [
@@ -80,33 +81,16 @@ in
       }
     ];
 
-    environment.systemPackages =
-      let
-        rawScript = pkgs.writeShellScriptBin "phone-agent-raw" ''
-          if [ $# -lt 1 ]; then
-            echo "Usage: phone-agent <tool-name> [arguments-json]"
-            echo "  phone-agent phone.system.ping"
-            echo "  phone-agent phone.npu.transcribe '{\"audio_path\":\"/tmp/test.wav\"}'"
-            exit 1
-          fi
-          ${./scripts/phone-mcp-call.sh} "$@" | ${pkgs.jq}/bin/jq 'if (.result.isError // false) then {error: .result.content[0].text} elif .result then (.result.content[0].text | fromjson) else . end'
-        '';
-      in
-      [
-        (pkgs.runCommand "phone-agent" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
-          mkdir -p $out/bin
-          makeWrapper ${rawScript}/bin/phone-agent-raw $out/bin/phone-agent \
-            --prefix PATH : ${
-              lib.makeBinPath [
-                pkgs.curl
-                pkgs.coreutils
-                pkgs.bash
-              ]
-            } \
-            --set PHONE_IP "${cfg.phoneTailscaleIP}" \
-            --set PHONE_PORT "${toString cfg.port}" \
-            --set PHONE_TOKEN_FILE "${toString cfg.tokenFile}"
-        '')
-      ];
+    environment.systemPackages = [
+      (pkgs.writeShellScriptBin "phone-agent" ''
+        if [ $# -lt 1 ]; then
+          echo "Usage: phone-agent <tool-name> [arguments-json]"
+          echo "  phone-agent phone.system.ping"
+          echo "  phone-agent phone.npu.transcribe '{\"audio_path\":\"/tmp/test.wav\"}'"
+          exit 1
+        fi
+        ${client.call} "$@" | ${pkgs.jq}/bin/jq 'if (.result.isError // false) then {error: .result.content[0].text} elif .result then (.result.content[0].text | fromjson) else . end'
+      '')
+    ];
   };
 }

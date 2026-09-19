@@ -6,17 +6,10 @@
 }:
 let
   cfg = config.phone-agent;
+  client = import ./client.nix { inherit lib pkgs cfg; };
   script = pkgs.writeShellScriptBin "phone-network-routing" ''
-    export PATH=${
-      lib.makeBinPath [
-        pkgs.curl
-        pkgs.coreutils
-        pkgs.bash
-      ]
-    }:$PATH
-    export PHONE_IP=${cfg.phoneTailscaleIP} PHONE_PORT=${toString cfg.port}
-    export PHONE_TOKEN_FILE=${toString cfg.tokenFile}
-    call=${./scripts/phone-mcp-call.sh}
+    export PATH=${lib.makeBinPath [ pkgs.coreutils ]}:$PATH
+    call=${client.call}
     R=$("$call" phone.sensor.read_modem '{}' 2>/dev/null || echo '{}')
     SSID=$(echo "$R" | ${pkgs.jq}/bin/jq -r '(try (.result.content[0].text | fromjson | .ssid) catch null) // "unknown"')
     case "$SSID" in

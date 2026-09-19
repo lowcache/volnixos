@@ -16,7 +16,8 @@
         "fooocus" = {
           image = "ghcr.io/lllyasviel/fooocus:latest";
           autoStart = false;
-          ports = [ "7865:7865" ];
+          # Loopback only: a published port bypasses the NixOS firewall.
+          ports = [ "127.0.0.1:7865:7865" ];
           volumes = [ "/home/${username}/Storage/ai-generation/fooocus:/content/data" ];
           environment = {
             CMDARGS = "--listen";

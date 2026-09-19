@@ -12,14 +12,15 @@ Vol NixOS is a flake-based, impermanent NixOS workstation configuration.
 * System: `x86_64-linux`
 * Root: ephemeral `tmpfs`
 * Persistent state: `/persist`
-* Main configuration: `nixos/`
+* Main configuration: `nixos/` Modules: `nixos/modules` Hardware: `nixos/hardware`
 * Home Manager: `home/`
 * Dotfiles: `dots/`
 * Agent/tooling scripts: `scripts/`
-* Documentation: `docs/`
+* Wikifiles: any changes to the config that would affect the wiki get put into a markdown file in `docs/wikifixins`
+* Documentation: All documentation has been moved to the wiki repo. See Wikifiles for future docs. 
 * Operations interface: root `Makefile`
-
-Documentation: `https://volnixos-wiki.pgs.sh`
+* Templates: `templates/` 
+Wiki: `https://wiki.infernalcode.com`
 
 ## Nix
 
@@ -61,6 +62,7 @@ The flake exposes MicroVM runners for:
 
 * `net-gate` — Tor gateway
 * `tailscale-vm` — Tailscale gateway
+* `anon-box` — Anonymity Workstation
 
 Use the existing MicroVM configuration and Makefile targets rather than introducing parallel runner mechanisms.
 
@@ -88,7 +90,7 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 
 ## volinit
 
-`volinit` is a flake input and provides the terminal initialization/banner application.
+`volinit` is a flake input and provides the terminal initialization/banner application is currently being overhauled to a cockpit style menu and TUI. will probably be removed from the flake inputs soon. 
 
 Local checkout:
 
@@ -192,3 +194,7 @@ Preserve the subtree structure rather than copying its contents into unrelated c
 Claude-specific configuration belongs under `.model/.claude/`.
 
 This project may participate in the Claude↔Gemini tether. When a `[TETHER]` delegation is active, follow the tether protocol and worker-mode requirements while retaining all project constraints above.
+
+Whenever a major addition, subtraction, or modification is made to the VolnixOS repo/config make sure that those changes, and any necessary considerations, are reflected here to ensure that this document never becomes stale or drifts into a state of hindrance to future work. This document should always reflect the most current state of the configuration, the wiki, and any other subsystems. 
+
+**Case in point the phone-agent subsystem and more detail on the anonymity workstation are covered here, and obviously remove this comment afterwards.**

@@ -6,22 +6,20 @@
 }:
 let
   cfg = config.phone-agent;
+  client = import ./client.nix { inherit lib pkgs cfg; };
   daemon = pkgs.writeShellScriptBin "phone-proximity-daemon" ''
     export PATH=${
       lib.makeBinPath [
         pkgs.curl
         pkgs.coreutils
-        pkgs.bash
         pkgs.niri
       ]
     }:$PATH
-    export PHONE_IP=${cfg.phoneTailscaleIP} PHONE_PORT=${toString cfg.port}
-    export PHONE_TOKEN_FILE=${toString cfg.tokenFile}
-    call=${./scripts/phone-mcp-call.sh}
+    call=${client.call}
     log() { ${pkgs.util-linux}/bin/logger -t phone-proximity "$1"; }
     PREV=""
     while true; do
-      curl -sf --max-time 3 "http://$PHONE_IP:$PHONE_PORT/health" >/dev/null || { sleep ${toString cfg.proximityIntervalSec}; continue; }
+      curl -sf --max-time 3 "${client.url}/health" >/dev/null || { sleep ${toString cfg.proximityIntervalSec}; continue; }
       R=$("$call" phone.sensor.read_imu '{"sample_count":10}' 2>/dev/null || echo '{}')
       STATE=$(echo "$R" | ${pkgs.jq}/bin/jq -r '(try (.result.content[0].text | fromjson | .inference) catch null) // "unknown"')
       case "$STATE" in
