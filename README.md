@@ -9,7 +9,7 @@
   <img alt="Wayland" src="https://img.shields.io/badge/Display-Wayland-FFB300?style=for-the-badge&logo=wayland&logoColor=white">
 </p>
 <p>
-  <a href="https://volnixos-wiki.pgs.sh/"><img alt="Documentation" src="https://img.shields.io/badge/📖_full_docs-volnixos--wiki.pgs.sh-3e9e40?style=flat-square"></a>
+  <a href="https://wiki.infernalcode.com/"><img alt="Documentation" src="https://img.shields.io/badge/📖_full_docs-volnixos--wiki.infernalcode.com-3e9e40?style=flat-square"></a>
   <a href="https://github.com/lowcache/volnixos/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/lowcache/volnixos?style=flat-square&logo=git&logoColor=white&label=last%20commit&color=5277C3"></a>
   <a href="https://github.com/lowcache/volnixos/actions/workflows/build.yml"><img alt="Build" src="https://github.com/lowcache/volnixos/actions/workflows/build.yml/badge.svg?branch=main"></a>
   <a href="https://app.cachix.org/cache/volnixos"><img alt="Binary cache" src="https://img.shields.io/badge/cachix-volnixos-8c62d6?style=flat-square&logo=nixos&logoColor=white"></a>

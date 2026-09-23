@@ -91,6 +91,7 @@
           gsettings-desktop-schemas
           vscodium
           pulsar
+          obsidian
           gedit
           geany
           file-roller
