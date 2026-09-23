@@ -20,6 +20,13 @@
   vol = {
     anon-mode.enable = true;
 
+    # Flipped to true by ~/Storage/luks-migration/05-post-boot.sh once the
+    # partition is actually encrypted; until then `.#volnix-luks` carries it.
+    persistLuks = {
+      enable = false; # persistLuks-flag
+      uuid = "d3307480-8eb3-4305-b5d6-d8d67c679022";
+    };
+
     # NVIDIA (01:00.1) and AMD (66:00.1) HDMI audio sit on `pro-audio`, which
     # publishes one sink per PCM and buries the two outputs actually in use.
     # Realtek ALC256 (66:00.6) is the analog card and stays live.

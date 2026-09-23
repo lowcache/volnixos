@@ -12,6 +12,7 @@
     ./networking.nix
     ./nix-settings.nix
     ./packages.nix
+    ./persist-luks.nix
     ./programs.nix
     ./secrets.nix
     ./services.nix
