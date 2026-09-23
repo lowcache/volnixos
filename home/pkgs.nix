@@ -172,7 +172,6 @@
           clinfo
           android-tools
           inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
-          sn1per
         ];
         nixAi = with pkgs; [
           antigravity-cli
