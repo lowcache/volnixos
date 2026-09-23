@@ -566,5 +566,6 @@ in
     small_model = "opencode/muse-spark-1.2-contributor-free";
     autoupdate = false; # the store owns the binary; self-update would fight it
     share = "disabled";
+    plugin = [ "superpowers@git+https://github.com/obra/superpowers.git" ];
   };
 }
