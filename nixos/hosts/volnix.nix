@@ -23,7 +23,7 @@
     # Flipped to true by ~/Storage/luks-migration/05-post-boot.sh once the
     # partition is actually encrypted; until then `.#volnix-luks` carries it.
     persistLuks = {
-      enable = false; # persistLuks-flag
+      enable = true; # persistLuks-flag
       uuid = "d3307480-8eb3-4305-b5d6-d8d67c679022";
     };
 

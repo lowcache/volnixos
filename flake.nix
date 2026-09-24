@@ -148,13 +148,6 @@
         ];
       };
 
-      # BEGIN luks-migration (removed by 05-post-boot.sh)
-      # Boot target for the /persist LUKS migration: `volnix` stays bootable on
-      # the plaintext partition until the migration has actually happened.
-      nixosConfigurations.volnix-luks = self.nixosConfigurations.volnix.extendModules {
-        modules = [ { vol.persistLuks.enable = nixpkgs.lib.mkForce true; } ];
-      };
-      # END luks-migration
 
       # Nix-on-Droid target. Built and switched ON THE PHONE
       # (`nix-on-droid switch --flake .`) — there is no aarch64 emulation on
