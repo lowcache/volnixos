@@ -174,6 +174,7 @@
           inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
         nixAi = with pkgs; [
+          snip
           antigravity-cli
           mcp-nixos
           mcp-gateway

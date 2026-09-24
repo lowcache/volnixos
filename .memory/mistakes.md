@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-09-19
+last_updated: 2026-09-23
 status: append-only
 ---
 
@@ -135,3 +135,13 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Root cause:** Implementation changes were not reflected in documentation. push.nix (file staging HTTP server, commit babfbbb, ~2026-08-06) was implemented but undocumented in state.md. ingest-sync verification pattern changed to strict "fetch-verify-delete" (2026-09-19) but wiki CAUTION block was not updated. state.md §5 last edited 2026-08-06.
 
 * **Prevention rule:** When implementing phone-agent changes (ingest-sync, push.nix, client refactors, firewall rules), update state.md §5 immediately. Use inbox notes for deferred processing; curator harvests into state on next cycle. Wiki documentation must track ingest-sync semantics closely (deletion ordering is safety-critical for UX).
+
+### 2026-09-24 — Audio Module Activation: Codec Hardware Mute Bits Set, Headphone Jack-Sense Failing
+
+* **Symptom:** After audio module activation (make switch), onboard Realtek ALC256 speaker output completely silent despite software volume at 126% and no software mute. When investigating, found speaker and headphone pins had codec hardware mute bits set (Amp-Out vals: [0x80 0x80]). Headphones also failed to appear in output port list; jack-sense reports "not available" even with physical headphone insertion.
+
+* **Root cause (dual failure):** (1) **Speaker:** Codec hardware mute bits set at bootstrap, downstream of software volume controls. This prevented any audio from flowing regardless of software settings. Cause unknown — possibly wireplumber initialization ordering or audio module configuration not clearing mute on startup. (2) **Headphones:** Jack-sense detection failed to trigger on physical insertion. Codec correctly identified headphones at boot (hp_outs=1, node 0x21), but jack-sense kcontrol never updates state from "not available" to "available". Possible causes: missing jack-detect kcontrol setup in wireplumber config, BIOS/ACPI DSDT issue, or kernel driver configuration missing.
+
+* **Resolution (partial):** Speaker mute bit cleared manually via `pactl set-sink-mute alsa_output.pci-0000_66_00.6.analog-stereo false`; audio restored immediately (Amp-Out flipped to [0x00 0x00]). Headphone issue unresolved — jack-sense still non-functional. Requires deeper investigation.
+
+* **Prevention rule:** (1) Audio module or wireplumber initialization should explicitly clear codec mute bits on startup (not rely on defaults). Add `amixer -c <N> sset Master unmute` or wireplumber post-startup hook if not present. (2) Jack-detect kcontrol must be explicitly enabled in wireplumber config if kernel driver does not auto-enable; verify `amixer -c <N> scontents | grep -i jack-detect` post-activation and ensure state is ON. (3) Test both speaker and headphones with actual sound output and physical headphone insertion immediately after audio module changes — silence does not mean success; measure actual audio flow.

@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-09-19
+last_updated: 2026-09-23
 status: active
 ---
 
@@ -577,3 +577,27 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Upgrade path:** Implement `phone.ingest.ack` tool in Termux server. Client sends ACK post-verification; phone deletes. Single transit thereafter. Deferred, low priority.
 
 * **Status (2026-09-19):** Refactored and verified on real device. Shared client wrapper at `nixos/phone-agent/client.nix` unifies ingest-sync, proximity, network-routing, CLI interface.
+## 45. Persistent Storage Encryption — /persist LUKS2 (2026-09-23 — Planning Phase)
+
+* **Decision:** Encrypt the `/persist` partition (nvme0n1p3, PARTUUID f994fab7-…) using LUKS2. `/boot` and `/nix` remain plaintext. STORAGE (nvme1n1) remains plaintext for now (future migration).
+
+* **Why:** Protects persisted application state, home directories, and secrets from cold-boot attacks or disk theft. /nix store remains readable (needed for system boot); /boot plaintext (needed for SEC and TPM); /persist alone encrypted (highest sensitivity data).
+
+* **Implementation:**
+  - LUKS UUID pinned in advance: `d3307480-8eb3-4305-b5d6-d8d67c679022` (stored in `nixos/hosts/volnix.nix`, `vol.persistLuks` option block).
+  - Module: `nixos/modules/persist-luks.nix` (declarative LUKS boot device, mounting encrypted /persist).
+  - Migration boot target: `.#volnix-luks` (flake `extendModules`, `vol.persistLuks.enable = mkForce true`). Main `volnix` config stays plaintext until migration completes.
+  - Procedure: 7-script sequence at `~/Storage/luks-migration/` (00-setup, 01-format, 02-stage, 03-encrypt, 04-migrate, 05-post-boot, 06-finalize; 99-rollback if needed).
+  - Live medium: Ubuntu (Secure Boot left on, MS keys enrolled; passphrase is the only secret in initrd during boot).
+  - Unlock method (initial): Passphrase + systemd recovery key (cold-boot access via known passphrase).
+
+* **Future enhancement (TPM-only unlock):** TPM-only unlock rejected initially because `/nix` is plaintext and thus vulnerable to store tampering attacks. Planned: USB-stick hidden blob + evdev key-chord sequence (AND factor) combined in initrd. Once live, drop passphrase slot (keyslot 0) entirely, then backup new LUKS header. Couples to broader TPM trust model decision; deferred.
+
+* **Constraints during migration:**
+  - Do NOT run `make switch` or `make boot` between steps 02 (staging encrypted loop on STORAGE) and 05 (post-boot flip). During this window, flake.nix has conditional `.#volnix-luks` override active; main `volnix` config is plaintext.
+  - Step 05-post-boot flips `vol.persistLuks.enable` to true in main config and removes flake override.
+  - Rollback: `~/Storage/luks-migration/99-rollback.sh` re-stages plaintext /persist from pre-encryption backup, reverses all changes.
+
+* **Verification:** After activation, `/persist` mounted via `luks0` device mapper (verify via `dmsetup ls` and `lsblk`). Persistence functions identically (bind-mounts, symlinks, impermanence activation all work through decrypted mountpoint).
+
+* **Design rationale:** Separation of concerns (only sensitive data encrypted; boot and nix remain auditable) + staged migration (no single risky operation; rollback at any step) + TPM upgrade path (passphrase-only initially, TPM+USB later).

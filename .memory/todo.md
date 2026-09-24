@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-19
+last_updated: 2026-09-23
 status: active
 ---
 
@@ -128,10 +128,11 @@ status: active
 
 ### Audio Module Activation (2026-08-25 — USER DECISION PENDING)
 
-**Status:** Audio module is built and ready. Requires activation via `make switch`. Post-switch needs WirePlumber restart to apply parked-card rules.
-
-- [ ] User runs `make switch` to activate audio module
-- [ ] Post-switch: run WirePlumber restart + sed removal of stored pins
+✓ Audio module built and activated via `make switch` (2026-09-24)
+✓ Speaker mute issue discovered and fixed (codec hardware mute bit was set)
+✓ Sound now emitting from onboard Realtek ALC256 speakers
+- [ ] **Investigate headphone jack-sense detection failure:** jack-sense reports "not available" even when headphones are physically inserted. Possible causes: (1) missing `cctl set` command for jack-detect kcontrol, (2) BIOS ACPI DSDT issue, (3) kernel driver config mismatch. Test procedure: check ALSA jack kcontrols (`amixer -c 2 scontents | grep -i jack`), verify jack-detect enabled, check dmesg for jack events on insertion.
+- [ ] Post-switch: run WirePlumber restart + sed removal of stored pins (parked-card rules still pending)
 - [ ] Verify: `wpctl status` shows two sinks (Realtek + headset), not seven; `pactl list short sinks` works
 
 ### Plugin Attribution — Email Drafted, PR Staged (2026-08-25)
@@ -396,3 +397,28 @@ status: active
 - [ ] Write full body (user authoring)
 - [ ] Cross-check cited numbers against decisions.md #21, mistakes.md 2026-08-24, state.md §9 (Krita section)
 - [ ] Publish (remove `draft: true`, then `cd volnixos-blog && make build && make deploy`)
+### Persist LUKS2 Encryption Migration (2026-09-23 — Planning Phase)
+
+**Status:** Inbox note received; procedure scripts staged at `~/Storage/luks-migration/` (00-06 staged; 99-rollback available). LUKS UUID `d3307480-8eb3-4305-b5d6-d8d67c679022` pinned in `nixos/hosts/volnix.nix`. Module `nixos/modules/persist-luks.nix` in place. Ready for activation.
+
+**Procedure (sequential, do not skip or repeat):**
+- [ ] Step 00-setup: Prepare Ubuntu live medium, enroll MS Secure Boot keys, verify STORAGE staging directory is writable
+- [ ] Step 01-format: Zero PARTUUID f994fab7-… (~/persist partition) to remove filesystem headers
+- [ ] Step 02-stage: Create encrypted loop container on STORAGE as staging area; populate with current /persist contents
+- [ ] Step 03-encrypt: Format actual /persist partition as LUKS2 (`d3307480-…`); copy staged contents into encrypted container
+- [ ] Step 04-migrate: Verify encrypted /persist is correct; prepare boot chain
+- [ ] **CONSTRAINT: Do NOT run `make switch` or `make boot` between steps 02 and 05**
+- [ ] Step 05-post-boot: First boot into `.#volnix-luks` (flake override active); systemd mounts encrypted /persist; verify unlock succeeds; flip `vol.persistLuks.enable = true` in main config; remove flake override
+- [ ] Step 06-finalize: Reboot into main `volnix` config (LUKS unlock happens in initrd); verify impermanence binds work through decrypted /persist; test persistence across reboot
+- [ ] **Backup LUKS header** post-step-06: `cryptsetup luksHeaderBackup /dev/mapper/luks0 --header-backup-file ~/Storage/luks-migration/luks0.header.backup` (cold-boot disaster recovery)
+
+**If problems arise:**
+- [ ] Run `~/Storage/luks-migration/99-rollback.sh` to re-stage plaintext /persist from pre-encryption backup
+- [ ] Boot plaintext `volnix` config; troubleshoot and retry
+
+**Future enhancement (TPM-only unlock, deferred):**
+- [ ] Design USB-stick hidden blob + evdev key-chord sequence (AND factor)
+- [ ] Update initrd to support TPM+USB combined unlock
+- [ ] Test TPM unlock path end-to-end
+- [ ] Remove passphrase keyslot (keyslot 0) from LUKS header once TPM path proven
+- [ ] Backup LUKS header after keyslot removal (TPM-only configuration for disaster recovery)

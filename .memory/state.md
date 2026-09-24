@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-19
+last_updated: 2026-09-23
 status: active
 ---
 
@@ -18,10 +18,7 @@ This file is the single source of truth for the active configuration, mapping, a
 * **Desktop:** niri (Wayland, sole WM, default session) + Noctalia v5 (C++ shell)
 * **Display:** Wayland native; XWayland via `xwayland-satellite` (`:0`, for xcb-only AppImages and Flatpak Qt5 apps; permanent startup pending).
 * **GPU:** Hybrid AMD HawkPoint2 iGPU + NVIDIA RTX 4050 Mobile dGPU.
-* **Audio (2026-08-25 — AUDIO MODULE BUILT, AWAITING SWITCH):** PipeWire 1.6.8 + WirePlumber 0.5.15 + ALSA/Pulse compat declared in `nixos/modules/audio.nix` (option-typed module following vol.* pattern). Module enables rtkit, configures Bluetooth codecs (LDAC, aptX-HD, aptX, AAC, SBC-XQ, SBC via libfdk-aac, libldacBT, libfreeaptx), and parks NVIDIA HDMI (`pci-0000_01_00.1`) and AMD HDMI (`pci-0000_66_00.1`) cards to `off` profile (keeps them off the main profile selection and out of default sink/source list). Auto-switch-to-headset-profile disabled (prevents browser tabs grabbing mic). Module verified in built closure: wireplumber-extra-config emits three drop-ins (50-bluez-codecs.conf, 51-bluez-policy.conf, 52-park-cards.conf) with correct properties. **Not yet live** — requires `make switch` + post-switch `systemctl --user restart wireplumber` to apply parked-card rules (removes stored pro-audio pins via `sed -i '/pci-0000_01_00.1/d; /pci-0000_66_00.1/d' ~/.local/state/wireplumber/default-profile`). Hardware fallbacks remain: Realtek ALC256 (card 2, `66:00.6`, analog stereo) as default sink; HDMI cards route via `pro-audio` for manual selection if needed.
-* **Input Devices (2026-07-13):** Vial keyboard configured for unprivileged hidraw access via udev rule in `nixos/configuration.nix:services.udev.extraRules`. Rule matches serial `*vial:f64c2b3c*` with MODE=0660, GROUP=users, TAG+="uaccess". Pending rebuild application; activate via replug or `sudo udevadm control --reload && sudo udevadm trigger`.
-
----
+* **Audio (2026-09-24 — MODULE ACTIVATED, SPEAKER REGRESSION FIXED, HEADPHONE JACK-SENSE FAILING):** PipeWire 1.6.8 + WirePlumber 0.5.15 + ALSA/Pulse compat module `nixos/modules/audio.nix` activated via `make switch` (gen 247+). Codec mute bits were set at bootstrap (speaker pin 0x14 and headphone pin 0x21 both `Amp-Out vals: [0x80 0x80]`), causing all audio to be muted despite software volume controls at 100+%. Speaker mute bit cleared manually (`pactl set-sink-mute alsa_output.pci-0000_66_00.6.analog-stereo false`), sound restored. **Headphones detected by codec (hp_outs=1, node 0x21) but jack-sense reports "not available" — physical headphone insertion does not trigger detection.** Root cause under investigation (kernel driver, BIOS ACPI DSDT, or missing jack-detect kcontrol configuration). Audio module verified in closure; parked-card rules not yet applied (pending post-switch WirePlumber restart). Workaround: speaker output working; headphones troubleshooting deferred (todo.md).
 
 ## 2. Impermanence & Persistence Mappings
 
