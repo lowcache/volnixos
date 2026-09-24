@@ -27,6 +27,14 @@ in
   options.phone-agent = {
     enable = lib.mkEnableOption "Phone agent (Galaxy S26 Ultra MCP integration)";
 
+    # systemd.user units are installed into /etc/systemd/user, so EVERY user
+    # manager starts them - including greetd's `greeter`. Gate them on this.
+    user = lib.mkOption {
+      type = lib.types.str;
+      default = "lowcache";
+      description = "The one user whose systemd --user manager runs the phone-agent units.";
+    };
+
     phoneTailscaleIP = lib.mkOption {
       type = lib.types.str;
       default = "100.101.229.9";

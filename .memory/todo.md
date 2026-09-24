@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-23
+last_updated: 2026-09-24
 status: active
 ---
 
@@ -422,3 +422,16 @@ status: active
 - [ ] Test TPM unlock path end-to-end
 - [ ] Remove passphrase keyslot (keyslot 0) from LUKS header once TPM path proven
 - [ ] Backup LUKS header after keyslot removal (TPM-only configuration for disaster recovery)
+## Backup Hardware Monitoring — Install smartmontools & Monitor SMART (2026-09-24)
+
+**Context:** External Seagate 2TB USB backup drive reported unrecovered read error on 2026-09-24 during routine backup run. No SMART health monitoring had been configured on the host. Error was logged at block layer (sector 3574956888, near end of device); `restic check` passed despite the medium failure.
+
+**Status:** Diagnostic infrastructure not yet in place; device remains attached and untested post-error.
+
+**Actions:**
+- [ ] Install `pkgs.smartmontools` (smartctl, smartd) to system package set
+- [ ] On next device attach: run `sudo smartctl -a -d sat /dev/sda` to read full SMART status (esp. Reallocated_Sector_Ct, Current_Pending_Sector, Offline_Uncorrectable)
+- [ ] Run long self-test: `sudo smartctl -t long -d sat /dev/sda` (leave device attached for hours; check results post-completion)
+- [ ] If self-test reports uncorrectable errors or if pending/reallocated counts are non-zero, back up the restic repository to a new drive before the medium fails entirely
+- [ ] If counts are climbing across multiple backup runs, replace the Seagate drive and re-seed the restic repo (may be approaching end-of-life)
+- [ ] Document trend results in state.md §12 (SMART history) for future reference

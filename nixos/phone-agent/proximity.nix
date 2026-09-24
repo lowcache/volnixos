@@ -60,6 +60,7 @@ in
         Restart = "on-failure";
         RestartSec = 10;
       };
+      unitConfig.ConditionUser = cfg.user;
       wantedBy = [ "default.target" ];
     };
   };

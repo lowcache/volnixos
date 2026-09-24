@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-23
+last_updated: 2026-09-24
 status: active
 ---
 
@@ -213,3 +213,21 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 * **Lua vs Luau (2026-09-06):** Separate templates for two Lua variants. `lua` (Lua 5.4/LuaJIT) = drive-health (33 `.lua` harnesses). `luau` (strict Lua) = community-plugins + plugin projects (337+ `.luau` files). Luau template uses discovery-driven gates to prevent undeclared-reference false negatives (decisions.md #40). Lua template uses list-based gates. Gotcha: `pkgs.luarocks` defaults to lua5.2; use `pkgs.${luaAttr}.pkgs.luarocks` to match your version.
 * **Known gap:** luau-lsp for nvim/wezterm integration (user does not use these; discovery mechanism suffices for current consumers). Deferred, low priority.
 * **Implementation constraint:** All template `.nix` files sit inside `${self}` and must pass this flake's nixfmt/statix/deadnix gates. Rules out lambda-based option lists (deadnix flags unused arguments); use attrset of strings instead.
+## 12. Backup Hardware Status (External USB Drives)
+
+**Seagate 2TB Backup Drive (`sda`, VID 0bc2, PID ac19):**
+- **Capacity:** 2.00 TB (3907029167 × 512B)
+- **Partitions:** sda1, sda2 (ext4 0dc8bbe7-…), sda3 (ext4 965cca42-…)
+- **Mount point:** `/mnt/models/…` (restic repo + model mirrors)
+- **Status:** Unrecovered read error on sector 3574956888 logged 2026-09-24 during `vol-backup.service` run. `restic check` passed (all 516 packs verified). Error near end of device; not attributed to specific file.
+- **Diagnostics pending:** smartmontools not installed; SMART history unavailable.
+- **Device quirks:** USB Mass Storage with `usb-storage.quirks=0bc2:ac19:u` in kernel cmdline.
+
+**Health monitoring strategy:**
+1. Install smartmontools to enable `smartctl` diagnostics.
+2. On next device attach: `sudo smartctl -a -d sat /dev/sda` (read Reallocated_Sector_Ct, Current_Pending_Sector, Offline_Uncorrectable).
+3. Run long self-test and trend SMART history across backup runs.
+4. If pending/reallocated counts are non-zero and climbing, replace drive and re-seed restic repo.
+5. Do NOT rely on `restic check` alone as a health indicator — it passed while medium was failing.
+
+**Implications:** This is the backup target. Unreadable sectors on the medium holding the restic repo + model mirrors is a silent-restore-failure risk. One error is a candidate for reallocation, not necessarily dying drive, but must be monitored.

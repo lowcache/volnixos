@@ -70,9 +70,11 @@ in
         Type = "oneshot";
         ExecStart = "${syncScript}";
       };
+      unitConfig.ConditionUser = cfg.user;
     };
     systemd.user.timers.phone-ingest-sync = {
       description = "Periodic phone ingest sync";
+      unitConfig.ConditionUser = cfg.user;
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnBootSec = "2min";

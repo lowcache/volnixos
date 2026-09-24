@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-09-23
+last_updated: 2026-09-24
 status: append-only
 ---
 
@@ -114,20 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-18 — `follows = "nixpkgs"` Rehashes Third-Party Inputs, Breaking Binary Caches
-
-* **Symptom:** CI run 35299186456 attempt 1 spent 223 minutes compiling `codex-0.153.3` from Rust source, hitting the job timeout (250 min), despite codex being unrequested and a prebuilt binary available at `cache.numtide.com`.
-
-* **Root cause:** `flake.nix:62` set `inputs.llm-agents.follows = "nixpkgs"`, rebasing llm-agents onto our nixpkgs instead of its own pin. This rehashes every derivation in llm-agents, invalidating all prebuilt binaries from numtide's substituter. codex (pulled in via t3code, a transient testrun of an AI agent) was one such input; our derivation hash never matched numtide's cache, so nix compiled it from source (2.3+ h). The 3.7-hour compile cost exhausted CI timeout and broke every local build.
-
-* **Why it hid:** `follows` is a small line that reads as "unify nixpkgs". It looks like an optimization (one nixpkgs in closure); it's actually a cache-killing rehash for any input with its own substituter. Numtide's cache is in our substituters list (nix-settings.nix:35); the rebasing broke it silently.
-
-* **Fix:** Dropped t3code and t3code-desktop (commit 6cdff32), removing codex from the closure entirely. No t3code, no codex, no compile time added.
-
-* **Prevention rule:** `follows = "nixpkgs"` is not free. It unifies the closure (good) but rehashes the input (bad). Use it only where the input is small, pure-Nix, or has no published binary cache. If the input publishes a substituter we deliberately configured, think twice. Diagnostic: when a package compiles that should download, get its outPath from the upstream flake (`nix eval <input-url>#packages.x86_64-linux.<pkg>`) and curl that hash's `.narinfo` against the upstream cache. A 200 there + source build here = rehashed derivation. `follows` is the usual cause.
-
-* **Applies to:** Inputs in current flake carrying `follows = "nixpkgs"`: home-manager, impermanence, lanzaboote, microvm.nix, noctalia, sops-nix, volinit, llm-agents, memd. llm-agents is the one with a substituter of its own (cache.numtide.com), so it was the cost-bearing line. noctalia is a deliberate source build (documented decision) and unaffected by this reasoning.
-
 ### 2026-09-19 — Documentation Stale After ingest-sync Refactor and push.nix Activation
 
 * **Symptom:** state.md §5 claimed laptop→phone file transfer "Not implemented"; wiki CAUTION block claimed deletion occurs before verification (both incorrect).
@@ -145,3 +131,11 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Resolution (partial):** Speaker mute bit cleared manually via `pactl set-sink-mute alsa_output.pci-0000_66_00.6.analog-stereo false`; audio restored immediately (Amp-Out flipped to [0x00 0x00]). Headphone issue unresolved — jack-sense still non-functional. Requires deeper investigation.
 
 * **Prevention rule:** (1) Audio module or wireplumber initialization should explicitly clear codec mute bits on startup (not rely on defaults). Add `amixer -c <N> sset Master unmute` or wireplumber post-startup hook if not present. (2) Jack-detect kcontrol must be explicitly enabled in wireplumber config if kernel driver does not auto-enable; verify `amixer -c <N> scontents | grep -i jack-detect` post-activation and ensure state is ON. (3) Test both speaker and headphones with actual sound output and physical headphone insertion immediately after audio module changes — silence does not mean success; measure actual audio flow.
+
+### 2026-09-24 — smartmontools Missing, Backup Drive Health Unmonitored Until Error Surfaces
+
+* **Symptom:** External Seagate 2TB USB backup drive logged unrecovered read error (sector 3574956888) during routine restic backup run on 2026-09-24. No prior SMART monitoring configured; `smartctl` not installed on host. Error surfaced at block layer, not file-level; `restic check` completed with "no errors" despite medium failure underneath.
+
+* **Root cause:** No SMART health monitoring infrastructure. smartmontools not installed; no long-running SMART daemon (`services.smartd`). Reliance on `restic check` as sole health signal is insufficient — logical verification passes while physical medium degrades silently.
+
+* **Prevention rule:** (1) Install `pkgs.smartmontools` on any host using external USB backup drives. (2) Configure `services.smartd` with external drive explicitly included (or excluded if external-only monitoring deferred). (3) On backup-drive attach, run `smartctl -a -d sat /dev/sdX` to read SMART attributes (Reallocated_Sector_Ct, Current_Pending_Sector, Offline_Uncorrectable). (4) Trend SMART history across multiple backup runs; do not rely on single-run `restic check` to validate medium health. (5) Replace drive if reallocation or pending-sector counts are non-zero and climbing — restic repo is only as durable as the medium it lives on.

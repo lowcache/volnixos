@@ -122,7 +122,7 @@ in
     # host firewall refuses it on arrival.
     networking.firewall.interfaces."vm-tailscale".allowedTCPPorts = [ cfg.pushPort ];
 
-    systemd.user.tmpfiles.rules = [ "d ${cfg.pushDir} 0700 - - -" ];
+    systemd.user.tmpfiles.users.${cfg.user}.rules = [ "d ${cfg.pushDir} 0700 - - -" ];
 
     systemd.user.services.phone-push-server = {
       description = "Phone push server (read-only HTTP for phone to pull files)";
@@ -156,6 +156,7 @@ in
         # Read-only: this serves files, it never accepts them.
         ReadOnlyPaths = [ cfg.pushDir ];
       };
+      unitConfig.ConditionUser = cfg.user;
       wantedBy = [ "default.target" ];
     };
   };
