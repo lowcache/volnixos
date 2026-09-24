@@ -83,6 +83,8 @@
       # lands on the 4G tmpfs root and fills it (did, 2026-08-21).
       "/var/lib/waydroid"
       "/var/lib/private/open-webui"
+      # cardwired's StateDirectory; holds manual-mode GPU state.
+      "/var/lib/cardwire"
       "/etc/secureboot"
       "/etc/asusd"
       "/etc/ssh"
