@@ -5,10 +5,12 @@
     ./keyboard-rgb.nix
   ];
 
-  # colour-cycle is mode 2: the whole board walks the hue together. This is
-  # the effect asusctl silently refused to deliver.
+  # mode 3. It fires on this controller but what it actually renders was
+  # never pinned down -- swap to colour-cycle (mode 2, whole board walking
+  # the hue together) if it disappoints.
   hardware.asus.keyboardRgb = {
     enable = true;
-    mode = "colour-cycle";
+    mode = "rainbow";
+    speed = "high";
   };
 }
