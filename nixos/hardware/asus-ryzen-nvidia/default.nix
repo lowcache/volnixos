@@ -5,12 +5,11 @@
     ./keyboard-rgb.nix
   ];
 
-  # mode 3. It fires on this controller but what it actually renders was
-  # never pinned down -- swap to colour-cycle (mode 2, whole board walking
-  # the hue together) if it disappoints.
+  # mode 1 at the slowest of the three speeds: one colour swelling in and
+  # out. `colour-cycle` (mode 2) is the only other real effect this EC has.
   hardware.asus.keyboardRgb = {
     enable = true;
-    mode = "rainbow";
-    speed = "high";
+    mode = "breathe";
+    speed = "low";
   };
 }

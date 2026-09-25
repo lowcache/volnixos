@@ -9,8 +9,7 @@
 # daemon rather than configuring it; services.asusd.auraConfig cannot express a
 # mode asusd does not believe exists.
 #
-# Mode names follow the usual asus-wmi mapping. 0/1/2 were confirmed by eye;
-# 3 fires but which effect it actually is was never pinned down.
+# Mode names follow the usual asus-wmi mapping, all confirmed by eye.
 {
   config,
   lib,
@@ -22,11 +21,13 @@ let
 
   led = "/sys/class/leds/asus::kbd_backlight/kbd_rgb_mode";
 
+  # 3 is accepted by the EC but renders a fixed purple and ignores the colour
+  # field, so it is deliberately not offered. 4-7 are accepted and do nothing.
+  # Two real effects, then: breathe and colour-cycle.
   modeIds = {
     static = 0;
     breathe = 1;
     colour-cycle = 2;
-    rainbow = 3;
   };
   speedIds = {
     low = 0;
@@ -66,7 +67,7 @@ in
     mode = lib.mkOption {
       type = lib.types.enum (lib.attrNames modeIds);
       default = "colour-cycle";
-      description = "Effect the EC runs. Modes 4-7 are rejected by this controller.";
+      description = "Effect the EC runs. See the mode table above for what was ruled out.";
     };
 
     colour = lib.mkOption {
