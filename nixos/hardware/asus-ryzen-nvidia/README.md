@@ -7,14 +7,17 @@ NVMe SSD. Root is tmpfs (impermanence); swap/filesystems stay in
 
 ## Files
 
-- `default.nix` — entry point; just imports `gpu.nix` and `kernel.nix`.
-  Imported from `nixos/hardware-configuration.nix`.
+- `default.nix` — entry point; imports `gpu.nix`, `kernel.nix` and
+  `keyboard-rgb.nix`. Imported from `nixos/hardware-configuration.nix`.
 - `gpu.nix` — AMD + NVIDIA graphics stack: `hardware.graphics` (VA-API/VDPAU),
   AMD OpenCL, NVIDIA driver (open kernel module, fine-grained power
   management), PRIME offload bus IDs, container toolkit, X video drivers.
 - `kernel.nix` — CachyOS kernel, GPU kernel modules/params, latency and
   stability tuning (sysctl: memory, panic recovery, scheduling, network/BBR),
   `hardware.uinput`.
+- `keyboard-rgb.nix` — `hardware.asus.keyboardRgb`: writes the TUF keyboard
+  effect to `kbd_rgb_mode` directly, because asusd registers only `Static` for
+  this product family and no-ops every other effect. Off by default.
 
 ## Forking for different hardware
 
