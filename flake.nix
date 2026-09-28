@@ -148,7 +148,6 @@
         ];
       };
 
-
       # Nix-on-Droid target. Built and switched ON THE PHONE
       # (`nix-on-droid switch --flake .`) — there is no aarch64 emulation on
       # volnix, so the laptop can only evaluate this, not build it

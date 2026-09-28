@@ -5,8 +5,8 @@
 # pull. Trust is wired on the host side in nixos/modules/nix-settings.nix
 # (substituters + trustedPublicKeys).
 #
-# Required secret: CACHIX_AUTH_TOKEN (account-scoped bearer token from
-# app.cachix.org). Public key lives in plain sight in nix-settings.nix.
+# Required secret: CACHIX_AUTH_TOKEN (cache-scoped read/write token from the
+# volnixos cache Settings; it expires). Public key is public in nix-settings.nix.
 name: build
 
 on:
