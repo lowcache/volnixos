@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-09-24
+last_updated: 2026-09-28
 status: append-only
 ---
 
@@ -114,14 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-19 — Documentation Stale After ingest-sync Refactor and push.nix Activation
-
-* **Symptom:** state.md §5 claimed laptop→phone file transfer "Not implemented"; wiki CAUTION block claimed deletion occurs before verification (both incorrect).
-
-* **Root cause:** Implementation changes were not reflected in documentation. push.nix (file staging HTTP server, commit babfbbb, ~2026-08-06) was implemented but undocumented in state.md. ingest-sync verification pattern changed to strict "fetch-verify-delete" (2026-09-19) but wiki CAUTION block was not updated. state.md §5 last edited 2026-08-06.
-
-* **Prevention rule:** When implementing phone-agent changes (ingest-sync, push.nix, client refactors, firewall rules), update state.md §5 immediately. Use inbox notes for deferred processing; curator harvests into state on next cycle. Wiki documentation must track ingest-sync semantics closely (deletion ordering is safety-critical for UX).
-
 ### 2026-09-24 — Audio Module Activation: Codec Hardware Mute Bits Set, Headphone Jack-Sense Failing
 
 * **Symptom:** After audio module activation (make switch), onboard Realtek ALC256 speaker output completely silent despite software volume at 126% and no software mute. When investigating, found speaker and headphone pins had codec hardware mute bits set (Amp-Out vals: [0x80 0x80]). Headphones also failed to appear in output port list; jack-sense reports "not available" even with physical headphone insertion.
@@ -139,3 +131,11 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Root cause:** No SMART health monitoring infrastructure. smartmontools not installed; no long-running SMART daemon (`services.smartd`). Reliance on `restic check` as sole health signal is insufficient — logical verification passes while physical medium degrades silently.
 
 * **Prevention rule:** (1) Install `pkgs.smartmontools` on any host using external USB backup drives. (2) Configure `services.smartd` with external drive explicitly included (or excluded if external-only monitoring deferred). (3) On backup-drive attach, run `smartctl -a -d sat /dev/sdX` to read SMART attributes (Reallocated_Sector_Ct, Current_Pending_Sector, Offline_Uncorrectable). (4) Trend SMART history across multiple backup runs; do not rely on single-run `restic check` to validate medium health. (5) Replace drive if reallocation or pending-sector counts are non-zero and climbing — restic repo is only as durable as the medium it lives on.
+
+### 2026-09-25 — Cachix CI Token Expired, Silent CI Outage for 36h
+
+* **Symptom:** GitHub Actions CI failed 2026-09-25/26 (runs 36094076894, 36231008195) at `cachix/cachix-action@v16` step (~1m45s into build) with error: `Binary cache volnixos doesn't exist or you don't have access. Error: Cachix Auth token "CI deployment" has expired.` No prior warning; token expiry is silent (Cachix does not send revocation alerts or pre-expiry warnings). Builds were red for 36 hours before investigation.
+
+* **Root cause:** Cache-scoped Cachix token created 2026-08-26T10:11:34Z with **30-day default expiry**. Token reached expiry at 2026-09-25T10:11Z (exactly 30 days later). Token was not revoked; expiry time was simply reached. Prior documentation incorrectly labeled token as "account-scoped" (commit 3f2e952 corrected this — token was always cache-scoped, which is correct). The 30-day default expiry was unnecessarily aggressive for a production CI credential that is infrequently rotated.
+
+* **Prevention rule:** (1) Cachix tokens for CI should be created with **1-year expiry, not 30-day default**. (2) Set calendar reminder or automated sweep task to **proactively rotate tokens ~60 days before expiry** — do not wait for expiry to occur and cause outage. (3) Do NOT rely on Cachix notifications (silent expiry; no pre-expiry alerts exist). (4) When rotating tokens via `gh secret set CACHIX_AUTH_TOKEN`, use **interactive masked prompt** (`gh secret set CACHIX_AUTH_TOKEN`, then paste in prompt) rather than piping via echo — `echo "$TOKEN" | gh secret set` introduces a trailing newline (cli/cli#5031) that breaks the token. (5) Verify token rotation by confirming next CI build completes successfully with new token (check cachix-action push log in workflow run). (6) Secondary: formatting errors found during CI (e.g., flake.nix blank lines) should be caught locally (`make check`) to avoid burning 1h39m CI cycles on trivial fixes.

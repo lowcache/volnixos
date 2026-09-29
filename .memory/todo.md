@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-24
+last_updated: 2026-09-28
 status: active
 ---
 
@@ -399,7 +399,9 @@ status: active
 - [ ] Publish (remove `draft: true`, then `cd volnixos-blog && make build && make deploy`)
 ### Persist LUKS2 Encryption Migration (2026-09-23 — Planning Phase)
 
-**Status:** Inbox note received; procedure scripts staged at `~/Storage/luks-migration/` (00-06 staged; 99-rollback available). LUKS UUID `d3307480-8eb3-4305-b5d6-d8d67c679022` pinned in `nixos/hosts/volnix.nix`. Module `nixos/modules/persist-luks.nix` in place. Ready for activation.
+**Status:** Decision moved to decisions.md #45. Procedure available at `~/Storage/luks-migration/` (7-step sequence). Reversible via 99-rollback.sh. LUKS UUID d3307480-8eb3-4305-b5d6-d8d67c679022 pinned in config.
+
+**Critical constraint:** Do NOT run `make switch` or `make boot` between steps 02 (staging) and 05 (post-boot flip).
 
 **Procedure (sequential, do not skip or repeat):**
 - [ ] Step 00-setup: Prepare Ubuntu live medium, enroll MS Secure Boot keys, verify STORAGE staging directory is writable
@@ -407,7 +409,6 @@ status: active
 - [ ] Step 02-stage: Create encrypted loop container on STORAGE as staging area; populate with current /persist contents
 - [ ] Step 03-encrypt: Format actual /persist partition as LUKS2 (`d3307480-…`); copy staged contents into encrypted container
 - [ ] Step 04-migrate: Verify encrypted /persist is correct; prepare boot chain
-- [ ] **CONSTRAINT: Do NOT run `make switch` or `make boot` between steps 02 and 05**
 - [ ] Step 05-post-boot: First boot into `.#volnix-luks` (flake override active); systemd mounts encrypted /persist; verify unlock succeeds; flip `vol.persistLuks.enable = true` in main config; remove flake override
 - [ ] Step 06-finalize: Reboot into main `volnix` config (LUKS unlock happens in initrd); verify impermanence binds work through decrypted /persist; test persistence across reboot
 - [ ] **Backup LUKS header** post-step-06: `cryptsetup luksHeaderBackup /dev/mapper/luks0 --header-backup-file ~/Storage/luks-migration/luks0.header.backup` (cold-boot disaster recovery)
@@ -422,6 +423,7 @@ status: active
 - [ ] Test TPM unlock path end-to-end
 - [ ] Remove passphrase keyslot (keyslot 0) from LUKS header once TPM path proven
 - [ ] Backup LUKS header after keyslot removal (TPM-only configuration for disaster recovery)
+
 ## Backup Hardware Monitoring — Install smartmontools & Monitor SMART (2026-09-24)
 
 **Context:** External Seagate 2TB USB backup drive reported unrecovered read error on 2026-09-24 during routine backup run. No SMART health monitoring had been configured on the host. Error was logged at block layer (sector 3574956888, near end of device); `restic check` passed despite the medium failure.

@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-09-23
+last_updated: 2026-09-28
 status: active
 ---
 
@@ -96,15 +96,6 @@ This file catalogs the active, canonical design decisions and system configurati
   * **Daemon-side:** `/nix/tmp` (on the `/nix` partition, 195 GB, root-owned, nixbld-accessible).
   * **Makefile:** `REBUILD_TMPDIR := $(HOME)/Storage/tmp` in all privileged rebuild targets.
 * **Why:** `make switch` failures with "broken pipe" were caused by 4 GB tmpfs `/` at 99% capacity (nix staged temp work on `/tmp` on the RAM tmpfs). Two-disk parallelism yields ~20% rebuild speedup.
-
----
-
-## 15. Migrate to niri Compositor + Noctalia v5 — PRIMARY DESKTOP (2026-06-16, Completed 2026-06-28)
-
-* **Original decision (2026-06-16):** Adopt niri as the primary compositor and Noctalia v5 (C++/Native Shell) as the desktop shell, replacing Hyprland + quickshell (ii). Implementation via secondary NixOS session (non-breaking; fallbacks remain live).
-* **Status update (2026-06-28):** Hyprland + ii/quickshell **completely removed** (commits ee2efb4, 650fbde). **niri + Noctalia v5 are the sole desktop.** The "secondary session" framing is obsolete; niri is primary.
-* **Why:** Noctalia v5 is compositor-agnostic and nix-integrated with M3 palette support. Gains: (1) C++ native escapes ~300 MB RAM/monitor QML tax; (2) niri (Rust, conservative) vs. Hyprland 0.55.3 (2 regressions); (3) static typing + compile-time feedback.
-* **Fallback:** v4.7.7 pinned (unused; v5 is stable).
 
 ---
 
@@ -601,3 +592,24 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Verification:** After activation, `/persist` mounted via `luks0` device mapper (verify via `dmsetup ls` and `lsblk`). Persistence functions identically (bind-mounts, symlinks, impermanence activation all work through decrypted mountpoint).
 
 * **Design rationale:** Separation of concerns (only sensitive data encrypted; boot and nix remain auditable) + staged migration (no single risky operation; rollback at any step) + TPM upgrade path (passphrase-only initially, TPM+USB later).
+## 45. Persistent Storage Encryption — /persist LUKS2 (2026-09-23)
+
+* **Decision:** Encrypt `/persist` partition (nvme0n1p3, PARTUUID f994fab7-…) using LUKS2 (UUID d3307480-8eb3-4305-b5d6-d8d67c679022). Boot and /nix remain plaintext. Migration via 7-step staged procedure (`~/Storage/luks-migration/`, steps 00-setup through 06-finalize). Reversible (99-rollback.sh). Future: TPM-only unlock (USB hidden blob + evdev key-chord AND factor) as upgrade path once live.
+
+* **Why:** Protects persisted app state, home directories, and secrets from cold-boot attacks or disk theft. Separation of concerns: boot plaintext (needed for SEC/TPM), nix plaintext (auditable), persist encrypted alone (highest sensitivity). Cache-scoped approach: cold-boot access via passphrase initially; TPM authentication later.
+
+* **Gotcha (critical):** Do NOT run `make switch` or `make boot` between migration steps 02 (staging encrypted loop on STORAGE) and 05 (post-boot flip). During this window, flake.nix has conditional `.#volnixos-luks` override active; main `volnix` config is plaintext. Step 05-post-boot flips `vol.persistLuks.enable` to true and removes the override.
+
+* **Procedure:** Stages at `~/Storage/luks-migration/` (00-setup through 06-finalize). Pre-boot: format partition, create staging container, encrypt, migrate data. Post-boot: mount and verify. Rollback: `~/Storage/luks-migration/99-rollback.sh` re-stages plaintext /persist from backup. LUKS header backed up post-activation for disaster recovery.
+
+## 46. Cachix CI Token — Cache-Scoped with Annual Rotation (2026-09-28)
+
+* **Decision:** Use cache-scoped (not account-scoped) Cachix auth tokens for CI. Set expiry to one year; rotate annually. Stored as GitHub repo secret `CACHIX_AUTH_TOKEN` (`.github/workflows/build.yml:8`).
+
+* **Why:** Cache-scoped tokens are safer if leaked — they cannot change cache settings or create signing keys, limiting damage to push/pull on that one cache (`volnixos`). Account-scoped tokens grant broader permissions (manage all caches, change settings, revoke keys). For CI secrets exposed in GitHub Actions, cache-scoped is lower blast-radius.
+
+* **Lifecycle (this cycle):** Previous token created 2026-08-26 with misconfigured 30-day expiry, expired 2026-09-25 (CI red: "Cachix Auth token has expired"). Replaced 2026-09-28 with new cache-scoped read/write token, one-year expiry (commit 3f2e952). Next rotation due ~2027-09-20.
+
+* **Gotcha:** GitHub CLI `gh secret set` reads stdin without stripping trailing newlines (cli/cli#5031). Use interactive prompt or `printf %s` to set tokens without newline bloat.
+
+* **Implementation detail:** The `volnixos` cache is public, so pull operations don't require auth; only push requires the token. `.github/workflows/build.yml:8` comment was inaccurate (said "account-scoped", was actually cache-scoped); corrected in commit 3f2e952.

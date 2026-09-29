@@ -192,6 +192,9 @@
           llmfit
           rtk
           claude-code
+          pkgs.llm-agents.executor
+          pkgs.llm-agents.omo-ai
+          pkgs.llm-agents.oh-my-opencode
           pkgs.llm-agents.claude-desktop
           pkgs.llm-agents.ccstatusline
           claude-code-router
