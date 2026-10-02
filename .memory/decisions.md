@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-01
+last_updated: 2026-10-02
 status: active
 ---
 
@@ -37,8 +37,6 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Blocked by:** Decision #18 (tool graduation must complete before scripts/ can be symlinked).
 
 ---
-
-## 18. Tool Graduation — memd, tether, agent-scaffold → ~/CodeRepo (2026-06-18 — MEMD & TETHER COMPLETE, SCAFFOLD PENDING; MEMD PHASE 3 COMPLETE 2026-07-09)
 
 ## 18. Tool Graduation — memd, tether, agent-scaffold → ~/CodeRepo (2026-06-18 — ALL COMPLETE; MEMD PHASE 3 & SCAFFOLD COMPLETED 2026-09-06)
 
@@ -209,6 +207,8 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Amendment (2026-09-30):** omo (Senpi-based agent CLI, `omo-ai` package) is now wired into the pulse protocol as a second backend via `hooks/omo-pulse.js` in the noctalia-claude-plugin companion repo, translating omo's own lifecycle events (`session_start`, `agent_start`, `tool_execution_start`/`end`, `message_update`/`end`, `ui_prompt_start`/`end`, `agent_end`, `session_shutdown`) into the same pulse vocabulary Claude Code emits. No call-site changes were needed in the plugin's transcript/pulse-state consumers — validates the original seam design. A companion `dots/omo/statusline.js` extension (using omo's `setWidget`/`setFooter` API) renders the same 5h/7d plan-usage bars as the Claude Code starship statusline, reusing the `starship statusline claude-code` profile. Built and smoke-tested in-session (2026-09-30); not yet committed. Note: this session's Write/Edit calls targeted the companion repo at `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/`, while prior memory records it at `~/CodeRepo/claude-companion/noctalia-claude-plugin/` — confirm the current path before the next edit there.
 
 * **Amendment 2 (2026-10-01/2026-10-02 — Path Resolved, Extension Set Expanded):** The companion-repo path ambiguity from Amendment 1 is resolved: the live repo is `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/`; `~/CodeRepo/claude-companion/noctalia-claude-plugin/` does not exist on disk (confirmed via failed `ls`). State.md §7 and the luau-discovery backport todo now reference the noctalia-plugs path. `pulse.js` (symlinked from that repo's `hooks/omo-pulse.js` into `~/.omo/agent/extensions/`) is confirmed dispatching its full lifecycle event set (idle, turn_start, turn_end, session_end) to pulse-emit in a live omo session (2026-10-01). Two more omo extensions were added under `dots/omo/`: `memd.js` (joins memd's project-memory brief into omo's system prompt, mirroring the Claude Code SessionStart hook) and `rtk.js` (routes omo's bash tool calls through rtk's own command-rewrite rules, mirroring the Claude Code PreToolUse hook). `dots/omo/mcp.json` was also written, porting Claude Code's MCP server definitions into omo's own MCP config. All four files (`memd.js`, `rtk.js`, `mcp.json`, pre-existing `statusline.js`) are symlinked into `~/.omo/agent/extensions/` from their persisted repo path and syntax-check clean. End-to-end functional verification (live omo run exercising rtk rewrite, memd brief injection, and MCP startup together) was started but not confirmed complete in-session — see todo.md.
+
+* **Amendment 3 (2026-10-02 — Live Verification Confirmed, Phone-Agent Blocked by Offline Device):** The end-to-end verification flagged as incomplete in Amendment 2 is now confirmed for three of four ported pieces. In a live omo session: `memd.js` injected the project-memory brief into the system prompt and fired on compaction/session-end; `rtk.js` rewrote a bash call (`git status --short | head -3` → `rtk git status --short | head -3`), confirming it reuses Claude Code's own rewrite rules via `rtk hook claude`; the `gateway` and `noctalia` MCP servers connected and their tools surfaced via `tool_search`. `phone-agent` could not be verified — it failed with `fetch failed` because the phone was off the tailnet at test time (`curl` timed out, exit 28), not a config or secret-handling defect (`PHONE_AGENT_TOKEN` is read by name, no secret committed). Separately, this session recommended consolidating on `rtk` alone inside omo (dropping `snip`, which duplicates the same bash-rewrite job) and floated the same consolidation for Claude Code's own `PreToolUse` hooks, which currently run both — user decision pending (see todo.md).
 
 ## 27. Debt Tracking via Ceiling-Markers — Code Annotation + Harvest Skill (2026-06-24)
 
@@ -436,8 +436,6 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Implementation:** Noctalia community template + starship will consume this gradient. Each role-based variant (primary_1-13) is independently selectable for UI zones (buttons, backgrounds, accents, disabled states) while maintaining visual coherence.
 
 * **Stability across color schemes:** The hex values shown here (`#fddeaf` through `#1a0f00`) are specific to the Ayu Green palette. When you change color schemes via `color-scheme-set source name`, Noctalia regenerates the primary gradient using the same *strategy* (warm cast, differential luminance stepping) applied to the new palette's dominant hue. The role-based architecture (primary_1-13) and step magnitudes remain constant; only the actual hex values change. Verified in decision #38: scheme change Rosewater → Sapphire produced hex updates (`#f4dbd6` → `#7dc4e4`) while maintaining M3 role semantics.
-## 42. Anon-Mode Fail-Closed Invariant — Readiness Ladder L0-L4 with Per-Failure-Class Testing (2026-09-12)
-
 ## 42. Anon-Mode Fail-Closed Invariant — Readiness Ladder L0-L4 with Per-Failure-Class Testing (2026-09-12, Amended 2026-09-15 with Implementation Refinements)
 
 * **Decision:** Rebuild anon-mode around a fail-closed invariant: jail armed at boot with per-uid blackhole default (v4+v6); arming only swaps in gateway route; readiness ladder L0-L4 where only L4 (enforced path returns IsTor:true) releases workloads via `/run/anon-mode/ready`; `anon-selftest` proves negative paths (loopback resolver, IPv6, SO_BINDTODEVICE to WAN, gateway withdrawn). Health check re-runs every 10 min via `anon-watch`; disarms on loss.
@@ -469,8 +467,6 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Why:** Three anon-box debugging steps each manufactured silence: (1) wrong vsock transport (socat EXEC gave empty output), (2) relay abandoning socket on stdin EOF (command substitution closes stdin, returns empty), (3) `curl -sS` writing to stderr that socat EXEC did not relay (captured separately, appeared as silence). At each step, empty output was misread as evidence about network state, when the probe was broken. Only under load (actual stream attempt) did the asymmetry break. Silence coupled to absence-of-evidence produces false confidence — the check looks like it succeeded because the expected success and the check's own failure both produce "nothing."
 
 * **Prevention:** Before blaming the target, verify the probe. (1) Test the probe in isolation, confirm it produces output under normal conditions. (2) Verify output reaches you (not lost to closed pipes, unreachable stderr, buffering delays, timeout). (3) Distinguish "absence of problem" (positive signal) from "absence of measurement" (check broken). Where feasible, design probes with explicit positive/negative signals rather than silent/loud.
-## # Architectural Decisions (`memory/decisions.md`)
-
 ## 44. Phone-Ingest Double-Fetch Architecture — Temporary, Upgrade Path to Single-Pass ACK (2026-09-19)
 
 * **Decision:** phone-ingest-sync implements two-fetch protocol: (1) fetch with `delete_after:false`, sha256-verify locally, (2) delete from phone via second fetch (`delete_after:true`). Files transit network twice per ingestion.

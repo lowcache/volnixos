@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-10-01
+last_updated: 2026-10-02
 status: append-only
 ---
 
@@ -114,20 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-30 — Full-Repo Audit Surfaces Multiple Unit, Script, and Config Defects
-
-* **Symptom/cause/fix, by component:**
-  - `decapitate-fuse-mounts` systemd unit: `DefaultDependencies=` sat under `[Service]` instead of `[Unit]` (systemd only honors it there, so it was silently ignored); the unit called bare `umount` instead of the coreutils path, had no `|| true` fallback for already-unmounted targets, and hardcoded uid 1000 against a real uid of 1001. Net effect: shutdown-time unmounts were unreliable. Rewritten as a script unit wanted by `shutdown.target` with correct directive placement, full path, fallback, and matching uid.
-  - `phone-proximity-daemon` was ordered under `default.target` (pre-graphical boot) but depends on `NIRI_SOCKET`, which only exists once niri is running. Moved to `graphical-session.target`.
-  - fish `rmspcs` was missing its closing `end`; `gpgkey` used the nonexistent `read -S` instead of `read -s` for silent input. Both are fish syntax/runtime errors invisible to `nix build` — only an interactive fish smoke-test catches them.
-  - `ingest-sync` and `phone-mcp-call.sh` hand-built JSON via shell string interpolation; `ingest-sync` also didn't reject filenames containing `/`. Both now build payloads with `jq` (added to the client's PATH); ingest-sync rejects `/` in names.
-  - `anon-selftest` had a mangled multi-substitution `printf` producing malformed diagnostic output, and the jail seal check only asserted the IPv4 blackhole, leaving the IPv6 leg of decision #42's L4 ladder unverified. Both fixed.
-  - `nix-ld` referenced a hardcoded `linuxPackages.nvidia_x11` instead of `config.hardware.nvidia.package`, risking a version mismatch against whichever NVIDIA driver package the host actually configures. Fixed to reference the config option.
-
-* **Prevention rule:** Config-as-code checks (`nix build`, `nix flake check`) do not parse the *bodies* of shell/fish scripts or validate that a systemd directive sits in the section that actually reads it — both classes of bug here passed every automated gate while broken. Any script or unit touched during a refactor needs an actual runtime smoke-test (fish call, `systemd-analyze verify` at minimum, ideally a live exercise), not just a green build. Per decision #43 (silence is not evidence), the IPv6 seal gap is the same pattern again: the negative-path check simply never asked the question, and its absence looked identical to a passing check.
-
-* **Status:** All fixes applied and built locally (`nix build --no-link`, exit 0) as of 2026-09-30; uncommitted, unswitched.
-
 ### 2026-09-30 — nvidia-drm.modeset=1 Incorrectly Flagged as Redundant, Restored After Verification
 
 * **Symptom:** A delegated sub-task during the audit proposed removing `nvidia-drm.modeset=1` from `kernelParams`, on the claim that `hardware.nvidia` adds it automatically.
@@ -143,3 +129,11 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Root cause:** Audit fix pass declared ~/.omo persistence binding in `home/persist.nix` with a todo item to pre-seed via `cp -r ~/.omo /persist/home/lowcache/` before `make switch`. This pre-seeding was deferred (in the audit fix pass todo checklist). A system reboot occurred before the pre-seeding step was executed. At boot, tmpfs root was wiped as designed, but ~/.omo had never been copied to /persist, so the live configuration and extensions were lost completely. The persistence binding would have protected the data if it had been seeded first.
 
 * **Prevention rule:** Impermanence-bound directories must be pre-seeded (live state copied to /persist) and that backup must be verified BEFORE any system reboot. If a reboot must happen before seeding, document and accept the data loss explicitly. When scheduling pre-seeding steps, enforce ordering: (1) declare persistence, (2) pre-seed from live state, (3) verify backup exists, (4) reboot. Use blocking task dependencies or clear reminders to prevent skipping steps 2-3. Test the full pre-seed→activate→reboot sequence on non-critical state before applying to important directories.
+
+### 2026-10-02 — Impermanence Bind-Mount for ~/.omo Raced Home-Manager Link Placement, Hiding Links
+
+* **Symptom:** After `make switch` activated the new `~/.omo` persistence binding (home/persist.nix), the persisted MCP config file (`~/.omo/agent/mcp.json`) and three of five extension symlinks (memd.js, rtk.js, statusline.js) were missing from `~/.omo/agent/extensions/` even though Home Manager's generation clearly contained them (confirmed via inspecting the home-manager-generation store path directly).
+
+* **Root cause:** `~/.omo` was added to persistence (impermanence bind-mount from `/persist`) in the same switch that first wired the symlinks via `home.file`. At activation time, the bind-mount for `~/.omo` was not yet mounted when `home-manager-lowcache.service` ran `linkGeneration` and created the home file links — so the links landed on the pre-mount (tmpfs) view of `~/.omo`, then were hidden once the bind-mount from `/persist` came up on top.
+
+* **Prevention rule:** When a directory is *newly* added to impermanence persistence in the same activation that also populates it via `home.file`/`home.activation`, the first activation after the mount exists will not show the links — they're mounted-over. Fix is to re-run Home Manager's activation (`systemctl restart home-manager-<user>.service` or equivalent) once after the bind-mount is confirmed live, so `linkGeneration` runs against the now-mounted persisted directory. On subsequent boots this self-corrects because the bind-mount is already active before Home Manager runs. Verify with a one-time post-switch `ls` check whenever persistence is newly added for a path that's also populated by `home.file`.

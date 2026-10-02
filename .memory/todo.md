@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-01
+last_updated: 2026-10-02
 status: active
 ---
 
@@ -282,124 +282,13 @@ status: active
 - [ ] Cross-check cited numbers against decisions.md #21, mistakes.md 2026-08-24, state.md §9 (Krita section)
 - [ ] Publish (remove `draft: true`, then `cd volnixos-blog && make build && make deploy`)
 
-### Noctalia × PipeWire Auto-Restart (2026-09-19 — User Deferred)
-
-**Context:** Noctalia 5.0.1 fails to reconnect to PipeWire after daemon restart (`make switch`, systemctl service restart, etc.). Audio widgets display stale state until Noctalia is killed and respawned.
-
-**Workaround:** Manual `kill $(pgrep -f noctalia-wrapped); niri msg action spawn -- noctalia` (documented in state.md §4).
-
-**Desired solution:** Wire Noctalia's pipewire_service.cpp to detect daemon loss and reconnect (upstream issue noctalia-dev/noctalia#3396). Alternatively, auto-restart Noctalia on systemd pipewire/wireplumber service restart via dependency or file-watch trigger.
-
-- [ ] Monitor upstream noctalia-dev/noctalia#3396 for fix
-- [ ] If upstream does not resolve: implement local systemd auto-restart (low priority)
-
-### Fix statix Lint on flake.nix:177-178 (2026-08-24 — Low Priority)
-
-**Issue:** `nix flake check` fails at statix gate: "Assignment instead of inherit from" on lines 177-178 (`extraSpecialArgs = { nix-on-droid = ... }`, `home-manager-path = ...`).
-
-**Status:** Trivial fixup (convert assignments to inherit). Host and droid targets evaluate clean; only the lint gate blocks `make check`.
-
-- [ ] Rewrite as `inherit (inputs) nix-on-droid;` and equivalent for home-manager-path
-- [ ] Run `nix flake check` to confirm gate passes
-- [ ] Commit
-
-### Wiki SEO Optimization — Noctalia Title & Meta-Description (Identified 2026-08-24, High ROI)
-
-**Context:** GSC shows noctalia page has 701 impressions at position 9.29 with only 0.43% CTR (should be ~1.5-2.5% at that position). Title and meta-description are likely misaligned with search intent. Rewrite alone could yield 3-4× more clicks without changing ranking — highest-leverage SEO work available.
-
-**Discovery:** Measured via GSC `search_analytics` (infernalcode.com domain property, 2026-07-25 to 2026-08-21 window).
-
-- [ ] Analyze current title and meta-description for alignment with top search queries
-- [ ] Rewrite title and meta to better match user intent (40-60 chars title, 140-160 char meta)
-- [ ] Publish change to wiki
-- [ ] Monitor CTR recovery via `gsc/search_analytics` over next 2-3 weeks
-
-### Hotelevangelism Blog Post Series & Social Promotion Research (2026-08-24 — BACKLOG)
-
-**Context:** User plans to write blog posts for hotelevangelism. GSC integration now enables discovery-based outreach (finding open questions that existing content answers). Two tracks: content production + promotional channel research.
-
-**Content track:**
-- [ ] Write blog post(s) for hotelevangelism
-- [ ] Publish to ~/CodeRepo/blogs/ (hotelevangelism.blog)
-
-**Promotion research + execution:**
-- [ ] Identify relevant subreddits and HN threads where hotelevangelism content answers open questions
-- [ ] Use `reddit-research-mcp` (semantic search: 20k+ subreddits) or `hackernews-mcp` (ask_hn filter) to find threads
-- [ ] Craft response posts framed as answering the specific question (not bare link-drops; outreach strategy proven to work per blogs/CLAUDE.md)
-- [ ] Post responses with citations to the wiki/blog
-
-**Constraint:** Avoid bare promotional link-drops (reddit/HN ban for this). Frame as answering open questions. Proven approach: "outreach framed as answering an open question works" (noted in blogs/CLAUDE.md).
-
-**MCP servers:**
-- `reddit-research-mcp` (king-of-the-grackles/reddit-research-mcp): semantic search + citation
-- `hackernews-mcp` (cyanheads/hn-mcp-server): Algolia full-text search, `ask_hn` filter, no auth
-
-### MCP Server Evaluation — Cloudflare Official Tier + Third-Party Triage (2026-08-24 — Survey Complete, Partial Activation)
-
-**Status:** MCP server landscape surveyed via tether (198 lines at `scratchpad/mcp-survey.md`). Results categorized and prioritized. GSC (Tier 1, Cloudflare official) is now live and verified.
-
-**Findings:**
-- **Tier 1 (Cloudflare official, recommended):** 12 servers (Workers Builds, Observability, GraphQL, DNS Analytics, Cloudflare API, Docs, Radar, Browser Run, Logpush, Audit Logs, AI Gateway, Bindings). All require `http_url:` / `streamable_http:` config in gateway.yaml (not `command:`, since these are remote stdio endpoints). Workers Builds connects directly to your open CI todo. GSC verified live (2026-08-24).
-- **Tier 2 (SEO, third-party OAuth-required):** GSC (activated 2026-08-24), GA4, Bing. Require OAuth grant to your Search Console + analytics accounts.
-- **Tier 3 (Other high-value third-party):** Sentry (official remote, free with account), Stripe (official, monetization-coupled), CVE MCP (free, NVD+CISA+GitHub Advisories, local uvx), SAST MCP (local Semgrep/Bandit/Trivy wrapper).
-
-**Caution:** Survey lists Postgres as "Official + Active" in upstream servers repo; this is likely stale (most reference servers were archived). Verify before using.
-
-**Security constraint:** Each MCP server credential grant expands trust surface. MCPS Audit ([razashariff/mcps-audit](https://github.com/razashariff/mcps-audit)) scans MCP configs against OWASP MCP Top 10. Before expanding beyond current 11 backends, run audit on `.model/.claude/.mcp.json` + `gateway.yaml`.
-
-**Next steps:**
-- [ ] Run MCPS Audit on existing 11 backends; resolve any medium/high findings before expansion
-- [ ] Prioritize Cloudflare Workers Builds + Observability (aligns with wiki/deployment CI todo)
-- [ ] Conditional: Activate Sentry (free, error/trace querying) + CVE MCP (security scanning)
-- [ ] Defer: Stripe MCP (monetization not yet live), full GSC/GA4 suite (SEO work now underway, additional analytics less urgent)
-- [ ] Archive `scratchpad/mcp-survey.md` post-implementation (reference only, not durable)
-
-### Wiki — Polish and CI Integration (2026-08-15, partially done)
-
-- [ ] Connect Workers Builds CI (set command `./build.sh`, var `HUGO_VERSION=0.164.0`)
-- [ ] Convert home page to native data-driven layout (currently markdown, should be hero/card-grid yaml)
-- [ ] Visual overhaul: port Material palette to E25DX, center content (currently left-aligned)
-- [ ] Re-check GSC Page Indexing report ~2026-08-30: confirm whether the 40 "Crawled – currently not indexed" URLs (spiked 2026-08-17, post MkDocs→Hugo port) are draining out — recovery signal, not yet confirmed
-- [ ] If the nix-on-droid #480 reporter confirms the same proot `_defaultUnpack` bug, open an upstream PR contributing `prootUnpack` (decisions.md #32) rather than leaving it as a local backport
-
-### Noctalia Bar — Dual Wrap-Around Layout (2026-06-22 — LIVE, CAPTURE PENDING)
-
-- [ ] Capture runtime state to `dots/noctalia/config.toml`
-- [ ] Commit Ayu Green color-engine theme
-- [ ] Commit regenerated dotfiles
-
-### XWayland Satellite Startup — Permanent niri Integration (2026-06-23)
-
-- [ ] Add `spawn-at-startup "xwayland-satellite" ":0"` to `dots/niri/config.kdl`
-- [ ] Test: launch FireAlpaca without manual `:0` start
-
-### SessionEnd Hook — Work-Routing (2026-06-18)
-
-- [ ] Code path-prefix routing logic (dots/ → dots inbox, else → root)
-- [ ] Register hook in `~/.claude/settings.json` as SessionEnd event
-- [ ] Test with dummy work note
-
-### Nix-on-Droid Blog Series (2026-08-03 — Functional Work Complete)
-
-**Pending posts (user writing, lower priority):**
-- [ ] Architecture post (portable layer, one-flake strategy, glibc pin)
-- [ ] Deployment post (phone setup, Makefile targets, adb debug channel)
-- [ ] MCP integration post (phone-agent Termux shim, Tailscale)
-- [ ] proot portability post (chmod denial & structural sandbox fix)
-- [ ] (Optional) Performance/runtime gotchas, troubleshooting recovery ladder
-
-### Blog Post: "The workaround that outlived its bug" (Krita post — Outline Ready 2026-08-24)
-
-**Status:** Outline complete at `volnixos-blog/content/posts/drafts/krita-on-a-volatile-root.md` with `draft: true`. Comprehensive beat structure, verified citations, angle: one story covering both the swap SIGBUS hazard and the philosophical cost of undeclared state on an impermanence system.
-
-- [ ] Write full body (user authoring)
-- [ ] Cross-check cited numbers against decisions.md #21, mistakes.md 2026-08-24, state.md §9 (Krita section)
-- [ ] Publish (remove `draft: true`, then `cd volnixos-blog && make build && make deploy`)
 ### Persist LUKS2 Encryption Migration (2026-09-23 — Planning Phase)
 
 **Status:** Decision moved to decisions.md #45. Procedure available at `~/Storage/luks-migration/` (7-step sequence). Reversible via 99-rollback.sh. LUKS UUID d3307480-8eb3-4305-b5d6-d8d67c679022 pinned in config.
 
 **Critical constraint:** Do NOT run `make switch` or `make boot` between steps 02 (staging) and 05 (post-boot flip).
+
+**Open discrepancy (2026-10-02):** An unrelated session command showed `findmnt`-style output for `~/.omo` (which lives under `/persist`) backed by `/dev/mapper/cryptpersist`. This section's status is still "Planning Phase" with the migration checklist below unstarted — before resuming the LUKS plan, confirm whether `cryptpersist` is a leftover/unrelated test mapper or whether some form of persist-partition encryption is already active.
 
 **Procedure (sequential, do not skip or repeat):**
 - [ ] Step 00-setup: Prepare Ubuntu live medium, enroll MS Secure Boot keys, verify STORAGE staging directory is writable
@@ -422,7 +311,7 @@ status: active
 - [ ] Remove passphrase keyslot (keyslot 0) from LUKS header once TPM path proven
 - [ ] Backup LUKS header after keyslot removal (TPM-only configuration for disaster recovery)
 
-## Backup Hardware Monitoring — Install smartmontools & Monitor SMART (2026-09-24)
+### Backup Hardware Monitoring — Install smartmontools & Monitor SMART (2026-09-24)
 
 **Context:** External Seagate 2TB USB backup drive reported unrecovered read error on 2026-09-24 during routine backup run. No SMART health monitoring had been configured on the host. Error was logged at block layer (sector 3574956888, near end of device); `restic check` passed despite the medium failure.
 
@@ -435,20 +324,21 @@ status: active
 - [ ] If self-test reports uncorrectable errors or if pending/reallocated counts are non-zero, back up the restic repository to a new drive before the medium fails entirely
 - [ ] If counts are climbing across multiple backup runs, replace the Seagate drive and re-seed the restic repo (may be approaching end-of-life)
 - [ ] Document trend results in state.md §12 (SMART history) for future reference
-### Audit Fix Pass — Commit, Switch, and User-Only Follow-Ups (2026-09-30)
 
-**Status:** Full-repo audit fix pass built locally (`nix build --no-link`, exit 0). Nothing committed, pushed, or switched yet.
+### Audit Fix Pass — Commit, Switch, and User-Only Follow-Ups (2026-09-30, Activated 2026-10-02)
 
-**⚠️ REBOOT OCCURRED 2026-10-01 — PRE-SEEDING STEP INCOMPLETE:** The critical pre-seeding step (copy `~/.omo` → `/persist/home/lowcache/` before `make switch`) was not executed before system reboot. At boot, tmpfs-root was wiped and ~/.omo was lost completely (no backup existed). See mistakes.md 2026-10-01 entry.
+**Status:** Full-repo audit fix pass built locally (`nix build --no-link`, exit 0, reconfirmed clean 2026-10-02) and activated via `make switch` (2026-10-02). Working tree still not committed or pushed.
 
-**Resolved 2026-10-02:** No backup existed, so fresh omo configuration was accepted. User ran `cp -a ~/.omo` to `/persist/home/lowcache/.omo`; verified landed (2.2M, `auth.json`/`settings.json` content-identical to live `~/.omo`). `home/persist.nix` was then edited to declare `~/.omo` `home.file` persistence entries — nixfmt/statix/deadnix all pass; a background `nix build` was started to verify the edit but completion was not confirmed in-session. Three new omo extensions were also added this session: `dots/omo/memd.js` (joins memd's project-memory brief into omo's system prompt), `dots/omo/rtk.js` (routes omo's bash calls through rtk's rewrite rules), `dots/omo/mcp.json` (ports Claude Code's MCP server definitions into omo). All symlinked into `~/.omo/agent/extensions/`, syntax-checked clean; see decisions.md #26 amendment 2.
+**Resolved 2026-10-01/02:** `~/.omo` wipe (mistakes.md 2026-10-01) recovered via `cp -a ~/.omo` to `/persist/home/lowcache/.omo` (landed, 2.2M, content-identical). `home/persist.nix` declares `~/.omo` `home.file` persistence entries (nixfmt/statix/deadnix clean). Three omo extensions (`dots/omo/memd.js`, `dots/omo/rtk.js`, `dots/omo/mcp.json`) added and symlinked into `~/.omo/agent/extensions/`; see decisions.md #26 amendments 2-3.
 
-**Revised next steps:**
-- [ ] Confirm the background build triggered by the `persist.nix` edit finished clean (not confirmed in-session)
-- [ ] Once confirmed: execute `make switch` to activate the declarative `~/.omo` persistence binding (removes dependence on manual `cp -a` for future boots)
-- [ ] Review and commit working-tree diff — scope has grown beyond the original 41 files: also includes `dots/omo/{memd.js,rtk.js,mcp.json}` and the `home/persist.nix` edit, plus `hooks/omo-pulse.js` + `PROTOCOL.md` in the noctalia-plugs companion plugin repo (path corrected 2026-10-02, see decisions.md #26). See decisions.md #48 (flake input pruning) and 2026-09-30 mistakes.md entries for the original scope.
+**New issue found and fixed during this switch (2026-10-02):** The `~/.omo` bind-mount came up after Home Manager placed its `home.file` symlinks, hiding them under the later mount. Re-running Home Manager's activation (`systemctl restart home-manager-lowcache.service`) placed the links correctly on the mounted view. Future boots mount `~/.omo` before Home Manager runs, so this was a one-time, switch-introduced issue, not a recurring one. Full root cause: mistakes.md 2026-10-02.
+
+**Omo extension verification (2026-10-02 — mostly confirmed):** In a live post-switch omo session: `memd.js` injected the project-memory brief into the system prompt (and fires on compaction/session-end); `rtk.js` rewrote a bash call via `rtk hook claude` (confirmed: `git status --short | head -3` → `rtk git status --short | head -3`); `gateway` and `noctalia` MCP servers connected and surfaced tools via `tool_search`. `phone-agent` could not be verified — `fetch failed` because the phone was off the tailnet at test time (`curl` timed out, exit 28), not a config/secret defect (`PHONE_AGENT_TOKEN` read by name, nothing committed). Retest `phone-agent` once the phone is reachable.
+
+**Remaining steps:**
+- [ ] Review and commit working-tree diff — scope spans the original 2026-09-30 audit-pass files (decisions.md #48, 2026-09-30 mistakes.md entries) plus `dots/omo/{memd.js,rtk.js,mcp.json}`, the `home/persist.nix` edit, `home/common/fish.nix` (new `omo` wrapper function, 2026-10-02), and `hooks/omo-pulse.js` + `PROTOCOL.md` in the noctalia-plugs companion repo (path corrected 2026-10-02, decisions.md #26)
 - [ ] Post-switch: verify `decapitate-fuse-mounts`, `phone-proximity-daemon`, ingest-sync, anon-selftest, and anon-watch behave correctly under audit fixes
-- [ ] Verify the new omo extensions function end-to-end in a live session (rtk command rewrite, memd brief injection, MCP server startup) — a live probe was started but not confirmed complete
+- [ ] Retest `phone-agent` MCP in omo once the phone is back on the tailnet
 
 **Stale todos resolved by audit pass (close once committed):**
 - "Fix statix Lint on flake.nix:177-178" — rewritten as `inherit`, `STATIX_OK` confirmed against working tree
@@ -460,3 +350,56 @@ status: active
 - [ ] Remove `test_secret` from `host-secrets.yaml`
 - [ ] Add a LICENSE
 - [ ] Decide whether `.memory/` stays tracked in the public repo
+
+### rtk vs snip Consolidation — Drop Duplicate Bash-Rewrite Hook (2026-10-02 — USER DECISION PENDING)
+
+**Context:** Porting Claude Code's bash-rewrite hooks into omo (2026-10-02 session) found that `rtk` and `snip` do the same job — both rewrite every bash tool call into a token-saving wrapper — and Claude Code currently runs both on every call via `PreToolUse`. Only `rtk` was ported into omo (`dots/omo/rtk.js`, verified live).
+
+**Recommendation:** Keep `rtk` only inside omo (already done). For Claude Code itself, drop the redundant `snip hook` from `PreToolUse` (user's call — changes the existing Claude Code setup, not just omo's).
+
+- [ ] User decides whether to remove `snip hook` from Claude Code's `PreToolUse` in `~/.claude/settings.json`
+- [ ] If removed: confirm `rtk`'s own rewrite-rule coverage is sufficient (`~/.claude/rules/cli-corrections.md` is `snip learn`-generated — check whether that corrections file has a non-`snip` dependency before dropping it)
+
+### Reduce omo Token/System-Prompt Overhead — Fish Wrapper Implemented, Awaiting Switch (2026-10-02)
+
+**Status:** Investigation, implementation, and live measurement are complete per this session's own tracked phases (6/6 done). Remaining work is purely deployment: commit, `make switch`, and a post-switch live confirmation.
+
+**Finding (why it mattered):** omo-senpi's background `memory` component runs its own model sessions (reflection, "dream", facts, kibitzer recall) — over the prior two days this burned 223 model turns: ~745K tokens written to cache, ~7.9M read from cache, ~107K output tokens, all billed on top of `memd`, which already does the same job. Per-turn nags also add up: `comment-checker` demands a justification and the (unused — no language servers installed) `lsp` hook demands an install, on every write; a todo/goal reminder re-injects text every turn.
+
+**Fix implemented:** New `omo` fish function in `home/common/fish.nix`. For interactive and `-p` invocations it appends four flags: `--omo-senpi-memory-disabled`, `--omo-senpi-comment-checker-disabled`, `--omo-senpi-lsp-disabled`, `--omo-senpi-todo-fanout-reminder-disabled`. Subcommands (`config`, `auth`, `list`, etc.) pass through unwrapped — the flags break subcommand routing if applied there.
+
+**Rejected approach:** A persisted `~/.omo/omo.jsonc` config file (the original plan) was dropped in favor of the fish-level wrapper — wrapping at the shell layer is simpler and scopes the flags to exactly the invocation shapes that need them, without a second declarative config surface to keep in sync.
+
+**Measured (pre-switch, 2026-10-02):** System prompt 64,973 chars baseline → 60,035 chars with the four flags (~8% cut). On a trivial one-line turn: 37,342 total tokens baseline vs 35,596 lean.
+
+**Verified:** `nixfmt`/`statix`/`deadnix` clean; full system build passed; both wrapper branches tested (`omo config --help` reaches real subcommand help; a prompt run produces the lean prompt).
+
+**Caveats:**
+- Disabling `lsp` also removes omo's language-server tools — acceptable since none are installed here.
+- Launches that bypass the fish function (including omo's own spawned child agents) still get the full flag-less invocation; whether child agents inherit the parent's flags was not checked.
+- This session's own omo process does not pick up the change — it applies to new omo sessions started after the next `make switch`.
+- The fish.nix change is uncommitted; it joins the rest of the 2026-09-30 audit-fix-pass working tree (see the Audit Fix Pass entry).
+
+**Remaining weight (not addressed, user's call):** The `<available_skills>` block is ~23,000 chars (38% of the lean prompt) and is re-read every turn; ~13,500 chars of that comes from the `~/.claude/skills` root alone.
+
+- [ ] Commit `home/common/fish.nix` along with the rest of the audit-fix-pass diff
+- [ ] `make switch` to activate the wrapper
+- [ ] Start a fresh omo session post-switch; confirm the lean prompt and absence of memory/comment-checker/lsp/todo-reminder nags in a live run (not just the pre-switch probe)
+- [ ] User call: whether to also trim the skills-list overhead (23,000 chars) — no mechanism proposed yet
+
+### Compare omo vs Claude Code Token Baseline — Harness Options Presented (2026-10-02 — USER DECISION PENDING)
+
+**Context:** Following the omo overhead cut above, user asked how to get an apples-to-apples token/cost comparison between omo and Claude Code on the same task, while running `make git` and `make switch` in parallel. Assistant presented options only; nothing was built or decided.
+
+**Groundwork confirmed:** Both CLIs report usage headlessly — `claude -p --output-format json` returns usage/cost directly; `omo -p --mode json` emits a `message_end` event with usage per model call. Better common yardstick: omo's subscription lane already mirrors every session as a Claude Code-format transcript into `~/.claude/projects/`, so a single `jq` sum over `message.usage` (input/cacheWrite/cacheRead/output) can score both tools from the same file format instead of trusting two different self-reports.
+
+**Fairness requirements identified:** same model/effort pinned on both sides; fresh `git worktree` per run so neither tool sees the other's edits; matched permissions (Claude Code's `-p` mode needs `--allowedTools` or it stalls on approval; omo needs nothing); matched cache state (run all-cold with >5 min gaps, or all-warm with a throwaway first run, alternating which tool goes first); a correctness check on top of cost (cheaper-but-wrong isn't a win); at least 3 runs per configuration, compare medians.
+
+**Options given:**
+1. Fixed-overhead probe only (~15 min): trivial "reply ok" ×5 per configuration — isolates harness cost, says nothing about working-loop cost. omo side already measured (see overhead entry above: 37,342 vs 35,596 tokens).
+2. **Recommended:** scripted `bench.sh` harness, three task tiers (trivial / read-only / larger task), fresh worktree per run, sums usage from `~/.claude/projects/` transcripts via `jq`, includes a correctness check, prints a comparison table.
+3. A third option was being described when the session digest cuts off — not recorded; re-derive from the assistant if needed.
+
+- [ ] User picks an option (recommended: #2, the scripted harness)
+- [ ] If #2: build `bench.sh` — task-tier files, worktree-per-run orchestration, `jq` usage-summing over `~/.claude/projects/` transcripts, correctness check, median-of-≥3 reporting
+- [ ] Run the harness and report comparative baseline

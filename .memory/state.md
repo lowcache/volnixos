@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-01
+last_updated: 2026-10-02
 status: active
 ---
 
@@ -14,7 +14,7 @@ This file is the single source of truth for the active configuration, mapping, a
 ## 1. System & Hardware Profile
 
 * **Hostname:** `volnix` | **OS:** NixOS 26.11 (Zokor) | **Shell:** Fish (HM)
-* **Current generation:** system-247 (`/nix/store/…-nixos-system-volnix-26.11.20260824.…`)
+* **Current generation (2026-10-02):** live via `make switch` — `/nix/store/ba3w51v9f4wqfz5v5jgxk4n8h73vn30a-nixos-system-volnix-26.11.20260917.f4a6f27`. Activates the 2026-09-30 audit fix pass (decisions.md #48) plus declarative `~/.omo` persistence; see mistakes.md 2026-10-02 for a bind-mount/Home-Manager-links ordering issue hit during this switch.
 * **Desktop:** niri (Wayland, sole WM, default session) + Noctalia v5 (C++ shell)
 * **Display:** Wayland native; XWayland via `xwayland-satellite` (`:0`, for xcb-only AppImages and Flatpak Qt5 apps; permanent startup pending).
 * **GPU:** Hybrid AMD HawkPoint2 iGPU + NVIDIA RTX 4050 Mobile dGPU.
@@ -53,8 +53,6 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 **Secrets (2026-06-09 rules, 2026-08-24 state):** Encrypted sops-nix credentials in `nixos/secrets.yaml`, persisted agent/tool state in `/persist`. `nixos/host-secrets.yaml` has uncommitted modifications (2026-08-24) tracking secret rotation state — commit before major branches.
 
 ---
-
-## 3. MicroVM Guest Network (2026-08-06 — Confirmed Working)
 
 ## 3. MicroVMs — net-gate (Tor Relay) and anon-box (Workstation) (2026-08-06+)
 
@@ -178,38 +176,3 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 ## 13. CI/Deployment Infrastructure
 
 **Cachix CI Token (2026-09-28 Rotated):** GitHub Actions credential for pushing to public `volnixos` cache. Prior token (cache-scoped, created 2026-08-26) carried Cachix default 30-day expiry and expired 2026-09-25T10:11Z, causing CI build failures 2026-09-25/26 (runs 36094076894, 36231008195 failed with auth error at cachix-action step; 1m45s in). Token was cache-scoped (correct, safer than account-scoped), but 30-day expiry was unnecessarily aggressive. Replaced with new cache-scoped read/write token, 1-year expiry (expires ~2027-09-28). Token stored via GitHub secret `CACHIX_AUTH_TOKEN` using interactive `gh secret set` prompt (avoids trailing newline gotcha from piped echo). Documentation in `.github/workflows/build.yml:8` corrected to reflect cache-scoped nature (commit 3f2e952). Also fixed in same commit: stray double blank line in flake.nix that failed formatting gate after 1h39m CI burn (cost of discovering lint error late in build cycle). Gotcha: `cachix-action` accepts only `authToken` and `signingKey` — no OIDC/tokenless auth path available. Public cache `volnixos` requires write token for CI push; read-only substituter access is unrestricted.
-## 14. Pending Activation — Audit Pass 2026-09-30
-
-**Status:** Audit pass completed and built successfully (exit 0 from `nix build --no-link`), uncommitted in working tree, NOT yet activated via `make switch`.
-
-**⚠️ PRE-SWITCH REQUIREMENT:** `.omo` directory persistence added to `home/persist.nix`. Before running `make switch`, manually run: `cp -r ~/.omo /persist/home/lowcache/` (creates bind-mount target). Omitting this step will leave ~/.omo on tmpfs and lose state across reboot.
-
-**Fixes included (pending activation):**
-- decapitate-fuse-mounts unit: moved from [Service] to proper script unit, wanted by shutdown.target, uid corrected (1000 → 1001)
-- phone-proximity-daemon: moved from default.target to graphical-session.target (NIRI_SOCKET dependency)
-- fish shell: removed extraneous spaces in command definitions
-- sops gpg-key: corrected directive flag (was `-S`, now `-s`)
-- phone-ingest-sync: validates filenames (rejects paths containing "/"), uses jq for ACK/fetch/delete JSON payloads
-- phone-mcp-call.sh: constructs JSON payloads with jq (jq added to client PATH)
-- anon-jail: seal check now covers IPv6 rules and return path validation
-- anon-selftest: fixed printf statement formatting
-
-**Hardening measures:**
-- `users.mutableUsers = false`: immutable user database, prevents imperative user/group changes at runtime
-- `/boot` umask 0077: owner-only, denies group/other read/write
-- `~/Storage` mount: nosuid, nodev flags (prevents setuid binaries and device nodes on external storage)
-- CI workflows: all external actions pinned by exact SHA (ci/cli, cachix-action, etc.)
-- Container images: fooocus pinned by digest (reproducible pulls)
-- Plugin repos: micro plugin repo pinned to specific commit
-
-**Flake structural changes:**
-- Removed unused NUR input and overlay (no current consumers)
-- Consolidated nixpkgs inputs: nixos-hardware, impermanence, home-manager now follow primary nixpkgs (5 inputs → 4)
-- nix-cachyos-kernel deliberately retains independent nixpkgs input (cachyos-specific revision)
-- nix-ld: now uses `config.hardware.nvidia.package` instead of generic `linuxPackages.nvidia_x11` (respects nvidia module configuration)
-
-**Configuration validation:** Username sweep across all host definitions (volnix.nix, vms.nix, windows-vm.nix, backup.nix, phone-agent) verified neutral by toplevel derivation hash comparison (all identical, confirming no functional config changes).
-
-**Rejected changes:** Attempted removal of `nvidia-drm.modeset=1` from kernelParams failed — nvidia module does not add this parameter, so it cannot be removed. Reverted to keep present.
-
-**Activation:** Run `make switch` to apply all changes to live system.
