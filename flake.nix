@@ -14,13 +14,20 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nix-cachyos-kernel = {
-      url = "github:xddxdd/nix-cachyos-kernel";
+    nixos-hardware = {
+      url = "github:NixOS/nixos-hardware/master";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
+    # No nixpkgs follows on purpose: overlays.pinned builds the kernel against
+    # its own nixpkgs so the store path matches the lantian attic. Following
+    # ours would turn every kernel into a source build.
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
     impermanence = {
       url = "github:nix-community/impermanence";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
     };
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
@@ -31,7 +38,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Noctalia v5 (C++/native shell). follows nixpkgs per decision (source build,
-    # no Cachix). Wired via home/noctalia.nix (homeModules.default).
+    # no Cachix). Wired via home/shell.nix (homeModules.default).
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,9 +60,6 @@
     volinit = {
       url = "github:lowcache/volinit";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nur = {
-      url = "github:nix-community/NUR";
     };
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
@@ -124,7 +128,6 @@
           {
             nixpkgs.overlays = [
               inputs.nix-cachyos-kernel.overlays.pinned
-              inputs.nur.overlays.default
               inputs.llm-agents.overlays.shared-nixpkgs
               (import ./nixos/overlays/brave.nix)
               (import ./nixos/overlays/pandas-stubs.nix)

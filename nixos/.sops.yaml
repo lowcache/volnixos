@@ -8,17 +8,11 @@ creation_rules:
       - age:
         - *user
         - *host
-  # VM-scoped secrets: host key only (net-gate shares the host SSH key via
-  # virtio-fs, so anything here is readable by the VM — and nothing else is)
+  # VM-scoped secrets: host key only. net-gate gets the host SSH key over
+  # virtio-fs, so it can decrypt this file. CAVEAT: that same key is also a
+  # recipient of host-secrets.yaml above, so the guest could decrypt that too
+  # if it obtained the file. Fix is a dedicated net-gate key (see todo).
   - path_regex: vm-secrets\.yaml$
     key_groups:
       - age:
-        - *host
-  # Legacy rule kept for transition; ordered LAST because the regex is
-  # unanchored and would otherwise shadow the two rules above.
-  # Remove once secrets.yaml is renamed to host-secrets.yaml (P4-T2).
-  - path_regex: secrets\.yaml$
-    key_groups:
-      - age:
-        - *user
         - *host

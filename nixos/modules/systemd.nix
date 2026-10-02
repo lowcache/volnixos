@@ -19,32 +19,28 @@
       "d /nix/tmp 1777 root root -"
     ];
     services = {
-      #greetd.serviceConfig = {
-      #StandardInput = "tty";
-      #StandardOutput = "tty";
-      #StandardError = "journal";
-      #TTYReset = true;
-      #TTYHangup = true;
-      #TTYDeallocate = true;
-      #};
-      nix-daemon.serviceConfig.KillMode = "process";
       # Build temp on /nix (root-owned, nixbld-accessible) — never the RAM tmpfs.
-      # Must NOT live under /home/lowcache (0700) or nixbld can't traverse it.
+      # Must NOT live under the user's home (0700) or nixbld can't traverse it.
       nix-daemon.environment.TMPDIR = "/nix/tmp";
+      # Shutdown-only: reboot/halt/poweroff all pull in shutdown.target. Without
+      # DefaultDependencies=no in [Unit] the unit also Conflicts= that target
+      # and systemd breaks the resulting ordering cycle by dropping jobs.
       decapitate-fuse-mounts = {
         description = "Force lazy unmount of xdg-document-portal FUSE to release /nix";
-        before = [ "local-fs.target" ];
-        wantedBy = [
+        unitConfig.DefaultDependencies = false;
+        before = [
+          "umount.target"
           "shutdown.target"
-          "reboot.target"
-          "halt.target"
         ];
-        serviceConfig = {
-          Type = "oneshot";
-          DefaultDependencies = false;
-          ExecStart = "${pkgs.coreutils}/bin/umount -f -l /run/user/1000/doc || true";
-          ExecStopPost = "${pkgs.psmisc}/bin/killall -9 xdg-document-portal fusermount3";
-        };
+        wantedBy = [ "shutdown.target" ];
+        serviceConfig.Type = "oneshot";
+        # Globbed, not a fixed uid: uids are auto-allocated on this host.
+        script = ''
+          for d in /run/user/*/doc; do
+            ${pkgs.util-linux}/bin/umount -f -l "$d" 2>/dev/null || true
+          done
+          ${pkgs.psmisc}/bin/killall -9 xdg-document-portal fusermount3 2>/dev/null || true
+        '';
       };
     };
     settings.Manager = {

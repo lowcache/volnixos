@@ -24,7 +24,11 @@ let
 
     # The fetch carries the file itself; size, not reachability, decides how
     # long it takes. Reachability was already settled by the health check.
-    fetch() { PHONE_TIMEOUT=''${PHONE_FETCH_TIMEOUT:-300} "$call" phone.ingest.fetch "{\"name\":\"$1\",\"delete_after\":$2}"; }
+    fetch() {
+      local args
+      args=$(jq -cn --arg name "$1" --argjson del "$2" '{name: $name, delete_after: $del}')
+      PHONE_TIMEOUT=''${PHONE_FETCH_TIMEOUT:-300} "$call" phone.ingest.fetch "$args"
+    }
     # Tool errors arrive as HTTP 200 with {"error": ...}; only a real payload has sha256.
     retire() { fetch "$1" true | jq -e '.result.content[0].text | fromjson | .sha256' >/dev/null; }
 
@@ -38,6 +42,15 @@ let
       [ -n "$f" ] || continue
       name=$(echo "$f" | jq -r .name)
       want=$(echo "$f" | jq -r .sha256)
+      # The name comes from the phone and becomes a path here: never let it
+      # leave $dest.
+      case "$name" in
+        "" | . | .. | */*)
+          echo "refusing unsafe name from phone: $name" >&2
+          failed=$((failed + 1))
+          continue
+          ;;
+      esac
       if [ -e "$dest/$name" ]; then
         # Verified on an earlier run whose retire failed. A different hash is a
         # new file reusing the name: leave the phone's copy alone.

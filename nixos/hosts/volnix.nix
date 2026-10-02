@@ -3,6 +3,7 @@
 # what THIS machine IS.
 {
   config,
+  username,
   ...
 }:
 {
@@ -21,7 +22,7 @@
     anon-mode.enable = true;
 
     # Flipped to true by ~/Storage/luks-migration/05-post-boot.sh once the
-    # partition is actually encrypted; until then `.#volnix-luks` carries it.
+    # partition was actually encrypted (migration done 2026-09).
     persistLuks = {
       enable = true; # persistLuks-flag
       uuid = "d3307480-8eb3-4305-b5d6-d8d67c679022";
@@ -56,7 +57,7 @@
       # captured twice by listing both.
       paths = [
         "/persist"
-        "/home/lowcache/Storage"
+        "/home/${username}/Storage"
       ];
 
       exclude = [
@@ -64,17 +65,17 @@
         "/persist/lost+found"
         "/persist/var/lib/docker" # re-pullable images
         "/persist/var/lib/waydroid" # re-downloadable system/vendor img
-        "/persist/home/lowcache/.local/share/waydroid"
-        "/home/lowcache/Storage/.cache" # 30G, XDG_CACHE_HOME target
-        "/home/lowcache/Storage/tmp" # 23G, the TMPDIR scratch volume
-        "/home/lowcache/Storage/libvirt" # Windows VM disks, reinstallable
-        "/home/lowcache/Storage/lost+found"
+        "/persist/home/${username}/.local/share/waydroid"
+        "/home/${username}/Storage/.cache" # 30G, XDG_CACHE_HOME target
+        "/home/${username}/Storage/tmp" # 23G, the TMPDIR scratch volume
+        "/home/${username}/Storage/libvirt" # Windows VM disks, reinstallable
+        "/home/${username}/Storage/lost+found"
         # Weights go to the MODELS partition instead — see models.mirrors.
         # fooocus/outputs is deliberately NOT excluded: that is artwork, and
         # ~/Pictures/fromAi/outputs symlinks into it.
-        "/home/lowcache/Storage/ollama"
-        "/home/lowcache/Storage/ai-generation/fooocus/models"
-        "/home/lowcache/Storage/ai-generation/forge/models"
+        "/home/${username}/Storage/ollama"
+        "/home/${username}/Storage/ai-generation/fooocus/models"
+        "/home/${username}/Storage/ai-generation/forge/models"
         "**/node_modules"
         "**/__pycache__"
         "**/.venv"
@@ -83,9 +84,9 @@
       models = {
         enable = true;
         mirrors = {
-          ollama = "/home/lowcache/Storage/ollama";
-          fooocus-models = "/home/lowcache/Storage/ai-generation/fooocus/models";
-          forge-models = "/home/lowcache/Storage/ai-generation/forge/models";
+          ollama = "/home/${username}/Storage/ollama";
+          fooocus-models = "/home/${username}/Storage/ai-generation/fooocus/models";
+          forge-models = "/home/${username}/Storage/ai-generation/forge/models";
         };
       };
     };

@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  username,
   ...
 }:
 let
@@ -31,7 +32,7 @@ in
     # manager starts them - including greetd's `greeter`. Gate them on this.
     user = lib.mkOption {
       type = lib.types.str;
-      default = "lowcache";
+      default = username;
       description = "The one user whose systemd --user manager runs the phone-agent units.";
     };
 
@@ -58,7 +59,7 @@ in
     };
     ingestDir = lib.mkOption {
       type = lib.types.str;
-      default = "/home/lowcache/ingest";
+      default = "/home/${cfg.user}/ingest";
       description = "Laptop-side ingest directory that mirrors staged phone output.";
     };
 

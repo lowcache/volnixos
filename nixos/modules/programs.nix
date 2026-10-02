@@ -1,5 +1,6 @@
 # System-level program toggles that don't belong to a single feature module.
 {
+  config,
   pkgs,
   username,
   ...
@@ -59,12 +60,12 @@
         egl-wayland
         wayland
         libxkbcommon
-        linuxPackages.nvidia_x11.out
+        # The driver built for the running (CachyOS) kernel, not stock linuxPackages.
+        config.hardware.nvidia.package.out
         cudaPackages.cuda_cudart
         cudaPackages.libcublas
         cudaPackages.nccl
         libglvnd
-        mesa
         cups
       ];
     };

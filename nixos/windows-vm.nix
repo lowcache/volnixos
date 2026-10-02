@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, username, ... }:
 
 # Self-contained QEMU/KVM + libvirt stack for running a Windows 11 guest.
 # Kept separate from the microvm.nix (Linux) setup in vms.nix on purpose:
@@ -39,7 +39,7 @@
   # SPICE USB redirection (handy if the assessment needs a USB device/webcam).
   virtualisation.spiceUSBRedirection.enable = true;
 
-  users.users.lowcache.extraGroups = [
+  users.users.${username}.extraGroups = [
     "libvirtd"
     "kvm"
   ];
@@ -57,15 +57,15 @@
   # itself); the bind mount waits for the Storage filesystem and won't wedge boot
   # if it is ever absent (nofail).
   systemd.tmpfiles.rules = [
-    "d /home/lowcache/Storage/libvirt 0755 root root -"
+    "d /home/${username}/Storage/libvirt 0755 root root -"
   ];
 
   fileSystems."/var/lib/libvirt" = {
-    device = "/home/lowcache/Storage/libvirt";
+    device = "/home/${username}/Storage/libvirt";
     fsType = "none";
     options = [
       "bind"
-      "x-systemd.requires-mounts-for=/home/lowcache/Storage"
+      "x-systemd.requires-mounts-for=/home/${username}/Storage"
       "nofail"
     ];
   };

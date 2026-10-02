@@ -58,7 +58,7 @@
       buttondown_api_key_volatiletestimony = {
         owner = username;
       };
-      # Phone-agent bearer token (laptop -> phone MCP auth, scripts/verify.sh).
+      # Phone-agent bearer token (laptop -> phone MCP auth).
       # Placed at the exact path the client reads; sops re-materializes it at
       # activation every boot, so it survives the impermanence rollback of
       # ~/.config (which is not a persisted path — see home/persist.nix).

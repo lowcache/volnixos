@@ -1,101 +1,13 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-09-28
+last_updated: 2026-10-01
 status: active
 ---
 
 # Architectural Decisions (`memory/decisions.md`)
 
 This file catalogs the active, canonical design decisions and system configurations of **Vol NixOS**. AI agents must refer to this document before making any changes.
-
----
-
-## 4. Krita Qt6 / Wayland Compatibility (Amended 2026-06-28)
-
-* **Original decision (2026-06-06):** Force Krita to run under XWayland via `symlinkJoin` + `makeWrapper` injecting `QT_QPA_PLATFORM=xcb`. Reason: Krita 6 (Qt6) native Wayland causes canvas freezes on Hyprland with hybrid GPU.
-* **Amendment (2026-06-17):** Testing showed native-Wayland Krita runs cleanly on niri — the crash is Hyprland-specific. Changed wrapper to compositor-aware (checks `$NIRI_SOCKET`): if set, `QT_QPA_PLATFORM=wayland` (niri); else `xcb`.
-* **Final decision (2026-06-28):** Hyprland is removed; niri is the sole desktop. **Krita now unconditionally uses `QT_QPA_PLATFORM=wayland`** (native Wayland on niri). XWayland fallback wrapper is gone.
-
----
-
-## 5. Secrets Location — sops or `/persist`, NEVER `dots/`
-
-* **Decision (2026-06-09):** Secrets live in exactly two places: **sops-encrypted** (`nixos/secrets.yaml`, committable because encrypted) or **`/persist`** (never git-tracked). Never under `dots/`.
-* **Reason:** `dots/` is symlinked into the **public** repo (`github.com/lowcache/volnixos`). Blanket-tracking `.gemini` leaked live OAuth tokens (see mistakes.md #8).
-* **Pattern:** add to `nixos/secrets.yaml` → declare `sops.secrets.<name>` in `configuration.nix` → export in `home/shell.nix` `shellInit`.
-* **Adding agent/tool dirs to `dots/`:** track only declarative config; gitignore runtime/state/credential files with dir-relative patterns; never rely on git to keep a secret out.
-
----
-
-## 6. Autonomous Project Memory Curation (memd)
-
-* **Decision (2026-06-10, updated 2026-06-12):** Adopt memd for autonomous distillation of project memory files. Deployed via `home/memd.nix`; integrated into Claude Code hooks and `agy` wrapper.
-* **Model & Cost Trade-off:** Haiku by default (24/7 background); Sonnet for digests >15k chars. SessionStart injection is text-only.
-* **Claude-agnostic hardening (2026-06-12):** `curator_cmd` config key makes the distill backend pluggable. Cursors advance only after successful apply — backlog survives backend swap.
-* **Persistence:** `.config/memd/` and `.local/state/memd/` are persisted in `home/persist.nix`.
-* **Scope & Constraints:** Manages only `.memory/`. Input: AI transcript backlog + inbox notes. Output: updated memory files + git commits (`.memory/` pathspec only).
-
----
-
-## 7. Git Subtree for Independent Dotfiles History
-
-* **Decision (2026-06-10):** Use `git subtree` to maintain independent, publishable history for `dots/` without a separate repository or breaking `mkOutOfStoreSymlink` mappings.
-* **How it works:** Day-to-day work on main; `git subtree split --prefix=dots -b dots-history` generates a derived branch with `dots/` as repo root. `git subtree pull` merges from a published dotfiles remote.
-* **Trade-off:** First split on large history is slow (caches with `--rejoin`); if publishing never needed, `git log -- dots/` suffices.
-
----
-
-## 8. Scoped Memory for Dotfiles (per-app and directory-wide)
-
-* **Decision (2026-06-10):** Place dotfiles-specific memory in `dots/.memory/` (not individual app folders), with optional per-app subdirectories.
-* **Structure:** `dots/.memory/{state,decisions}.md`; optional `dots/.memory/quickshell/state.md`, etc.
-* **Rationale:** `dots/` itself is not symlinked (only its children); placing `.memory/` there prevents leakage into `~/.config/`, avoids home-manager rebuilds, and keeps dotfile config from mixing with app runtime state.
-* **Interaction with main `.memory/`:** Both apply when working in the dotfiles tree; repo-root `.memory/` is the global source of truth.
-
----
-
-## 9. Agentic Delegation — Claude Code Delegates Scoped Tasks to Gemini Pro
-
-* **Decision (2026-06-10, updated 2026-06-12):** Enable Claude Code to decompose work into scoped task briefs and delegate to Gemini Pro via `agy`. Gemini operates in worker mode (read-only on `.memory/`, no git operations, no system rebuilds); Claude remains orchestrator and final decision-maker.
-* **Implementation:** `~/.local/bin/tether` → `~/CodeRepo/tether/` + protocol. Default workdir: `$PWD` when non-hidden; `~/.nix-config` paths auto-map to `~/volnix`.
-* **Auto-Initiation Criteria:** Delegate on exploratory research, parallelizable fact-gathering, second opinions before expensive actions, bulk-mechanical work (e.g., docs drafting, cross-reference audits).
-* **Rules Out:** Delegating architecture decisions, memory curation, system rebuilds, final user-facing answers, git pushes.
-
----
-
-## 10. Global Agent Tooling — memd, tether, agent-scaffold Available in Every Project
-
-* **Decision (2026-06-12):** Deploy `memd`, `tether`, and `agent-scaffold` as globally available tools, not scoped to this repo.
-* **Implementation:** Declarative out-of-store symlinks in `~/.local/bin` via `home/scripts.nix` (`force = true`). Sweep timer keeps hermetic Nix-store copy of memd.
-* **agent-scaffold:** `scripts/agent-scaffold/agent-scaffold` (fish) + `scripts/agent-scaffold/templates/MODEL.md`. At any git root: renders `.model/{CLAUDE,AGENTS,GEMINI}.md` (idempotent); calls `memd init` when `.memory/` missing. Trigger: Claude Code `SessionStart`; `agy` wrapper in `home/shell.nix`.
-* **Rules Out:** Hand-creating `.memory/` scaffolding; editing generated `.model/` files to improve boilerplate (edit template instead); using a cd-hook for scaffold triggering.
-
----
-
-## 11. Documentation Platform — PGS (Pico Pages) SSH-Native Static Hosting
-
-* **Decision (2026-06-15):** Deploy documentation to PGS (pico.sh) using SSH-native static site hosting (`rsync` / `scp` deployment).
-* **Why PGS:** Vendor-neutral; zero build-server dependency; deployment from any SSH-capable machine; version-controlled. MkDocs Material used for authoring. Final target is PGS.
-* **SSH Registration:** Username `volnix` pre-registered on pico.sh with user SSH public key.
-* **Deployment:** `mkdocs build` → `docs/site/`. Deploy via `rsync -avz docs/site/ volnix@pgs.sh:/docs/`.
-* **Design:** Neutral charcoal canvas (`#101311`) + distinct green bands (header `#0b3019→#114a23`, tabs `#0e2716`).
-
----
-
-## 12. Browser Package Recovery from Git History
-
-* **Decision (2026-06-15):** Recover `brave` and `floorp` packages from git history following repo transfer. Both verified available (`brave` 1.88.138, `floorp-bin` 12.12.0). Integrated into `home/shell.nix` and `home/pkgs.nix`. Installed 2026-06-17.
-
----
-
-## 13. TMPDIR Split — User vs. Daemon (2026-06-15)
-
-* **Decision (2026-06-15):** Split temporary directory across two physically separate disks.
-  * **User-side:** `TMPDIR=$HOME/Storage/tmp` in `home/shell.nix` (persistent NVMe, 469 GB).
-  * **Daemon-side:** `/nix/tmp` (on the `/nix` partition, 195 GB, root-owned, nixbld-accessible).
-  * **Makefile:** `REBUILD_TMPDIR := $(HOME)/Storage/tmp` in all privileged rebuild targets.
-* **Why:** `make switch` failures with "broken pipe" were caused by 4 GB tmpfs `/` at 99% capacity (nix staged temp work on `/tmp` on the RAM tmpfs). Two-disk parallelism yields ~20% rebuild speedup.
 
 ---
 
@@ -294,7 +206,9 @@ This file catalogs the active, canonical design decisions and system configurati
 
 * **Rationale:** Leaves a cheap seam at an obvious extension point without building speculative machinery. Matches "necessity over redundancy" — build for current requirements, leave the door where we'll obviously walk through.
 
----
+* **Amendment (2026-09-30):** omo (Senpi-based agent CLI, `omo-ai` package) is now wired into the pulse protocol as a second backend via `hooks/omo-pulse.js` in the noctalia-claude-plugin companion repo, translating omo's own lifecycle events (`session_start`, `agent_start`, `tool_execution_start`/`end`, `message_update`/`end`, `ui_prompt_start`/`end`, `agent_end`, `session_shutdown`) into the same pulse vocabulary Claude Code emits. No call-site changes were needed in the plugin's transcript/pulse-state consumers — validates the original seam design. A companion `dots/omo/statusline.js` extension (using omo's `setWidget`/`setFooter` API) renders the same 5h/7d plan-usage bars as the Claude Code starship statusline, reusing the `starship statusline claude-code` profile. Built and smoke-tested in-session (2026-09-30); not yet committed. Note: this session's Write/Edit calls targeted the companion repo at `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/`, while prior memory records it at `~/CodeRepo/claude-companion/noctalia-claude-plugin/` — confirm the current path before the next edit there.
+
+* **Amendment 2 (2026-10-01/2026-10-02 — Path Resolved, Extension Set Expanded):** The companion-repo path ambiguity from Amendment 1 is resolved: the live repo is `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/`; `~/CodeRepo/claude-companion/noctalia-claude-plugin/` does not exist on disk (confirmed via failed `ls`). State.md §7 and the luau-discovery backport todo now reference the noctalia-plugs path. `pulse.js` (symlinked from that repo's `hooks/omo-pulse.js` into `~/.omo/agent/extensions/`) is confirmed dispatching its full lifecycle event set (idle, turn_start, turn_end, session_end) to pulse-emit in a live omo session (2026-10-01). Two more omo extensions were added under `dots/omo/`: `memd.js` (joins memd's project-memory brief into omo's system prompt, mirroring the Claude Code SessionStart hook) and `rtk.js` (routes omo's bash tool calls through rtk's own command-rewrite rules, mirroring the Claude Code PreToolUse hook). `dots/omo/mcp.json` was also written, porting Claude Code's MCP server definitions into omo's own MCP config. All four files (`memd.js`, `rtk.js`, `mcp.json`, pre-existing `statusline.js`) are symlinked into `~/.omo/agent/extensions/` from their persisted repo path and syntax-check clean. End-to-end functional verification (live omo run exercising rtk rewrite, memd brief injection, and MCP startup together) was started but not confirmed complete in-session — see todo.md.
 
 ## 27. Debt Tracking via Ceiling-Markers — Code Annotation + Harvest Skill (2026-06-24)
 
@@ -592,16 +506,6 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Verification:** After activation, `/persist` mounted via `luks0` device mapper (verify via `dmsetup ls` and `lsblk`). Persistence functions identically (bind-mounts, symlinks, impermanence activation all work through decrypted mountpoint).
 
 * **Design rationale:** Separation of concerns (only sensitive data encrypted; boot and nix remain auditable) + staged migration (no single risky operation; rollback at any step) + TPM upgrade path (passphrase-only initially, TPM+USB later).
-## 45. Persistent Storage Encryption — /persist LUKS2 (2026-09-23)
-
-* **Decision:** Encrypt `/persist` partition (nvme0n1p3, PARTUUID f994fab7-…) using LUKS2 (UUID d3307480-8eb3-4305-b5d6-d8d67c679022). Boot and /nix remain plaintext. Migration via 7-step staged procedure (`~/Storage/luks-migration/`, steps 00-setup through 06-finalize). Reversible (99-rollback.sh). Future: TPM-only unlock (USB hidden blob + evdev key-chord AND factor) as upgrade path once live.
-
-* **Why:** Protects persisted app state, home directories, and secrets from cold-boot attacks or disk theft. Separation of concerns: boot plaintext (needed for SEC/TPM), nix plaintext (auditable), persist encrypted alone (highest sensitivity). Cache-scoped approach: cold-boot access via passphrase initially; TPM authentication later.
-
-* **Gotcha (critical):** Do NOT run `make switch` or `make boot` between migration steps 02 (staging encrypted loop on STORAGE) and 05 (post-boot flip). During this window, flake.nix has conditional `.#volnixos-luks` override active; main `volnix` config is plaintext. Step 05-post-boot flips `vol.persistLuks.enable` to true and removes the override.
-
-* **Procedure:** Stages at `~/Storage/luks-migration/` (00-setup through 06-finalize). Pre-boot: format partition, create staging container, encrypt, migrate data. Post-boot: mount and verify. Rollback: `~/Storage/luks-migration/99-rollback.sh` re-stages plaintext /persist from backup. LUKS header backed up post-activation for disaster recovery.
-
 ## 46. Cachix CI Token — Cache-Scoped with Annual Rotation (2026-09-28)
 
 * **Decision:** Use cache-scoped (not account-scoped) Cachix auth tokens for CI. Set expiry to one year; rotate annually. Stored as GitHub repo secret `CACHIX_AUTH_TOKEN` (`.github/workflows/build.yml:8`).
@@ -613,3 +517,30 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Gotcha:** GitHub CLI `gh secret set` reads stdin without stripping trailing newlines (cli/cli#5031). Use interactive prompt or `printf %s` to set tokens without newline bloat.
 
 * **Implementation detail:** The `volnixos` cache is public, so pull operations don't require auth; only push requires the token. `.github/workflows/build.yml:8` comment was inaccurate (said "account-scoped", was actually cache-scoped); corrected in commit 3f2e952.
+
+* **Amendment (2026-09-30):** CI workflow actions are now pinned by commit SHA (not floating tags), and the lint gate was moved to run before the long build step — implements the mistakes.md 2026-09-25 recommendation to catch formatting/lint errors locally/early rather than burning CI build time. Applied in the uncommitted 2026-09-30 audit fix pass; not yet merged.
+
+## 47. Noctalia Session Wrapper — LD_LIBRARY_PATH for Plugin Runtime Dependencies (2026-09-28)
+
+* **Decision:** Wrap noctalia startup with `LD_LIBRARY_PATH` exporting `libstdc++.so.6` and `libz.so.1` from nixpkgs stdenv. Implementation: `noctalia-session` shell script wrapper in `home/shell.nix` that exports the libs and execs the noctalia binary.
+
+* **Why:** The wallpaper_depth plugin dynamically loads (`dlopen`) libstdc++ and libz at runtime. These libraries are in the nixpkgs closure but nix-ld (which patches ELF interpreters) only affects direct executable invocation, not dlopened libraries in subprocesses. The plugin's venv and dependencies were fine; the venv's python child process couldn't find the libs at dlopen time. LD_LIBRARY_PATH in the parent process makes both libs available to all children.
+
+* **Rejected alternatives:**
+  - **sh-at-startup with `/run/current-system/sw/share/nix-ld/lib`:** One-line fix, but shadows 635+ lib entries (openssl, icu, nss, X11) for noctalia *and all descendants*, ahead of RUNPATH. Invisible to `nix flake check`. Silent regression if `programs.nix-ld.enable` or that path changes.
+  - **Pre-provisioning venv from `python3.withPackages`:** Would not need LD_LIBRARY_PATH anywhere, but writes into a mutable dir the plugin owns and `--clear`s. Mutable dir sits inside impermanence-persisted `.local/state/noctalia`, runs off-pin from plugin's `PACKAGES`. Breaks on plugin updates (user doesn't control those). Also requires an extra build that nixpkgs may not have cached (onnxruntime for python 3.14.7 at the exact plugin version).
+
+* **Zero shadowing risk:** Despite LD_LIBRARY_PATH preceding RUNPATH in the search order, `.noctalia-wrapped`'s RUNPATH already ends with `gcc-15.3.0-lib/lib`, which is byte-identical to what LD_LIBRARY_PATH exports. The wrapper shadows identically-stored library.
+
+* **Status (2026-09-28):** Built and tested. `make check` and `make build` pass. Venv and model on disk are intact; plugin status now reports `{"modelReady":true,"ready":true,"runtimeReady":true}`. Not yet activated (awaiting `make switch`). Once live, Noctalia must be restarted (`kill $(pgrep -f noctalia-wrapped); niri msg action spawn -- noctalia`) or wait for next niri launch to pick up the new wrapper.
+
+* **Implementation details:** `home/shell.nix` provides `noctalia-session` via `pkgs.writeShellScriptBin`. Wrapper calls `lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib pkgs.zlib ]` and execs `lib.getExe config.programs.noctalia.package` with the env var set. No special handling needed in `dots/niri/config.kdl` (still spawns "noctalia" by name; the wrapper is on PATH).
+## 48. Flake Input Pruning — Single Nixpkgs Lineage Where Possible (2026-09-30)
+
+* **Decision:** Remove the unused NUR input and overlay. Make `nixos-hardware` and impermanence's `home-manager` input follow the primary `nixpkgs` via `follows`, reducing flake.lock from five nixpkgs nodes to four. `nix-cachyos-kernel` deliberately keeps its own independent nixpkgs (kernel build needs a pin the primary lockfile doesn't carry).
+
+* **Why:** Fewer nixpkgs lineages means less evaluation duplication, smaller lockfile diffs on update, and one fewer place package versions can silently diverge across inputs that don't need an independent pin.
+
+* **Verification technique:** A parallel username-parameterization sweep (replacing hardcoded `lowcache` paths with the config's own username option across `nixos/hosts/volnix.nix`, `vms.nix`, `windows-vm.nix`, `backup.nix`, `phone-agent`) was proven behavior-neutral by comparing the toplevel system derivation hash before and after — identical hash confirms the substitution changed no runtime behavior. Entry-point files (`home/default.nix`, `flake.nix`, `home/common/tools.nix`) correctly keep the literal username; that's actual system identity, not portability debt.
+
+* **Status (2026-09-30):** Built via `nix build --no-link` (exit 0); uncommitted, unswitched. See todo.md for the commit/switch sequence.

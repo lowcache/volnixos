@@ -179,7 +179,7 @@
           read -P "Enter your full name: " user_name
           read -P "Enter your email address: " user_email
           read -P "Enter a comment (optional): " user_comment
-          read -S -P "Enter a passphrase: " key_passphrase
+          read -s -P "Enter a passphrase: " key_passphrase
           set temp_batch_file (mktemp)
           echo "%echo Generating GPG key" > $temp_batch_file
           echo "Key-Type: RSA" >> $temp_batch_file
@@ -222,11 +222,12 @@
           end
 
           find $target_dir -depth -name "* *" | while read -l file
-          set -l dir (dirname "$file")
-          set -l old_name (basename "$file")
-          set -l new_name (string replace -a " " "_" "$old_name")
-          echo "Renaming: $old_name -> $new_name"
-          mv "$file" "$dir/$new_name"
+            set -l dir (dirname "$file")
+            set -l old_name (basename "$file")
+            set -l new_name (string replace -a " " "_" "$old_name")
+            echo "Renaming: $old_name -> $new_name"
+            mv "$file" "$dir/$new_name"
+          end
         '';
       };
       ai = {
@@ -253,6 +254,21 @@
             set pkgs $pkgs "github:numtide/llm-agents.nix#$pkg"
           end
           nix shell $pkgs
+        '';
+      };
+      # The flags are CLI-only and break subcommand routing, so subcommands pass
+      # through bare. memory duplicates memd and runs background model sessions.
+      omo = {
+        description = "OmO with its token-heavy extras off";
+        wraps = "omo";
+        body = ''
+          switch "$argv[1]"
+            case app-server auth config host install list models remove schedule uninstall update
+              command omo $argv
+            case '*'
+              command omo --omo-senpi-memory-disabled --omo-senpi-comment-checker-disabled \
+                --omo-senpi-lsp-disabled --omo-senpi-todo-fanout-reminder-disabled $argv
+          end
         '';
       };
     };

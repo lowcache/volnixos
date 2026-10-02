@@ -48,7 +48,7 @@ git clone https://github.com/lowcache/volnixos.git ~/.nix-config
 cd ~/.nix-config
 make check          # nix flake check
 make build          # build without switching
-sudo make switch    # rebuild + switch (HOST=volnix)
+make switch         # rebuild + switch (HOST=volnix); asks for sudo itself
 ```
 
 > [!NOTE]
@@ -96,7 +96,7 @@ silently disappear, are in
 ├── droid/             # Phone-Agent and nix-on-droid modules
 ├── overrides/         # Overrides & Patches
 ├── dots/              # dotfiles (out-of-store symlinked to ~/.config)
-├── scripts/           # agent toolchain (agent-scaffold, helpers)
+├── templates/         # `nix flake init -t` project scaffolds
 └── assets/            # banner / branding
 ```
 

@@ -122,7 +122,7 @@
         # preview split). Plugins themselves install imperatively into
         # ~/.config/micro/plug, which persist.nix already keeps.
         pluginrepos = [
-          "https://raw.githubusercontent.com/weebi/micro-preview/master/repo.json"
+          "https://raw.githubusercontent.com/weebi/micro-preview/8242018ee22114b1e313f6dc69af1bbea9313cb3/repo.json"
         ];
       };
     };

@@ -14,9 +14,14 @@ TOKEN="$(cat "${PHONE_TOKEN_FILE:?set PHONE_TOKEN_FILE}")"
 # the whole file base64 in one response, so a 10s cap on THAT is a size limit
 # wearing a timeout's clothes — it aborted mid-transfer after the phone had
 # already marked the item delivered.
+#
+# Built with jq so a quote in TOOL cannot break the envelope and malformed
+# ARGS fails here instead of as an opaque HTTP error from the phone.
+PAYLOAD=$(jq -cn --arg tool "$TOOL" --argjson args "$ARGS" \
+  '{jsonrpc: "2.0", id: 1, method: "tools/call", params: {name: $tool, arguments: $args}}')
 curl -sf --connect-timeout "${PHONE_CONNECT_TIMEOUT:-5}" --max-time "${PHONE_TIMEOUT:-10}" \
   -H "Authorization: Bearer ${TOKEN}" \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json, text/event-stream' \
-  -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/call\",\"params\":{\"name\":\"${TOOL}\",\"arguments\":${ARGS}}}" \
+  -d "$PAYLOAD" \
   "http://${PHONE_IP}:${PORT}/mcp"

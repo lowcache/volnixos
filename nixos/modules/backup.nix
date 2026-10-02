@@ -293,7 +293,7 @@ in
         type = lib.types.attrsOf lib.types.str;
         default = { };
         example = {
-          ollama = "/home/lowcache/Storage/ollama";
+          ollama = "/home/${username}/Storage/ollama";
         };
         description = ''
           Destination directory name on the MODELS partition -> source path.

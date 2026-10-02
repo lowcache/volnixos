@@ -44,6 +44,8 @@
     "/boot" = {
       device = "/dev/disk/by-label/BOOT";
       fsType = "vfat";
+      # The ESP holds the systemd-boot random seed; keep it root-only.
+      options = [ "umask=0077" ];
     };
     "/nix" = {
       device = "/dev/disk/by-label/NIX";
@@ -64,6 +66,12 @@
       # (verified present on nvme0n1p1 as of 2026-07-09).
       device = "/dev/disk/by-label/STORAGE";
       fsType = "ext4";
+      # Data volume, and anon-box writes into Storage/anon/out over virtiofs:
+      # nothing here should ever be honoured as setuid or as a device node.
+      options = [
+        "nosuid"
+        "nodev"
+      ];
     };
   };
   # Persistence

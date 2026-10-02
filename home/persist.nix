@@ -11,7 +11,7 @@
       "color-engine".source =
         config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/color-engine";
       # niri + Noctalia v5. Live-edit symlinks; Home Manager writes no files here
-      # (see home/noctalia.nix), so no collision.
+      # (see home/shell.nix), so no collision.
       "niri".source =
         config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/niri";
       "noctalia".source =
@@ -81,6 +81,29 @@
         source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.local/state/nix/profiles/profile";
         force = true;
       };
+      # OmO extensions and MCP servers, live-edit links into the persisted .omo.
+      # force: these replace the hand-made copies seeded into /persist on 2026-10-01.
+      ".omo/agent/mcp.json" = {
+        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/mcp.json";
+        force = true;
+      };
+      ".omo/agent/extensions/statusline.js" = {
+        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/statusline.js";
+        force = true;
+      };
+      ".omo/agent/extensions/memd.js" = {
+        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/memd.js";
+        force = true;
+      };
+      ".omo/agent/extensions/rtk.js" = {
+        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/rtk.js";
+        force = true;
+      };
+      # claude-companion pulse adapter; it finds pulse-emit beside its real path.
+      ".omo/agent/extensions/pulse.js" = {
+        source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/CodeRepo/noctalia-plugs/noctalia-claude-plugin/hooks/omo-pulse.js";
+        force = true;
+      };
     };
     persistence."/persist" = {
       directories =
@@ -110,6 +133,10 @@
             # a fresh browser authorization. Also holds transparency logs and
             # identity grants.
             ".mcp-gateway"
+            # OmO agent state: auth, sessions, memory repo and user extensions.
+            # Unpersisted it sits on the tmpfs root and every reboot starts the
+            # agent logged out with no history.
+            ".omo"
           ];
           config = [
             ".config/dconf"

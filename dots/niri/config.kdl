@@ -92,7 +92,9 @@ layout {
 }
 
 // --- Startup: Noctalia v5 shell (bar, control center, panels) ---
-spawn-at-startup "noctalia"
+// noctalia-session is the home/shell.nix wrapper: plain `noctalia` plus the
+// libstdc++/libz LD_LIBRARY_PATH the wallpaper_depth plugin's venv needs.
+spawn-at-startup "noctalia-session"
 
 prefer-no-csd
 screenshot-path "~/Storage/screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"

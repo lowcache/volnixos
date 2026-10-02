@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-09-28
+last_updated: 2026-10-01
 status: active
 ---
 
@@ -77,23 +77,11 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 ## 4. Active Workarounds
 
-* **`make switch-detached` PATH Fix (2026-07-28 — FIXED):** Transient systemd units inherit minimal PATH (no `git`), breaking lix's flake fetcher. Fix: Makefile target passes `--setenv=PATH=/run/current-system/sw/bin:/run/wrappers/bin` to `systemd-run`. Verified 2026-07-28.
-
-* **Krita G'MIC Plugin Crash — FIXED & VERIFIED (2026-07-14):** Patched via `overrides/gmic-qt-filtersview-nullptr-contextmenu.patch`; applied through `krita-plugin-gmic-patched` in `home/pkgs.nix`, bundled into `krita-wrapped`. Full root-cause narrative: decisions.md #21.
+* **XWayland Satellite (2026-06-23):** `xwayland-satellite :0` running for Flatpak Qt5 apps and xcb-only AppImages (e.g. FireAlpaca). Manual-start only — permanent `spawn-at-startup` wiring still open (todo.md).
 
 * **Ollama Pinned to 0.31.1 (2026-07-28):** `nixos/overlays/ollama.nix` pins `ollama-cuda` to pre-update nixpkgs rev `d407951`. Upstream 0.32.3 fails to build (CUDA Toolkit not found via setup-cuda-hook). Revert condition: retry 0.32.x+ on next flake update.
 
 * **Flake-Update Overlays Active (2026-07-28):** `nixos/overlays/pandas-stubs.nix` (pytest 9.1.1 promotes a warning to a hard error under `filterwarnings=error`; overlay sets `PYTEST_ADDOPTS="-W ignore::pytest.PytestRemovedIn10Warning"`) and `nixos/overlays/niri.nix` (pins `libdisplay-info` to 0.3.0; niri 26.04's vendored `libdisplay-info-sys` caps at `<0.4.0`, nixpkgs bumped past it). Both cache-hit, no rebuild cost. Revert conditions documented in each overlay header.
-
-* **XWayland Satellite (2026-06-23):** `xwayland-satellite :0` running for Flatpak Qt5 apps and xcb-only AppImages (e.g. FireAlpaca). Manual-start only — permanent `spawn-at-startup` wiring still open (todo.md).
-
-* **Portal AccessDenied — FIXED (2026-06-17):** `services.dbus.implementation = lib.mkForce "dbus";` (xdg-portal 1.20.4 pidfd bug). Full root cause: mistakes.md #10.
-
-* **XDG FileChooser Portal Routing (2026-06-19):** Gnome backend advertises `FileChooser` but doesn't implement it; `xdg.configFile` routes `org.freedesktop.impl.portal.FileChooser=gtk`.
-
-* **Ollama VRAM/RTD3 (2026-06-17):** `OLLAMA_KEEP_ALIVE=5m`, `OLLAMA_KV_CACHE_TYPE=q8_0`, `OLLAMA_MAX_LOADED_MODELS=1`.
-
-* **Playwright MCP (2026-06-15):** `scripts/playwright-mcp-nix` pins nix chromium.
 
 * **TMPDIR split (2026-06-17):** User → `~/Storage/tmp`; daemon → `/nix/tmp`; Makefile `REBUILD_TMPDIR := $(HOME)/Storage/tmp`. Rationale: decisions.md #13.
 
@@ -104,32 +92,6 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 * **Nixpkgs lock pin (2026-09-18, temporary):** flake.lock pinned to f4a6f271 (2026-09-17, nixos-unstable-small) ahead of flake.nix ref. Reason: playwright 1.63.0 at channel rev b1b8759 requires libmanette-0.2.so.0; upstream fix (commit 67bf9043) postdates channel by 47 minutes. auto-patchelf fails without it, blocking playwright-mcp → home-manager-path → toplevel. Workaround duration: ~2 days until nixos-unstable advances. Rollback: `nix flake update nixpkgs` once 67bf9043 lands (see todo.md).
 
 * **Noctalia × PipeWire Reconnect (2026-09-19):** After `make switch` restarts wireplumber/pipewire, Noctalia (v5.0.1) does not reconnect to the new PipeWire daemon. Audio widgets show stale state (muted/wrong volume, visualizer flat, new sinks invisible). Workaround: `kill $(pgrep -f noctalia-wrapped); niri msg action spawn -- noctalia` (Noctalia is a niri spawn-at-startup scope, not a systemd unit). Root cause: upstream noctalia-dev/noctalia#3396 (no reconnect code in `pipewire_service.cpp`; open). User plans pipewire-tethered auto-restart later (see todo.md).
-
-## 5. Phone-Agent File Transfer (2026-08-06 — Confirmed Working, Pull-Only by Design)
-
-**Ingest mechanics (phone→laptop, pull-direction):** Phone stages a file → `phone-ingest-sync.timer` (every 2 min) pulls via phone-agent API → ingest-sync `fetch` with `delete_after:false`, verifies sha256 locally, `fetch` again with `delete_after:true` to confirm deletion → file lands in `~/ingest/delivered/`. Per-file error handling: failures are counted, batch continues (exits 1 at end). Name collision (same name/different hash, already delivered) logged and left on phone. Shared infrastructure: `nixos/phone-agent/client.nix` (HTTP call wrapper).
-
-**Manual ingest triggers:** `systemctl --user start phone-ingest-sync.service` (immediate pull); `phone-agent phone.ingest.list '{"limit":50}'` / two-step `phone-agent phone.ingest.fetch '{"name":"file.pdf","delete_after":false}'` + local sha256 verify + `phone-agent phone.ingest.fetch '{"name":"file.pdf","delete_after":true}'` (hand-invoke; caller verifies).
-
-**Outbound (laptop→phone, file staging):** `push.nix` provides HTTP server on `vm-tailscale` (host firewall port `pushPort` opened 2026-09-19). Claude Code file-staging hooks POST to the server; files staged in phone ingest directory. Upgrade: phone-side `phone.ingest.ack` tool would unify ingest/outbound into single-fetch flow (deferred).
-
-**Limitation:** All 34 phone-agent tools are host-initiated (except file staging). Programmatic laptop→phone task calls beyond file staging would require peer auth + two-way channels (future scope). Tailscale Taildrop is phone→laptop only; web UI has no file-transfer surface.
-
-## 6. Nix-on-Droid — Aarch64 Android Target (Generation 5 Live, Verified 2026-08-03)
-
-**Architecture:** `nixOnDroidConfigurations.default` in the volnixos flake (one `flake.lock`); portable `home/common/` HM layer shared with desktop. `nixpkgs-droid`/`home-manager-droid` pinned to `nixos-25.11` (glibc 2.40) — desktop stays on unstable (glibc 2.42). Full root-cause narrative for the glibc 2.42 TCGETS2 regression and the proot `_defaultUnpack` chmod bug: decisions.md #31, #32.
-
-**Live state (verified 2026-08-03):** rtk 0.44.0, mcp-gateway 3.3.2, opencode 1.1.14, claude 2.1.140, codex 0.92.0 — all glibc-2.40-224, zero glibc-2.42 in the runtime closure. `tty` returns `/dev/pts/0`; claude-code's full Ink/React TUI renders correctly on-device (the linchpin test). Phone is daily-usable.
-
-**Nerd Font fix:** `droid/default.nix` sets `terminal.font` to JetBrainsMono Nerd Font, installed as `~/.termux/font.ttf` on activation.
-
-**Host-specific layers:** volnix keeps `home/shell.nix` + `home/pkgs.nix` (nixos-unstable). droid has `droid/home.nix` + `droid/agents.nix` + `droid/backports.nix` (rtk, mcp-gateway, `prootUnpack` override; nixos-25.11).
-
-**Makefile targets:** `make droid-check` / `droid-plan` / `droid-switch`.
-
-**Still open:** android-integration wiring choice (disabledModules patched copy vs. minimal `xdg-open` shim); whether tether needs `antigravity-cli` or gemini-cli 0.25.2 suffices on droid. See todo.md.
-
----
 
 ## 7. Niri Compositor + Noctalia v5 — PRIMARY DESKTOP
 
@@ -143,31 +105,13 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 
 **Bar — dual wrap-around L-frame (2026-06-22, live, NOT yet committed to git — user-deferred):** Top bar (full width) + left bar (full height) join at top-left corner via `reserve_space = true` on both, squared seam corners, rounded outer corners. Ayu Green palette (`#AAD94C` lime primary, `#E6B450` gold secondary) unified across bar/kitty/starship via `dots/color-engine/apply_theme.py`. Backup: `~/.local/state/noctalia/settings.toml.bak.20260622-112626`. Next: capture to `dots/noctalia/config.toml` and commit (deferred, see todo.md). Full technical-constraints narrative archived (see archive_entries).
 
-**Claude Code Companion Plugin (2026-06-26, V1 live):** `~/.local/share/noctalia/plugins/claude` → `~/CodeRepo/claude-companion/noctalia-claude-plugin/` (own repo, `github.com/lowcache/noctalia-claude-plugin`). Pulse widget (`bell-ringing` glyph, top bar center) driven by Claude session hooks (SessionStart/UserPromptSubmit/PreToolUse/PostToolUse/Notification/Stop, merged into `~/.claude/settings.json`). MCP shim registered at `~/.nix-config/.mcp.json` (stdio): `get_window`, `get_workspace`, `get_media`, `get_shell_state`, `notify`, `set_theme_mode`, `set_color_scheme`, `remember`. Launcher `/cc` runs one-shot `claude` invocations via `runInTerminal`. Design philosophy (shell as senses/actuators, not a chat-UI port): decisions.md #24. Full verification narrative archived (see archive_entries).
+**Claude Code Companion Plugin (2026-06-26, V1 live; path corrected 2026-10-02):** `~/.local/share/noctalia/plugins/claude` → `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/` (own repo, `github.com/lowcache/noctalia-claude-plugin`; confirmed 2026-10-02 — the previously recorded `~/CodeRepo/claude-companion/` path no longer exists on disk). Pulse widget (`bell-ringing` glyph, top bar center) driven by Claude session hooks (SessionStart/UserPromptSubmit/PreToolUse/PostToolUse/Notification/Stop, merged into `~/.claude/settings.json`). MCP shim registered at `~/.nix-config/.mcp.json` (stdio): `get_window`, `get_workspace`, `get_media`, `get_shell_state`, `notify`, `set_theme_mode`, `set_color_scheme`, `remember`. Launcher `/cc` runs one-shot `claude` invocations via `runInTerminal`. Design philosophy (shell as senses/actuators, not a chat-UI port): decisions.md #24. Full verification narrative archived (see archive_entries).
 
 **Plugin token optimization (2026-06-25):** 14 of 18 installed Claude Code plugins disabled to cut per-turn system-prompt overhead; 4 enabled (`nix-dev`, `devenv`, `feature-dev`, `impeccable`). Reversible via `claude plugin enable <name>@<marketplace>`.
 
 **Scratchpad plugin (2026-06-24, active):** Note-taking widget + launcher provider at `~/.local/share/noctalia/plugins/scratchpad/`, shares state via `noctalia.state` + `notes.json`.
 
 **Shell Prompt Theming — Starship M3 Roles (2026-09-05 — LIVE, Verified):** Starship prompt uses Noctalia M3 color role names (`primary`, `secondary`, `tertiary`, `on_primary`, `on_surface`, `surface_container`, `error`, `outline`) instead of terminal ANSI ramp (color0-color15). M3 supplies 36 role-based definitions; ANSI ramp covers only 16, discarding 20 role definitions and limiting prompt fidelity to terminal color capabilities. Implementation: community template at `~/.local/state/noctalia/community-templates/starship-m3/template.toml` (symlinked via `home.file` on activation). Template renders M3 palette to `$XDG_CACHE_HOME/noctalia/noctalia-palette.toml`, post-hook (`apply.sh`) injects it into `dots/starship/starship.toml` between `# >>> NOCTALIA M3 PALETTE >>>` markers. `dots/starship/starship.toml` uses `palette = "m3"` and M3 role names only; zero terminal indices remain. **Verified (2026-09-05):** Round-tripped scheme changes (Rosewater → Sapphire → Rosewater) confirms prompt accent matches M3 primary (RGB exact). Benefits: terminal-agnostic (works over SSH, restricted shells, any emulator). **Cleanup:** Deleted `dots/noctalia/palettes/volnix.json` (custom-palette layer redundant; Noctalia owns M3 emission). Corrected `home/shell.nix:137` comment. **Outstanding:** `dots/color-engine/apply_theme.py` is dormant; potentially destructive if run (line 145 greedy regex consumes M3 palette block). Decision pending (decisions.md #38, todo.md).
-
-## 8. Documentation Platform — Hugo + E25DX (2026-08-15, Live; SEO fix 2026-08-23)
-
-* **Status:** Wiki migrated from MkDocs to Hugo (0.164.0) + E25DX theme (Hugo Module).
-* **Repository:** Independent repo at `~/CodeRepo/blogs/wiki` (main pushed), published as `lowcache/volnixos-wiki`. No longer symlinked into `.nix-config`.
-* **Build:** `build.sh` (shared by `make build` and Workers Builds); pagefind post-build (`npx -y pagefind@1` fallback for Workers image).
-* **Deployment:** Workers Builds integration pending (dashboard: set Build command `./build.sh`, build var `HUGO_VERSION=0.164.0`). Current deploys via `make deploy` (direct wrangler).
-* **Theme gotchas (load-bearing — do not omit):**
-  1. `[[module.imports]]` requires `ignoreConfig = true` (theme's `hugo.yaml` defines `theme: E25DX`; Hugo merges and fails without the ignore flag).
-  2. Section pages need `layout: single` in front matter (no section template; omitting renders nothing).
-  3. Sidebar navigation driven by presence flag `data/en/<section>/sidebar.yaml` (contents ignored; removal omits sidebar).
-  4. Mermaid requires custom renderer at `layouts/_markup/render-codeblock-mermaid.html` (theme ships no third-party JS).
-  5. Goldmark does not render markdown inside `<div markdown>` — rewrite as HTML.
-  6. **`layouts/robots.txt` blocks non-Google crawlers by default (found 2026-08-23).** Theme template emits `Allow: /` for Googlebot/YandexBot/baiduspider/Applebot only, then a `User-agent: *` group with a per-page `Disallow:` for every page plus a trailing `Disallow: /`. bingbot and DuckDuckBot fell into the `*` group and were fully blocked. Fixed via a local `layouts/robots.txt` override (flat `Allow: /` for `*`, explicit `Sitemap:` line); committed, deployed, verified live (`Disallow` count for the `*` group: 31 → 0). Source: `$GOMODCACHE/github.com/dumindu/E25DX@.../layouts/robots.txt`. Mistake logged: see mistakes.md.
-* **GSC deindexing incident (2026-08-16/17 → monitoring through ~2026-08-30):** `infernalcode.com` (Domain property, covers `wiki.infernalcode.com`) showed a spike from ~5 to 40 pages in "Crawled – currently not indexed" beginning ~2026-08-17, within 48h of the MkDocs→Hugo port. Google's own URL Inspection reported crawl allowed, fetch successful, indexing allowed, canonical clean — no technical fault found; content grew ~39% in the port and exactly one URL moved. [UNVERIFIED] causal mechanism — correlation with the port is the only evidence. Wiki sitemap had **never been submitted** in GSC — submitted 2026-08-23, 30/30 discovered same day. Blog sitemap (stale since 2026-08-02 at 39 URLs) refreshed to 50. GSC account note: the property lives under `lowcache.dev@gmail.com` (GSC user `/u/5/`), not the Chrome default-active `drawpdeadredd@gmail.com` — check the active account first if GSC appears empty.
-* **Outstanding:** Workers Builds CI wiring, home page data-driven conversion, visual overhaul (palette port + centring), GSC Page Indexing recovery check (~2026-08-30, see todo.md).
-
----
 
 ## 9. Application Status
 
@@ -234,3 +178,38 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 ## 13. CI/Deployment Infrastructure
 
 **Cachix CI Token (2026-09-28 Rotated):** GitHub Actions credential for pushing to public `volnixos` cache. Prior token (cache-scoped, created 2026-08-26) carried Cachix default 30-day expiry and expired 2026-09-25T10:11Z, causing CI build failures 2026-09-25/26 (runs 36094076894, 36231008195 failed with auth error at cachix-action step; 1m45s in). Token was cache-scoped (correct, safer than account-scoped), but 30-day expiry was unnecessarily aggressive. Replaced with new cache-scoped read/write token, 1-year expiry (expires ~2027-09-28). Token stored via GitHub secret `CACHIX_AUTH_TOKEN` using interactive `gh secret set` prompt (avoids trailing newline gotcha from piped echo). Documentation in `.github/workflows/build.yml:8` corrected to reflect cache-scoped nature (commit 3f2e952). Also fixed in same commit: stray double blank line in flake.nix that failed formatting gate after 1h39m CI burn (cost of discovering lint error late in build cycle). Gotcha: `cachix-action` accepts only `authToken` and `signingKey` — no OIDC/tokenless auth path available. Public cache `volnixos` requires write token for CI push; read-only substituter access is unrestricted.
+## 14. Pending Activation — Audit Pass 2026-09-30
+
+**Status:** Audit pass completed and built successfully (exit 0 from `nix build --no-link`), uncommitted in working tree, NOT yet activated via `make switch`.
+
+**⚠️ PRE-SWITCH REQUIREMENT:** `.omo` directory persistence added to `home/persist.nix`. Before running `make switch`, manually run: `cp -r ~/.omo /persist/home/lowcache/` (creates bind-mount target). Omitting this step will leave ~/.omo on tmpfs and lose state across reboot.
+
+**Fixes included (pending activation):**
+- decapitate-fuse-mounts unit: moved from [Service] to proper script unit, wanted by shutdown.target, uid corrected (1000 → 1001)
+- phone-proximity-daemon: moved from default.target to graphical-session.target (NIRI_SOCKET dependency)
+- fish shell: removed extraneous spaces in command definitions
+- sops gpg-key: corrected directive flag (was `-S`, now `-s`)
+- phone-ingest-sync: validates filenames (rejects paths containing "/"), uses jq for ACK/fetch/delete JSON payloads
+- phone-mcp-call.sh: constructs JSON payloads with jq (jq added to client PATH)
+- anon-jail: seal check now covers IPv6 rules and return path validation
+- anon-selftest: fixed printf statement formatting
+
+**Hardening measures:**
+- `users.mutableUsers = false`: immutable user database, prevents imperative user/group changes at runtime
+- `/boot` umask 0077: owner-only, denies group/other read/write
+- `~/Storage` mount: nosuid, nodev flags (prevents setuid binaries and device nodes on external storage)
+- CI workflows: all external actions pinned by exact SHA (ci/cli, cachix-action, etc.)
+- Container images: fooocus pinned by digest (reproducible pulls)
+- Plugin repos: micro plugin repo pinned to specific commit
+
+**Flake structural changes:**
+- Removed unused NUR input and overlay (no current consumers)
+- Consolidated nixpkgs inputs: nixos-hardware, impermanence, home-manager now follow primary nixpkgs (5 inputs → 4)
+- nix-cachyos-kernel deliberately retains independent nixpkgs input (cachyos-specific revision)
+- nix-ld: now uses `config.hardware.nvidia.package` instead of generic `linuxPackages.nvidia_x11` (respects nvidia module configuration)
+
+**Configuration validation:** Username sweep across all host definitions (volnix.nix, vms.nix, windows-vm.nix, backup.nix, phone-agent) verified neutral by toplevel derivation hash comparison (all identical, confirming no functional config changes).
+
+**Rejected changes:** Attempted removal of `nvidia-drm.modeset=1` from kernelParams failed — nvidia module does not add this parameter, so it cannot be removed. Reverted to keep present.
+
+**Activation:** Run `make switch` to apply all changes to live system.

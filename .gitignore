@@ -3,6 +3,9 @@ priv.bkup/
 # Gemini/Antigravity agent state now lives at ~/.gemini (real dir on /persist,
 # persisted via home/persist.nix), not in the repo.
 nixos/*.yaml
+# ...except the sops-encrypted files, which the flake must be able to see.
+!nixos/host-secrets.yaml
+!nixos/vm-secrets.yaml
 
 
 # python bytecode
@@ -89,3 +92,6 @@ nohup.out
 # Runtime sockets some CLIs drop in cwd (e.g. tailscaled --socket ./tailscale.sock)
 *.sock
 *.sock.lock
+
+# omo agent session state
+.omo/

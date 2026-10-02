@@ -61,7 +61,11 @@ in
         RestartSec = 10;
       };
       unitConfig.ConditionUser = cfg.user;
-      wantedBy = [ "default.target" ];
+      # Not default.target: that starts before the compositor has exported
+      # NIRI_SOCKET/WAYLAND_DISPLAY, and `niri msg` cannot lock without them.
+      after = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      wantedBy = [ "graphical-session.target" ];
     };
   };
 }

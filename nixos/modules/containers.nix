@@ -14,7 +14,9 @@
       backend = "docker";
       containers = {
         "fooocus" = {
-          image = "ghcr.io/lllyasviel/fooocus:latest";
+          # Pinned by digest (was :latest). Bump: docker pull ghcr.io/lllyasviel/fooocus:latest
+          # then copy the RepoDigest from `docker image inspect`.
+          image = "ghcr.io/lllyasviel/fooocus@sha256:a1c3251054a38c22f783b680600050bedf7fe547d0239a8d772d0d372a98a5ce";
           autoStart = false;
           # Loopback only: a published port bypasses the NixOS firewall.
           ports = [ "127.0.0.1:7865:7865" ];

@@ -1,15 +1,13 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-09-28
+last_updated: 2026-10-01
 status: active
 ---
 
 # Open Tasks and Enhancement Roadmap (`memory/todo.md`)
 
 ---
-
-## COMPLETE
 
 ### Nix-on-Droid — Generation 5 Activated (2026-08-03)
 
@@ -119,12 +117,12 @@ status: active
 
 **Context:** The luau template now uses runtime discovery of `*.luau` files via `builtins.readDir`. Controlled testing showed this prevents undeclared-reference bugs that hardcoded file lists miss (false negatives). The source plugin flake.nix still uses the old nine-file hardcoded list and is thus vulnerable.
 
-**Implication:** Any new plugin functions added to claude-companion could silently have missing declarations (gate passes, plugin breaks at runtime). This is the exact failure mode the plugin flake's own comments acknowledge.
+**Implication:** Any new plugin functions added to the plugin could silently have missing declarations (gate passes, plugin breaks at runtime). This is the exact failure mode the plugin flake's own comments acknowledge.
 
-- [ ] Open `~/CodeRepo/claude-companion/noctalia-claude-plugin/flake.nix`
+- [ ] Open `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/flake.nix` (path corrected 2026-10-02; `~/CodeRepo/claude-companion/` no longer exists on disk)
 - [ ] Replace hardcoded `luauFiles` string with discovery logic from `templates/luau/flake.nix`
 - [ ] Test: run `nix flake check` on the plugin repo; verify all gates pass
-- [ ] Commit to claude-companion repo
+- [ ] Commit to the noctalia-plugs repo
 
 ### Audio Module Activation (2026-08-25 — USER DECISION PENDING)
 
@@ -437,3 +435,28 @@ status: active
 - [ ] If self-test reports uncorrectable errors or if pending/reallocated counts are non-zero, back up the restic repository to a new drive before the medium fails entirely
 - [ ] If counts are climbing across multiple backup runs, replace the Seagate drive and re-seed the restic repo (may be approaching end-of-life)
 - [ ] Document trend results in state.md §12 (SMART history) for future reference
+### Audit Fix Pass — Commit, Switch, and User-Only Follow-Ups (2026-09-30)
+
+**Status:** Full-repo audit fix pass built locally (`nix build --no-link`, exit 0). Nothing committed, pushed, or switched yet.
+
+**⚠️ REBOOT OCCURRED 2026-10-01 — PRE-SEEDING STEP INCOMPLETE:** The critical pre-seeding step (copy `~/.omo` → `/persist/home/lowcache/` before `make switch`) was not executed before system reboot. At boot, tmpfs-root was wiped and ~/.omo was lost completely (no backup existed). See mistakes.md 2026-10-01 entry.
+
+**Resolved 2026-10-02:** No backup existed, so fresh omo configuration was accepted. User ran `cp -a ~/.omo` to `/persist/home/lowcache/.omo`; verified landed (2.2M, `auth.json`/`settings.json` content-identical to live `~/.omo`). `home/persist.nix` was then edited to declare `~/.omo` `home.file` persistence entries — nixfmt/statix/deadnix all pass; a background `nix build` was started to verify the edit but completion was not confirmed in-session. Three new omo extensions were also added this session: `dots/omo/memd.js` (joins memd's project-memory brief into omo's system prompt), `dots/omo/rtk.js` (routes omo's bash calls through rtk's rewrite rules), `dots/omo/mcp.json` (ports Claude Code's MCP server definitions into omo). All symlinked into `~/.omo/agent/extensions/`, syntax-checked clean; see decisions.md #26 amendment 2.
+
+**Revised next steps:**
+- [ ] Confirm the background build triggered by the `persist.nix` edit finished clean (not confirmed in-session)
+- [ ] Once confirmed: execute `make switch` to activate the declarative `~/.omo` persistence binding (removes dependence on manual `cp -a` for future boots)
+- [ ] Review and commit working-tree diff — scope has grown beyond the original 41 files: also includes `dots/omo/{memd.js,rtk.js,mcp.json}` and the `home/persist.nix` edit, plus `hooks/omo-pulse.js` + `PROTOCOL.md` in the noctalia-plugs companion plugin repo (path corrected 2026-10-02, see decisions.md #26). See decisions.md #48 (flake input pruning) and 2026-09-30 mistakes.md entries for the original scope.
+- [ ] Post-switch: verify `decapitate-fuse-mounts`, `phone-proximity-daemon`, ingest-sync, anon-selftest, and anon-watch behave correctly under audit fixes
+- [ ] Verify the new omo extensions function end-to-end in a live session (rtk command rewrite, memd brief injection, MCP server startup) — a live probe was started but not confirmed complete
+
+**Stale todos resolved by audit pass (close once committed):**
+- "Fix statix Lint on flake.nix:177-178" — rewritten as `inherit`, `STATIX_OK` confirmed against working tree
+- "Rollback Nixpkgs Lock Pin — Playwright libmanette" — assessed droppable (nixos-unstable now past commit 67bf9043); confirm lock pin was removed in flake.lock diff before closing
+
+**User-only items (not automatable):**
+- [ ] Revoke the `ghp_` token exposed in public git history (commits 82ba557/3cb3be6) and rewrite history
+- [ ] Give net-gate its own age key — currently holds the host key and is a recipient of `host-secrets.yaml`
+- [ ] Remove `test_secret` from `host-secrets.yaml`
+- [ ] Add a LICENSE
+- [ ] Decide whether `.memory/` stays tracked in the public repo

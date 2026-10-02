@@ -12,6 +12,7 @@
       lib.makeBinPath [
         pkgs.curl
         pkgs.coreutils
+        pkgs.jq
       ]
     }:$PATH
     export PHONE_IP=${cfg.phoneTailscaleIP} PHONE_PORT=${toString cfg.port}

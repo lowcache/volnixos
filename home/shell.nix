@@ -1,6 +1,8 @@
 {
-  pkgs,
+  config,
   inputs,
+  lib,
+  pkgs,
   ...
 }:
 
@@ -151,5 +153,23 @@
       };
     };
   };
+
+  # niri spawns this instead of `noctalia` (dots/niri/config.kdl). Noctalia's
+  # wallpaper_depth plugin builds a venv of manylinux wheels whose libstdc++.so.6
+  # and libz.so.1 resolve nowhere on NixOS, and nix-ld can't cover them because
+  # the venv interpreter is a nixpkgs CPython, not a foreign binary. The plugin
+  # execs that venv python directly, so the libs have to be inherited from here.
+  home.packages = [
+    (pkgs.writeShellScriptBin "noctalia-session" ''
+      export LD_LIBRARY_PATH=${
+        lib.makeLibraryPath [
+          pkgs.stdenv.cc.cc.lib
+          pkgs.zlib
+        ]
+      }''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+      exec ${lib.getExe config.programs.noctalia.package} "$@"
+    '')
+  ];
+
   services.ssh-agent.enable = true;
 }

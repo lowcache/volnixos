@@ -6,6 +6,9 @@
 }:
 {
   users = {
+    # Root is tmpfs and passwords come from sops, so /etc/passwd is rebuilt
+    # from this file every boot anyway; say so, and refuse imperative drift.
+    mutableUsers = false;
     users = {
       root = {
         hashedPasswordFile = config.sops.secrets.root_password.path;

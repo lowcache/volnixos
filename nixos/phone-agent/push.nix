@@ -95,7 +95,7 @@ in
     };
     pushDir = lib.mkOption {
       type = lib.types.str;
-      default = "/home/lowcache/push";
+      default = "/home/${cfg.user}/push";
       description = "The one directory served. Populate it deliberately; nothing else is reachable.";
     };
     pushPort = lib.mkOption {

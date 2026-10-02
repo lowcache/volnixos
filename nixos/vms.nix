@@ -3,6 +3,7 @@
   pkgs,
   inputs,
   lib,
+  username,
   ...
 }:
 let
@@ -646,7 +647,7 @@ in
               proto = "virtiofs";
             }
             {
-              source = "/home/lowcache/Storage/anon/out";
+              source = "/home/${username}/Storage/anon/out";
               mountPoint = "/out";
               tag = "anon-out";
               proto = "virtiofs";
@@ -677,9 +678,9 @@ in
       # read results as yourself. They live under ~/Storage rather than /persist
       # so they move behind LUKS when that lands — until then, anonymous output
       # is at rest in the clear, which is a known and accepted gap.
-      "d /home/lowcache/Storage/anon 0755 lowcache users -"
-      "d /home/lowcache/Storage/anon/in 0755 lowcache users -"
-      "d /home/lowcache/Storage/anon/out 0777 lowcache users -"
+      "d /home/${username}/Storage/anon 0755 ${username} users -"
+      "d /home/${username}/Storage/anon/in 0755 ${username} users -"
+      "d /home/${username}/Storage/anon/out 0777 ${username} users -"
       # Mountpoint for the read-only view of in/ that the guest actually gets.
       "d /run/anon-work 0755 root root -"
       "d /run/anon-work/in 0755 root root -"
@@ -695,7 +696,7 @@ in
     # that is actually available.
     mounts = [
       {
-        what = "/home/lowcache/Storage/anon/in";
+        what = "/home/${username}/Storage/anon/in";
         where = "/run/anon-work/in";
         type = "none";
         options = "bind,ro";
