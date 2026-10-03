@@ -92,9 +92,11 @@
     };
 
     ai-stack = {
-      ollama.enable = true;
-      ollama.exposeToTailscaleVm = true;
-      ollama.tailnetClients = [ config.phone-agent.phoneTailscaleIP ];
+      ollama = {
+        enable = true;
+        exposeToTailscaleVm = true;
+        tailnetClients = [ config.phone-agent.phoneTailscaleIP ];
+      };
       open-webui.enable = true;
     };
   };

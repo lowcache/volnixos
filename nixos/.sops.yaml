@@ -1,6 +1,8 @@
 keys:
   - &user age1fdm66yk5su3yrndfqcm65rs8kdpqk8zxgjwxhxglgu979epd0vrs8whemn
   - &host age1eweg3j5nlwyt7n2n6s5tqfv7tpr2afxl3jk8u307xvwgq904sgfqc763mk
+  # net-gate's own key (/persist/var/lib/net-gate-ssh, minted by net-gate-ssh-key).
+  - &netgate age13pc45a3f4de48ruwqlj53ta4z7gh6pdhzvulh88tsj66j942evushgz3kz
 creation_rules:
   # Host-scoped secrets: admin user + host can decrypt
   - path_regex: host-secrets\.yaml$
@@ -8,11 +10,10 @@ creation_rules:
       - age:
         - *user
         - *host
-  # VM-scoped secrets: host key only. net-gate gets the host SSH key over
-  # virtio-fs, so it can decrypt this file. CAVEAT: that same key is also a
-  # recipient of host-secrets.yaml above, so the guest could decrypt that too
-  # if it obtained the file. Fix is a dedicated net-gate key (see todo).
+  # VM-scoped secrets: admin user + net-gate's own key. The host key is
+  # deliberately absent, and net-gate's key opens nothing in host-secrets.
   - path_regex: vm-secrets\.yaml$
     key_groups:
       - age:
-        - *host
+        - *user
+        - *netgate

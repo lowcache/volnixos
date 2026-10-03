@@ -13,25 +13,27 @@ let
 in
 {
   options.vol.ai-stack = {
-    ollama.enable = lib.mkEnableOption "Ollama (CUDA)";
+    ollama = {
+      enable = lib.mkEnableOption "Ollama (CUDA)";
 
-    ollama.exposeToTailscaleVm = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = ''
-        Bind 0.0.0.0 AND open 11434 only on vm-tailscale, so the tailscale
-        MicroVM guest can DNAT tailnet :11434 to the host for the phone agent.
-        WAN stays closed; loopback consumers (open-webui) keep working.
-      '';
-    };
+      exposeToTailscaleVm = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = ''
+          Bind 0.0.0.0 AND open 11434 only on vm-tailscale, so the tailscale
+          MicroVM guest can DNAT tailnet :11434 to the host for the phone agent.
+          WAN stays closed; loopback consumers (open-webui) keep working.
+        '';
+      };
 
-    ollama.tailnetClients = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-      description = ''
-        Tailnet IPs allowed to reach 11434 through vm-tailscale. The guest only
-        DNATs, so the peer's own 100.x address is what the host firewall sees.
-      '';
+      tailnetClients = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [ ];
+        description = ''
+          Tailnet IPs allowed to reach 11434 through vm-tailscale. The guest only
+          DNATs, so the peer's own 100.x address is what the host firewall sees.
+        '';
+      };
     };
 
     open-webui.enable = lib.mkEnableOption "Open WebUI fronting local Ollama";

@@ -1,7 +1,7 @@
 # Host secrets, sops-managed. Age key = the persisted host SSH key
 # (/persist/etc/ssh/ssh_host_ed25519_key). File layout and trust boundaries:
 # see nixos/.sops.yaml — host-secrets.yaml is encrypted to admin + host key;
-# vm-secrets.yaml (used by net-gate) to the host key ONLY.
+# vm-secrets.yaml (used by net-gate) to admin + net-gate's own key.
 {
   username,
   ...

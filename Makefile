@@ -15,9 +15,9 @@ DOTS_SPLIT_BRANCH ?= dots-history
 # --- SOPS / Secret Management ---
 # The secrets are split by TRUST BOUNDARY, and nixos/.sops.yaml encrypts the two
 # files to different key sets: host-secrets.yaml to the admin user AND the host
-# key; vm-secrets.yaml to the host key ONLY, because net-gate shares the host
-# SSH key over virtio-fs and anything in that file is therefore readable by the
-# guest. Editing the wrong file puts a secret behind the wrong keys.
+# key; vm-secrets.yaml to the admin user AND net-gate's own key, so anything in
+# it is readable by the guest. Editing the wrong file puts a secret behind the
+# wrong keys.
 #
 # These paths MUST name files that already exist. `sops <path>` on a missing
 # path CREATES it rather than failing, so a stale default here does not error —
@@ -283,7 +283,7 @@ sops-edit:
 	  echo "(sops would CREATE it — refusing, check the path)"; exit 1; }
 	SOPS_AGE_KEY_FILE=$(SOPS_AGE_KEY_FILE) sops $(SOPS_FILE)
 
-## :sops-edit-vm: ..........: Decrypt and edit VM secrets (host key only)
+## :sops-edit-vm: ..........: Decrypt and edit VM secrets (admin user + net-gate key)
 sops-edit-vm:
 	@test -f "$(SOPS_VM_FILE)" || { echo "no such secrets file: $(SOPS_VM_FILE)"; \
 	  echo "(sops would CREATE it — refusing, check the path)"; exit 1; }
