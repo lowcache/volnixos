@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }: {
+{ pkgs, ... }: {
 
   home = {
     packages =
@@ -173,7 +173,6 @@
           ddcutil
           clinfo
           android-tools
-          inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
         nixAi = with pkgs; [
           antigravity-cli

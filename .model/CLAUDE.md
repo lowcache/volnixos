@@ -90,17 +90,12 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 
 ## volinit
 
-`volinit` is a flake input and provides the terminal initialization/banner application is currently being overhauled to a cockpit style menu and TUI. will probably be removed from the flake inputs soon. 
+Removed from the flake inputs (2026-10-03) while it is overhauled into a cockpit-style menu/TUI;
+an in-progress push would otherwise break the whole flake. Local checkout: `/home/lowcache/CodeRepo/volinit`.
 
-Local checkout:
-
-`/home/lowcache/CodeRepo/volinit`
-
-When modifying `volinit`:
-
-1. commit the upstream `volinit` change;
-2. update the input with `nix flake update volinit`;
-3. rebuild/test Vol NixOS.
+To re-add when finished: restore the `volinit` input in `flake.nix` and
+`inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/pkgs.nix`
+(re-add `inputs` to that file's arguments). The fish greeting hook already guards on `command -v volinit`.
 
 ## Memory — memd
 
