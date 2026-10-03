@@ -266,8 +266,9 @@
             case app-server auth config host install list models remove schedule uninstall update
               command omo $argv
             case '*'
-              command omo --omo-senpi-memory-disabled --omo-senpi-comment-checker-disabled \
-                --omo-senpi-lsp-disabled --omo-senpi-todo-fanout-reminder-disabled $argv
+              # =true: a bare flag swallows the next word, eating `omo "prompt"`.
+              command omo --omo-senpi-memory-disabled=true --omo-senpi-comment-checker-disabled=true \
+                --omo-senpi-lsp-disabled=true --omo-senpi-todo-fanout-reminder-disabled=true $argv
           end
         '';
       };

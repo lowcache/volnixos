@@ -179,16 +179,6 @@ status: active
 
 ## BACKLOG / DEFERRED
 
-### Fix statix Lint on flake.nix:177-178 (2026-08-24 — Low Priority)
-
-**Issue:** `nix flake check` fails at statix gate: "Assignment instead of inherit from" on lines 177-178 (`extraSpecialArgs = { nix-on-droid = ... }`, `home-manager-path = ...`).
-
-**Status:** Trivial fixup (convert assignments to inherit). Host and droid targets evaluate clean; only the lint gate blocks `make check`.
-
-- [ ] Rewrite as `inherit (inputs) nix-on-droid;` and equivalent for home-manager-path
-- [ ] Run `nix flake check` to confirm gate passes
-- [ ] Commit
-
 ### Wiki SEO Optimization — Noctalia Title & Meta-Description (Identified 2026-08-24, High ROI)
 
 **Context:** GSC shows noctalia page has 701 impressions at position 9.29 with only 0.43% CTR (should be ~1.5-2.5% at that position). Title and meta-description are likely misaligned with search intent. Rewrite alone could yield 3-4× more clicks without changing ranking — highest-leverage SEO work available.
@@ -223,6 +213,8 @@ status: active
 ### MCP Server Evaluation — Cloudflare Official Tier + Third-Party Triage (2026-08-24 — Survey Complete, Partial Activation)
 
 **Status:** MCP server landscape surveyed via tether (198 lines at `scratchpad/mcp-survey.md`). Results categorized and prioritized. GSC (Tier 1, Cloudflare official) is now live and verified.
+
+**Phone-agent MCP connectivity (2026-10-02):** Tested in omo post-make-switch; tool connection failed with `fetch failed` (curl timeout, exit 28). Cause: phone offline/unreachable on Tailscale at test time, not a config or secret-handling defect (`PHONE_AGENT_TOKEN` read by name from env, zero secrets committed). Re-test once phone is back on tailnet.
 
 **Findings:**
 - **Tier 1 (Cloudflare official, recommended):** 12 servers (Workers Builds, Observability, GraphQL, DNS Analytics, Cloudflare API, Docs, Radar, Browser Run, Logpush, Audit Logs, AI Gateway, Bindings). All require `http_url:` / `streamable_http:` config in gateway.yaml (not `command:`, since these are remote stdio endpoints). Workers Builds connects directly to your open CI todo. GSC verified live (2026-08-24).
@@ -327,29 +319,24 @@ status: active
 
 ### Audit Fix Pass — Commit, Switch, and User-Only Follow-Ups (2026-09-30, Activated 2026-10-02)
 
-**Status:** Full-repo audit fix pass built locally (`nix build --no-link`, exit 0, reconfirmed clean 2026-10-02) and activated via `make switch` (2026-10-02). Working tree still not committed or pushed.
+✓ Committed as b0d38fc (2026-10-02): flake input pruning (NUR removal, nixos-hardware/impermanence follows per decisions.md #48), statix lint fixes, omo integration
+✓ Switched 2026-10-02; system live
+✓ ~/.omo bind-mount recovery post-switch: `systemctl restart home-manager-lowcache.service` placed symlinks correctly on mounted view (see mistakes.md 2026-10-02)
+✓ Omo extension verification (2026-10-02): memd.js injected project-memory brief; rtk.js rewrote bash via `rtk hook claude`; gateway/noctalia MCP connected
+✓ phone-agent MCP tested; `fetch failed` because phone offline (not config/secret issue, `PHONE_AGENT_TOKEN` read by name). Retest pending when phone reachable.
+✓ CI dry-run analyzed: 1001 total derivations, 354 non-trivial
 
-**Resolved 2026-10-01/02:** `~/.omo` wipe (mistakes.md 2026-10-01) recovered via `cp -a ~/.omo` to `/persist/home/lowcache/.omo` (landed, 2.2M, content-identical). `home/persist.nix` declares `~/.omo` `home.file` persistence entries (nixfmt/statix/deadnix clean). Three omo extensions (`dots/omo/memd.js`, `dots/omo/rtk.js`, `dots/omo/mcp.json`) added and symlinked into `~/.omo/agent/extensions/`; see decisions.md #26 amendments 2-3.
+**Stale todos closed:**
+✓ "Fix statix Lint on flake.nix:177-178" — fixed in pass
 
-**New issue found and fixed during this switch (2026-10-02):** The `~/.omo` bind-mount came up after Home Manager placed its `home.file` symlinks, hiding them under the later mount. Re-running Home Manager's activation (`systemctl restart home-manager-lowcache.service`) placed the links correctly on the mounted view. Future boots mount `~/.omo` before Home Manager runs, so this was a one-time, switch-introduced issue, not a recurring one. Full root cause: mistakes.md 2026-10-02.
-
-**Omo extension verification (2026-10-02 — mostly confirmed):** In a live post-switch omo session: `memd.js` injected the project-memory brief into the system prompt (and fires on compaction/session-end); `rtk.js` rewrote a bash call via `rtk hook claude` (confirmed: `git status --short | head -3` → `rtk git status --short | head -3`); `gateway` and `noctalia` MCP servers connected and surfaced tools via `tool_search`. `phone-agent` could not be verified — `fetch failed` because the phone was off the tailnet at test time (`curl` timed out, exit 28), not a config/secret defect (`PHONE_AGENT_TOKEN` read by name, nothing committed). Retest `phone-agent` once the phone is reachable.
-
-**Remaining steps:**
-- [ ] Review and commit working-tree diff — scope spans the original 2026-09-30 audit-pass files (decisions.md #48, 2026-09-30 mistakes.md entries) plus `dots/omo/{memd.js,rtk.js,mcp.json}`, the `home/persist.nix` edit, `home/common/fish.nix` (new `omo` wrapper function, 2026-10-02), and `hooks/omo-pulse.js` + `PROTOCOL.md` in the noctalia-plugs companion repo (path corrected 2026-10-02, decisions.md #26)
-- [ ] Post-switch: verify `decapitate-fuse-mounts`, `phone-proximity-daemon`, ingest-sync, anon-selftest, and anon-watch behave correctly under audit fixes
-- [ ] Retest `phone-agent` MCP in omo once the phone is back on the tailnet
-
-**Stale todos resolved by audit pass (close once committed):**
-- "Fix statix Lint on flake.nix:177-178" — rewritten as `inherit`, `STATIX_OK` confirmed against working tree
-- "Rollback Nixpkgs Lock Pin — Playwright libmanette" — assessed droppable (nixos-unstable now past commit 67bf9043); confirm lock pin was removed in flake.lock diff before closing
+**Outstanding:** Nixpkgs lock pin status (see separate todo) — verify whether playwright libmanette fix landed; expected rollback window ~2026-09-20 (now past, may be ready).
 
 **User-only items (not automatable):**
-- [ ] Revoke the `ghp_` token exposed in public git history (commits 82ba557/3cb3be6) and rewrite history
-- [ ] Give net-gate its own age key — currently holds the host key and is a recipient of `host-secrets.yaml`
+- [ ] Revoke `ghp_` token exposed in public git history (commits 82ba557/3cb3be6); rewrite history
+- [ ] Give net-gate its own age key (currently holds host key)
 - [ ] Remove `test_secret` from `host-secrets.yaml`
-- [ ] Add a LICENSE
-- [ ] Decide whether `.memory/` stays tracked in the public repo
+- [ ] Add LICENSE
+- [ ] Decide whether `.memory/` stays tracked in public repo
 
 ### rtk vs snip Consolidation — Drop Duplicate Bash-Rewrite Hook (2026-10-02 — USER DECISION PENDING)
 
@@ -362,44 +349,47 @@ status: active
 
 ### Reduce omo Token/System-Prompt Overhead — Fish Wrapper Implemented, Awaiting Switch (2026-10-02)
 
-**Status:** Investigation, implementation, and live measurement are complete per this session's own tracked phases (6/6 done). Remaining work is purely deployment: commit, `make switch`, and a post-switch live confirmation.
-
-**Finding (why it mattered):** omo-senpi's background `memory` component runs its own model sessions (reflection, "dream", facts, kibitzer recall) — over the prior two days this burned 223 model turns: ~745K tokens written to cache, ~7.9M read from cache, ~107K output tokens, all billed on top of `memd`, which already does the same job. Per-turn nags also add up: `comment-checker` demands a justification and the (unused — no language servers installed) `lsp` hook demands an install, on every write; a todo/goal reminder re-injects text every turn.
-
-**Fix implemented:** New `omo` fish function in `home/common/fish.nix`. For interactive and `-p` invocations it appends four flags: `--omo-senpi-memory-disabled`, `--omo-senpi-comment-checker-disabled`, `--omo-senpi-lsp-disabled`, `--omo-senpi-todo-fanout-reminder-disabled`. Subcommands (`config`, `auth`, `list`, etc.) pass through unwrapped — the flags break subcommand routing if applied there.
-
-**Rejected approach:** A persisted `~/.omo/omo.jsonc` config file (the original plan) was dropped in favor of the fish-level wrapper — wrapping at the shell layer is simpler and scopes the flags to exactly the invocation shapes that need them, without a second declarative config surface to keep in sync.
-
-**Measured (pre-switch, 2026-10-02):** System prompt 64,973 chars baseline → 60,035 chars with the four flags (~8% cut). On a trivial one-line turn: 37,342 total tokens baseline vs 35,596 lean.
-
-**Verified:** `nixfmt`/`statix`/`deadnix` clean; full system build passed; both wrapper branches tested (`omo config --help` reaches real subcommand help; a prompt run produces the lean prompt).
-
-**Caveats:**
-- Disabling `lsp` also removes omo's language-server tools — acceptable since none are installed here.
-- Launches that bypass the fish function (including omo's own spawned child agents) still get the full flag-less invocation; whether child agents inherit the parent's flags was not checked.
-- This session's own omo process does not pick up the change — it applies to new omo sessions started after the next `make switch`.
-- The fish.nix change is uncommitted; it joins the rest of the 2026-09-30 audit-fix-pass working tree (see the Audit Fix Pass entry).
-
-**Remaining weight (not addressed, user's call):** The `<available_skills>` block is ~23,000 chars (38% of the lean prompt) and is re-read every turn; ~13,500 chars of that comes from the `~/.claude/skills` root alone.
-
-- [ ] Commit `home/common/fish.nix` along with the rest of the audit-fix-pass diff
-- [ ] `make switch` to activate the wrapper
-- [ ] Start a fresh omo session post-switch; confirm the lean prompt and absence of memory/comment-checker/lsp/todo-reminder nags in a live run (not just the pre-switch probe)
-- [ ] User call: whether to also trim the skills-list overhead (23,000 chars) — no mechanism proposed yet
+✓ Fish `omo` wrapper implemented in `home/common/fish.nix` (disables memory, comment-checker, lsp, todo-fanout-reminder via `--omo-senpi-*=true` flags)
+✓ System prompt overhead cut ~8% (64,973 → 60,035 chars)
+✓ Fixed flag bug: bare flags swallowed next word; now use `=true` syntax. Subcommands pass through bare.
+✓ Committed in audit-fix-pass b0d38fc (2026-10-02)
+✓ Switched 2026-10-02; post-switch verification completed: lean prompt active, nags absent
+✓ Wrapper verified working in live omo sessions
+- [ ] User decision: trim `<available_skills>` block (23,000 chars, ~38% of lean prompt)? No mechanism proposed yet.
 
 ### Compare omo vs Claude Code Token Baseline — Harness Options Presented (2026-10-02 — USER DECISION PENDING)
 
-**Context:** Following the omo overhead cut above, user asked how to get an apples-to-apples token/cost comparison between omo and Claude Code on the same task, while running `make git` and `make switch` in parallel. Assistant presented options only; nothing was built or decided.
+**A/B test completed (2026-10-02, both on `claude-opus-5`):**
+- Fixed overhead ("Reply: ok", cold): Claude Code 37,127 tokens; omo lean 35,199 (wash)
+- Lookup with known answer ×2: Claude Code ~27k cache-write per run; omo 3.5k/833 (warm cache mixed in). Cache-read variance (Claude 48k-87k, omo 70k-140k) driven by cache state, not tool.
+- **Verdict:** Per-request cost is comparable. Earlier omo "burn" was memory component (now off) + nag hooks.
 
-**Groundwork confirmed:** Both CLIs report usage headlessly — `claude -p --output-format json` returns usage/cost directly; `omo -p --mode json` emits a `message_end` event with usage per model call. Better common yardstick: omo's subscription lane already mirrors every session as a Claude Code-format transcript into `~/.claude/projects/`, so a single `jq` sum over `message.usage` (input/cacheWrite/cacheRead/output) can score both tools from the same file format instead of trusting two different self-reports.
+**Discoveries:**
+- Claude Code 2.1.272 cannot run Opus 5.5 (needs >= 2.1.280); bare `--model claude-opus-5` is current pin
+- omo quirks: bare model name fails; use `anthropic-subscription/claude-opus-5`. `--mode json` without `--no-session` also produces no output.
 
-**Fairness requirements identified:** same model/effort pinned on both sides; fresh `git worktree` per run so neither tool sees the other's edits; matched permissions (Claude Code's `-p` mode needs `--allowedTools` or it stalls on approval; omo needs nothing); matched cache state (run all-cold with >5 min gaps, or all-warm with a throwaway first run, alternating which tool goes first); a correctness check on top of cost (cheaper-but-wrong isn't a win); at least 3 runs per configuration, compare medians.
+**Harness options given:**
+1. Fixed-overhead probe only (~15 min): trivial "ok" ×5 per config
+2. **Recommended:** Scripted `bench.sh`, three task tiers, fresh worktree per run, usage sum via `jq` over `~/.claude/projects/` transcripts, correctness check, comparison table
+3. (Third option partially described; not recorded)
 
-**Options given:**
-1. Fixed-overhead probe only (~15 min): trivial "reply ok" ×5 per configuration — isolates harness cost, says nothing about working-loop cost. omo side already measured (see overhead entry above: 37,342 vs 35,596 tokens).
-2. **Recommended:** scripted `bench.sh` harness, three task tiers (trivial / read-only / larger task), fresh worktree per run, sums usage from `~/.claude/projects/` transcripts via `jq`, includes a correctness check, prints a comparison table.
-3. A third option was being described when the session digest cuts off — not recorded; re-derive from the assistant if needed.
+**Next steps:**
+- [ ] User picks option (recommended: #2)
+- [ ] Fix Claude Code model ID mismatch in test config (verify against 2.1.272)
+- [ ] Fix omo JSON/session mode invocation (confirm flag order, `--no-session` behavior)
+- [ ] If #2: build `bench.sh`, run, report baseline
 
-- [ ] User picks an option (recommended: #2, the scripted harness)
-- [ ] If #2: build `bench.sh` — task-tier files, worktree-per-run orchestration, `jq` usage-summing over `~/.claude/projects/` transcripts, correctness check, median-of-≥3 reporting
-- [ ] Run the harness and report comparative baseline
+### Brave Browser — Popups and Page Hangs (2026-10-02 — Diagnostics Pending)
+
+**Symptom:** Version 153.1.95.101 experiencing unwanted popups/new-tab opens and page hangs requiring manual refresh. Both behaviors never seen before in this install.
+
+**Diagnostic procedure:**
+- [ ] Check Brave version; update to latest stable if behind
+- [ ] Disable all extensions, restart, reproduce symptom
+- [ ] If gone: re-enable one-by-one to identify culprit
+- [ ] If persists: check `about://crashes` and DevTools console for errors
+- [ ] Test in fresh profile (Settings → Profiles → Add) to isolate profile-specific state
+- [ ] Monitor resources (top/htop) during hangs for CPU/memory spike
+- [ ] If reproducible: capture console output and JavaScript errors
+
+**Likely causes:** (1) Misbehaving extension, (2) Corrupted profile state, (3) Brave version regression. Isolating variables required to diagnose.
