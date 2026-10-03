@@ -99,6 +99,10 @@ silently disappear, are in
 └── assets/            # banner / branding
 ```
 
+## License
+
+[MIT](./LICENSE), same as nixpkgs.
+
 <div align="center">
 <img alt="ai note" src="./assets/ai_note.png" width="100%"">
 </div>
