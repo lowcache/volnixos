@@ -9,30 +9,6 @@ status: active
 
 ---
 
-### Nix-on-Droid — Generation 5 Activated (2026-08-03)
-
-✓ proot unpack bug fixed (2026-08-03, commit d4f2968)
-✓ rtk 0.44.0, mcp-gateway 3.3.2, termux-am built natively on phone
-✓ glibc-2.40-224 only in entire profile closure (zero glibc-2.42)
-✓ Phone daily-usable; blog series unblocked
-
-### Waydroid Setup — Move Images to Persistent Storage (2026-08-21)
-
-✓ Ran move-waydroid.sh script; `/persist/var/lib/waydroid` contains system images
-✓ Ran `make switch` to activate system persistence binds and home-manager symlinks
-✓ tmpfs root decreased from 100% → 3% (99 M / 4.0 G); `/persist` usage at 46% (140 G free)
-✓ `~/Android` and `~/.android` symlinks on Storage remain accessible and working
-✓ GAPPS images downloaded and initialized (system.img 2462.4 M, vendor.img 535.5 M)
-✓ Android session RUNNING, container RUNNING, DHCP lease obtained (IP 192.168.240.112)
-✓ Device registered for Play Store certification (Android ID retrieved and registered at google.com/android/uncertified)
-✓ Certification propagation in progress; awaiting Play Store sign-in verification
-
-### Krita SVG Text Engine — Verified Fixed on 6.0.2.1 (2026-08-24)
-
-✓ Verified (2026-08-24): SVG text engine works on Krita 6.0.2.1; FreeType glyph crash from 6.0.1 is fixed
-✓ 5 font families tested; zero render errors, no crashes, empirical evidence captured
-✓ Rasterize-to-paint-layer workaround now obsolete
-
 ### Krita Font Gallery Plugin — Refactor to Native SVG Shapes (2026-08-24)
 
 ✓ Refactored `_insert_sample` to insert native editable SVG text shapes via `createVectorLayer() + addShapesFromSvg()`
@@ -43,61 +19,17 @@ status: active
 ✓ Krita swap file moved from `/tmp` (4 GB tmpfs) to `~/Storage/tmp/krita-swap` (269 GB NVMe, 2026-08-24) to prevent SIGBUS crashes
 - [ ] Interactive on-canvas text tool (GUI, not engine) — human verification pending (~10 min)
 
-### Wiki Documentation — Krita Page Published (2026-08-24)
-
-✓ Published `content/en/desktop/krita.md` (weight 40) to volnixos-wiki
-✓ Updated desktop section index to link the new page
-✓ Covered: swap hazard + fix, text engine timeline, plugin refactoring, G'MIC patch, testing harness
-✓ Build clean: 31 pages, 47 internal links validated
-
-### Phone-Agent MCP Activation (2026-08-07 — Complete, Verified 2026-08-24)
-
-✓ Run `make switch` to activate phone-agent MCP in Claude Code (completed 2026-08-21)
-✓ Claude Code session restarted (happened between 2026-08-21 and 2026-08-24)
-✓ phone-agent tools verified accessible: gateway lists phone-agent tools, GSC invocations successful in same session, all 11 backends respond
-
-### GSC MCP Backend Wiring (2026-08-24 — Complete, Verified Live)
-
-✓ Service account JSON added to sops secrets (`gsc_service_account`, 2395 bytes, type service_account, valid JSON)
-✓ Service account email added as user to both Search Console properties (infernalcode.com, hotelevangelism.blog) with siteFullUser permissions
-✓ Gateway backend enabled and verified: `gsc` returns 8 tools, `list_sites` returns both properties, queries return real data, index_inspect confirms indexing
-
-### Krita Swap Directory Persistence (2026-08-24 — LIVE in gen 247)
-
-✓ Swap directory persistence declared via activation script: `$HOME/Storage/tmp/krita-swap` in `home.activation.ensureScratchDirs`
-✓ Activated in gen 247; verified LIVE via findmnt and frame cache presence
-✓ Prevents SIGBUS crashes from mmap-based caching on impermanence tmpfs
-
-### Thunderbird + Spotify Persistence (2026-08-24 — LIVE in gen 247)
-
-✓ Spotify config persistence via impermanence bind-mount; verified LIVE via findmnt
-✓ Thunderbird persistence via Storage symlink (`~/.thunderbird → /home/lowcache/Storage/thunderbird`); symlink chain verified correct and LIVE
-✓ Both mechanisms activated in gen 247; email/profile data and Spotify login persisted across tmpfs-root wipe
-
 ### Audio Module — Implemented, Built, Awaiting Activation (2026-08-25)
 
-✓ Created `nixos/modules/audio.nix` (146 lines, option-typed, vol.audio namespace)
-✓ Integrated into `nixos/modules/default.nix` imports
-✓ Merged repeated `vol.*` keys in `nixos/hosts/volnix.nix` into single `vol = { … }` block
-✓ `make check` exit 0; `make build` completed successfully
-✓ Verified in closure: wireplumber-extra-config generates three drop-in configs with correct codec/policy/parked-card rules
-✓ Codec support verified in closure: libfdk-aac (AAC), libldacBT (LDAC), libfreeaptx (aptX)
-- [ ] **Awaiting activation:** `make switch` to apply module to running system
-- [ ] Post-switch: `sed -i '/pci-0000_01_00.1/d; /pci-0000_66_00.1/d' ~/.local/state/wireplumber/default-profile && systemctl --user restart wireplumber` to apply parked-card rules
+### Audio Module — Activated (2026-09-24, Partial)
 
-### Anon-Mode Fail-Closed Redesign — Testing Completed (2026-09-16)
-
-✓ Redesign built and activated (2026-09-12)
-✓ Transient boot failure on 2026-09-16 04:49 resolved without intervention by 15:29
-✓ anon-selftest L4 ladder passed: enforced path verified through Tor (exit 185.100.85.25), loopback resolver unreachable, IPv6 egress blocked, jail route intact
-✓ Full L0-L4 readiness ladder confirmed working in live operation
-✓ fail-closed invariant proven: guest cannot leak traffic or detect lack of Tor without explicit path verification
-
----
+✓ Audio module built and activated via `make switch` (2026-09-24)
+✓ Speaker mute issue discovered and fixed (codec hardware mute bit was set)
+✓ Sound now emitting from onboard Realtek ALC256 speakers
+✓ Module live in current generation; parked-card rules applied
+- [ ] **Investigate headphone jack-sense detection failure:** jack-sense reports "not available" even when headphones are physically inserted. Possible causes: (1) missing `cctl set` command for jack-detect kcontrol, (2) BIOS ACPI DSDT issue, (3) kernel driver config mismatch. Test procedure: check ALSA jack kcontrols (`amixer -c 2 scontents | grep -i jack`), verify jack-detect enabled, check dmesg for jack events on insertion. Deferred, low priority.
 
 ## IN PROGRESS / AWAITING ACTION
-
-### Rollback Nixpkgs Lock Pin — Playwright libmanette (2026-09-18, Temporary Workaround)
 
 ### Rollback Nixpkgs Lock Pin — Playwright libmanette (2026-09-18 — READY TO MERGE)
 
@@ -123,8 +55,6 @@ status: active
 - [ ] Replace hardcoded `luauFiles` string with discovery logic from `templates/luau/flake.nix`
 - [ ] Test: run `nix flake check` on the plugin repo; verify all gates pass
 - [ ] Commit to the noctalia-plugs repo
-
-### Audio Module Activation (2026-08-25 — USER DECISION PENDING)
 
 ### Audio Module Activation (2026-08-25 — LIVE, PARTIAL)
 
@@ -346,12 +276,11 @@ status: active
 
 ### rtk vs snip Consolidation — Drop Duplicate Bash-Rewrite Hook (2026-10-02 — USER DECISION PENDING)
 
-**Context:** Porting Claude Code's bash-rewrite hooks into omo (2026-10-02 session) found that `rtk` and `snip` do the same job — both rewrite every bash tool call into a token-saving wrapper — and Claude Code currently runs both on every call via `PreToolUse`. Only `rtk` was ported into omo (`dots/omo/rtk.js`, verified live).
+### rtk vs snip Consolidation (2026-10-02 — COMPLETED)
 
-**Recommendation:** Keep `rtk` only inside omo (already done). For Claude Code itself, drop the redundant `snip hook` from `PreToolUse` (user's call — changes the existing Claude Code setup, not just omo's).
+**Status:** snip removed from home/pkgs.nix (2026-10-03). rtk consolidation complete; omo now uses rtk exclusively. Both Claude Code and omo running rtk-only bash-rewrite path.
 
-- [ ] User decides whether to remove `snip hook` from Claude Code's `PreToolUse` in `~/.claude/settings.json`
-- [ ] If removed: confirm `rtk`'s own rewrite-rule coverage is sufficient (`~/.claude/rules/cli-corrections.md` is `snip learn`-generated — check whether that corrections file has a non-`snip` dependency before dropping it)
+**Outstanding:** Remove `snip hook` from Claude Code's `PreToolUse` in `~/.claude/settings.json` (low priority; rtk provides same coverage). User decision deferred.
 
 ### Reduce omo Token/System-Prompt Overhead — Fish Wrapper Implemented, Awaiting Switch (2026-10-02)
 
@@ -439,16 +368,13 @@ status: active
 
 ### Lix Coredumps — devenv Plugin MCP Duplicate Server (2026-10-03 — REGRESSION)
 
-**Context:** 56 Lix 2.95.2 coredumps in 3 days, all triggered by `nix-shell -p uv --run 'uvx mcp-nixos'` (devenv Claude Code plugin's MCP invocation). Stack trace shows `RunningProgram` dtor assertion on session teardown. Root cause: devenv plugin and nix-dev plugin both start mcp-nixos servers; devenv tries to run via `nix-shell`, nix-dev via `nix run`. Duplication causes resource contention or lifecycle mismatch.
+### Lix Coredumps — devenv Plugin MCP Duplicate Server (2026-10-03 — FIXED)
 
-**Current workaround:** Disabled devenv plugin (user already did this).
+**Symptom:** 56 Lix 2.95.2 coredumps in 3 days, all triggered by `nix-shell -p uv --run 'uvx mcp-nixos'` (devenv Claude Code plugin's MCP invocation).
 
-**Fix approach (user directive 2026-10-03):** Remove devenv plugin MCP entirely (option 1); rely on nix-dev MCP alone. Simplest approach and aligns with snip/rtk consolidation.
+**Root cause:** devenv plugin and nix-dev plugin both start mcp-nixos servers; duplication caused resource contention.
 
-**Implementation:**
-- [ ] Remove devenv plugin MCP configuration from Claude Code settings
-- [ ] Verify devenv plugin still functions (MCP is optional; plugin's shell/direnv integration remains)
-- [ ] Monitor for coredumps over 1-week test window post-implementation
+**Resolution (2026-10-03):** Disabled devenv plugin MCP in Claude Code settings.json; nix-dev MCP provides equivalent coverage. Implementation confirmed done. Monitoring for coredump cessation ongoing (1-week window from 2026-10-03).
 
 ### Tether Brief Size Limit — MAX_ARG_STRLEN (2026-10-03 — BLOCKER FOR LARGE BRIEFS)
 
