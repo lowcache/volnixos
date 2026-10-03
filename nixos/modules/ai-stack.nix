@@ -9,6 +9,7 @@
 }:
 let
   cfg = config.vol.ai-stack;
+  ollamaDir = "/home/${username}/Storage/ollama";
 in
 {
   options.vol.ai-stack = {
@@ -24,24 +25,35 @@ in
       '';
     };
 
+    ollama.tailnetClients = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        Tailnet IPs allowed to reach 11434 through vm-tailscale. The guest only
+        DNATs, so the peer's own 100.x address is what the host firewall sees.
+      '';
+    };
+
     open-webui.enable = lib.mkEnableOption "Open WebUI fronting local Ollama";
   };
 
   config = lib.mkMerge [
     (lib.mkIf cfg.ollama.enable {
-      # Run Ollama as your user to avoid permission issues in ~/Storage
+      # Runs as your user so ~/Storage/ollama stays yours, but sees only that
+      # directory: the rest of /home is an empty tmpfs inside the unit.
       services.ollama = {
         enable = true;
         package = pkgs.ollama-cuda;
-        home = "/home/${username}";
-        modelsDir = "/home/${username}/Storage/ollama/models";
+        home = ollamaDir;
+        modelsDir = "${ollamaDir}/models";
         host = lib.mkIf cfg.ollama.exposeToTailscaleVm "0.0.0.0";
       };
 
       systemd.services.ollama.serviceConfig = {
         User = username;
         Group = "users";
-        ProtectHome = lib.mkForce false;
+        ProtectHome = lib.mkForce "tmpfs";
+        BindPaths = [ ollamaDir ];
         # No OLLAMA_ORIGINS: `*` let any web page drive the API through the
         # browser. The default admits local origins; nothing here needs more.
         Environment = [
@@ -54,10 +66,12 @@ in
     })
 
     (lib.mkIf cfg.ollama.exposeToTailscaleVm {
-      # Reach Ollama (bound per services.ollama.host) only from the tailscale
-      # MicroVM guest, which DNATs tailnet :11434 → the host for the phone
-      # agent. Interface-scoped: WAN stays closed, loopback is exempt.
-      networking.firewall.interfaces."vm-tailscale".allowedTCPPorts = [ 11434 ];
+      # Reach Ollama (bound per services.ollama.host) only via the tailscale
+      # MicroVM guest, and only from tailnetClients: the guest DNATs every
+      # tailnet peer, so the interface alone would admit the whole tailnet.
+      networking.firewall.extraCommands = lib.concatMapStrings (ip: ''
+        iptables -A nixos-fw -i vm-tailscale -s ${ip} -p tcp --dport 11434 -j nixos-fw-accept
+      '') cfg.ollama.tailnetClients;
     })
 
     (lib.mkIf cfg.open-webui.enable {

@@ -215,7 +215,9 @@ in
           ];
           shares = [
             {
-              source = "/persist/etc/ssh";
+              # net-gate's own key (net-gate-ssh-key below), never the host's:
+              # the Tor-facing guest must not hold a key that opens host-secrets.
+              source = "/persist/var/lib/net-gate-ssh";
               mountPoint = "/etc/ssh";
               tag = "ssh-keys";
               proto = "virtiofs";
@@ -684,6 +686,7 @@ in
       # Mountpoint for the read-only view of in/ that the guest actually gets.
       "d /run/anon-work 0755 root root -"
       "d /run/anon-work/in 0755 root root -"
+      "d /persist/var/lib/net-gate-ssh 0700 root root -"
     ]
     ++ lib.optional anon.persistTorState "d /persist/var/lib/net-gate-tor 0700 root root -"
     ++ lib.optional anon.persistGuestJournal "d /persist/var/log/net-gate-journal 0700 root root -";
@@ -706,6 +709,23 @@ in
     ];
 
     services = {
+      # Mint net-gate's sops identity once; the journal line is its age recipient
+      # for nixos/.sops.yaml (the private half never leaves this root-only dir).
+      net-gate-ssh-key = {
+        description = "Generate net-gate's own SSH host key";
+        requiredBy = [ "microvm-virtiofsd@net-gate.service" ];
+        before = [ "microvm-virtiofsd@net-gate.service" ];
+        after = [ "systemd-tmpfiles-setup.service" ];
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+        };
+        script = ''
+          key=/persist/var/lib/net-gate-ssh/ssh_host_ed25519_key
+          [ -e "$key" ] || ${pkgs.openssh}/bin/ssh-keygen -q -t ed25519 -N "" -C net-gate -f "$key"
+          echo "net-gate age recipient: $(${pkgs.ssh-to-age}/bin/ssh-to-age < "$key.pub")"
+        '';
+      };
       "microvm@net-gate".serviceConfig.TimeoutStopSec = "10s";
       "microvm@anon-box".serviceConfig.TimeoutStopSec = "10s";
       "microvm-virtiofsd@anon-box" = {

@@ -174,7 +174,6 @@
           inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
         ];
         nixAi = with pkgs; [
-          snip
           antigravity-cli
           mcp-nixos
           mcp-gateway
@@ -192,7 +191,6 @@
           llmfit
           rtk
           claude-code
-          pkgs.llm-agents.executor
           pkgs.llm-agents.omo-ai
           pkgs.llm-agents.oh-my-opencode
           pkgs.llm-agents.claude-desktop

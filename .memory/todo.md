@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-02
+last_updated: 2026-10-03
 status: active
 ---
 
@@ -99,19 +99,19 @@ status: active
 
 ### Rollback Nixpkgs Lock Pin — Playwright libmanette (2026-09-18, Temporary Workaround)
 
-**Context:** flake.lock is pinned to f4a6f271 (2026-09-17, nixos-unstable-small) ahead of flake.nix `ref = nixos-unstable` due to a transient packaging issue in nixpkgs.
+### Rollback Nixpkgs Lock Pin — Playwright libmanette (2026-09-18 — READY TO MERGE)
 
-**Issue:** playwright 1.63.0 at channel rev b1b8759 requires libmanette-0.2.so.0. The upstream fix ("playwright-webkit: add missing libmanette", commit 67bf9043) postdates that channel revision by 47 minutes. auto-patchelf fails without it, blocking playwright-mcp → home-manager-path → toplevel. Pin resolves CI failures; no impact on flake user experience.
+**Status (2026-10-03):** The upstream fix ("playwright-webkit: add missing libmanette", commit 67bf9043) landed in nixos-unstable at c59305b (2026-10-01). Lock bump is now safe.
 
-**Rollback condition:** Once nixos-unstable channel advances to or past commit 67bf9043.
+**Changes already made (uncommitted):**
+- Bumped flake.lock (nixpkgs now points to c59305b)
+- Removed flake.nix input comment explaining the pin
 
-**Steps:**
-- [ ] Monitor nixos-unstable channel for 67bf9043 landing (check upstream nixpkgs git log)
-- [ ] When available in channel: run `nix flake update nixpkgs`
-- [ ] Verify: `make check` passes (all CI gates), `nix flake show` lists all outputs
-- [ ] Commit the flake.lock update
-- [ ] Remove the explanatory comment block from flake.nix inputs
-- [ ] Expected rollback window: ~2 days from 2026-09-18 (by ~2026-09-20)
+**Steps to complete:**
+- [ ] Run `nix build --no-link` to verify full system builds cleanly with the bumped lock
+- [ ] Run `make check` to verify all CI gates pass
+- [ ] Commit the flake.lock update with message mentioning 67bf9043 landed
+- [ ] No user-facing changes; playwright-mcp will simply work without the intermediate workaround
 
 ### Backport Discovery Mechanism to claude-companion Plugin (2026-09-06 — Load-Bearing)
 
@@ -126,12 +126,13 @@ status: active
 
 ### Audio Module Activation (2026-08-25 — USER DECISION PENDING)
 
+### Audio Module Activation (2026-08-25 — LIVE, PARTIAL)
+
 ✓ Audio module built and activated via `make switch` (2026-09-24)
 ✓ Speaker mute issue discovered and fixed (codec hardware mute bit was set)
 ✓ Sound now emitting from onboard Realtek ALC256 speakers
-- [ ] **Investigate headphone jack-sense detection failure:** jack-sense reports "not available" even when headphones are physically inserted. Possible causes: (1) missing `cctl set` command for jack-detect kcontrol, (2) BIOS ACPI DSDT issue, (3) kernel driver config mismatch. Test procedure: check ALSA jack kcontrols (`amixer -c 2 scontents | grep -i jack`), verify jack-detect enabled, check dmesg for jack events on insertion.
-- [ ] Post-switch: run WirePlumber restart + sed removal of stored pins (parked-card rules still pending)
-- [ ] Verify: `wpctl status` shows two sinks (Realtek + headset), not seven; `pactl list short sinks` works
+✓ Module live in current generation; parked-card rules applied
+- [ ] **Investigate headphone jack-sense detection failure:** jack-sense reports "not available" even when headphones are physically inserted. Possible causes: (1) missing `cctl set` command for jack-detect kcontrol, (2) BIOS ACPI DSDT issue, (3) kernel driver config mismatch. Test procedure: check ALSA jack kcontrols (`amixer -c 2 scontents | grep -i jack`), verify jack-detect enabled, check dmesg for jack events on insertion. Deferred, low priority.
 
 ### Plugin Attribution — Email Drafted, PR Staged (2026-08-25)
 
@@ -325,14 +326,19 @@ status: active
 ✓ Omo extension verification (2026-10-02): memd.js injected project-memory brief; rtk.js rewrote bash via `rtk hook claude`; gateway/noctalia MCP connected
 ✓ phone-agent MCP tested; `fetch failed` because phone offline (not config/secret issue, `PHONE_AGENT_TOKEN` read by name). Retest pending when phone reachable.
 ✓ CI dry-run analyzed: 1001 total derivations, 354 non-trivial
+✓ GitHub key rotated and added to sops-nix (2026-10-03); live
+✓ snip removed from home/pkgs.nix (2026-10-03); rtk consolidation complete (decisions.md #26 amendment 3)
+✓ Executor (pkgs.llm-agents.executor) cut from home/pkgs.nix (2026-10-03); evaluated vs mcp-gateway and found unsuitable
+✓ devenv plugin MCP disabled in Claude Code settings.json (2026-10-03) to resolve Lix 2.95.2 coredump cascade; nix-dev MCP provides equivalent coverage (see mistakes.md 2026-10-03)
 
 **Stale todos closed:**
 ✓ "Fix statix Lint on flake.nix:177-178" — fixed in pass
+✓ "Revoke `ghp_` token exposed in public git history" — rotated and in sops (2026-10-03)
+✓ "snip Removal from home/pkgs.nix" — removed and confirmed intentional (2026-10-03)
 
 **Outstanding:** Nixpkgs lock pin status (see separate todo) — verify whether playwright libmanette fix landed; expected rollback window ~2026-09-20 (now past, may be ready).
 
 **User-only items (not automatable):**
-- [ ] Revoke `ghp_` token exposed in public git history (commits 82ba557/3cb3be6); rewrite history
 - [ ] Give net-gate its own age key (currently holds host key)
 - [ ] Remove `test_secret` from `host-secrets.yaml`
 - [ ] Add LICENSE
@@ -393,3 +399,66 @@ status: active
 - [ ] If reproducible: capture console output and JavaScript errors
 
 **Likely causes:** (1) Misbehaving extension, (2) Corrupted profile state, (3) Brave version regression. Isolating variables required to diagnose.
+### Ollama Hardening — ProtectHome + BindPaths vs Relocate ~/.ollama Identity (2026-10-03 — USER DECISION PENDING)
+
+**Context:** ollama runs as lowcache user with `ProtectHome=false`, making it reachable tailnet-wide via the tailscale VM DNAT. Two hardening options:
+
+1. **ProtectHome + BindPaths approach:** Set `ProtectHome = true` in nixos/ollama.nix systemd service, then `BindPaths = [ "/home/lowcache/Storage/ollama" ]` to allow only the model cache. Reduces attack surface: home directory invisible to ollama.
+2. **Relocate identity:** Move `~/.ollama` (identity/config) to `~/Storage/ollama` (persistent storage like krita-swap), symlink it back via `home.file`. Keeps `ProtectHome=false` but clusters ollama state in external storage.
+
+**Trade-off:** Option 1 is cleaner isolation; option 2 is simpler (no systemd hardening, follows existing Storage symlink pattern). Option 1 breaks if models live in `~/.ollama` instead of `~/Storage/ollama` (needs verification).
+
+**Recommendation:** Option 1 if models are in Storage; Option 2 if identity is tied to home.
+
+- [ ] User decides: hardening (1) or relocation (2)?
+- [ ] Implement the chosen option
+- [ ] Verify ollama still functions and models load correctly
+
+### Phone-Network-Routing User Unit — Orphaned, Wire or Delete (2026-10-03 — USER DECISION PENDING)
+
+**Context:** `nixos/phone-agent/network-routing.nix` defines a systemd user unit but it has no `wantedBy`, `timer`, or explicit caller. The unit exists but is never started.
+
+**Options:**
+1. **Delete:** If network routing is handled elsewhere, remove the orphaned unit
+2. **Wire:** If it should run automatically, add `wantedBy = [ "default.target" ]` or attach to an existing timer/service
+3. **Document:** If it's intentionally manual-invoke-only, add a comment explaining the use case
+
+- [ ] User clarifies intent
+- [ ] Implement (delete/wire/document)
+
+### ~/.config/phone-agent Ownership — tmpfiles Rule (2026-10-03 — Low Priority)
+
+**Context:** `~/.config/phone-agent` is created by sops-nix with ownership `root:root` and mode `755`. Should be `0700` and owned by lowcache user (follows typical home config conventions).
+
+**Fix:** Add tmpfiles.d rule: `d /home/lowcache/.config/phone-agent 0700 lowcache users -`
+
+**Priority:** Low (current permissions are readable by group, which is acceptable for config; harmless but not ideal).
+
+- [ ] Add tmpfiles rule to nixos/tmpfiles.nix or phone-agent module
+- [ ] Test: verify ownership post-switch
+
+### Lix Coredumps — devenv Plugin MCP Duplicate Server (2026-10-03 — REGRESSION)
+
+**Context:** 56 Lix 2.95.2 coredumps in 3 days, all triggered by `nix-shell -p uv --run 'uvx mcp-nixos'` (devenv Claude Code plugin's MCP invocation). Stack trace shows `RunningProgram` dtor assertion on session teardown. Root cause: devenv plugin and nix-dev plugin both start mcp-nixos servers; devenv tries to run via `nix-shell`, nix-dev via `nix run`. Duplication causes resource contention or lifecycle mismatch.
+
+**Current workaround:** Disabled devenv plugin (user already did this).
+
+**Fix approach (user directive 2026-10-03):** Remove devenv plugin MCP entirely (option 1); rely on nix-dev MCP alone. Simplest approach and aligns with snip/rtk consolidation.
+
+**Implementation:**
+- [ ] Remove devenv plugin MCP configuration from Claude Code settings
+- [ ] Verify devenv plugin still functions (MCP is optional; plugin's shell/direnv integration remains)
+- [ ] Monitor for coredumps over 1-week test window post-implementation
+
+### Tether Brief Size Limit — MAX_ARG_STRLEN (2026-10-03 — BLOCKER FOR LARGE BRIEFS)
+
+**Context:** tether's `-f` flag (full project state) embeds the entire brief into a single argv string. With briefs >128 KiB, this hits kernel `MAX_ARG_STRLEN` limit (~131 KiB), causing "Argument list too long" error when invoking the agent via agy.
+
+**Current workaround:** Use smaller `-f` scope or pass via stdin.
+
+**Fix:** Refactor tether to pass large briefs via file descriptor or stdin instead of argv.
+
+**Priority:** Low (only blocks very large memd/system briefs; typical project briefs fit).
+
+- [ ] Refactor tether brief passing (file/stdin path)
+- [ ] Test with >200 KiB brief (volnixos full state) to verify

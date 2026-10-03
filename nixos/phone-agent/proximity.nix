@@ -36,7 +36,9 @@ let
           [ "$PREV" = "walking" ] || [ "$PREV" = "in_pocket" ] && log "UNLOCK-INTENT (no-op): $PREV -> $STATE" ;;
         esac
       ''}
-      PREV="$STATE"; sleep ${toString cfg.proximityIntervalSec}
+      # A failed read must not erase on_desk, or on_desk -> unknown -> walking never locks.
+      [ "$STATE" = unknown ] || PREV="$STATE"
+      sleep ${toString cfg.proximityIntervalSec}
     done
   '';
 in

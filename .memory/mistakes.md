@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-10-02
+last_updated: 2026-10-03
 status: append-only
 ---
 
@@ -114,22 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-09-30 — nvidia-drm.modeset=1 Incorrectly Flagged as Redundant, Restored After Verification
-
-* **Symptom:** A delegated sub-task during the audit proposed removing `nvidia-drm.modeset=1` from `kernelParams`, on the claim that `hardware.nvidia` adds it automatically.
-
-* **Root cause:** False on this config — evaluation showed the nvidia module does not add this parameter here. Removing it would have disabled DRM kernel modesetting for the NVIDIA driver.
-
-* **Prevention rule:** Verify claims about what a NixOS module "already sets" by tracing the actual module source or `nix eval` output, not by assumption — especially when a delegated/sub-agent worker proposes removing a line as redundant cleanup. The removal was caught before being applied (system was rebuilt with the param restored).
-
-### 2026-10-01 — ~/.omo Wiped by Impermanence Reboot, Pre-Seeding Step Not Executed
-
-* **Symptom:** ~/.omo directory completely wiped at 2026-10-01 boot (tmpfs-root wipe). Omo configuration, community plugins, wallpaper state, and any persisted data lost. Impermanence activation was scheduled but pre-seeding backup never created.
-
-* **Root cause:** Audit fix pass declared ~/.omo persistence binding in `home/persist.nix` with a todo item to pre-seed via `cp -r ~/.omo /persist/home/lowcache/` before `make switch`. This pre-seeding was deferred (in the audit fix pass todo checklist). A system reboot occurred before the pre-seeding step was executed. At boot, tmpfs root was wiped as designed, but ~/.omo had never been copied to /persist, so the live configuration and extensions were lost completely. The persistence binding would have protected the data if it had been seeded first.
-
-* **Prevention rule:** Impermanence-bound directories must be pre-seeded (live state copied to /persist) and that backup must be verified BEFORE any system reboot. If a reboot must happen before seeding, document and accept the data loss explicitly. When scheduling pre-seeding steps, enforce ordering: (1) declare persistence, (2) pre-seed from live state, (3) verify backup exists, (4) reboot. Use blocking task dependencies or clear reminders to prevent skipping steps 2-3. Test the full pre-seed→activate→reboot sequence on non-critical state before applying to important directories.
-
 ### 2026-10-02 — Impermanence Bind-Mount for ~/.omo Raced Home-Manager Link Placement, Hiding Links
 
 * **Symptom:** After `make switch` activated the new `~/.omo` persistence binding (home/persist.nix), the persisted MCP config file (`~/.omo/agent/mcp.json`) and three of five extension symlinks (memd.js, rtk.js, statusline.js) were missing from `~/.omo/agent/extensions/` even though Home Manager's generation clearly contained them (confirmed via inspecting the home-manager-generation store path directly).
@@ -137,3 +121,23 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Root cause:** `~/.omo` was added to persistence (impermanence bind-mount from `/persist`) in the same switch that first wired the symlinks via `home.file`. At activation time, the bind-mount for `~/.omo` was not yet mounted when `home-manager-lowcache.service` ran `linkGeneration` and created the home file links — so the links landed on the pre-mount (tmpfs) view of `~/.omo`, then were hidden once the bind-mount from `/persist` came up on top.
 
 * **Prevention rule:** When a directory is *newly* added to impermanence persistence in the same activation that also populates it via `home.file`/`home.activation`, the first activation after the mount exists will not show the links — they're mounted-over. Fix is to re-run Home Manager's activation (`systemctl restart home-manager-<user>.service` or equivalent) once after the bind-mount is confirmed live, so `linkGeneration` runs against the now-mounted persisted directory. On subsequent boots this self-corrects because the bind-mount is already active before Home Manager runs. Verify with a one-time post-switch `ls` check whenever persistence is newly added for a path that's also populated by `home.file`.
+
+### 2026-10-03 — Proximity Lock Bypass Fixed — PREV Ignores Unknown State
+
+* **Symptom:** Proximity lock failed to arm when IMU read failed (returned unknown state). Subsequent desk→walking transition was blocked because PREV (previous state) was unknown, and the state machine only transitioned on known→unknown or known→known deltas, never unknown→(anything).
+
+* **Root cause:** `proximity.nix` `on_desk` state-change checked `prev != cur` but did not skip transitions *from* unknown. When IMU read fails (err/nil), fallback was `unknown` state; PREV stayed unknown, blocking the next real-world transition. Lock was effectively disarmed until a phone reboot reset PREV to nil.
+
+* **Fix:** Modified state machine logic to treat `unknown` PREV as "no prior state" — ignore unknown and treat the first real-world state transition (unknown→walking, unknown→ondesk) as initial state, not a delta. Added `prev == "unknown" -> prev := cur; return` (no lock action). Tested 2026-10-03: IMU read fail followed by actual motion now correctly triggers lock/unlock.
+
+* **Prevention rule:** In state machines, distinguish "no prior state" (first run, err) from "known states." Avoid treating error states (unknown/nil) as transitionable states. Always provide an "initial" branch that makes the first real observation the reference, not a delta from error.
+
+### 2026-10-03 — pgrep Kill Target Derivation Mistake — Group-Killed Claude Session
+
+* **Symptom:** Running `kill -- -$pgid` after deriving `$pgid` from `pgrep -f 'nix-shell -p uv --run uvx mcp-nixos'` killed the Claude Code session itself, not just the target process.
+
+* **Root cause:** The pgrep pattern matched Claude Code's own devenv-plugin MCP server (started via `nix-shell`). The derived pgid contained the target process AND the Claude session, so group-kill signaled both.
+
+* **Fix:** Do not derive a kill target from `pgrep -f` on a pattern that a live harness process can also match. Track `$!` of the specific process you spawned (via `&` in subshell), and only group-kill a pgid you explicitly created with `setsid`.
+
+* **Prevention rule:** Explicit PID tracking via `$!` (from subshell or `$BASHPID`) is safer than pattern matching for kill targets. Never group-kill (`kill -- -$pgid`) unless you created the pgid yourself with `setsid` or have verified with `pgrep -p $pgid` that it contains only your target process.
