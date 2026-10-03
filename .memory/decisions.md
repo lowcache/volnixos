@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-02
+last_updated: 2026-10-03
 status: active
 ---
 
@@ -540,3 +540,14 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Verification technique:** A parallel username-parameterization sweep (replacing hardcoded `lowcache` paths with the config's own username option across `nixos/hosts/volnix.nix`, `vms.nix`, `windows-vm.nix`, `backup.nix`, `phone-agent`) was proven behavior-neutral by comparing the toplevel system derivation hash before and after — identical hash confirms the substitution changed no runtime behavior. Entry-point files (`home/default.nix`, `flake.nix`, `home/common/tools.nix`) correctly keep the literal username; that's actual system identity, not portability debt.
 
 * **Status (2026-09-30):** Built via `nix build --no-link` (exit 0); uncommitted, unswitched. See todo.md for the commit/switch sequence.
+## 49. Remove volinit from volnixos During Active Revamp (2026-10-03)
+
+* **Decision:** Temporarily remove volinit from the volnixos flake during its active revamp phase to prevent flake evaluation failures from incomplete changes.
+
+* **Why:** volinit is mid-revamp. Any unvetted git push would break flake evaluation, blocking system builds and switches. Removing it temporarily protects the main configuration's stability until the revamp is complete, tested, and ready for integration.
+
+* **Scope:** Remove volinit references from flake.nix, nixos/hosts/volnix.nix, home-manager configuration, and dependent modules. Search for volo-* patterns across the nix codebase.
+
+* **Re-enable condition:** Once volinit revamp is complete and stabilized, restore with a conditional guard (e.g., `vol.volinit.enable`) for easy toggling in future.
+
+* **Verification:** Post-removal, run `nix flake check` and `make build --no-link` to confirm flake evaluates and system builds cleanly without volinit.

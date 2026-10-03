@@ -388,3 +388,19 @@ status: active
 
 - [ ] Refactor tether brief passing (file/stdin path)
 - [ ] Test with >200 KiB brief (volnixos full state) to verify
+### volinit Temporary Removal and Future Re-integration (2026-10-03)
+
+**Context:** volinit revamp in progress; unvetted changes pose flake-stability risk. Removing temporarily per decisions.md #49.
+
+**Removal (implementation):**
+- [ ] Grep for all volinit/volo-init/volo references in flake.nix, nixos/, home/
+- [ ] Remove or comment out references
+- [ ] Run `nix flake check` to verify flake evaluates cleanly
+- [ ] Run `make build --no-link` to verify system builds
+- [ ] Commit removal
+
+**Re-integration (after revamp stable):**
+- [ ] Monitor volinit revamp progress; wait for completion and testing
+- [ ] Re-add volinit references with conditional `vol.volinit.enable` guard
+- [ ] Test system build and switch with volinit re-enabled
+- [ ] Verify no regressions in dependent services
