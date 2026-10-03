@@ -269,9 +269,9 @@ status: active
 **Outstanding:** Nixpkgs lock pin status (see separate todo) — verify whether playwright libmanette fix landed; expected rollback window ~2026-09-20 (now past, may be ready).
 
 **User-only items (not automatable):**
+- [ ] **Add LICENSE (user approved 2026-10-03):** MIT license appropriate for Nix configuration portfolio. Implementation ready.
 - [ ] Give net-gate its own age key (currently holds host key)
 - [ ] Remove `test_secret` from `host-secrets.yaml`
-- [ ] Add LICENSE
 - [ ] Decide whether `.memory/` stays tracked in public repo
 
 ### rtk vs snip Consolidation — Drop Duplicate Bash-Rewrite Hook (2026-10-02 — USER DECISION PENDING)
