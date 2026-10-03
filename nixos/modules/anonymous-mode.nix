@@ -620,7 +620,9 @@ let
         #    that does not traverse tor.
         # Asked ONCE. Two calls are two separate measurements of a thing that
         # must be judged as one, and they can disagree.
-        gw=$(${pkgs.coreutils}/bin/printf '%s\n' 'ip route show default; exit' \
+        # -color=never: the vsock shell is a tty, and iproute2 colors addresses
+        # there, so "via <addr>" never matched as a literal string.
+        gw=$(${pkgs.coreutils}/bin/printf '%s\n' 'ip -color=never route show default; exit' \
           | ${pkgs.coreutils}/bin/timeout 20 ${anonVsock}/bin/anon-vsock \
               ${anonBoxVsockUds} ${toString cfg.workstation.shellPort} plain 2>/dev/null \
           | ${pkgs.gnugrep}/bin/grep "^default" || true)
