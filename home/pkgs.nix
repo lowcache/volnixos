@@ -18,7 +18,9 @@
           progress
           cpufrequtils
           strace
-          ltrace
+          # 0.7.91's demangle tests fail on nixpkgs c59305b's toolchain (15/245,
+          # all ltrace.minor/demangle). Drop the override once Hydra caches ltrace.
+          (ltrace.overrideAttrs { doCheck = false; })
           gperf
           go
           nodejs
