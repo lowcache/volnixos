@@ -26,6 +26,13 @@
     persistLuks = {
       enable = true; # persistLuks-flag
       uuid = "d3307480-8eb3-4305-b5d6-d8d67c679022";
+      # Blob lives in the last MiB of the NixOS live-installer stick (16043212800 B),
+      # past the ISO; the stick stays bootable. Enrolled by luks-migration/07.
+      stickGate = {
+        enable = true;
+        device = "/dev/disk/by-id/usb-Generic_Flash_Disk_10089B92-0:0";
+        offset = 16042164224;
+      };
     };
 
     # NVIDIA (01:00.1) and AMD (66:00.1) HDMI audio sit on `pro-audio`, which
