@@ -85,7 +85,7 @@
       pf = "fastfetch";
       ff = "fastfetch";
       nx = "nix";
-      nxup = "nix flake update ";
+      nxrun = "nix run ";
       nxfd = "nix search nixpkgs ";
       nxsh = "nix-shell -p ";
     };

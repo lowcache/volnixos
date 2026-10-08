@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-03
+last_updated: 2026-10-04
 status: active
 ---
 
@@ -207,32 +207,20 @@ status: active
 
 ### Persist LUKS2 Encryption Migration (2026-09-23 — Planning Phase)
 
-**Status:** Decision moved to decisions.md #45. Procedure available at `~/Storage/luks-migration/` (7-step sequence). Reversible via 99-rollback.sh. LUKS UUID d3307480-8eb3-4305-b5d6-d8d67c679022 pinned in config.
+**Status (2026-10-03 — COMPLETE):** LUKS2 encryption of `/persist` successfully deployed and verified. All migration steps (00-06) executed without errors. System boots into encrypted /persist via systemd initrd unlock; mapper is `/dev/mapper/cryptpersist`. Impermanence and application state persistence work identically through the decrypted mount.
 
-**Critical constraint:** Do NOT run `make switch` or `make boot` between steps 02 (staging) and 05 (post-boot flip).
+✓ Step 00-setup: Completed
+✓ Step 01-format: Completed
+✓ Step 02-stage: Completed
+✓ Step 03-encrypt: Completed
+✓ Step 04-migrate: Completed
+✓ Step 05-post-boot: Completed
+✓ Step 06-finalize: Completed
+✓ Staging container and temp header backup removed by step 06
 
-**Open discrepancy (2026-10-02):** An unrelated session command showed `findmnt`-style output for `~/.omo` (which lives under `/persist`) backed by `/dev/mapper/cryptpersist`. This section's status is still "Planning Phase" with the migration checklist below unstarted — before resuming the LUKS plan, confirm whether `cryptpersist` is a leftover/unrelated test mapper or whether some form of persist-partition encryption is already active.
+**Backup:** LUKS header backup available at `~/Storage/luks-migration/luks0.header.backup` (for disaster recovery).
 
-**Procedure (sequential, do not skip or repeat):**
-- [ ] Step 00-setup: Prepare Ubuntu live medium, enroll MS Secure Boot keys, verify STORAGE staging directory is writable
-- [ ] Step 01-format: Zero PARTUUID f994fab7-… (~/persist partition) to remove filesystem headers
-- [ ] Step 02-stage: Create encrypted loop container on STORAGE as staging area; populate with current /persist contents
-- [ ] Step 03-encrypt: Format actual /persist partition as LUKS2 (`d3307480-…`); copy staged contents into encrypted container
-- [ ] Step 04-migrate: Verify encrypted /persist is correct; prepare boot chain
-- [ ] Step 05-post-boot: First boot into `.#volnix-luks` (flake override active); systemd mounts encrypted /persist; verify unlock succeeds; flip `vol.persistLuks.enable = true` in main config; remove flake override
-- [ ] Step 06-finalize: Reboot into main `volnix` config (LUKS unlock happens in initrd); verify impermanence binds work through decrypted /persist; test persistence across reboot
-- [ ] **Backup LUKS header** post-step-06: `cryptsetup luksHeaderBackup /dev/mapper/luks0 --header-backup-file ~/Storage/luks-migration/luks0.header.backup` (cold-boot disaster recovery)
-
-**If problems arise:**
-- [ ] Run `~/Storage/luks-migration/99-rollback.sh` to re-stage plaintext /persist from pre-encryption backup
-- [ ] Boot plaintext `volnix` config; troubleshoot and retry
-
-**Future enhancement (TPM-only unlock, deferred):**
-- [ ] Design USB-stick hidden blob + evdev key-chord sequence (AND factor)
-- [ ] Update initrd to support TPM+USB combined unlock
-- [ ] Test TPM unlock path end-to-end
-- [ ] Remove passphrase keyslot (keyslot 0) from LUKS header once TPM path proven
-- [ ] Backup LUKS header after keyslot removal (TPM-only configuration for disaster recovery)
+**Next phase:** Stick gate design (TPM + USB + key-chord, see separate todo item below).
 
 ### Backup Hardware Monitoring — Install smartmontools & Monitor SMART (2026-09-24)
 
@@ -404,3 +392,22 @@ status: active
 - [ ] Re-add volinit references with conditional `vol.volinit.enable` guard
 - [ ] Test system build and switch with volinit re-enabled
 - [ ] Verify no regressions in dependent services
+### Stick Gate Design & Implementation — TPM + USB + Key-Chord Unlock (2026-10-03 — DESIGN PHASE)
+
+### Stick Gate Implementation & Testing — USB + Key-Chord Dual-Factor LUKS Unlock (2026-10-04 — IMPLEMENTATION COMPLETE, TESTING PENDING)
+
+**Status (2026-10-04):** Code and configuration complete. Module integrated, options wired, enabled in volnix.nix. Migration procedure (steps 07-08) staged in `~/Storage/luks-migration/`.
+
+✓ Code written: `nixos/modules/chordgate/{chordgate.c,test.c}` with unit tests
+✓ Options defined: `vol.persistLuks.stickGate.*` in persist-luks.nix
+✓ Enabled in nixos/hosts/volnix.nix
+✓ USB stick prepared: `/dev/disk/by-id/usb-Generic_Flash_Disk_10089B92-0:0`
+✓ Procedure scripts staged: `07-stick-gate.sh`, `08-kill-slot.sh`
+✓ Design spec: `docs/stick-gate-design.md` (gitignored)
+
+- [ ] Execute 4-case reboot matrix (cold boot with stick present/absent, chord correct/incorrect)
+- [ ] Verify all four cases behave as expected (unlock succeeds when both factors present, recovery key prompt otherwise)
+- [ ] Confirm passphrase slot killed and final header backed up (`persist-luks-header-<date>.img`)
+- [ ] Document any edge cases or refinements needed
+
+**Design rationale:** Possession (USB) + knowledge (key-chord) factors eliminate passphrase fatigue while maintaining air-gap properties. Entropy in blob, not chord; chord not meant to resist brute-force if stick+disk taken together. Recovery key as fallback. TPM binding deliberately deferred (decisions.md #45).

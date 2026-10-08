@@ -176,6 +176,25 @@ in
         org.freedesktop.impl.portal.Secret=gnome-keyring
         org.freedesktop.impl.portal.FileChooser=gtk
       '';
+      # mimeApps owns this; force reclaims the runtime-written copy on the tmpfs root.
+      "mimeapps.list".force = true;
+    };
+
+    # ~/.config/mimeapps.list sat unpersisted on tmpfs: every boot Thunderbird lost
+    # default-client status, re-prompted, and dropped another userapp-*.desktop
+    # into the persisted ~/.local/share/applications. Declared here instead.
+    mimeApps = {
+      enable = true;
+      defaultApplications = {
+        "x-scheme-handler/mailto" = "thunderbird.desktop";
+        "x-scheme-handler/mid" = "thunderbird.desktop";
+        "message/rfc822" = "thunderbird.desktop";
+        "x-scheme-handler/net.thunderbird" = "thunderbird.desktop";
+        # Previously written at runtime; kept so the read-only file does not drop them.
+        "x-scheme-handler/bitwarden" = "bitwarden.desktop";
+        "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
+        "image/png" = "feh.desktop";
+      };
     };
 
     desktopEntries = {

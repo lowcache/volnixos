@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-02
+last_updated: 2026-10-04
 status: active
 ---
 
@@ -22,7 +22,7 @@ This file is the single source of truth for the active configuration, mapping, a
 
 ## 2. Impermanence & Persistence Mappings
 
-Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
+Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist` (LUKS2-encrypted via `/dev/mapper/cryptpersist` mapper since 2026-10-03; see decisions.md #45 for architecture).
 
 **User dotfiles (`~/.nix-config/dots/`):** `niri`, `noctalia`, `quickshell`, `kitty`, `cava`, `fuzzel`, `wlogout`, `starship.toml`, `color-engine`.
 
@@ -51,8 +51,6 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist`.
 **Thunderbird profile (2026-08-25 — WIRED & VERIFIED, AWAITING FIRST LAUNCH):** Symlink target `~/Storage/thunderbird` wired via home-manager `home.file` mkOutOfStoreSymlink. Symlink chain verified: `~/.thunderbird → home-manager-files/.thunderbird → hm_thunderbird → /home/lowcache/Storage/thunderbird`. Target directory exists (4.0K, created 2026-08-24) but is empty — Thunderbird has not run since persistence was configured. First launch will populate `profiles.ini`, account setup, filters, and mail stores. Persistence correctly wired; email/profile data will persist across tmpfs-root wipe once initialized.
 
 **Secrets (2026-06-09 rules, 2026-08-24 state):** Encrypted sops-nix credentials in `nixos/secrets.yaml`, persisted agent/tool state in `/persist`. `nixos/host-secrets.yaml` has uncommitted modifications (2026-08-24) tracking secret rotation state — commit before major branches.
-
----
 
 ## 3. MicroVMs — net-gate (Tor Relay) and anon-box (Workstation) (2026-08-06+)
 
