@@ -169,6 +169,8 @@
       }''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
       exec ${lib.getExe config.programs.noctalia.package} "$@"
     '')
+    # Shell-start banner; needs ttfx-rs on PATH ($CARGO_HOME/bin), else no-op.
+    inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   services.ssh-agent.enable = true;

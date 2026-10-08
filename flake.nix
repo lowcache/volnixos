@@ -57,6 +57,11 @@
       url = "github:lowcache/memd";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Terminal welcome banner; home/common/fish.nix runs it when on PATH.
+    volinit = {
+      url = "github:lowcache/volinit/rewrite/go-cockpit";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Package set for the phone. Deliberately NOT our nixpkgs.
     #
     # glibc 2.42 reimplemented isatty()/tcgetattr() on top of the TCGETS2 ioctl

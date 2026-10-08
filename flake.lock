@@ -478,7 +478,8 @@
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-droid": "nixpkgs-droid",
         "noctalia": "noctalia",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "volinit": "volinit"
       }
     },
     "rust-overlay": {
@@ -571,6 +572,27 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "volinit": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791428698,
+        "narHash": "sha256-/qnopr9k9++q3lgLyumZCoZPbOGqhzCyeBcyqjbgIEE=",
+        "owner": "lowcache",
+        "repo": "volinit",
+        "rev": "d32f5199dfbaced879ab5997f285b6f66de5130d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lowcache",
+        "ref": "rewrite/go-cockpit",
+        "repo": "volinit",
         "type": "github"
       }
     }
