@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-04
+last_updated: 2026-10-09
 status: active
 ---
 
@@ -49,6 +49,8 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist` (LU
 **Spotify config (2026-08-24 — LIVE, verified gen 247):** `~/.config/spotify` persistence via impermanence bind-mount (bounded 32 KB config, lives in `/persist`). Verified active via findmnt.
 
 **Thunderbird profile (2026-08-25 — WIRED & VERIFIED, AWAITING FIRST LAUNCH):** Symlink target `~/Storage/thunderbird` wired via home-manager `home.file` mkOutOfStoreSymlink. Symlink chain verified: `~/.thunderbird → home-manager-files/.thunderbird → hm_thunderbird → /home/lowcache/Storage/thunderbird`. Target directory exists (4.0K, created 2026-08-24) but is empty — Thunderbird has not run since persistence was configured. First launch will populate `profiles.ini`, account setup, filters, and mail stores. Persistence correctly wired; email/profile data will persist across tmpfs-root wipe once initialized.
+
+**Obsidian vault (2026-10-09 — TRIAL ACTIVE, VERDICT 2026-10-16):** `~/Documents/Brain` (PARA folder structure: Projects, Areas, Resources, Archive; Daily notes template; Inbox) with config at `~/.config/obsidian` persisted via `home/persist.nix` impermanence bind-mount. Wired in home/default.nix via `programs.obsidian`; core plugins enabled, no community plugins during trial. Vault survives tmpfs-root wipe. Trial goal: evaluate second-brain workflow effectiveness (distinct from project-scoped `.memory/` system). Verdict checklist in Trial.md.
 
 **Secrets (2026-06-09 rules, 2026-08-24 state):** Encrypted sops-nix credentials in `nixos/secrets.yaml`, persisted agent/tool state in `/persist`. `nixos/host-secrets.yaml` has uncommitted modifications (2026-08-24) tracking secret rotation state — commit before major branches.
 

@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-04
+last_updated: 2026-10-07
 status: active
 ---
 
@@ -548,3 +548,5 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Re-enable condition:** Once volinit revamp is complete and stabilized, restore with a conditional guard (e.g., `vol.volinit.enable`) for easy toggling in future.
 
 * **Verification:** Post-removal, run `nix flake check` and `make build --no-link` to confirm flake evaluates and system builds cleanly without volinit.
+
+* **Amendment (2026-10-07 — Re-integration Complete):** volinit revamp completed and successfully re-integrated via commit 49b9408. Flake input: `github:lowcache/volinit/rewrite/go-cockpit` (nixpkgs follows). Package added to `home/shell.nix` `home.packages` (volnix-only; phone unaffected). Runtime dependency: `ttfx-rs` from `~/.cargo/bin` (not packaged in Nix; without it volinit is silent no-op, skipping fastfetch). Verification: `make check` and `make build` both pass. Status: awaiting user `make switch` to activate.

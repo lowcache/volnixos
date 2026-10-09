@@ -162,6 +162,9 @@
             # the friction that kills password-manager adoption.
             ".config/rbw"
             ".config/Bitwarden"
+            # Obsidian app state: vault registry (obsidian.json), window state and
+            # per-vault plugin trust. Unpersisted, every boot reopens the vault picker.
+            ".config/obsidian"
           ];
           # Note: with XDG_CACHE_HOME redirected to ~/Storage/.cache (see home/default.nix),
           # caches no longer land on the 4G tmpfs by default. These entries remain as a

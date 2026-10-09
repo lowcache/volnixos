@@ -95,6 +95,14 @@ in
   # pkgs.nix.
   programs.rbw.enable = true;
 
+  # Registers the vault only. Vault settings are left null for the same reason
+  # as rbw: non-null makes .obsidian/*.json read-only store symlinks and every
+  # in-app settings change fails. The vault itself lives in persisted ~/Documents.
+  programs.obsidian = {
+    enable = true;
+    vaults.brain.target = "Documents/Brain";
+  };
+
   services.memd = {
     enable = true;
     installClaudeHooks = true;
