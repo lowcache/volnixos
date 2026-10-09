@@ -118,6 +118,8 @@
         specialArgs = { inherit inputs username; };
         modules = [
           { nixpkgs.hostPlatform = "x86_64-linux"; }
+          # Reported by `nixos-version --configuration-revision` (volinit's ticker reads it).
+          { system.configurationRevision = self.rev or self.dirtyRev or "unknown"; }
           {
             nixpkgs.overlays = [
               inputs.nix-cachyos-kernel.overlays.pinned
