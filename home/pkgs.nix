@@ -8,6 +8,7 @@
         # nix-on-droid config shares. Only host-bound build tooling is left here.
         baseDev = with pkgs; [
           nixd # Claude Code's nix-lsp plugin execs it; host-only, so not in common/
+          bubblewrap # Claude Code's Bash sandbox; its wrapper adds bwrap only to its own PATH, not to child agents
           gcc
           automake
           autoconf
