@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "noctalia": {
+      "type": "stdio",
+      "command": "python3",
+      "args": [
+        "/home/lowcache/CodeRepo/noctalia-claude-plugin/shim/noctalia-mcp.py"
+      ],
+      "env": {}
+    },
+    "phone-agent": {
+      "type": "http",
+      "url": "http://100.101.229.9:8462/mcp",
+      "headers": {
+        "Authorization": "Bearer ${PHONE_AGENT_TOKEN}"
+      }
+    }
+  }
+}
