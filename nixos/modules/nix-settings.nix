@@ -44,13 +44,19 @@
       ];
       min-free = 536870912; # 512MB
       max-free = 1073741824; # 1GB
+      # GC roots for devshells (nix-direnv) keep their build inputs too.
+      keep-outputs = true;
+      keep-derivations = true;
+      warn-dirty = false;
     };
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 5d";
-    };
+    channel.enable = false;
     optimise.automatic = true;
+  };
+  # Replaces nix.gc: --keep guarantees rollback targets regardless of age.
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 7d --keep 3";
   };
 
   nixpkgs = {

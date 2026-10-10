@@ -53,6 +53,11 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Prebuilt weekly nix-index database; module also enables comma.
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     memd = {
       url = "github:lowcache/memd";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -134,6 +139,8 @@
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.impermanence.nixosModules.impermanence
           inputs.sops-nix.nixosModules.sops
+          inputs.nix-index-database.nixosModules.nix-index
+          { programs.nix-index-database.comma.enable = true; }
           home-manager.nixosModules.home-manager
           {
             home-manager = {

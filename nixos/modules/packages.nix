@@ -42,7 +42,6 @@
           tix
           nixmate
           optnix
-          nix-index
           nvd
           searchix
           nurl

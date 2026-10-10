@@ -292,6 +292,26 @@
         "type": "github"
       }
     },
+    "nix-index-database": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791105314,
+        "narHash": "sha256-oTM7QFgRQ+vxBpMBMc7hEYpqBtpXAzXu2xuB/tru84U=",
+        "owner": "nix-community",
+        "repo": "nix-index-database",
+        "rev": "e740bc4e9d8918d7819a51486d5099930c65c72e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nix-index-database",
+        "type": "github"
+      }
+    },
     "nix-on-droid": {
       "inputs": {
         "home-manager": [
@@ -473,6 +493,7 @@
         "memd": "memd",
         "microvm": "microvm",
         "nix-cachyos-kernel": "nix-cachyos-kernel",
+        "nix-index-database": "nix-index-database",
         "nix-on-droid": "nix-on-droid",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
@@ -582,11 +603,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791583157,
-        "narHash": "sha256-QcpNkDKzvFAkE1qsX3l19OOWMs52gADQ0W1OtGILN0U=",
+        "lastModified": 1791583368,
+        "narHash": "sha256-9MFkdawBldM+r6upF6vuTVYjUCVgRzEu/Ie0vew0KvI=",
         "owner": "lowcache",
         "repo": "volinit",
-        "rev": "9b2e669cb82af194b02f34b3457491abd8876d05",
+        "rev": "3b4c71ee6d007c3c9480d89d8cd6d9d626aa4b2d",
         "type": "github"
       },
       "original": {

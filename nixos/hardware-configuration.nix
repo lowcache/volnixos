@@ -93,6 +93,8 @@
       "/var/lib/private/open-webui"
       # cardwired's StateDirectory; holds manual-mode GPU state.
       "/var/lib/cardwire"
+      # fwupd update history / pending capsule state across reboots.
+      "/var/lib/fwupd"
       "/etc/secureboot"
       "/etc/asusd"
       "/etc/ssh"
