@@ -7,6 +7,7 @@
         # nodejs, go, …) now come from home/common/packages.nix, which the
         # nix-on-droid config shares. Only host-bound build tooling is left here.
         baseDev = with pkgs; [
+          nixd # Claude Code's nix-lsp plugin execs it; host-only, so not in common/
           gcc
           automake
           autoconf

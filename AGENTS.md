@@ -25,14 +25,7 @@ Documentation: `https://volnixos-wiki.pgs.sh`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-For large additions/removals, use the `nix-expert` swarm:
-
-* `nix-expert` — orchestrator
-* `nix-flake-expert`
-* `nix-home-manager-expert`
-* `nix-impermanence-expert`
-* `nix-options-expert`
-* `nix-virtualization-expert`
+All Nix work goes through the `nixtastic` skill (your agent's skills directory (Claude: `~/.claude/skills/nixtastic`, Gemini: `~/.gemini/skills/nixtastic`); source and `nix run .#install` in `~/CodeRepo/allnix-skills`). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper.
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 

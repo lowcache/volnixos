@@ -26,7 +26,7 @@ Wiki: `https://wiki.infernalcode.com`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-All Nix work goes through the `nixtastic` skill (`/nix`; `~/.claude/skills/nixtastic`). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper (`gate`, `build`, `drv`, `recall`, …). `/nix review [path]` runs a maintainability review.
+All Nix work goes through the `nixtastic` skill (`/nixtastic`; installed at `~/.claude/skills/nixtastic` and `~/.gemini/skills/nixtastic` from the source repo `~/CodeRepo/allnix-skills` via `nix run .#install`; edit the repo, never the installed copies). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper (`gate`, `build`, `drv`, `recall`, …). `/nixtastic review [path]` runs a maintainability review. It is the only Nix skill; option/package lookups go through the gateway's mcp-nixos backend, and Nix LSP diagnostics come from the `nix-lsp` plugin (nixd).
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 

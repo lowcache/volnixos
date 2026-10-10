@@ -8,7 +8,7 @@
    rsynced from the laptop)
 
 ## Laptop Setup (NixOS)
-1. Import the phone-agent module in nixos/configuration.nix and set:
+1. The module is imported by nixos/hosts/volnix.nix; set there:
      phone-agent.enable = true;
      phone-agent.phoneTailscaleIP = "100.x.y.z";   # from Tailscale Android app
      phone-agent.tokenFile = config.sops.secrets."phone-agent-token".path;
