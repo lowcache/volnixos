@@ -26,14 +26,7 @@ Wiki: `https://wiki.infernalcode.com`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-For large additions/removals, use the `nix-expert` swarm:
-
-* `nix-expert` — orchestrator
-* `nix-flake-expert`
-* `nix-home-manager-expert`
-* `nix-impermanence-expert`
-* `nix-options-expert`
-* `nix-virtualization-expert`
+For Nix work use the `nix` skill (github.com/lowcache/nixskills). It routes to per-domain references, carries the volnixos profile, and ships `scripts/nixops.py` (gate, build + closure diff, drvPath compare, option eval, memory recall). `/nix review` runs the maintainability review.
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 
