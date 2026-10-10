@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS — Dots
-last_updated: 2026-07-05
+last_updated: 2026-10-10
 status: active
 ---
 
@@ -17,7 +17,7 @@ All are **whole-directory** out-of-store symlinks from `~/.config/<name>` →
 `/persist${HOME}/.nix-config/dots/<name>` (so edits are live without rebuild):
 
 | `~/.config/` target | Source under `dots/` |
-|---|---|
+|---|
 | `quickshell` | `dots/quickshell/` (config at `quickshell/ii/`) |
 | `hypr` | `dots/hypr` |
 | `illogical-impulse` | `dots/illogical-impulse` |
@@ -31,8 +31,8 @@ All are **whole-directory** out-of-store symlinks from `~/.config/<name>` →
 | `starship.toml` | `dots/starship/starship.toml` (single file) |
 | `~/.gemini` | `dots/gemini` (in `home.file`, `force = true`) |
 
-`dots/` itself is **not** symlinked — only its children are. `dots/.memory/` and
-`dots/.model/` are safe homes for scoped context (they never reach `~/.config`).
+`dots/` itself is **not** symlinked — only its children are. `dots/.memory/` is the safe
+home for scoped memory and state; it never reaches `~/.config`.
 
 **`~/.config/color-engine` symlink requires `make switch`** — added to `home/persist.nix`
 2026-06-17, no rebuild run yet. Until then scripts/themes exist only at `dots/color-engine/`

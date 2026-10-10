@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS — Dots
-last_updated: 2026-07-05
+last_updated: 2026-10-10
 status: active
 ---
 
@@ -12,10 +12,12 @@ implementation. Scoped layer beneath repo-root
 [`decisions.md`](file:///home/lowcache/.nix-config/.memory/decisions.md).
 
 ## D1 — Scoped memory lives at `dots/.memory`, never inside an app dir
+
 Because each `dots/<app>/` is a whole-directory `mkOutOfStoreSymlink` into `~/.config`,
 any file placed inside an app dir leaks into the live config (and into quickshell's QML
-loader). `dots/` itself is not a symlink target, so the scoped `.memory/` and `.model/`
-go there. Per-app notes use subdirs under `dots/.memory/`, not under the app dir.
+loader). `dots/` itself is not a symlink target, so `.memory/` is the safe home for
+scoped memory and state files. Per-app notes use subdirs under `dots/.memory/`, not
+under the app dir.
 
 ## D2 — Independent history via `git subtree`, not submodule
 The `dots/` tree must be trackable on its own history yet remain in the single nix-config
