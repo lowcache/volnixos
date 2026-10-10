@@ -82,6 +82,7 @@ in
     ./persist.nix
     ./pkgs.nix
     ./scripts.nix
+    ./ci-poll.nix
     ./shell.nix
     inputs.memd.homeManagerModules.default
   ];

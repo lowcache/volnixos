@@ -65,8 +65,8 @@ let
         ;
     })
     systemctl
-    curl
     socks
+    socksRequest
     subnetPrefix
     probeSocks
     jailUp
@@ -260,86 +260,90 @@ in
             # sleep) = 105s. At the old +150 a cold start could exceed the
             # timeout and be killed mid-L4.
             TimeoutStartSec = cfg.bootstrapTimeout + 300;
-            ExecStart = pkgs.writeShellScript "anon-check" ''
-              # Every failure below re-seals before exiting. anon-check runs
-              # AFTER anon-routing, so by the time any of these fire the jail's
-              # default already points at the gateway. Exiting without
-              # withdrawing it left the failed arm in the one state this module
-              # is built to exclude: a uid routed at a gateway that could not be
-              # shown to anonymise it, with no readiness stamp to explain why.
-              # anon-exec refuses without the stamp, but a process already
-              # running under the uid does not consult it.
-              fail() {
-                ${routingDown}
-                exit 1
+            ExecStart = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "anon-check";
+                runtimeInputs = [ pkgs.coreutils ];
+                bashOptions = [ ];
+                text = ''
+                  # Every failure below re-seals before exiting. anon-check runs
+                  # AFTER anon-routing, so by the time any of these fire the jail's
+                  # default already points at the gateway. Exiting without
+                  # withdrawing it left the failed arm in the one state this module
+                  # is built to exclude: a uid routed at a gateway that could not be
+                  # shown to anonymise it, with no readiness stamp to explain why.
+                  # anon-exec refuses without the stamp, but a process already
+                  # running under the uid does not consult it.
+                  fail() {
+                    ${routingDown}
+                    exit 1
+                  }
+
+                  # L0
+                  if ! ${systemctl} -q is-active microvm@net-gate.service; then
+                    echo "L0 FAIL: microvm@net-gate is not active." >&2
+                    fail
+                  fi
+                  echo "L0 ok: net-gate VM is running"
+
+                  # L1/L2
+                  listening=0
+                  for _ in $(seq 1 30); do
+                    if ${probeSocks}; then
+                      listening=1
+                      break
+                    fi
+                    sleep 1
+                  done
+                  if [ "$listening" != 1 ]; then
+                    echo "L2 FAIL: nothing listening at ${socks} after 30s." >&2
+                    echo "         the guest's tor.service is down: journalctl -u microvm@net-gate" >&2
+                    fail
+                  fi
+                  echo "L2 ok: tor is listening at ${socks}"
+
+                  # L3 — a completed request through SOCKS means circuits exist. Tor is
+                  # not ready the instant it binds: a cold start must fetch a consensus
+                  # first, so WAIT for the capability rather than sampling it once and
+                  # calling a bootstrap in progress a failure.
+                  deadline=$(( $(date +%s) + ${toString cfg.bootstrapTimeout} ))
+                  bootstrapped=0
+                  while [ "$(date +%s)" -lt "$deadline" ]; do
+                    if ${socksRequest 20}; then
+                      bootstrapped=1
+                      break
+                    fi
+                    echo "L3 waiting: tor is listening but not yet carrying traffic..."
+                    sleep 5
+                  done
+                  if [ "$bootstrapped" != 1 ]; then
+                    echo "L3 FAIL: tor still cannot carry a request after ${toString cfg.bootstrapTimeout}s." >&2
+                    echo "         check guest egress (tap masquerade), then the guest journal:" >&2
+                    echo "         sudo journalctl -D ${cfg.guestJournalDir} -u tor" >&2
+                    fail
+                  fi
+                  echo "L3 ok: tor is bootstrapped (SOCKS request completed)"
+
+                  # L4 — identity, jail integrity, then a leak-proof exit check
+                  # (see pathProbe: none of its assertions can reach the clearnet).
+                  exit_ip=""
+                  for _ in 1 2 3; do
+                    exit_ip=$(${pathProbe}) && break
+                    exit_ip=""
+                    sleep 5
+                  done
+                  if [ -z "$exit_ip" ]; then
+                    echo "L4 FAIL: the enforced path is not verifiably Tor'd (detail above)." >&2
+                    fail
+                  fi
+                  mkdir -p "$(dirname ${cfg.readyStamp})"
+                  printf 'verified=%s exit=%s\n' \
+                    "$(date -Is)" "$exit_ip" > ${cfg.readyStamp}
+                  echo "L4 ok: enforced path verified — Tor exit $exit_ip"
+                  echo "anonymous mode armed. Prove the negative paths with: sudo anon-selftest"
+                '';
               }
-
-              # L0
-              if ! ${systemctl} -q is-active microvm@net-gate.service; then
-                echo "L0 FAIL: microvm@net-gate is not active." >&2
-                fail
-              fi
-              echo "L0 ok: net-gate VM is running"
-
-              # L1/L2
-              listening=0
-              for i in $(${pkgs.coreutils}/bin/seq 1 30); do
-                if ${probeSocks}; then
-                  listening=1
-                  break
-                fi
-                ${pkgs.coreutils}/bin/sleep 1
-              done
-              if [ "$listening" != 1 ]; then
-                echo "L2 FAIL: nothing listening at ${socks} after 30s." >&2
-                echo "         the guest's tor.service is down: journalctl -u microvm@net-gate" >&2
-                fail
-              fi
-              echo "L2 ok: tor is listening at ${socks}"
-
-              # L3 — a completed request through SOCKS means circuits exist. Tor is
-              # not ready the instant it binds: a cold start must fetch a consensus
-              # first, so WAIT for the capability rather than sampling it once and
-              # calling a bootstrap in progress a failure.
-              deadline=$(( $(${pkgs.coreutils}/bin/date +%s) + ${toString cfg.bootstrapTimeout} ))
-              bootstrapped=0
-              while [ "$(${pkgs.coreutils}/bin/date +%s)" -lt "$deadline" ]; do
-                if ${curl} -sS --max-time 20 --socks5-hostname ${socks} \
-                    ${cfg.exitCheckUrl} >/dev/null 2>&1; then
-                  bootstrapped=1
-                  break
-                fi
-                echo "L3 waiting: tor is listening but not yet carrying traffic..."
-                ${pkgs.coreutils}/bin/sleep 5
-              done
-              if [ "$bootstrapped" != 1 ]; then
-                echo "L3 FAIL: tor still cannot carry a request after ${toString cfg.bootstrapTimeout}s." >&2
-                echo "         check guest egress (tap masquerade), then the guest journal:" >&2
-                echo "         sudo journalctl -D ${cfg.guestJournalDir} -u tor" >&2
-                fail
-              fi
-              echo "L3 ok: tor is bootstrapped (SOCKS request completed)"
-
-              # L4 — identity, jail integrity, then a leak-proof exit check.
-              # See pathProbe: none of its three assertions can put a packet on
-              # the clearnet, which the first version of this check could — and
-              # did, with this host's real address.
-              exit_ip=""
-              for attempt in 1 2 3; do
-                exit_ip=$(${pathProbe}) && break
-                exit_ip=""
-                ${pkgs.coreutils}/bin/sleep 5
-              done
-              if [ -z "$exit_ip" ]; then
-                echo "L4 FAIL: the enforced path is not verifiably Tor'd (detail above)." >&2
-                fail
-              fi
-              ${pkgs.coreutils}/bin/mkdir -p "$(${pkgs.coreutils}/bin/dirname ${cfg.readyStamp})"
-              ${pkgs.coreutils}/bin/printf 'verified=%s exit=%s\n' \
-                "$(${pkgs.coreutils}/bin/date -Is)" "$exit_ip" > ${cfg.readyStamp}
-              echo "L4 ok: enforced path verified — Tor exit $exit_ip"
-              echo "anonymous mode armed. Prove the negative paths with: sudo anon-selftest"
-            '';
+            );
             ExecStop = "${pkgs.coreutils}/bin/rm -f ${cfg.readyStamp}";
           };
         };
@@ -406,75 +410,77 @@ in
           description = "Watch the anonymous path and seal on health loss";
           serviceConfig = {
             Type = "oneshot";
-            ExecStart = pkgs.writeShellScript "anon-watch" ''
-              armed=0
-              [ -e ${cfg.readyStamp} ] && armed=1
+            ExecStart = lib.getExe (
+              pkgs.writeShellApplication {
+                name = "anon-watch";
+                runtimeInputs = [ pkgs.coreutils ];
+                bashOptions = [ ];
+                text = ''
+                  armed=0
+                  [ -e ${cfg.readyStamp} ] && armed=1
 
-              # Re-assert the jail first: it is the fail-closed boundary, so
-              # anything that removed it (a link reconfiguration, a manual
-              # flush) gets corrected before the path is judged, not after.
-              #
-              # And CHECK that it worked. This used to call jailUp bare, with no
-              # `set -e` in scope, so the one failure the whole script exists to
-              # catch — the boundary cannot be re-established — was discarded,
-              # and the disarmed branch below went on to exit 0 reporting health.
-              # A jail that cannot be asserted is not a jail; if we are armed,
-              # that is a sealing condition like any other.
-              if ! ${jailUp}; then
-                echo "jail re-assertion FAILED: the fail-closed boundary is not verified." >&2
-                if [ "$armed" = 1 ]; then
+                  # Re-assert the jail first: it is the fail-closed boundary, so
+                  # anything that removed it (a link reconfiguration, a manual
+                  # flush) gets corrected before the path is judged, not after.
+                  #
+                  # And CHECK that it worked: a jail that cannot be asserted is not a
+                  # jail, and while armed that is a sealing condition like any other.
+                  if ! ${jailUp}; then
+                    echo "jail re-assertion FAILED: the fail-closed boundary is not verified." >&2
+                    if [ "$armed" = 1 ]; then
+                      ${lib.optionalString cfg.sealOnHealthLoss ''
+                        echo "sealing: disarming anonymous.target." >&2
+                        ${systemctl} stop anonymous.target
+                      ''}
+                    fi
+                    exit 1
+                  fi
+
+                  if [ "$armed" = 0 ]; then
+                    # Disarmed: report on the mechanism, change nothing.
+                    ${systemctl} -q is-active microvm@net-gate.service || exit 0
+                    ${probeSocks} && exit 0
+                    echo "microvm@net-gate is running but nothing listens at ${socks};" >&2
+                    echo "the guest's tor.service is down — anonymous mode cannot arm." >&2
+                    exit 1
+                  fi
+
+                  verified() {
+                    ${pathProbe} >/dev/null
+                  }
+
+                  if verified; then
+                    exit 0
+                  fi
+                  # One retry: a single failed circuit is not a broken gateway.
+                  sleep 10
+                  if verified; then
+                    echo "anonymous path recovered after one failed check." >&2
+                    exit 0
+                  fi
+
+                  # Classify before acting, so the journal says which layer broke.
+                  if ! ${probeSocks}; then
+                    echo "gateway down: nothing listening at ${socks}." >&2
+                  elif ${socksRequest 30}; then
+                    echo "tor carries SOCKS requests but the ENFORCED path does not —" >&2
+                    echo "suspect the jail's gateway route or the guest's nat REDIRECT rules." >&2
+                  else
+                    echo "cannot verify the path at all: either tor stopped carrying traffic" >&2
+                    echo "or ${cfg.exitCheckUrl} is unreachable. Unverifiable counts as unsafe." >&2
+                  fi
                   ${lib.optionalString cfg.sealOnHealthLoss ''
-                    echo "sealing: disarming anonymous.target." >&2
+                    # The invariant is "verified-ready, or no connectivity". Inability to
+                    # verify is therefore a sealing condition, not a warning — including
+                    # when the verification endpoint itself is what broke. Set
+                    # vol.anon-mode.sealOnHealthLoss = false to trade that for uptime.
+                    echo "sealing: disarming anonymous.target (the workload loses the network)." >&2
                     ${systemctl} stop anonymous.target
                   ''}
-                fi
-                exit 1
-              fi
-
-              if [ "$armed" = 0 ]; then
-                # Disarmed: report on the mechanism, change nothing.
-                ${systemctl} -q is-active microvm@net-gate.service || exit 0
-                ${probeSocks} && exit 0
-                echo "microvm@net-gate is running but nothing listens at ${socks};" >&2
-                echo "the guest's tor.service is down — anonymous mode cannot arm." >&2
-                exit 1
-              fi
-
-              verified() {
-                ${pathProbe} >/dev/null
+                  exit 1
+                '';
               }
-
-              if verified; then
-                exit 0
-              fi
-              # One retry: a single failed circuit is not a broken gateway.
-              ${pkgs.coreutils}/bin/sleep 10
-              if verified; then
-                echo "anonymous path recovered after one failed check." >&2
-                exit 0
-              fi
-
-              # Classify before acting, so the journal says which layer broke.
-              if ! ${probeSocks}; then
-                echo "gateway down: nothing listening at ${socks}." >&2
-              elif ${curl} -sS --max-time 30 --socks5-hostname ${socks} \
-                  ${cfg.exitCheckUrl} >/dev/null 2>&1; then
-                echo "tor carries SOCKS requests but the ENFORCED path does not —" >&2
-                echo "suspect the jail's gateway route or the guest's nat REDIRECT rules." >&2
-              else
-                echo "cannot verify the path at all: either tor stopped carrying traffic" >&2
-                echo "or ${cfg.exitCheckUrl} is unreachable. Unverifiable counts as unsafe." >&2
-              fi
-              ${lib.optionalString cfg.sealOnHealthLoss ''
-                # The invariant is "verified-ready, or no connectivity". Inability to
-                # verify is therefore a sealing condition, not a warning — including
-                # when the verification endpoint itself is what broke. Set
-                # vol.anon-mode.sealOnHealthLoss = false to trade that for uptime.
-                echo "sealing: disarming anonymous.target (the workload loses the network)." >&2
-                ${systemctl} stop anonymous.target
-              ''}
-              exit 1
-            '';
+            );
           };
         };
       };

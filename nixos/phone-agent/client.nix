@@ -7,16 +7,23 @@
 }:
 {
   url = "http://${cfg.phoneTailscaleIP}:${toString cfg.port}";
-  call = pkgs.writeShellScript "phone-call" ''
-    export PATH=${
-      lib.makeBinPath [
-        pkgs.curl
-        pkgs.coreutils
-        pkgs.jq
-      ]
-    }:$PATH
-    export PHONE_IP=${cfg.phoneTailscaleIP} PHONE_PORT=${toString cfg.port}
-    export PHONE_TOKEN_FILE=${toString cfg.tokenFile}
-    exec ${pkgs.bash}/bin/bash ${./scripts/phone-mcp-call.sh} "$@"
-  '';
+  call = lib.getExe (
+    pkgs.writeShellApplication {
+      name = "phone-call";
+      runtimeInputs = [ pkgs.bash ];
+      bashOptions = [ ];
+      text = ''
+        export PATH=${
+          lib.makeBinPath [
+            pkgs.curl
+            pkgs.coreutils
+            pkgs.jq
+          ]
+        }:$PATH
+        export PHONE_IP=${cfg.phoneTailscaleIP} PHONE_PORT=${toString cfg.port}
+        export PHONE_TOKEN_FILE=${toString cfg.tokenFile}
+        exec bash ${./scripts/phone-mcp-call.sh} "$@"
+      '';
+    }
+  );
 }

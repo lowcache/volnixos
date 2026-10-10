@@ -549,13 +549,22 @@ in
                 # `,stderr` matters: without it curl's -sS diagnostics go to the guest
                 # journal and the host sees an empty stream, making "DNS failed",
                 # "no route" and "not Tor" indistinguishable.
-                ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:${toString anon.workstation.verifyPort},fork,reuseaddr EXEC:${pkgs.writeShellScript "anon-verify" ''
-                  # Issued exactly as a workload would issue it: no proxy, no bound
-                  # interface. This guest has one route and it points at the gateway,
-                  # so the request cannot take any other path — which is what makes
-                  # an unproxied request safe to make here.
-                  ${pkgs.curl}/bin/curl -sS --max-time 30 ${anon.exitCheckUrl}
-                ''},stderr";
+                ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:${toString anon.workstation.verifyPort},fork,reuseaddr EXEC:${
+                  lib.getExe (
+                    pkgs.writeShellApplication {
+                      name = "anon-verify";
+                      runtimeInputs = [ pkgs.curl ];
+                      bashOptions = [ ];
+                      text = ''
+                        # Issued exactly as a workload would issue it: no proxy, no bound
+                        # interface. This guest has one route and it points at the gateway,
+                        # so the request cannot take any other path — which is what makes
+                        # an unproxied request safe to make here.
+                        curl -sS --max-time 30 ${anon.exitCheckUrl}
+                      '';
+                    }
+                  )
+                },stderr";
                 Restart = "always";
                 RestartSec = "1s";
               };

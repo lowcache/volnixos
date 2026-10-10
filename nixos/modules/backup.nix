@@ -57,103 +57,129 @@ let
     }
   '';
 
-  backupScript = pkgs.writeShellScript "vol-backup" ''
-    set -euo pipefail
-    ${notifyFn}
+  backupScript = lib.getExe (
+    pkgs.writeShellApplication {
+      name = "vol-backup";
+      runtimeInputs = [
+        pkgs.util-linux
+        pkgs.coreutils
+        pkgs.systemd
+        pkgs.rsync
+        pkgs.restic
+        pkgs.gawk
+      ];
+      bashOptions = [ ];
+      text = ''
+        set -euo pipefail
+        ${notifyFn}
 
-    # Never write into a directory that only looks like the drive.
-    ${pkgs.util-linux}/bin/mountpoint -q ${repoMount} || {
-      echo "vol-backup: ${repoMount} is not a mountpoint — refusing to run" >&2
-      exit 1
-    }
+        # Never write into a directory that only looks like the drive.
+        mountpoint -q ${repoMount} || {
+          echo "vol-backup: ${repoMount} is not a mountpoint — refusing to run" >&2
+          exit 1
+        }
 
-    stamp="$STATE_DIRECTORY/last-success"
-    now=$(${pkgs.coreutils}/bin/date +%s)
+        stamp="$STATE_DIRECTORY/last-success"
+        now=$(date +%s)
 
-    if [ -f "$stamp" ]; then
-      age=$(( now - $(${pkgs.coreutils}/bin/stat -c %Y "$stamp") ))
-      if [ "$age" -lt ${toString (cfg.cooldownHours * 3600)} ]; then
-        notify low "Backup skipped" "Last run $(( age / 3600 ))h ago (cooldown ${toString cfg.cooldownHours}h)"
-        exit 0
-      fi
-    fi
-
-    notify low "Backup started" "Snapshotting to ${repoMount}"
-
-    # The restic module owns HOW to back up (repo, password, excludes, prune).
-    # This unit owns WHEN, and what happens either side of it.
-    ${pkgs.systemd}/bin/systemctl start --wait restic-backups-${cfg.resticName}.service
-
-    ${lib.optionalString (mirrorPairs != [ ]) ''
-      if ${pkgs.util-linux}/bin/mountpoint -q ${modelsMount}; then
-        ${lib.concatMapStringsSep "\n" (m: ''
-          if [ -d "${m.src}" ]; then
-            echo "vol-backup: mirroring ${m.src} -> ${modelsMount}/${m.dest}"
-            ${pkgs.coreutils}/bin/mkdir -p "${modelsMount}/${m.dest}"
-            ${pkgs.rsync}/bin/rsync -aH --delete --no-inc-recursive \
-              "${m.src}/" "${modelsMount}/${m.dest}/"
-          else
-            echo "vol-backup: mirror source ${m.src} absent, skipping" >&2
+        if [ -f "$stamp" ]; then
+          age=$(( now - $(stat -c %Y "$stamp") ))
+          if [ "$age" -lt ${toString (cfg.cooldownHours * 3600)} ]; then
+            notify low "Backup skipped" "Last run $(( age / 3600 ))h ago (cooldown ${toString cfg.cooldownHours}h)"
+            exit 0
           fi
-        '') mirrorPairs}
-      else
-        echo "vol-backup: ${modelsMount} not mounted, skipping model mirror" >&2
-      fi
-    ''}
+        fi
 
-    # Integrity is checked on a slower clock than the backup itself: reading a
-    # subset of the pack files is the only thing that finds bit-rot before a
-    # restore does, but it is far too slow to do on every plug-in.
-    check_stamp="$STATE_DIRECTORY/last-check"
-    do_check=1
-    if [ -f "$check_stamp" ]; then
-      check_age=$(( now - $(${pkgs.coreutils}/bin/stat -c %Y "$check_stamp") ))
-      [ "$check_age" -lt ${toString (cfg.checkIntervalDays * 86400)} ] && do_check=0
-    fi
-    if [ "$do_check" = 1 ]; then
-      notify low "Backup verifying" "restic check --read-data-subset=${cfg.checkSubset}"
-      RESTIC_REPOSITORY="${cfg.repository}" \
-      RESTIC_PASSWORD_FILE="${cfg.passwordFile}" \
-        ${pkgs.restic}/bin/restic check --read-data-subset=${cfg.checkSubset}
-      ${pkgs.coreutils}/bin/touch "$check_stamp"
-    fi
+        notify low "Backup started" "Snapshotting to ${repoMount}"
 
-    ${pkgs.coreutils}/bin/touch "$stamp"
-    notify normal "Backup complete" "$(${pkgs.coreutils}/bin/df -h ${repoMount} | ${pkgs.gawk}/bin/awk 'NR==2 {print $4 " free on the drive"}')"
-  '';
+        # The restic module owns HOW to back up (repo, password, excludes, prune).
+        # This unit owns WHEN, and what happens either side of it.
+        systemctl start --wait restic-backups-${cfg.resticName}.service
+
+        ${lib.optionalString (mirrorPairs != [ ]) ''
+          if mountpoint -q ${modelsMount}; then
+            ${lib.concatMapStringsSep "\n" (m: ''
+              if [ -d "${m.src}" ]; then
+                echo "vol-backup: mirroring ${m.src} -> ${modelsMount}/${m.dest}"
+                mkdir -p "${modelsMount}/${m.dest}"
+                rsync -aH --delete --no-inc-recursive \
+                  "${m.src}/" "${modelsMount}/${m.dest}/"
+              else
+                echo "vol-backup: mirror source ${m.src} absent, skipping" >&2
+              fi
+            '') mirrorPairs}
+          else
+            echo "vol-backup: ${modelsMount} not mounted, skipping model mirror" >&2
+          fi
+        ''}
+
+        # Integrity is checked on a slower clock than the backup itself: reading a
+        # subset of the pack files is the only thing that finds bit-rot before a
+        # restore does, but it is far too slow to do on every plug-in.
+        check_stamp="$STATE_DIRECTORY/last-check"
+        do_check=1
+        if [ -f "$check_stamp" ]; then
+          check_age=$(( now - $(stat -c %Y "$check_stamp") ))
+          [ "$check_age" -lt ${toString (cfg.checkIntervalDays * 86400)} ] && do_check=0
+        fi
+        if [ "$do_check" = 1 ]; then
+          notify low "Backup verifying" "restic check --read-data-subset=${cfg.checkSubset}"
+          RESTIC_REPOSITORY="${cfg.repository}" \
+          RESTIC_PASSWORD_FILE="${cfg.passwordFile}" \
+            restic check --read-data-subset=${cfg.checkSubset}
+          touch "$check_stamp"
+        fi
+
+        touch "$stamp"
+        notify normal "Backup complete" "$(df -h ${repoMount} | awk 'NR==2 {print $4 " free on the drive"}')"
+      '';
+    }
+  );
 
   # Runs whether the backup succeeded, failed, or was skipped, so the drive is
   # always released rather than left mounted after a failure.
-  teardownScript = pkgs.writeShellScript "vol-backup-teardown" ''
-    set -uo pipefail
-    ${notifyFn}
+  teardownScript = lib.getExe (
+    pkgs.writeShellApplication {
+      name = "vol-backup-teardown";
+      runtimeInputs = [
+        pkgs.util-linux
+        pkgs.coreutils
+        pkgs.systemd
+        pkgs.udisks2
+      ];
+      bashOptions = [ ];
+      text = ''
+        set -uo pipefail
+        ${notifyFn}
 
-    result="''${SERVICE_RESULT:-success}"
+        result="''${SERVICE_RESULT:-success}"
 
-    # Resolve the physical device FIRST. Doing it after the unmount raced the
-    # device going away and asked udisks to power off a stale node — that is the
-    # "Error opening /dev/sda for fsync: No such device" on 2026-09-10.
-    ${lib.optionalString cfg.powerOffWhenDone ''
-      pk=""
-      part=$(${pkgs.util-linux}/bin/findfs UUID=${cfg.repoFsUuid} 2>/dev/null || true)
-      [ -n "$part" ] && pk=$(${pkgs.util-linux}/bin/lsblk -no pkname "$part" 2>/dev/null || true)
-    ''}
+        # Resolve the physical device FIRST. Doing it after the unmount raced the
+        # device going away and asked udisks to power off a stale node — that is the
+        # "Error opening /dev/sda for fsync: No such device" on 2026-09-10.
+        ${lib.optionalString cfg.powerOffWhenDone ''
+          pk=""
+          part=$(findfs UUID=${cfg.repoFsUuid} 2>/dev/null || true)
+          [ -n "$part" ] && pk=$(lsblk -no pkname "$part" 2>/dev/null || true)
+        ''}
 
-    ${pkgs.coreutils}/bin/sync
-    ${pkgs.systemd}/bin/systemctl stop ${repoMountUnit} ${modelsMountUnit} || true
+        sync
+        systemctl stop ${repoMountUnit} ${modelsMountUnit} || true
 
-    ${lib.optionalString cfg.powerOffWhenDone ''
-      if [ -n "$pk" ] && [ -b "/dev/$pk" ]; then
-        ${pkgs.udisks2}/bin/udisksctl power-off -b "/dev/$pk" || true
-      fi
-    ''}
+        ${lib.optionalString cfg.powerOffWhenDone ''
+          if [ -n "$pk" ] && [ -b "/dev/$pk" ]; then
+            udisksctl power-off -b "/dev/$pk" || true
+          fi
+        ''}
 
-    if [ "$result" = "success" ]; then
-      notify normal "Drive safe to remove" "Unmounted${lib.optionalString cfg.powerOffWhenDone " and powered down"}."
-    else
-      notify critical "Backup FAILED" "$result — journalctl -u vol-backup.service"
-    fi
-  '';
+        if [ "$result" = "success" ]; then
+          notify normal "Drive safe to remove" "Unmounted${lib.optionalString cfg.powerOffWhenDone " and powered down"}."
+        else
+          notify critical "Backup FAILED" "$result — journalctl -u vol-backup.service"
+        fi
+      '';
+    }
+  );
 in
 {
   options.vol.backup = {

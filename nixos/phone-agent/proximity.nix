@@ -7,40 +7,44 @@
 let
   cfg = config.phone-agent;
   client = import ./client.nix { inherit lib pkgs cfg; };
-  daemon = pkgs.writeShellScriptBin "phone-proximity-daemon" ''
-    export PATH=${
-      lib.makeBinPath [
-        pkgs.curl
-        pkgs.coreutils
-        pkgs.niri
-      ]
-    }:$PATH
-    call=${client.call}
-    log() { ${pkgs.util-linux}/bin/logger -t phone-proximity "$1"; }
-    PREV=""
-    while true; do
-      curl -sf --max-time 3 "${client.url}/health" >/dev/null || { sleep ${toString cfg.proximityIntervalSec}; continue; }
-      R=$("$call" phone.sensor.read_imu '{"sample_count":10}' 2>/dev/null || echo '{}')
-      STATE=$(echo "$R" | ${pkgs.jq}/bin/jq -r '(try (.result.content[0].text | fromjson | .inference) catch null) // "unknown"')
-      case "$STATE" in
-        walking|in_pocket)
-          if [ "$PREV" = "on_desk" ] || [ "$PREV" = "stationary" ]; then
-            command -v niri >/dev/null && niri msg action lock-screen
-            log "LOCK: $PREV -> $STATE"
-          fi ;;
-      esac
-      ${lib.optionalString cfg.allowUnlock ''
-        # EXPERIMENTAL and disabled by default. There is no safe programmatic
-        # unlock; this block intentionally does nothing but log intent.
-        case "$STATE" in on_desk|stationary)
-          [ "$PREV" = "walking" ] || [ "$PREV" = "in_pocket" ] && log "UNLOCK-INTENT (no-op): $PREV -> $STATE" ;;
+  daemon = pkgs.writeShellApplication {
+    name = "phone-proximity-daemon";
+    runtimeInputs = [
+      pkgs.jq
+      pkgs.curl
+      pkgs.coreutils
+      pkgs.niri
+      pkgs.util-linux
+    ];
+    bashOptions = [ ];
+    text = ''
+      call=${client.call}
+      log() { logger -t phone-proximity "$1"; }
+      PREV=""
+      while true; do
+        curl -sf --max-time 3 "${client.url}/health" >/dev/null || { sleep ${toString cfg.proximityIntervalSec}; continue; }
+        R=$("$call" phone.sensor.read_imu '{"sample_count":10}' 2>/dev/null || echo '{}')
+        STATE=$(echo "$R" | jq -r '(try (.result.content[0].text | fromjson | .inference) catch null) // "unknown"')
+        case "$STATE" in
+          walking|in_pocket)
+            if [ "$PREV" = "on_desk" ] || [ "$PREV" = "stationary" ]; then
+              command -v niri >/dev/null && niri msg action lock-screen
+              log "LOCK: $PREV -> $STATE"
+            fi ;;
         esac
-      ''}
-      # A failed read must not erase on_desk, or on_desk -> unknown -> walking never locks.
-      [ "$STATE" = unknown ] || PREV="$STATE"
-      sleep ${toString cfg.proximityIntervalSec}
-    done
-  '';
+        ${lib.optionalString cfg.allowUnlock ''
+          # EXPERIMENTAL and disabled by default. There is no safe programmatic
+          # unlock; this block intentionally does nothing but log intent.
+          case "$STATE" in on_desk|stationary)
+            [ "$PREV" = "walking" ] || [ "$PREV" = "in_pocket" ] && log "UNLOCK-INTENT (no-op): $PREV -> $STATE" ;;
+          esac
+        ''}
+        # A failed read must not erase on_desk, or on_desk -> unknown -> walking never locks.
+        [ "$STATE" = unknown ] || PREV="$STATE"
+        sleep ${toString cfg.proximityIntervalSec}
+      done
+    '';
+  };
 in
 {
   options.phone-agent = {

@@ -38,15 +38,21 @@ let
   # kbd_rgb_mode_index reports the field order: cmd mode red green blue speed.
   # cmd=1 persists into the EC so the mode survives a cold boot on its own;
   # the units below exist because asusd re-asserts Static over the top.
-  apply = pkgs.writeShellScript "asus-keyboard-rgb" ''
-    c='${cfg.colour}'
-    printf '%d %d %d %d %d %d\n' \
-      ${if cfg.persistToEc then "1" else "0"} \
-      ${toString modeIds.${cfg.mode}} \
-      $((16#''${c:0:2})) $((16#''${c:2:2})) $((16#''${c:4:2})) \
-      ${toString speedIds.${cfg.speed}} \
-      > ${led}
-  '';
+  apply = lib.getExe (
+    pkgs.writeShellApplication {
+      name = "asus-keyboard-rgb";
+      bashOptions = [ ];
+      text = ''
+        c='${cfg.colour}'
+        printf '%d %d %d %d %d %d\n' \
+          ${if cfg.persistToEc then "1" else "0"} \
+          ${toString modeIds.${cfg.mode}} \
+          $((16#''${c:0:2})) $((16#''${c:2:2})) $((16#''${c:4:2})) \
+          ${toString speedIds.${cfg.speed}} \
+          > ${led}
+      '';
+    }
+  );
 
   unit = {
     description = "ASUS TUF keyboard RGB mode (asusd only drives Static here)";

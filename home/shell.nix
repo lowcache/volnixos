@@ -160,15 +160,19 @@
   # the venv interpreter is a nixpkgs CPython, not a foreign binary. The plugin
   # execs that venv python directly, so the libs have to be inherited from here.
   home.packages = [
-    (pkgs.writeShellScriptBin "noctalia-session" ''
-      export LD_LIBRARY_PATH=${
-        lib.makeLibraryPath [
-          pkgs.stdenv.cc.cc.lib
-          pkgs.zlib
-        ]
-      }''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
-      exec ${lib.getExe config.programs.noctalia.package} "$@"
-    '')
+    (pkgs.writeShellApplication {
+      name = "noctalia-session";
+      bashOptions = [ ];
+      text = ''
+        export LD_LIBRARY_PATH=${
+          lib.makeLibraryPath [
+            pkgs.stdenv.cc.cc.lib
+            pkgs.zlib
+          ]
+        }''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
+        exec ${lib.getExe config.programs.noctalia.package} "$@"
+      '';
+    })
     # Shell-start banner; needs ttfx-rs on PATH ($CARGO_HOME/bin), else no-op.
     inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];

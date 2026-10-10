@@ -91,15 +91,20 @@ in
     ];
 
     environment.systemPackages = [
-      (pkgs.writeShellScriptBin "phone-agent" ''
-        if [ $# -lt 1 ]; then
-          echo "Usage: phone-agent <tool-name> [arguments-json]"
-          echo "  phone-agent phone.system.ping"
-          echo "  phone-agent phone.npu.transcribe '{\"audio_path\":\"/tmp/test.wav\"}'"
-          exit 1
-        fi
-        ${client.call} "$@" | ${pkgs.jq}/bin/jq 'if (.result.isError // false) then {error: .result.content[0].text} elif .result then (.result.content[0].text | fromjson) else . end'
-      '')
+      (pkgs.writeShellApplication {
+        name = "phone-agent";
+        runtimeInputs = [ pkgs.jq ];
+        bashOptions = [ ];
+        text = ''
+          if [ $# -lt 1 ]; then
+            echo "Usage: phone-agent <tool-name> [arguments-json]"
+            echo "  phone-agent phone.system.ping"
+            echo "  phone-agent phone.npu.transcribe '{\"audio_path\":\"/tmp/test.wav\"}'"
+            exit 1
+          fi
+          ${client.call} "$@" | jq 'if (.result.isError // false) then {error: .result.content[0].text} elif .result then (.result.content[0].text | fromjson) else . end'
+        '';
+      })
     ];
   };
 }

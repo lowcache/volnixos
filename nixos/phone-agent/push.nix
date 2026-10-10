@@ -71,20 +71,25 @@ let
         httpd = http.server.ThreadingHTTPServer(server_address, AuthHandler)
         httpd.serve_forever()
   '';
-  daemon = pkgs.writeShellScriptBin "phone-push-server" ''
-    set -euo pipefail
-    export PATH=${
-      lib.makeBinPath [
-        pkgs.coreutils
-      ]
-    }:$PATH
-    export PUSH_DIR="${cfg.pushDir}"
-    export TOKEN_FILE="${toString cfg.tokenFile}"
-    export PORT=${toString cfg.pushPort}
-    export BIND="${cfg.pushBindAddr}"
+  daemon = pkgs.writeShellApplication {
+    name = "phone-push-server";
+    runtimeInputs = [ pkgs.python3 ];
+    bashOptions = [ ];
+    text = ''
+      set -euo pipefail
+      export PATH=${
+        lib.makeBinPath [
+          pkgs.coreutils
+        ]
+      }:$PATH
+      export PUSH_DIR="${cfg.pushDir}"
+      export TOKEN_FILE="${toString cfg.tokenFile}"
+      export PORT=${toString cfg.pushPort}
+      export BIND="${cfg.pushBindAddr}"
 
-    exec ${pkgs.python3}/bin/python3 ${serverPy}
-  '';
+      exec python3 ${serverPy}
+    '';
+  };
 in
 {
   options.phone-agent = {
