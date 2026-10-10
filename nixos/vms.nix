@@ -56,6 +56,15 @@ let
   # vsock CIDs 10 and 11 are net-gate and tailscale.
   anonBoxCid = anon.workstation.vsockCid;
 
+  # net-gate's transparent-proxy rules for one client; `tail` makes the stop variant tolerant.
+  clientRules = op: tail: src: subnet: ''
+    iptables -t nat -${op} PREROUTING -s ${src} -p udp --dport 53 \
+      -j REDIRECT --to-ports ${toString anon.dnsPort}${tail}
+    iptables -t nat -${op} PREROUTING -s ${src} -d ${subnet} -j RETURN${tail}
+    iptables -t nat -${op} PREROUTING -s ${src} -p tcp \
+      -j REDIRECT --to-ports ${toString anon.transPort}${tail}
+  '';
+
   # Shared by every guest below.
   guestBase = {
     _module.args.inputs = inputs;
@@ -133,41 +142,21 @@ in
             # are generated from one function rather than maintained as two copies
             # that can drift — and a drifted copy here does not fail loudly, it
             # quietly stops anonymising one of the two.
-            extraCommands =
-              let
-                clientRules = op: src: subnet: ''
-                  iptables -t nat -${op} PREROUTING -s ${src} -p udp --dport 53 \
-                    -j REDIRECT --to-ports ${toString anon.dnsPort}
-                  iptables -t nat -${op} PREROUTING -s ${src} -d ${subnet} -j RETURN
-                  iptables -t nat -${op} PREROUTING -s ${src} -p tcp \
-                    -j REDIRECT --to-ports ${toString anon.transPort}
-                '';
-              in
-              ''
-                # Backstop for the "must not route" invariant above: anything that
-                # reaches the forwarding path instead of tor dies here. With two
-                # legs this stops being belt-and-braces and becomes the mechanism
-                # preventing the workstation from being routed out the WAN.
-                iptables -A FORWARD -j DROP
-              ''
-              + clientRules "A" anon.tapAddress anon.torVmSubnet
-              + clientRules "A" anonBoxAddr anonBoxSubnet;
+            extraCommands = ''
+              # Backstop for the "must not route" invariant above: anything that
+              # reaches the forwarding path instead of tor dies here. With two
+              # legs this stops being belt-and-braces and becomes the mechanism
+              # preventing the workstation from being routed out the WAN.
+              iptables -A FORWARD -j DROP
+            ''
+            + clientRules "A" "" anon.tapAddress anon.torVmSubnet
+            + clientRules "A" "" anonBoxAddr anonBoxSubnet;
 
-            extraStopCommands =
-              let
-                clientRules = src: subnet: ''
-                  iptables -t nat -D PREROUTING -s ${src} -p udp --dport 53 \
-                    -j REDIRECT --to-ports ${toString anon.dnsPort} 2>/dev/null || true
-                  iptables -t nat -D PREROUTING -s ${src} -d ${subnet} -j RETURN 2>/dev/null || true
-                  iptables -t nat -D PREROUTING -s ${src} -p tcp \
-                    -j REDIRECT --to-ports ${toString anon.transPort} 2>/dev/null || true
-                '';
-              in
-              ''
-                iptables -D FORWARD -j DROP 2>/dev/null || true
-              ''
-              + clientRules anon.tapAddress anon.torVmSubnet
-              + clientRules anonBoxAddr anonBoxSubnet;
+            extraStopCommands = ''
+              iptables -D FORWARD -j DROP 2>/dev/null || true
+            ''
+            + clientRules "D" " 2>/dev/null || true" anon.tapAddress anon.torVmSubnet
+            + clientRules "D" " 2>/dev/null || true" anonBoxAddr anonBoxSubnet;
           };
         };
 

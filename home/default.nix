@@ -110,8 +110,6 @@ in
   };
 
   home = {
-    username = "lowcache";
-    homeDirectory = "/home/lowcache";
     stateVersion = "24.11";
     enableNixpkgsReleaseCheck = false;
     inherit sessionVariables;

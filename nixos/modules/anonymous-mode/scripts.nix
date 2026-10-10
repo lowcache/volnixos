@@ -365,14 +365,14 @@ let
     #    Everything else about this design rests on host and workstation
     #    sharing no L3. If someone adds an address here the isolation quietly
     #    evaporates and nothing else in the system would notice.
-    if ${ip} -br addr show ${cfg.workstation.bridge} 2>/dev/null           | ${pkgs.gnugrep}/bin/grep -qE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/'; then
+    if ${ip} -br addr show ${cfg.workstation.bridge} 2>/dev/null | ${pkgs.gnugrep}/bin/grep -qE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/'; then
       bad "the host HAS an address on ${cfg.workstation.bridge} — it must hold none"
     else
       pass "host holds no address on ${cfg.workstation.bridge}"
     fi
 
     # 7. NEGATIVE: and therefore cannot reach the workstation at all.
-    if ${pkgs.coreutils}/bin/timeout 4 ${pkgs.iputils}/bin/ping -c1 -W2           ${cfg.workstation.address} >/dev/null 2>&1; then
+    if ${pkgs.coreutils}/bin/timeout 4 ${pkgs.iputils}/bin/ping -c1 -W2 ${cfg.workstation.address} >/dev/null 2>&1; then
       bad "the host can REACH the workstation at ${cfg.workstation.address}"
     else
       pass "workstation unreachable from the host (no shared L3)"
