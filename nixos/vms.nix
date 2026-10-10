@@ -55,6 +55,19 @@ let
   anonBoxMac = "02:00:00:00:00:04";
   # vsock CIDs 10 and 11 are net-gate and tailscale.
   anonBoxCid = anon.workstation.vsockCid;
+
+  # Shared by every guest below.
+  guestBase = {
+    _module.args.inputs = inputs;
+    imports = [ inputs.microvm.nixosModules.microvm ];
+    networking = {
+      useNetworkd = true;
+      firewall.enable = true;
+    };
+    systemd.network.enable = true;
+    microvm.hypervisor = "cloud-hypervisor";
+    system.stateVersion = "24.11";
+  };
 in
 {
 
@@ -79,19 +92,16 @@ in
     net-gate = {
       autostart = true;
       config = {
-        # Use the same inputs
-        _module.args.inputs = inputs;
-
         imports = [
-          inputs.microvm.nixosModules.microvm
+          guestBase
           inputs.sops-nix.nixosModules.sops
         ];
+        # Fix entropy and vsock early load; kept per guest so it follows microvm's params.
+        boot.kernelParams = [ "random.trust_cpu=on" ];
 
         networking = {
           hostName = "net-gate";
-          useNetworkd = true;
           firewall = {
-            enable = true;
             # nat rewrites the destination port before filter/INPUT runs, so these
             # are the ports the redirected packets actually arrive on. The single
             # NIC faces the host tap, so an interface-scoped rule adds nothing.
@@ -163,7 +173,6 @@ in
 
         systemd = {
           network = {
-            enable = true;
             # MATCHED BY MAC, NOT BY NAME. This used to be `Name = "en* eth*"`,
             # which was correct while the guest had one NIC and silently wrong the
             # moment it grew a second: the glob matches both, and networkd would
@@ -194,7 +203,6 @@ in
         };
 
         microvm = {
-          hypervisor = "cloud-hypervisor";
           mem = 512;
           vcpu = 1;
           #cloud-hypervisor supports systemd-notify via vsock, but `microvm.vsock.cid` must be set to enable this.
@@ -240,15 +248,12 @@ in
             # /var/log/journal exists, so mounting this is the whole mechanism.
             # Without it the VM is a black box after boot — which is why a dead
             # tor.service went unnoticed for four days.
-            source = "/persist/var/log/net-gate-journal";
+            source = anon.guestJournalDir;
             mountPoint = "/var/log/journal";
             tag = "journal";
             proto = "virtiofs";
           };
         };
-
-        # Fix Entropy and VSOCK early load
-        boot.kernelParams = [ "random.trust_cpu=on" ];
 
         # This guest TERMINATES traffic into tor; it must never route it. Nothing
         # here enables forwarding, but "nothing enables it" is a property of the
@@ -265,13 +270,9 @@ in
 
         # Tor anonymity layer: one SOCKS5 listener, bound to the tap address.
         #
-        # The listener comes from client.socksListenAddress, NOT settings.SOCKSPort.
-        # client.enable emits its own `SOCKSPort 127.0.0.1:9050 IsolateDestAddr`
-        # from that option, so a hand-rolled second SOCKSPort on the same port made
-        # torrc carry two listeners on 9050 and tor died at startup on the second
-        # bind (listener bind failures are fatal). ExecStartPre --verify-config does
-        # not bind, so it passed and the only symptom was a refused connection from
-        # the host — which the wrappers misreported as "arm it with anon-on".
+        # The listener comes from client.socksListenAddress, NOT settings.SOCKSPort:
+        # client.enable already emits a SOCKSPort, and a second one on the same port
+        # kills tor at startup (listener bind failures are fatal).
         services.tor = {
           enable = true;
           client = {
@@ -305,10 +306,6 @@ in
             # bound only to the outer address therefore serves the host and
             # silently blackholes the workstation — the redirect still fires, it
             # just points at a port nobody is on.
-            #
-            # That is precisely how this presented: the workstation could not
-            # resolve anything, because its DNS was being redirected to
-            # ${anonInnerAddr}:${toString anon.dnsPort} where tor was not listening.
             TransPort = [
               {
                 addr = anon.torVmAddress;
@@ -350,11 +347,8 @@ in
             # with the routing table still looking entirely correct — the exact
             # "kernel says tor, the web says otherwise" signature.
             #
-            # 172.16.0.0/12 was wrong here: this host's WAN is 172.16.32.111/22 and
-            # docker0 is 172.17.0.1/16, both inside it. 10.192.0.0/10 is the
-            # conventional range for transparent-proxy setups and collides with
-            # nothing this host holds (its 10-net address is 10.187.3.118/24, below
-            # the /10). Re-check this if the host's addressing changes.
+            # 172.16.0.0/12 collides with this host's WAN and docker0; 10.192.0.0/10 collides
+            # with nothing it holds. Re-check if the host's addressing changes.
             VirtualAddrNetworkIPv4 = "10.192.0.0/10";
             AutomapHostsOnResolve = true;
             # No IPv6 uplink on this host: don't spend circuit-build attempts on
@@ -384,32 +378,28 @@ in
         #   ];
         # };
 
-        system.stateVersion = "24.11";
       };
     };
 
     tailscale = {
       autostart = true;
       config = {
-        _module.args.inputs = inputs;
-
         imports = [
-          inputs.microvm.nixosModules.microvm
+          guestBase
           inputs.sops-nix.nixosModules.sops
         ];
+        # Fix entropy and vsock early load; kept per guest so it follows microvm's params.
+        boot.kernelParams = [ "random.trust_cpu=on" ];
 
         networking = {
           hostName = "tailscale";
-          useNetworkd = true;
           firewall = {
-            enable = true;
             allowedUDPPorts = [ 41641 ];
           };
         };
 
         systemd = {
           network = {
-            enable = true;
             networks."10-lan" = {
               matchConfig.Name = "en* eth*";
               networkConfig = {
@@ -422,7 +412,6 @@ in
         };
 
         microvm = {
-          hypervisor = "cloud-hypervisor";
           mem = 256;
           vcpu = 1;
           vsock.cid = 11;
@@ -442,8 +431,6 @@ in
             }
           ];
         };
-
-        boot.kernelParams = [ "random.trust_cpu=on" ];
 
         services.tailscale = {
           enable = true;
@@ -495,7 +482,6 @@ in
           ];
         };
 
-        system.stateVersion = "24.11";
       };
     };
 
@@ -519,16 +505,12 @@ in
     anon-box = {
       autostart = false;
       config = {
-        _module.args.inputs = inputs;
-
-        imports = [ inputs.microvm.nixosModules.microvm ];
+        imports = [ guestBase ];
+        # Fix entropy and vsock early load; kept per guest so it follows microvm's params.
+        boot.kernelParams = [ "random.trust_cpu=on" ];
 
         networking = {
           hostName = "anon-box";
-          useNetworkd = true;
-          # Nothing listens here and nothing may reach in. The only peer on this
-          # segment is the gateway.
-          firewall.enable = true;
           # Resolution goes to the gateway's inner leg, whose nat bends :53 into
           # tor's DNSPort. There is no other resolver and no fallback: an
           # unresolvable name must fail, not leak sideways.
@@ -537,7 +519,6 @@ in
 
         systemd = {
           network = {
-            enable = true;
             wait-online.enable = false;
             networks."10-lan" = {
               matchConfig.MACAddress = anonBoxMac;
@@ -621,10 +602,8 @@ in
         # No IPv6 anywhere on this path: tor carries none here, and an unrouted v6
         # socket is a leak waiting for a misconfiguration. Refuse it at the stack.
         boot.kernel.sysctl."net.ipv6.conf.all.disable_ipv6" = 1;
-        boot.kernelParams = [ "random.trust_cpu=on" ];
 
         microvm = {
-          hypervisor = "cloud-hypervisor";
           mem = 2048;
           vcpu = 2;
           vsock.cid = anonBoxCid;
@@ -664,11 +643,9 @@ in
         # the VM. Debugging means catching it live.
         services.journald.settings.Journal.Storage = "volatile";
 
-        system.stateVersion = "24.11";
       };
     };
 
-    # Host-side overrides for fast shutdown
   };
 
   systemd = {
@@ -689,7 +666,7 @@ in
       "d /persist/var/lib/net-gate-ssh 0700 root root -"
     ]
     ++ lib.optional anon.persistTorState "d /persist/var/lib/net-gate-tor 0700 root root -"
-    ++ lib.optional anon.persistGuestJournal "d /persist/var/log/net-gate-journal 0700 root root -";
+    ++ lib.optional anon.persistGuestJournal "d ${anon.guestJournalDir} 0700 root root -";
 
     # The read-only half of the in/out split, enforced HOST-side.
     #
@@ -726,28 +703,18 @@ in
           echo "net-gate age recipient: $(${pkgs.ssh-to-age}/bin/ssh-to-age < "$key.pub")"
         '';
       };
-      "microvm@net-gate".serviceConfig.TimeoutStopSec = "10s";
-      "microvm@anon-box".serviceConfig.TimeoutStopSec = "10s";
-      "microvm-virtiofsd@anon-box" = {
-        serviceConfig = {
-          Type = lib.mkForce "simple";
-          TimeoutStopSec = "5s";
-        };
+    }
+    # Fast shutdown. Upstream virtiofsd units are Type=notify; forced to simple
+    # alongside the short stop timeouts (1824f5a).
+    // lib.genAttrs (map (n: "microvm@${n}") (builtins.attrNames config.microvm.vms)) (_: {
+      serviceConfig.TimeoutStopSec = "10s";
+    })
+    // lib.genAttrs (map (n: "microvm-virtiofsd@${n}") (builtins.attrNames config.microvm.vms)) (_: {
+      serviceConfig = {
+        Type = lib.mkForce "simple";
+        TimeoutStopSec = "5s";
       };
-      "microvm-virtiofsd@net-gate" = {
-        serviceConfig = {
-          Type = lib.mkForce "simple";
-          TimeoutStopSec = "5s";
-        };
-      };
-      "microvm@tailscale".serviceConfig.TimeoutStopSec = "10s";
-      "microvm-virtiofsd@tailscale" = {
-        serviceConfig = {
-          Type = lib.mkForce "simple";
-          TimeoutStopSec = "5s";
-        };
-      };
-    };
+    });
     network = {
       enable = true;
       wait-online.enable = false;

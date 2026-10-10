@@ -54,6 +54,7 @@ in
       systemd.services.ollama.serviceConfig = {
         User = username;
         Group = "users";
+        # Upstream sets ProtectHome = true; tmpfs + BindPaths exposes only ollamaDir.
         ProtectHome = lib.mkForce "tmpfs";
         BindPaths = [ ollamaDir ];
         # No OLLAMA_ORIGINS: `*` let any web page drive the API through the

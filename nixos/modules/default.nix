@@ -2,7 +2,7 @@
 # (../hosts/<name>.nix) set options and machine values on top.
 {
   imports = [
-    ./anonymous-mode.nix
+    ./anonymous-mode
     ./ai-stack.nix
     ./audio.nix
     ./backup.nix

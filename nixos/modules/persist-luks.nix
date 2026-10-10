@@ -70,6 +70,7 @@ in
           allowDiscards = true;
           bypassWorkqueues = true;
         };
+        # hardware-configuration.nix names the raw partition; mount the opened mapper.
         fileSystems."/persist".device = lib.mkForce "/dev/mapper/cryptpersist";
       }
 

@@ -9,6 +9,7 @@
     initrd.systemd.enable = true;
     loader = {
       systemd-boot = {
+        # lanzaboote replaces systemd-boot and needs it off.
         enable = lib.mkForce false;
         configurationLimit = 10;
       };
