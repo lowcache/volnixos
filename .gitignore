@@ -11,10 +11,9 @@ nixos/*.yaml
 # python bytecode
 __pycache__/
 
-# Per-machine agent state (not config)
-.model/.claude/
-.model/.antigravitycli/
-.model/tasks/
+# Per-machine agent state (not config); settings.local.json is auto-appended
+# by Claude Code permission prompts, so it can capture inline secrets verbatim
+.claude/settings.local.json
 .nanocoder
 .vscode
 

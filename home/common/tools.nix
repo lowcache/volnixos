@@ -50,11 +50,8 @@
       enable = true;
       lfs.enable = true;
       # Globally ignore memd's per-project data so it can never be tracked into
-      # a code repo (memory notes + agent contracts are personal, not for push).
-      ignores = [
-        ".memory/"
-        ".model/"
-      ];
+      # a code repo (memory notes are personal, not for push).
+      ignores = [ ".memory/" ];
       settings = {
         user = {
           name = "lowcache";

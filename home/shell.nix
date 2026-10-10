@@ -66,7 +66,7 @@
         and set -gx GH_TOKEN (cat /run/secrets/gh_token)
 
         # Phone-agent bearer token - sops-nix to /run/secrets/phone_agent_token;
-        # consumed by the phone-agent MCP server in .model/.claude/.mcp.json
+        # consumed by the phone-agent MCP server in .claude/.mcp.json
         test -r /run/secrets/phone_agent_token
         and set -gx PHONE_AGENT_TOKEN (cat /run/secrets/phone_agent_token)
 

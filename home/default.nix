@@ -157,13 +157,13 @@ in
 
   xdg = {
     configFile = {
-      # ~/.local/bin holds user scripts (memd, agent-scaffold, tether, claude shims).
+      # ~/.local/bin holds user scripts (memd, tether, claude shims).
       # The graphical session's PATH comes from the systemd --user manager — niri runs
       # under systemd --user (launched via uwsm) — which reads
       # ~/.config/environment.d/. Unlike systemd.user.sessionVariables (no var
       # expansion → would clobber PATH), environment.d expands ${PATH}, so we PREPEND.
       # This makes ~/.local/bin reachable session-wide, compositor-agnostic: e.g. the
-      # memd / agent-scaffold Claude Code hooks resolve in GUI-launched sessions (a
+      # memd Claude Code hooks resolve in GUI-launched sessions (a
       # /cc launch) the same as in a terminal. Takes effect on next login.
       "environment.d/10-local-bin.conf".text = "PATH=\${HOME}/.local/bin:\${PATH}\n";
 

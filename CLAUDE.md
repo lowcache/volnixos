@@ -26,14 +26,7 @@ Wiki: `https://wiki.infernalcode.com`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-For large additions/removals, use the `nix-expert` swarm:
-
-* `nix-expert` — orchestrator
-* `nix-flake-expert`
-* `nix-home-manager-expert`
-* `nix-impermanence-expert`
-* `nix-options-expert`
-* `nix-virtualization-expert`
+All Nix work goes through the `nixtastic` skill (`/nix`; `~/.claude/skills/nixtastic`). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper (`gate`, `build`, `drv`, `recall`, …). `/nix review [path]` runs a maintainability review.
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 
@@ -186,7 +179,7 @@ Preserve the subtree structure rather than copying its contents into unrelated c
 
 ## Claude Integration
 
-Claude-specific configuration belongs under `.model/.claude/`.
+Agent guides live at the repo root (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`). Claude Code configuration lives under `.claude/`: `.claude/.mcp.json` (Noctalia + phone-agent MCP, tracked) and `.claude/settings.local.json` (per-machine permissions, gitignored).
 
 This project may participate in the Claude↔Gemini tether. When a `[TETHER]` delegation is active, follow the tether protocol and worker-mode requirements while retaining all project constraints above.
 

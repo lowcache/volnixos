@@ -16,7 +16,7 @@
   #                          IDE and Nix-on-Droid has no display server. It
   #                          would add ~3.2 GB of GTK/X11 closure for a binary
   #                          that cannot launch.
-  #   memd / tether / agent-scaffold — home/scripts.nix links these out of
+  #   memd / tether        — home/scripts.nix links these out of
   #                          /persist, which does not exist on Android. They
   #                          need a phone-local checkout before they can be
   #                          wired up.

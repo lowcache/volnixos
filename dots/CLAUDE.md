@@ -1,14 +1,14 @@
-# Agent Guide — Dotfiles Scope (`dots/.model/CLAUDE.md`)
+# Agent Guide — Dotfiles Scope (`dots/CLAUDE.md`)
 
 This is the **dotfiles-scoped** agent guide. It applies when working anywhere under
 `dots/`. It does **not** replace the repository-root guide at
-[`../../.model/CLAUDE.md`](file:///home/lowcache/.nix-config/.model/CLAUDE.md) — read that
+[`../CLAUDE.md`](file:///home/lowcache/.nix-config/CLAUDE.md) — read that
 first for system-wide architecture (impermanence, flake layout, host config), then read
 this for dotfile-specific rules. The two layers operate **in concert**: root = whole
 system, this = the `dots/` subtree.
 
 Before changing anything under `dots/`, read this file and the scoped memory in
-[`../.memory/`](file:///home/lowcache/.nix-config/dots/.memory/).
+[`.memory/`](file:///home/lowcache/.nix-config/dots/.memory/).
 
 ---
 
@@ -26,9 +26,9 @@ via `mkOutOfStoreSymlink` in
 Consequence: **anything placed inside `dots/<app>/` appears live inside `~/.config/<app>/`.**
 For quickshell that directory is scanned by the QML loader. Therefore:
 
-* **Never** put `.memory/`, `.model/`, scratch files, or notes *inside* an individual app
+* **Never** put `.memory/`, agent guides, scratch files, or notes *inside* an individual app
   dir (`dots/quickshell/`, `dots/illogical-impulse/`, etc.).
-* The scoped memory lives at `dots/.memory/` and `dots/.model/` — `dots/` itself is **not**
+* The scoped memory lives at `dots/.memory/` and this guide at `dots/CLAUDE.md` — `dots/` itself is **not**
   a symlink target, so nothing leaks. Keep it that way.
 * Per-app notes go in subdirs **under** `dots/.memory/` (e.g.
   `dots/.memory/illogical-impulse/`), never under the symlinked app dir.

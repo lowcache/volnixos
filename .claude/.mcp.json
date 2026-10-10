@@ -4,7 +4,7 @@
       "type": "stdio",
       "command": "python3",
       "args": [
-        "/home/lowcache/CodeRepo/noctalia-claude-plugin/shim/noctalia-mcp.py"
+        "/home/lowcache/CodeRepo/noctalia-plugs/noctalia-claude-plugin/shim/noctalia-mcp.py"
       ],
       "env": {}
     },
