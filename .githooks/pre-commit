@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Runs CI's first gate (checks.formatting + checks.lint) before a commit lands, so a
+# lint error costs seconds here instead of an hour-long CI run. Install: make hooks.
+# Skips commits that touch no .nix/flake.lock (memd, dots, docs). Bypass: --no-verify.
+set -euo pipefail
+
+if ! git diff --cached --name-only --diff-filter=ACMR | grep -qE '(\.nix|flake\.lock)$'; then
+  exit 0
+fi
+
+# ${self} in the checks is the working tree, so unstaged edits are checked too.
+echo "pre-commit: nix checks (formatting + lint)..." >&2
+if ! nix build --no-link --quiet \
+  .#checks.x86_64-linux.formatting \
+  .#checks.x86_64-linux.lint; then
+  echo "pre-commit: gate failed. Fix with 'make fmt', or bypass with --no-verify." >&2
+  exit 1
+fi

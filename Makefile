@@ -48,7 +48,7 @@ SOPS_AGE_KEY_FILE ?= $(HOME)/.config/sops/age/keys.txt
         anon-logs anon-guest-logs \
         sops-edit sops-edit-vm sops-rekey sops-view sops-view-vm \
         backup backup-force backup-mount backup-umount \
-        check fmt update update-nixpkgs trash \
+        check fmt hooks update update-nixpkgs trash \
         git comm push \
         dots-log dots-split dots-remote dots-push dots-pull
 
@@ -355,6 +355,11 @@ fmt:
 	nix fmt
 	@echo "==Statix Fix=="
 	@statix fix .
+
+## :hooks: ..........: Install the pre-commit gate (fmt + lint before each .nix commit)
+hooks:
+	git config core.hooksPath .githooks
+	@echo "++ pre-commit gate active. Bypass a single commit with --no-verify."
 
 ## :update: ..........: Update all flake inputs
 update:
