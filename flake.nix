@@ -36,8 +36,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # Pinned v4.7.7 backup (emergency rollback). Kept COMMENTED so an unused input
-    # can't fail `nix flake lock`. To use: uncomment, lock, point home/noctalia.nix
-    # package at inputs.noctalia-stable.packages.${system}.default.
+    # can't fail `nix flake lock`. To use: uncomment, lock, set programs.noctalia.package
+    # (home/shell.nix) to inputs.noctalia-stable.packages.${system}.default.
     # noctalia-stable = {
     #   url = "github:noctalia-dev/noctalia?ref=v4.7.7";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -129,9 +129,6 @@
             nixpkgs.overlays = [
               inputs.nix-cachyos-kernel.overlays.pinned
               inputs.llm-agents.overlays.shared-nixpkgs
-              (import ./nixos/overlays/brave.nix)
-              (import ./nixos/overlays/pandas-stubs.nix)
-              # ollama-cuda pin dropped 2026-08-27; CI green since, overlay removed.
             ];
           }
           ./nixos

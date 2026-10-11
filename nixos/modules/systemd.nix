@@ -14,7 +14,6 @@
       "d /home/${username}/Storage/ai-generation 0755 ${username} users"
       "d /home/${username}/Storage/ai-generation/fooocus 0755 ${username} users"
       "d /home/${username}/Storage/ai-generation/forge 0755 ${username} users"
-      "d /persist/var/lib/tailscale-vm 0700 root root"
       # Disk-backed build temp so nix builds never exhaust the 4G tmpfs root.
       "d /nix/tmp 1777 root root -"
     ];

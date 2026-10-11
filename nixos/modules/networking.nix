@@ -1,6 +1,5 @@
-# NetworkManager for the physical interfaces. The VM taps are handled in
-# vms.nix (systemd-networkd + NM unmanaged list) and anonymous-mode egress
-# marking in anonymous-mode.nix.
+# NetworkManager for the physical interfaces. The VM taps are systemd-networkd's
+# (vms.nix, anonymous-mode/guests.nix), and NetworkManager is told to ignore them.
 {
   networking.networkmanager = {
     enable = true;

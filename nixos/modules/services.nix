@@ -13,15 +13,7 @@
     smartd.enable = true;
     timesyncd.enable = true;
     geoclue2.enable = true;
-    scx = {
-      enable = false;
-      scheduler = "scx_bpfland";
-    };
     flatpak.enable = true;
-    # dbus-broker (the uwsm default) is in use. A historical 2026-06-10 portal
-    # failure on this host traced to the old Hyprland session's cap_sys_nice
-    # wrapper leaking ambient CAP_SYS_NICE (not a dbus/pidfd issue) — moot now
-    # that Hyprland is gone. See .memory/inbox/2026-06-12-portal-bug-real-root-cause.md.
     asusd.enable = true;
     # supergfxd unbinds the dGPU's PCI device to switch modes; cardwired blocks
     # access with eBPF/LSM instead and leaves the nvidia driver loaded, so the

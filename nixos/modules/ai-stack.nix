@@ -49,6 +49,14 @@ in
         home = ollamaDir;
         modelsDir = "${ollamaDir}/models";
         host = lib.mkIf cfg.ollama.exposeToTailscaleVm "0.0.0.0";
+        # No OLLAMA_ORIGINS: `*` let any web page drive the API through the
+        # browser. The default admits local origins; nothing here needs more.
+        environmentVariables = {
+          OLLAMA_FLASH_ATTENTION = "1";
+          OLLAMA_NUM_PARALLEL = "1";
+          CUDA_VISIBLE_DEVICES = "0";
+          OLLAMA_KEEP_ALIVE = "5m";
+        };
       };
 
       systemd.services.ollama.serviceConfig = {
@@ -57,14 +65,6 @@ in
         # Upstream sets ProtectHome = true; tmpfs + BindPaths exposes only ollamaDir.
         ProtectHome = lib.mkForce "tmpfs";
         BindPaths = [ ollamaDir ];
-        # No OLLAMA_ORIGINS: `*` let any web page drive the API through the
-        # browser. The default admits local origins; nothing here needs more.
-        Environment = [
-          "OLLAMA_FLASH_ATTENTION=1"
-          "OLLAMA_NUM_PARALLEL=1"
-          "CUDA_VISIBLE_DEVICES=0"
-          "OLLAMA_KEEP_ALIVE=5m"
-        ];
       };
     })
 
@@ -73,7 +73,7 @@ in
       # MicroVM guest, and only from tailnetClients: the guest DNATs every
       # tailnet peer, so the interface alone would admit the whole tailnet.
       networking.firewall.extraCommands = lib.concatMapStrings (ip: ''
-        iptables -A nixos-fw -i vm-tailscale -s ${ip} -p tcp --dport 11434 -j nixos-fw-accept
+        iptables -A nixos-fw -i ${config.vol.tailscale-vm.tapInterface} -s ${ip} -p tcp --dport 11434 -j nixos-fw-accept
       '') cfg.ollama.tailnetClients;
     })
 

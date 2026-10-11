@@ -5,8 +5,8 @@
   ...
 }:
 let
-  # net-gate addressing comes from the system config (vol.anon-mode in
-  # nixos/modules/anonymous-mode.nix), which nixos/vms.nix also reads. Editing it
+  # net-gate addressing comes from the system config (vol.anon-mode), which the
+  # net-gate guest also reads. Editing it
   # in one place now moves the guest, the host jail, and these wrappers together.
   anon = osConfig.vol.anon-mode;
   torVmIp = anon.torVmAddress;
@@ -111,7 +111,7 @@ in
       '';
     })
     # anon-run: the user-facing handle on the anonymous workload. All it does is
-    # call anon-exec, which the system module owns (nixos/modules/anonymous-mode.nix).
+    # call anon-exec, which the system module owns (nixos/modules/anonymous-mode/).
     #
     # That indirection is the point: the confinement properties (loopback denied,
     # IPv6 refused, gateway resolv.conf bound over /etc/resolv.conf, anon.slice,
@@ -170,9 +170,7 @@ in
         pkgs.systemd
         pkgs.coreutils
       ];
-      bashOptions = [ ];
       text = ''
-        set -euo pipefail
         UNIT=lidkeep
 
         held() { [ "$(systemctl --user is-active $UNIT 2>/dev/null)" = active ]; }

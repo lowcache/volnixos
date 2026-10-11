@@ -68,9 +68,7 @@ let
         pkgs.restic
         pkgs.gawk
       ];
-      bashOptions = [ ];
       text = ''
-        set -euo pipefail
         ${notifyFn}
 
         # Never write into a directory that only looks like the drive.

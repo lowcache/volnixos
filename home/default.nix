@@ -7,73 +7,27 @@
 }:
 
 let
-  # We define the entire set of session variables once in this let block.
-  sessionVariables =
-    let
-      qtDependencies = with pkgs; [
-        qt6.qtwayland
-        qt6.qtsvg
-        qt6.qt5compat
-        qt6.qtdeclarative
-        qt6.qtpositioning
-        qt6.qtmultimedia
-        qt6.qtquicktimeline
-        qt6.qtimageformats
-        qt6.qtvirtualkeyboard
-        qt6.qtsensors
-        qt6.qttools
-        qt6.qttranslations
-        qt6.qtwebsockets
-        qt6.qtshadertools
-        qt6.qtscxml
-        kdePackages.kirigami.unwrapped
-        kdePackages.kirigami-addons
-        kdePackages.breeze-icons
-        kdePackages.qqc2-desktop-style
-        kdePackages.syntax-highlighting
-      ];
-    in
-    {
-      QML2_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (
-        pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml"
-      ) qtDependencies;
-      QML_IMPORT_PATH = pkgs.lib.concatMapStringsSep ":" (
-        pkg: "${pkg}/lib/qt-6/qml:${pkg}/lib/qml"
-      ) qtDependencies;
-      QT_PLUGIN_PATH = pkgs.lib.concatMapStringsSep ":" (
-        pkg: "${pkg}/lib/qt-6/plugins:${pkg}/lib/plugins"
-      ) qtDependencies;
-      # Wayland session vars. XDG_CURRENT_DESKTOP / XDG_SESSION_DESKTOP are deliberately
-      # NOT hardcoded here: the niri session self-declares its identity
-      # (`niri-session` exports XDG_CURRENT_DESKTOP=niri itself).
-      XDG_SESSION_TYPE = "wayland";
-      # redundant? QT_QPA_PLATFORM is hardcoded under the krita wrapper in pkgs.nix line ~45
-      QT_QPA_PLATFORM = "wayland";
-      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-      GDK_BACKEND = "wayland,x11";
-      SDL_VIDEODRIVER = "wayland";
-      CLUTTER_BACKEND = "wayland";
-      # Force GTK apps and Chromium to use XDG Desktop Portal for file choosers
-      GTK_USE_PORTAL = "1";
-      # Wayland support for Electron/Chromium
-      NIXOS_OZONE_WL = "1";
-      # Keep scratch + caches OFF the 4G tmpfs root: redirect to the roomy ~/Storage
-      # volume at the environment level so it holds for every session process (shells,
-      # tools, the Claude Code harness) without depending on per-action discipline.
-      # XDG_CACHE_HOME is set canonically via xdg.cacheHome in persist.nix (setting it
-      # here would conflict with home-manager's xdg module). It is honored by pip,
-      # llmfit, etc.
-      TMPDIR = "${config.home.homeDirectory}/Storage/tmp";
-      PIP_CACHE_DIR = "${config.home.homeDirectory}/Storage/.cache/pip";
-      CLAUDE_CODE_TMPDIR = "${config.home.homeDirectory}/Storage/tmp/claude";
-      # nvidia specific (commented out to render on the integrated AMD GPU)
-      # LIBVA_DRIVER_NAME = "nvidia";
-      # GBM_BACKEND = "nvidia-drm";
-      # __NV_PRIME_RENDER_OFFLOAD = "1";
-      # __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-      # __VK_LAYER_NV_optimus = "NVIDIA_only";
-    };
+  # Shared by home.sessionVariables and systemd.user.sessionVariables.
+  sessionVariables = {
+    # XDG_CURRENT_DESKTOP is deliberately unset: niri-session exports it.
+    XDG_SESSION_TYPE = "wayland";
+    QT_QPA_PLATFORM = "wayland";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+    GDK_BACKEND = "wayland,x11";
+    SDL_VIDEODRIVER = "wayland";
+    CLUTTER_BACKEND = "wayland";
+    # Force GTK apps and Chromium to use XDG Desktop Portal for file choosers
+    GTK_USE_PORTAL = "1";
+    # Wayland support for Electron/Chromium
+    NIXOS_OZONE_WL = "1";
+    # Scratch and caches off the 4G tmpfs root, for every session process.
+    # XDG_CACHE_HOME comes from xdg.cacheHome (persist.nix); setting it here conflicts.
+    TMPDIR = "${config.home.homeDirectory}/Storage/tmp";
+    PIP_CACHE_DIR = "${config.home.homeDirectory}/Storage/.cache/pip";
+    CLAUDE_CODE_TMPDIR = "${config.home.homeDirectory}/Storage/tmp/claude";
+    # No NVIDIA render vars: the session renders on the AMD iGPU (use `nvrun`).
+  };
 
 in
 {
@@ -114,16 +68,9 @@ in
     stateVersion = "24.11";
     enableNixpkgsReleaseCheck = false;
     inherit sessionVariables;
-    # Ensure the redirected scratch/cache roots exist before anything writes to them.
-    # krita-swap: Krita mmaps a tile swap file (kritarc maxSwapSize=10240, so up
-    # to 10G) at its own `swaplocation` key and does NOT read $TMPDIR, so the
-    # stock /tmp default put it on the 4G tmpfs root — where a full tmpfs leaves
-    # the mapped page unbackable and Krita dies with SIGBUS rather than SIGSEGV.
-    # kritarc now points here; this dir must exist or that fix silently regresses.
-    # Storage/thunderbird is not scratch: it is the mkOutOfStoreSymlink target
-    # for ~/.thunderbird (see home/persist.nix). A symlink pointing at a missing
-    # directory is worse than no symlink, since Thunderbird's own mkdir fails
-    # through a dangling link, so the target is created here.
+    # Targets that must exist before use. krita-swap: kritarc's swaplocation (up to
+    # 10G mmapped; on the tmpfs root a full disk SIGBUSes Krita). thunderbird: the
+    # ~/.thunderbird link target, which Thunderbird can't mkdir through.
     activation.ensureScratchDirs = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run mkdir -p "$HOME/Storage/tmp/claude" "$HOME/Storage/.cache/pip" \
         "$HOME/Storage/tmp/krita-swap" "$HOME/Storage/thunderbird"

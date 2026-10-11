@@ -74,9 +74,7 @@ let
   daemon = pkgs.writeShellApplication {
     name = "phone-push-server";
     runtimeInputs = [ pkgs.python3 ];
-    bashOptions = [ ];
     text = ''
-      set -euo pipefail
       export PATH=${
         lib.makeBinPath [
           pkgs.coreutils
@@ -106,11 +104,12 @@ in
     pushPort = lib.mkOption {
       type = lib.types.port;
       default = 8463;
-      description = "Port on pushBindAddr. Needs a matching forwardPorts entry in vms.nix.";
+      description = "Port on pushBindAddr; the tailscale guest forwards it (vms.nix).";
     };
     pushBindAddr = lib.mkOption {
       type = lib.types.str;
-      default = "192.168.101.1";
+      default = config.vol.tailscale-vm.hostAddress;
+      defaultText = lib.literalExpression "config.vol.tailscale-vm.hostAddress";
       description = "The tap address; NEVER 0.0.0.0";
     };
   };
@@ -125,7 +124,9 @@ in
 
     # The tailscale guest DNATs tailnet :pushPort onto this tap; without this the
     # host firewall refuses it on arrival.
-    networking.firewall.interfaces."vm-tailscale".allowedTCPPorts = [ cfg.pushPort ];
+    networking.firewall.interfaces.${config.vol.tailscale-vm.tapInterface}.allowedTCPPorts = [
+      cfg.pushPort
+    ];
 
     systemd.user.tmpfiles.users.${cfg.user}.rules = [ "d ${cfg.pushDir} 0700 - - -" ];
 

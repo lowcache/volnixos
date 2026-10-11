@@ -10,9 +10,7 @@ let
   syncScript = lib.getExe (
     pkgs.writeShellApplication {
       name = "phone-ingest-sync";
-      bashOptions = [ ];
       text = ''
-        set -euo pipefail
         export PATH=${
           lib.makeBinPath [
             pkgs.curl

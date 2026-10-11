@@ -1,107 +1,88 @@
-{ config, ... }: {
-
+{ config, lib, ... }:
+let
+  inherit (config.lib.file) mkOutOfStoreSymlink;
+  home = config.home.homeDirectory;
+  # Live-edit links into the repo checkout (via /persist, its canonical path).
+  dot = path: mkOutOfStoreSymlink "/persist${home}/.nix-config/dots/${path}";
+  storage = path: mkOutOfStoreSymlink "${home}/Storage/${path}";
+in
+{
   xdg = {
     enable = true;
-    # Move the XDG cache root off the 4G tmpfs onto the roomy ~/Storage volume.
-    # This sets XDG_CACHE_HOME session-wide, so pip/llmfit/etc. all
-    # cache to Storage by default instead of filling root (see home/default.nix).
-    cacheHome = "${config.home.homeDirectory}/Storage/.cache";
-    configFile = {
-      # Color engine (apply_theme.py + themes/) for the niri/Noctalia session.
-      "color-engine".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/color-engine";
-      # niri + Noctalia v5. Live-edit symlinks; Home Manager writes no files here
-      # (see home/shell.nix), so no collision.
-      "niri".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/niri";
-      "noctalia".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/noctalia";
-      "kitty".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/kitty";
-      "fastfetch".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/fastfetch";
-      "cava".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/cava";
-      "fuzzel".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/fuzzel";
-      "wlogout".source =
-        config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/wlogout";
-      # force: Noctalia natively themes starship and replaces this symlink with a
-      # real file (its [palettes.noctalia] block), which made HM refuse to clobber
-      # and failed the switch. force lets HM reclaim the symlink each activation.
-      "starship.toml" = {
-        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/starship/starship.toml";
-        force = true;
+    # XDG_CACHE_HOME off the 4G tmpfs root, session-wide.
+    cacheHome = "${home}/Storage/.cache";
+    configFile =
+      # Color engine for the niri/Noctalia session, then the live-edit dotfile dirs.
+      # Home Manager writes no files under these (see home/shell.nix).
+      lib.genAttrs
+        [
+          "color-engine"
+          "niri"
+          "noctalia"
+          "kitty"
+          "fastfetch"
+          "cava"
+          "fuzzel"
+          "wlogout"
+        ]
+        (name: {
+          source = dot name;
+        })
+      // {
+        # force: Noctalia themes starship by replacing this link with a real file,
+        # which would make HM refuse to clobber it and fail the switch.
+        "starship.toml" = {
+          source = dot "starship/starship.toml";
+          force = true;
+        };
+        "kritarc".source = storage "krita-master/kritarc";
+        "kritadisplayrc".source = storage "krita-master/kritadisplayrc";
       };
-      "kritarc".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/kritarc";
-      "kritadisplayrc".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/kritadisplayrc";
-    };
   };
 
   home = {
     file = {
-      ".local/share/krita".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/krita-master/krita";
-      "Pictures/fromAi/outputs".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/ai-generation/fooocus/outputs";
-      # Android Studio SDK and AVD root. Both grow to multiple GB — the SDK
-      # alone was 1.4G and helped fill the 4G tmpfs root to 100% on 2026-08-21 —
-      # and both are re-downloadable, so they belong on the Storage volume
-      # rather than /persist. ~/.android/avd is where emulator disk images land.
-      "Android".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/Android";
-      ".android".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/.android";
-      # Thunderbird's profile root on Linux is ~/.thunderbird, NOT
-      # ~/.config/thunderbird: profiles.ini, account setup, filters, and the
-      # local mail stores all live here. Unpersisted it does not survive the
-      # tmpfs wipe and Thunderbird comes up factory-new every boot. Mail stores
-      # are the growth risk (IMAP caches grow without bound), so this goes to
-      # the Storage volume rather than the /persist list — and it must be one
-      # or the other, never both: impermanence bind-mounts refuse a non-canonical
-      # target, so a path cannot be a symlink AND a persisted directory.
-      # The Thunderbird cache already lands on Storage via XDG_CACHE_HOME.
-      ".thunderbird".source =
-        config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Storage/thunderbird";
-      # Non-hidden alias of the repo: antigravity (agy) rejects hidden paths as
-      # workspace folders but does not resolve symlinks, mitigatef with workdir
-      # ~/volnix to get full workspace registration.
+      ".local/share/krita".source = storage "krita-master/krita";
+      "Pictures/fromAi/outputs".source = storage "ai-generation/fooocus/outputs";
+      # Android SDK and AVDs: multi-GB and re-downloadable, so Storage, not /persist.
+      "Android".source = storage "Android";
+      ".android".source = storage ".android";
+      # Thunderbird's profile root (not ~/.config). Mail stores grow without bound,
+      # so Storage rather than /persist; a path can be a symlink OR persisted, never
+      # both (impermanence refuses a non-canonical target).
+      ".thunderbird".source = storage "thunderbird";
+      # Non-hidden alias of the repo: antigravity rejects hidden workspace paths
+      # and doesn't resolve symlinks.
       "volnix" = {
-        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config";
+        source = mkOutOfStoreSymlink "/persist${home}/.nix-config";
         force = true;
       };
-      # Compat symlink for the imperative user profile. nix normally creates this
-      # lazily; on tmpfs root it vanishes each boot, so pin it declaratively at the
-      # persisted generation store (see ".local/state/nix/profiles" below). Stable
-      # target `profiles/profile` always resolves to the current generation, so
-      # `nix-env -iA nixos.<pkg>` binaries land on PATH via ~/.nix-profile/bin.
+      # Imperative-profile compat link; it would vanish with the tmpfs root. Points
+      # at the persisted generations (".local/state/nix/profiles" below).
       ".nix-profile" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.local/state/nix/profiles/profile";
+        source = mkOutOfStoreSymlink "${home}/.local/state/nix/profiles/profile";
         force = true;
       };
-      # OmO extensions and MCP servers, live-edit links into the persisted .omo.
-      # force: these replace the hand-made copies seeded into /persist on 2026-10-01.
+      # OmO extensions and MCP servers. force: these replaced hand-made copies.
       ".omo/agent/mcp.json" = {
-        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/mcp.json";
+        source = dot "omo/mcp.json";
         force = true;
       };
       ".omo/agent/extensions/statusline.js" = {
-        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/statusline.js";
+        source = dot "omo/statusline.js";
         force = true;
       };
       ".omo/agent/extensions/memd.js" = {
-        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/memd.js";
+        source = dot "omo/memd.js";
         force = true;
       };
       ".omo/agent/extensions/rtk.js" = {
-        source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/.nix-config/dots/omo/rtk.js";
+        source = dot "omo/rtk.js";
         force = true;
       };
       # claude-companion pulse adapter; it finds pulse-emit beside its real path.
       ".omo/agent/extensions/pulse.js" = {
-        source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/CodeRepo/noctalia-plugs/noctalia-claude-plugin/hooks/omo-pulse.js";
+        source = mkOutOfStoreSymlink "${home}/CodeRepo/noctalia-plugs/noctalia-claude-plugin/hooks/omo-pulse.js";
         force = true;
       };
     };
@@ -126,16 +107,10 @@
             ".foundry"
             ".ZAP"
             ".java"
-            # mcp-gateway runtime state, NOT config (~/.config/mcp-gateway is
-            # persisted separately). Holds oauth/ with the dynamically-registered
-            # client_id and refresh tokens for remote backends like Cloudflare.
-            # Unpersisted it is wiped with the tmpfs root and every reboot forces
-            # a fresh browser authorization. Also holds transparency logs and
-            # identity grants.
+            # mcp-gateway runtime state (OAuth client ids + refresh tokens for remote
+            # backends); unpersisted, every reboot forces re-authorization.
             ".mcp-gateway"
-            # OmO agent state: auth, sessions, memory repo and user extensions.
-            # Unpersisted it sits on the tmpfs root and every reboot starts the
-            # agent logged out with no history.
+            # OmO agent state: auth, sessions, memory repo, extensions.
             ".omo"
           ];
           config = [
@@ -146,30 +121,19 @@
             ".config/Google"
             ".config/BraveSoftware"
             ".config/micro"
-            # Spotify prefs plus the Users/ blob holding the logged-in session.
-            # 32K and it does not grow, so it belongs here rather than on
-            # Storage; the 6.4G audio cache already goes to ~/Storage/.cache
-            # because the client honours XDG_CACHE_HOME. Without this, every
-            # boot starts logged out.
+            # Prefs + logged-in session (32K); the audio cache follows XDG_CACHE_HOME.
             ".config/spotify"
             ".config/mcp-gateway"
             ".config/systemd/user"
             ".config/sops"
             ".config/memd"
-            # rbw's imperative config (email, base_url, device_id) and the
-            # desktop client's session. Unpersisted, both are wiped with the
-            # tmpfs root and every boot starts logged out — which is exactly
-            # the friction that kills password-manager adoption.
+            # rbw's imperative config and the desktop client's session.
             ".config/rbw"
             ".config/Bitwarden"
-            # Obsidian app state: vault registry (obsidian.json), window state and
-            # per-vault plugin trust. Unpersisted, every boot reopens the vault picker.
+            # Vault registry, window state, per-vault plugin trust.
             ".config/obsidian"
           ];
-          # Note: with XDG_CACHE_HOME redirected to ~/Storage/.cache (see home/default.nix),
-          # caches no longer land on the 4G tmpfs by default. These entries remain as a
-          # safety net for any app that hardcodes ~/.cache and ignores XDG. ".cache/llmfit"
-          # added after it (an XDG-ignoring cache) filled root tmpfs to 100% on 2026-06-16.
+          # Safety net for apps that hardcode ~/.cache and ignore XDG_CACHE_HOME.
           cache = [
             ".cache/pip"
             ".cache/noctalia"
@@ -187,16 +151,10 @@
             ".local/share/keyrings"
             ".local/share/Google"
             ".local/share/flatpak"
-            # Android /data for waydroid. The container mounts this as the
-            # userdata partition, so every installed app and its data lands
-            # here. Unpersisted it sits on the 4G tmpfs root and is both lost
-            # on reboot and a refill of the crash we hit 2026-08-21.
+            # waydroid's userdata partition (installed apps and their data).
             ".local/share/waydroid"
             ".local/share/applications"
-            # opencode's session store, backing `tether continue` on the free
-            # tiers. Unpersisted, every reboot orphans in-flight delegations:
-            # the session id in ~/CodeRepo/tether/sessions survives the tmpfs
-            # wipe but the conversation it points at does not.
+            # opencode sessions, backing `tether continue`.
             ".local/share/opencode"
             ".local/share/Antigravity-x64"
             ".local/share/Antigravity IDE"
@@ -204,13 +162,9 @@
             ".local/state/noctalia"
             ".local/state/wireplumber"
             ".local/state/memd"
-            # rbw's encrypted vault cache; re-syncable, but re-downloading the
-            # whole vault on every boot defeats the agent.
+            # rbw's encrypted vault cache.
             ".local/share/rbw"
-            # Canonical imperative-profile generations. `nix-env -iA nixos.<pkg>`
-            # writes profile-N-link + manifest here (XDG state profile). Persisting
-            # this dir — NOT the ~/.nix-profile symlink (which is non-canonical and
-            # recreated below) — is what makes ad-hoc installs survive the tmpfs wipe.
+            # nix-env generations (the canonical path; ~/.nix-profile is linked above).
             ".local/state/nix/profiles"
           ];
           flatpak-var = [
@@ -229,8 +183,7 @@
           ];
         in
         dotfiles ++ config ++ cache ++ local ++ flatpak-var ++ home-dirs;
-      # Single files in $HOME that must survive the tmpfs wipe.
-      # ~/.claude.json holds Claude Code config/state and lives OUTSIDE ~/.claude.
+      # Claude Code config/state, outside ~/.claude.
       files = [
         ".claude.json"
       ];

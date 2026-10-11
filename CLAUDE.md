@@ -51,13 +51,22 @@ Preserve the existing persistence layout and its separation between `/persist` a
 
 ## MicroVMs
 
-The flake exposes MicroVM runners for:
+cloud-hypervisor guests via microvm.nix. The flake exposes runners for `net-gate` and `tailscale-vm`.
 
-* `net-gate` — Tor gateway
-* `tailscale-vm` — Tailscale gateway
-* `anon-box` — Anonymity Workstation
+* `nixos/vms.nix` — MicroVM host, shared stop-timeout tuning, and the `tailscale` guest. Its addressing is `vol.tailscale-vm.*` (tap, subnet, host/guest address); `phone-agent` and `ai-stack` read it rather than repeating literals.
+* `nixos/vm-guest-base.nix` — base module every guest imports.
+* `nixos/modules/anonymous-mode/guests.nix` — `net-gate` and `anon-box` plus their host plumbing (`br-anon`, net-gate tap, scoped NAT, key minting). Gated by `vol.anon-mode.enable`; addressing comes from `vol.anon-mode.*`.
 
-Use the existing MicroVM configuration and Makefile targets rather than introducing parallel runner mechanisms.
+`microvm@net-gate` has `X-RestartIfChanged=false`: after changing its config run `make gate-restart`, or the old guest keeps running. Use the existing Makefile targets rather than introducing parallel runner mechanisms.
+
+### Anonymity workstation (`vol.anon-mode`)
+
+Invariant: an anonymous workload either traverses net-gate in a verified-ready state or has no network at all.
+
+* Host side (`anonymous-mode/default.nix`): `anon-jail` gives the anon uid a per-uid routing table with a blackhole default (armed at boot, never auto-released); `anon-routing` points it at net-gate; `anon-check` runs the L0–L4 readiness ladder and only L4 writes the stamp that releases workloads; `anon-watch` (timer) re-verifies and seals on loss. `anonymous.target` is the arm/disarm handle.
+* net-gate terminates Tor: nat REDIRECT into TransPort/DNSPort per client source, no forwarding, FORWARD drop. Two legs: host tap and `br-anon`.
+* anon-box: workstation guest on `br-anon` only. The host holds no address on that bridge; entry is over vsock (`anon-shell`). Started by `anonymous.target` after the ladder passes. `/in` is a host-side read-only bind, `/out` is `~/Storage/anon/out` (unencrypted volume).
+* Operate with `make anon-status | anon-arm | anon-selftest | anon-logs | anon-guest-logs | anon-box-rebuild`. User entry points: `anon-run`, `anon-shell`, `tor-curl`, `tor-brave`.
 
 ## NVIDIA / Ollama
 
@@ -83,12 +92,16 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 
 ## volinit
 
-Removed from the flake inputs (2026-10-03) while it is overhauled into a cockpit-style menu/TUI;
-an in-progress push would otherwise break the whole flake. Local checkout: `/home/lowcache/CodeRepo/volinit`.
+Terminal banner, tracked from the `rewrite/go-cockpit` branch while it is overhauled into a cockpit-style TUI (local checkout: `/home/lowcache/CodeRepo/volinit`). Wired as the `volinit` flake input and `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/shell.nix`; the fish greeting guards on `command -v volinit`. If a WIP push breaks evaluation, drop both lines rather than pinning around it.
 
-To re-add when finished: restore the `volinit` input in `flake.nix` and
-`inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/pkgs.nix`
-(re-add `inputs` to that file's arguments). The fish greeting hook already guards on `command -v volinit`.
+## Phone agent
+
+Host side of the Galaxy S26 Ultra MCP integration, `nixos/phone-agent/` (`phone-agent.*` options, set in `nixos/hosts/volnix.nix`). The MCP server itself runs in Termux on the phone and is reached over the tailnet through the `tailscale` guest (the host is not a tailnet node). Auth is the sops `phone_agent_token`.
+
+* `phone-agent` CLI (system package) calls phone tools; Claude Code reaches the server via `.claude/.mcp.json` (`${PHONE_AGENT_TOKEN}`).
+* User units, gated on `phone-agent.user`: ingest sync (timer) + watcher into `~/ingest`, proximity lock (lock only, no unlock), network-routing profile from modem state.
+* Push server (`enablePush`): read-only, token-gated, bound to the tailscale tap; the guest forwards tailnet `:pushPort` to it, so laptop→phone transfer stays phone-initiated.
+* adb TCP 5555 on the phone stays open deliberately (phone-agent + Automate/Shizuku); do not "clean it up".
 
 ## Memory — memd
 
@@ -185,4 +198,3 @@ This project may participate in the Claude↔Gemini tether. When a `[TETHER]` de
 
 Whenever a major addition, subtraction, or modification is made to the VolnixOS repo/config make sure that those changes, and any necessary considerations, are reflected here to ensure that this document never becomes stale or drifts into a state of hindrance to future work. This document should always reflect the most current state of the configuration, the wiki, and any other subsystems. 
 
-**Case in point the phone-agent subsystem and more detail on the anonymity workstation are covered here, and obviously remove this comment afterwards.**

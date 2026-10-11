@@ -80,7 +80,10 @@ let
     ;
 in
 {
-  imports = [ ./options.nix ];
+  imports = [
+    ./options.nix
+    ./guests.nix
+  ];
 
   config = lib.mkIf cfg.enable {
     assertions = [
@@ -102,36 +105,20 @@ in
       }
     ];
 
-    # networkd's defaults have it delete routes and routing policy rules it did
-    # not create whenever it reconfigures a link. The jail's uidrange rule is
-    # exactly such a foreign rule, and the net-gate tap is recreated on every VM
-    # restart — so the boundary was being removed by routine events. Host-wide
-    # setting, and the right one here regardless: tailscale, libvirt and docker
-    # all install routes networkd has no business reaping.
+    # By default networkd reaps routes/rules it didn't create on every link
+    # reconfigure, and the net-gate tap is recreated on each VM restart: that
+    # removed the jail's uidrange rule. Host-wide, and right for tailscale,
+    # libvirt and docker routes too.
     systemd.network.config.networkConfig = {
       ManageForeignRoutes = false;
       ManageForeignRoutingPolicyRules = false;
     };
 
-    # BRIDGED FRAMES TRAVERSE THE HOST'S iptables FORWARD CHAIN.
-    #
-    # br_netfilter is loaded here (docker loads it) and
-    # net.bridge.bridge-nf-call-iptables is 1, so traffic bridged between the
-    # workstation and the gateway is subjected to the host's FORWARD chain even
-    # though it is pure L2 and is never routed by this host. The policy here is
-    # ACCEPT and docker's drops live in its own chains, so this is insurance
-    # rather than a fix for an observed break — but with docker and libvirt both
-    # inserting into FORWARD, intra-bridge traffic should not depend on their
-    # chains happening to RETURN.
-    #
-    # Clearing the sysctl would also fix it, and would break docker's own
-    # networking, so accept exactly the intra-bridge case instead.
-    #
-    # Yes, this is host netfilter, which the header of this file argues against.
-    # The distinction that makes it acceptable: the old marking rule's ABSENCE
-    # caused a leak, so every firewall reload was a security event. This rule's
-    # absence causes a DROP — the workstation loses connectivity and fails shut.
-    # Losing it costs function, not anonymity, which is the safe direction.
+    # Bridged frames traverse the host FORWARD chain (docker loads br_netfilter,
+    # bridge-nf-call-iptables=1), so accept the intra-bridge case explicitly
+    # rather than depend on docker/libvirt chains RETURNing. Clearing the sysctl
+    # would break docker. Host netfilter is acceptable HERE because losing this
+    # rule fails shut (workstation loses connectivity), unlike the old marking rule.
     networking.firewall = {
       extraCommands = ''
         iptables -C FORWARD -i ${cfg.workstation.bridge} -o ${cfg.workstation.bridge} -j ACCEPT 2>/dev/null \
@@ -141,10 +128,9 @@ in
         iptables -D FORWARD -i ${cfg.workstation.bridge} -o ${cfg.workstation.bridge} -j ACCEPT 2>/dev/null || true
       '';
 
-      # Loose, not strict, reverse-path filtering. The enforced path is asymmetric:
-      # replies return on the tap carrying public sources whose reverse route is the
-      # WAN, so strict rpfilter silently drops every TCP reply (DNS still passes, which
-      # makes the gateway look healthy). Loose still drops martian sources.
+      # The enforced path is asymmetric (replies on the tap carry public sources
+      # routed via the WAN), so strict rpfilter drops every TCP reply while DNS
+      # passes. Loose still drops martians.
       checkReversePath = "loose";
     };
 
@@ -159,36 +145,26 @@ in
       anonExec
       anonSelftest
       anonShell
-      # On PATH deliberately: when the workstation misbehaves, being able to
-      # open a raw channel to it by hand is the difference between diagnosing
-      # the guest and guessing about it.
+      # Raw channel to the workstation, for diagnosing it by hand.
       anonVsock
     ];
 
-    # An execution boundary, not just a label: every workload lands here, so
-    # disarming can take the whole tree down at once — `systemctl stop
-    # anon.slice` kills children too, and KillMode=control-group leaves nothing
-    # orphaned holding a socket.
+    # Every workload lands in anon.slice, so disarming stops the whole tree at once.
     systemd = {
       slices.anon = {
         description = "Anonymous-mode workloads (uid ${toString cfg.uid})";
         sliceConfig = {
           TasksMax = 4096;
-          # Inherited by every unit in the slice (deny lists intersect down the
-          # hierarchy), so the loopback is closed for anything that lands here —
-          # not only for workloads launched through anon-exec. Without this, a
-          # future unit declaring User=anon-user would keep loopback access and
-          # could leak lookups to the host's stub resolver.
+          # Inherited by every unit in the slice, not only anon-exec workloads:
+          # closes the path to the host's stub resolver.
           IPAddressDeny = "localhost";
         };
       };
 
       services = {
-        # THE JAIL. Armed at boot and left armed. The anon uid must be unable to
-        # reach the clearnet before arming, after disarming, and while anon-routing
-        # is restarting — so this is not partOf anything and nothing releases it
-        # automatically. systemd ordering coordinates startup; it is not the
-        # security boundary. The routing policy is.
+        # THE JAIL. Armed at boot, partOf nothing, never released automatically:
+        # the uid must have no clearnet before arming, after disarming, and while
+        # anon-routing restarts. The routing policy is the boundary, not ordering.
         anon-jail = {
           description = "Fail-closed routing jail for anonymous-mode uid ${toString cfg.uid}";
           wantedBy = [ "multi-user.target" ];
@@ -197,17 +173,13 @@ in
             RemainAfterExit = true;
             ExecStart = jailUp;
 
-            # DELIBERATELY NO ExecStop: nothing may release the jail. A rebuild stops a
-            # changed unit before restarting it, so an ExecStop teardown left the uid unjailed
-            # for ~3 s on every `make switch`. jailUp is idempotent; a restart re-asserts.
-            # To remove the rules, reboot or delete them by hand.
+            # DELIBERATELY NO ExecStop: a rebuild stops changed units first, which left
+            # the uid unjailed for ~3 s per switch. jailUp is idempotent.
           };
         };
 
         # Arming: replace the blackhole default with the gateway. `src` pins the
-        # source address so the guest can match anonymous traffic by source rather
-        # than by an interface name it would have to guess, and so selection cannot
-        # drift to the WAN address.
+        # source so the guest matches by address and selection can't drift to the WAN.
         anon-routing = {
           description = "Point the anon jail's default route at the net-gate Tor VM";
           requires = [ "anon-jail.service" ];
@@ -215,10 +187,8 @@ in
             "anon-jail.service"
             "microvm@net-gate.service"
           ];
-          # partOf the VM as well as the target: the gateway route is `dev
-          # ${cfg.tapInterface}`, so the kernel deletes it when the tap goes away with
-          # the VM. Without this the unit stays "active" (RemainAfterExit) over
-          # routes that no longer exist, and reports success over an open jail.
+          # partOf the VM too: the kernel drops the route with the tap, and without
+          # this the unit would stay "active" over a route that no longer exists.
           partOf = [
             "anonymous.target"
             "microvm@net-gate.service"
@@ -231,11 +201,8 @@ in
           };
         };
 
-        # The readiness ladder. A TCP handshake proves only that something is
-        # listening; it passes on a Tor that cannot build a circuit, which is how
-        # this stack sat broken for four days. L3 tests circuits through SOCKS, L4
-        # tests the enforced path itself — and only L4 writes the stamp that
-        # releases workloads.
+        # The readiness ladder (see header). Only L4 writes the stamp that releases
+        # workloads; a TCP handshake passes on a tor that cannot build circuits.
         anon-check = {
           description = "Verify the anonymous path end to end (L0-L4)";
           requires = [ "anon-routing.service" ];
@@ -248,17 +215,8 @@ in
           serviceConfig = {
             Type = "oneshot";
             RemainAfterExit = true;
-            # DefaultTimeoutStartSec is 90s, which would kill the ladder mid-wait
-            # and report a timeout instead of the real state — the one failure
-            # mode this module cannot tolerate, since a timeout says nothing
-            # about whether the path leaks.
-            #
-            # Headroom is computed from the ladder's actual worst case, not
-            # guessed: L2 waits 30 iterations of (2s probe + 1s sleep) = 90s;
-            # L3's deadline is bootstrapTimeout but each iteration can overrun it
-            # by one (20s curl + 5s sleep); L4 makes 3 attempts of (30s curl + 5s
-            # sleep) = 105s. At the old +150 a cold start could exceed the
-            # timeout and be killed mid-L4.
+            # Worst case, not a guess: L2 30x(2s+1s)=90s; L3 bootstrapTimeout plus one
+            # overrun (20s+5s); L4 3x(30s+5s)=105s. A timeout would hide the real state.
             TimeoutStartSec = cfg.bootstrapTimeout + 300;
             ExecStart = lib.getExe (
               pkgs.writeShellApplication {
@@ -348,23 +306,10 @@ in
           };
         };
 
-        # Re-seals the UNIT STATE after a failed arm, which the sealing inside
-        # anon-check cannot do for itself.
-        #
-        # anon-check's fail() withdraws the gateway route immediately, closing
-        # the hole. But anon-routing is a RemainAfterExit oneshot, so it stays
-        # `active` over a route that is no longer there — and systemd will not
-        # re-run ExecStart on a unit it already considers active. The next
-        # `systemctl start anonymous.target` would therefore never reinstall the
-        # gateway, and anon-check would fail at L4b (no route at all) instead of
-        # wherever the real fault is. One failed arm would poison every retry
-        # until anon-routing was restarted by hand.
-        #
-        # Stopping anon-routing is the correct sledgehammer HERE, precisely
-        # because of the Requires= cascade documented on routingUp/routingDown:
-        # it drags anon-check and anonymous.target down with it, which is the
-        # intended end state after a failed arm. Everything returns to inactive
-        # and the next attempt starts clean.
+        # Resets UNIT STATE after a failed arm. anon-check's fail() already pulled
+        # the route, but anon-routing (RemainAfterExit) stays "active", so the next
+        # arm would never reinstall it and every retry would fail at L4. Stopping it
+        # cascades (Requires=) through anon-check and the target: a clean retry.
         anon-seal = {
           description = "Reset anon-routing after a failed arm so retries start clean";
           serviceConfig = {
@@ -373,24 +318,15 @@ in
           };
         };
 
-        # THE WORKSTATION'S GATE. `wants` on the target starts anon-box but
-        # orders nothing, so without this the guest races the readiness ladder
-        # and can be up — and enterable — before the path is proven. Readiness
-        # gates release here exactly as it does for anon-exec.
-        #
-        # PartOf is what makes disarm reach it: anon-watch's seal path stops
-        # anonymous.target, and that must take the workstation down with it
-        # rather than leaving a VM running on a path just declared unsafe.
-        # Its root is tmpfs, so there is nothing to clean up afterwards.
+        # The workstation's gate: without the ordering it races the ladder and is
+        # enterable before the path is proven. PartOf lets a seal take it down.
         "microvm@anon-box" = {
           requires = [ "anon-check.service" ];
           after = [ "anon-check.service" ];
           partOf = [ "anonymous.target" ];
         };
 
-        # Disarming must also stop what was using the tunnel. Otherwise processes
-        # keep running under a uid whose jail just re-sealed — alive, networkless,
-        # and confusing.
+        # Disarming also stops what was using the tunnel.
         anon-reap = {
           description = "Reap anon.slice when anonymous mode is disarmed";
           partOf = [ "anonymous.target" ];
@@ -402,10 +338,7 @@ in
           };
         };
 
-        # PATH liveness, not process liveness. "Tor's PID exists" and even "tor
-        # answers" are weaker claims than "the anonymous path still traverses the
-        # gateway", so this re-runs L4 and, on a confirmed loss, takes the network
-        # away from the workload instead of leaving it on an unproven path.
+        # PATH liveness, not process liveness: re-runs L4 and seals on confirmed loss.
         anon-watch = {
           description = "Watch the anonymous path and seal on health loss";
           serviceConfig = {
@@ -495,10 +428,8 @@ in
         };
       };
 
-      # Arm/disarm handle. requires (not wants) so a failed verification fails the
-      # target instead of leaving it "active" over traffic that never reached Tor.
-      # The VM is only wanted: it stays up after disarming, since the SOCKS
-      # interface (tor-curl, tor-brave) is useful without the jail being open.
+      # requires, so failed verification fails the target. net-gate is only wanted:
+      # it stays up after disarm for the SOCKS interface (tor-curl, tor-brave).
       targets.anonymous = {
         description = "Anonymous mode: verified egress via the net-gate Tor VM (manual/on-demand)";
         wants = [

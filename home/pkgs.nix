@@ -19,7 +19,6 @@
           cmake
           progress
           cpufrequtils
-          strace
           # 0.7.91's demangle tests fail on nixpkgs c59305b's toolchain (15/245,
           # all ltrace.minor/demangle). Drop the override once Hydra caches ltrace.
           (ltrace.overrideAttrs { doCheck = false; })
@@ -30,37 +29,16 @@
           glib
           gtk3
           gtk4
-          dconf
         ];
-        # TODO
-        # FIXME
-        # Krita Wrapper was a fix under Hyprland the switch to Niri has made this redundant (see comment below) GMIC crashes are prevalent more krita research needed
-        # POC: QT_QPA_PLATFORM wayland is already set under home-Manager default.nix
-        # SOLUTION1: removal of this wrapper place krita: niriDesktop = with pkgs; [ krita ... ];
-        # SOLUTION2: keep krita wrapper and remove postBuild = '' wrapProgram $out/bin/krita --set QT_QPA_PLATFORM wayland '';
-        # G'MIC plugin crashes krita with SIGSEGV on first right-click/stylus-press in the
-        # filter tree: FiltersView::onCustomContextMenu calls deleteLater() on a context-menu
-        # pointer that is still nullptr (bug present upstream through gmic-qt master, 2026-07).
-        # Null-guard patch until fixed upstream; drop when nixpkgs ships a fixed version.
-        krita-plugin-gmic-patched = pkgs.krita-plugin-gmic.overrideAttrs (old: {
-          patches = (old.patches or [ ]) ++ [ ../overrides/gmic-qt-filtersview-nullptr-contextmenu.patch ];
-        });
-        krita-wrapped = pkgs.symlinkJoin {
-          name = "krita";
-          # pkgs.krita is itself a symlinkJoin of krita-unwrapped + binaryPlugins
-          # (default [ krita-plugin-gmic ]); override that input so the *patched* gmic
-          # is the single copy bundled inside the wrapper. Listing a standalone
-          # krita-plugin-gmic alongside would put a second, conflicting krita_gmic_qt.so
-          # in the home-manager profile and break buildEnv.
-          paths = [ (pkgs.krita.override { krita-plugin-gmic = krita-plugin-gmic-patched; }) ];
-          nativeBuildInputs = [ pkgs.makeWrapper ];
-          # Krita runs native Wayland under niri (better stylus/tablet support).
-          # The former xcb (XWayland) fallback existed only for Hyprland + hybrid-GPU
-          # canvas freezes (decision #4); Hyprland is gone, so Wayland is unconditional.
-          postBuild = ''
-            wrapProgram $out/bin/krita \
-              --set QT_QPA_PLATFORM wayland
-          '';
+        # G'MIC crashes Krita (SIGSEGV) on the first right-click/stylus press in the
+        # filter tree: FiltersView::onCustomContextMenu deleteLater()s a null
+        # pointer (upstream through gmic-qt master, 2026-07). Drop the patch when
+        # nixpkgs ships a fix. Overridden INSIDE pkgs.krita (a symlinkJoin over
+        # binaryPlugins) so the patched copy is the only krita_gmic_qt.so.
+        krita-patched = pkgs.krita.override {
+          krita-plugin-gmic = pkgs.krita-plugin-gmic.overrideAttrs (old: {
+            patches = (old.patches or [ ]) ++ [ ../overrides/gmic-qt-filtersview-nullptr-contextmenu.patch ];
+          });
         };
         # Vanilla Discord with the moonlight client mod injected (nixpkgs override).
         # Runs alongside GoofCord as a separate client/launcher.
@@ -88,12 +66,13 @@
           libnotify
           fuzzel
           kitty
-          krita-wrapped
+          krita-patched
           gimp-with-plugins
           imagemagick
           papirus-icon-theme
           gsettings-desktop-schemas
           vscodium
+          zed-editor
           pulsar
           gedit
           geany
@@ -109,7 +88,7 @@
           goofcord # privacy-focused Discord client (Vencord/Equicord/Shelter at runtime)
           discord-moonlight
           floorp-bin # Firefox-fork backup browser
-          pkgs.caja-with-extensions
+          caja-with-extensions
           ayugram-desktop
           vial
           nemo-with-extensions
@@ -162,18 +141,14 @@
           gpg-tui
           ripgrep-all
           pandoc # backend for micro's `preview` plugin (see home/common/tools.nix)
-          flatpak
           feh
           tor
-          cryptsetup
           playerctl
           brightnessctl
           gawk
           acpi
-          upower
           ddcutil
           clinfo
-          android-tools
         ];
         nixAi = with pkgs; [
           antigravity-cli
@@ -225,7 +200,7 @@
           flying-carpet
           #genymotion
           # waydroid itself comes from virtualisation.waydroid.enable
-          # (nixos/configuration.nix). Do NOT add it here: waydroid-nftables
+          # (nixos/modules/containers.nix). Do NOT add it here: waydroid-nftables
           # ships its own `waydroid` binary, and the HM profile shadows
           # /run/current-system on PATH, so the CLI and the container service
           # end up different builds. This host's iptables is xtables-nft-multi

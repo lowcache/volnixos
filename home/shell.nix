@@ -17,10 +17,8 @@
   ];
 
   programs = {
-    # home/noctalia.nix — Noctalia v5 shell (package + enable only).
-    # Config is deliberately NOT managed here: ~/.config/noctalia is an out-of-store
-    # symlink to dots/noctalia (see persist.nix), following the live-edit dotfile
-    # pattern
+    # Noctalia v5 (package + enable only); config is the live-edit dots/noctalia
+    # link from persist.nix.
     noctalia.enable = true;
     # Brave Browser (primary). programs.chromium both installs the package and
     # applies the Wayland/GPU command-line flags. Floorp (backup) is in pkgs.nix.
@@ -102,11 +100,6 @@
         nvrun = "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia ";
         stbldff-on = "sudo systemctl start docker-fooocus";
         stbldff-off = "sudo systemctl stop docker-fooocus";
-        # NOTE: no `forge` oci-container is declared in nixos/configuration.nix yet;
-        # these aliases target a non-existent docker-forge.service. Re-enable once
-        # the forge container is defined (see memory/todo.md).
-        # forggo = "sudo systemctl start docker-forge";
-        # forgstp = "sudo systemctl stop docker-forge";
       };
       functions = {
         tablet = {

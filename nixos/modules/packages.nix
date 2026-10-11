@@ -11,14 +11,12 @@
           sbctl
           cryptsetup
           wireguard-tools
-          tor
           uwsm
           android-studio
           android-tools
           appimage-run
           vulkan-tools
           libva-utils
-          gnupg
           bazaar
           nvtopPackages.nvidia
           nvidia-vaapi-driver
@@ -28,14 +26,12 @@
           weylus
         ];
         nix-utils = with pkgs; [
-          nh
           statix
           vulnix
           deadnix
           nix-diff
           nix-init
           manix
-          nixfmt
           nixos-option
           nixos-shell
           styx

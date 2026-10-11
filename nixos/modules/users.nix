@@ -1,4 +1,4 @@
-# Human accounts. The anon-mode isolation user lives in anonymous-mode.nix.
+# Human accounts. The anon-mode policy uid lives in anonymous-mode/.
 {
   config,
   username,
