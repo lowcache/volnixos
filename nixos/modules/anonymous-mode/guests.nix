@@ -38,13 +38,11 @@ let
   # vsock CIDs 10 and 11 are net-gate and tailscale.
   anonBoxCid = anon.workstation.vsockCid;
 
-  # net-gate's transparent-proxy rules for one client; `tail` makes the stop variant tolerant.
-  clientRules = op: tail: src: subnet: ''
-    iptables -t nat -${op} PREROUTING -s ${src} -p udp --dport 53 \
-      -j REDIRECT --to-ports ${toString anon.dnsPort}${tail}
-    iptables -t nat -${op} PREROUTING -s ${src} -d ${subnet} -j RETURN${tail}
-    iptables -t nat -${op} PREROUTING -s ${src} -p tcp \
-      -j REDIRECT --to-ports ${toString anon.transPort}${tail}
+  # net-gate's transparent-proxy rules for one client (nft, prerouting/dstnat).
+  clientRules = src: subnet: ''
+    ip saddr ${src} udp dport 53 redirect to :${toString anon.dnsPort}
+    ip saddr ${src} ip daddr ${subnet} return
+    ip saddr ${src} meta l4proto tcp redirect to :${toString anon.transPort}
   '';
 in
 {
@@ -77,29 +75,35 @@ in
                 anon.transPort
               ];
               allowedUDPPorts = [ anon.dnsPort ];
+            };
 
-              # TRANSPARENT PROXY: the enforcement boundary, matched by client source
-              # address. Order matters: DNS first (so queries to this guest reach
-              # DNSPort before the in-subnet RETURN), then RETURN (keeps SOCKS
-              # usable), then all remaining TCP into TransPort. Nothing enables
-              # ip_forward, so anything not rewritten (non-53 UDP, ICMP, QUIC) is
-              # dropped rather than forwarded: fails shut.
-              #
-              # Both clients (host jail, workstation) come from one function: a
-              # drifted copy would silently stop anonymising one of them.
-              extraCommands = ''
-                # Anything reaching the forwarding path instead of tor dies here; with
-                # two legs this is what keeps the workstation off the WAN.
-                iptables -A FORWARD -j DROP
-              ''
-              + clientRules "A" "" anon.tapAddress anon.torVmSubnet
-              + clientRules "A" "" anonBoxAddr anonBoxSubnet;
-
-              extraStopCommands = ''
-                iptables -D FORWARD -j DROP 2>/dev/null || true
-              ''
-              + clientRules "D" " 2>/dev/null || true" anon.tapAddress anon.torVmSubnet
-              + clientRules "D" " 2>/dev/null || true" anonBoxAddr anonBoxSubnet;
+            # TRANSPARENT PROXY: the enforcement boundary, matched by client source
+            # address. Order matters: DNS first (so queries to this guest reach DNSPort
+            # before the in-subnet return), then return (keeps SOCKS usable), then all
+            # remaining TCP into TransPort. Nothing enables ip_forward, so anything not
+            # rewritten (non-53 UDP, ICMP, QUIC) is dropped rather than forwarded.
+            # nftables loads this atomically with the rest of the ruleset, so a
+            # firewall reload never leaves a window without it.
+            #
+            # Both clients (host jail, workstation) come from one function: a drifted
+            # copy would silently stop anonymising one of them.
+            nftables = {
+              enable = true;
+              tables.anon-gateway = {
+                family = "ip";
+                content = ''
+                  chain prerouting {
+                    type nat hook prerouting priority dstnat; policy accept;
+                    ${clientRules anon.tapAddress anon.torVmSubnet}
+                    ${clientRules anonBoxAddr anonBoxSubnet}
+                  }
+                  # Anything reaching the forwarding path instead of tor dies here; with
+                  # two legs this is what keeps the workstation off the WAN.
+                  chain forward {
+                    type filter hook forward priority filter; policy drop;
+                  }
+                '';
+              };
             };
           };
 

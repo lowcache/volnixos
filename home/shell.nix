@@ -9,8 +9,8 @@
 {
   # Noctalia Shell v5.0.0 + the portable shell/tooling layer shared with the
   # nix-on-droid config (see home/common/). Only volnix-specific shell surface
-  # lives in this file: the niri/Noctalia session, sops-nix runtime secrets, the
-  # impermanence-aware TMPDIR, and hardware/systemd-bound aliases.
+  # lives in this file: the niri/Noctalia session, the impermanence-aware
+  # TMPDIR, and hardware/systemd-bound aliases.
   imports = [
     inputs.noctalia.homeModules.default
     ./common
@@ -44,41 +44,6 @@
         # root (which fills fast and breaks builds with "broken pipe"/ENOSPC).
         test -d $HOME/Storage/tmp; or mkdir -p $HOME/Storage/tmp
         set -gx TMPDIR $HOME/Storage/tmp
-
-        # --== SOPS protected API key exposure ==--
-        # the following steps are for adding a new API key that needs to be exposed as an environment variable. 
-        # 1. make sops-edit -> add api key to the list
-        # 2. micro ~/.nix-config/nixos/modules/secrets.nix -> declare the key with owner = username;
-        # 3. use template below to add the new key
-
-        # New key template:
-        # test -r /run/secrets/{api_key_name}
-        # and set -gx {API_KEY_NAME} (cat /run/secrets/{api_key_name})
-
-        # Gemini API key — decrypted at runtime by sops-nix to /run/secrets/gemini_api_key
-        test -r /run/secrets/gemini_api_key
-        and set -gx GEMINI_API_KEY (cat /run/secrets/gemini_api_key)
-
-        # Github token - sops-nix to /run/secrets/gh_token
-        test -r /run/secrets/gh_token
-        and set -gx GH_TOKEN (cat /run/secrets/gh_token)
-
-        # Phone-agent bearer token - sops-nix to /run/secrets/phone_agent_token;
-        # consumed by the phone-agent MCP server in .claude/.mcp.json
-        test -r /run/secrets/phone_agent_token
-        and set -gx PHONE_AGENT_TOKEN (cat /run/secrets/phone_agent_token)
-
-        # apify
-        test -r /run/secrets/apify_api_key
-        and set -gx APIFY_API_KEY (cat /run/secrets/apify_api_key)
-
-        # openrouter
-        test -r /run/secrets/openrouter_api_key
-        and set -gx OPENROUTER_API_KEY (cat /run/secrets/openrouter_api_key)
-
-        # twine 
-        test -r /run/secrets/twine_api_key
-        and set -gx TWINE_API_KEY (cat /run/secrets/twine_api_key)
       '';
       shellAbbrs = {
         # Anonymous mode: arm/disarm egress via the net-gate Tor VM. The target

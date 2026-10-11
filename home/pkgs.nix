@@ -14,7 +14,6 @@
           autoconf
           pkg-config
           binutils
-          glibc
           gdb
           cmake
           progress
@@ -27,8 +26,6 @@
           nodejs
           dart-sass
           glib
-          gtk3
-          gtk4
         ];
         # G'MIC crashes Krita (SIGSEGV) on the first right-click/stylus press in the
         # filter tree: FiltersView::onCustomContextMenu deleteLater()s a null

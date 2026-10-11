@@ -84,11 +84,13 @@ jobs:
 
       # Same gate as `make check` (formatting + statix + deadnix). First, not
       # last: a lint failure should cost a minute, not the whole build.
+      # checks.anon-jail is a VM test; it runs in `make check`, not here (no KVM setup).
       - name: Checks (fmt + lint)
         run: |
           nix build -L \
             .#checks.x86_64-linux.formatting \
-            .#checks.x86_64-linux.lint
+            .#checks.x86_64-linux.lint \
+            .#checks.x86_64-linux.fish-syntax
 
       # The whole job hinges on the kernel being a download. Ask before spending
       # 90 minutes finding out: a dry-run names every path that would be BUILT,

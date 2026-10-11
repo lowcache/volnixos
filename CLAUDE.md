@@ -34,7 +34,7 @@ After Nix changes, run appropriate checks and format with `nix fmt`.
 
 Canonical repository checks:
 
-* `make check` — flake, formatting, deadnix, statix
+* `make check` — flake, formatting, deadnix, statix, plus `checks.fish-syntax` (every HM-generated fish file) and `checks.anon-jail` (NixOS VM test of the anon-mode jail; needs KVM, so CI builds only the first three)
 * `make fmt` — formatting/statix fixes
 * `make build` — build without switching
 * `make dry-activate` — inspect activation changes
@@ -64,7 +64,7 @@ cloud-hypervisor guests via microvm.nix. The flake exposes runners for `net-gate
 Invariant: an anonymous workload either traverses net-gate in a verified-ready state or has no network at all.
 
 * Host side (`anonymous-mode/default.nix`): `anon-jail` gives the anon uid a per-uid routing table with a blackhole default (armed at boot, never auto-released); `anon-routing` points it at net-gate; `anon-check` runs the L0–L4 readiness ladder and only L4 writes the stamp that releases workloads; `anon-watch` (timer) re-verifies and seals on loss. `anonymous.target` is the arm/disarm handle.
-* net-gate terminates Tor: nat REDIRECT into TransPort/DNSPort per client source, no forwarding, FORWARD drop. Two legs: host tap and `br-anon`.
+* net-gate terminates Tor: nftables (`table ip anon-gateway`) redirects into TransPort/DNSPort per client source, forward policy drop, no forwarding. Two legs: host tap and `br-anon`.
 * anon-box: workstation guest on `br-anon` only. The host holds no address on that bridge; entry is over vsock (`anon-shell`). Started by `anonymous.target` after the ladder passes. `/in` is a host-side read-only bind, `/out` is `~/Storage/anon/out` (unencrypted volume).
 * Operate with `make anon-status | anon-arm | anon-selftest | anon-logs | anon-guest-logs | anon-box-rebuild`. User entry points: `anon-run`, `anon-shell`, `tor-curl`, `tor-brave`.
 
@@ -138,6 +138,8 @@ SOPS secrets are split by trust boundary:
 * `nixos/vm-secrets.yaml`
 
 Do not create alternate secret files or casually move secrets between these files.
+
+Secrets reach tools as files under `/run/secrets` (sops-nix). Environment exposure is declared once, in `envSecrets` in `nixos/modules/secrets.nix`: an entry without `wrap` is exported in every fish shell (keys several agent tools read: `GEMINI_API_KEY`, `OPENROUTER_API_KEY`, `PHONE_AGENT_TOKEN`); an entry with `wrap = pkgs.<tool>` is exported only into that tool by a same-named wrapper (`GH_TOKEN` → `gh`). Everything else is read from its file (`*_FILE` patterns, e.g. buttondown, twine). Add a key there, never as a hand-written `set -gx`. `mcp-gateway` is a declared user service (`home/mcp-gateway.nix`) that reads `gh_token` at start.
 
 Use the Makefile's SOPS targets where applicable:
 

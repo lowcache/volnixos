@@ -37,6 +37,7 @@ in
     ./pkgs.nix
     ./scripts.nix
     ./ci-poll.nix
+    ./mcp-gateway.nix
     ./shell.nix
     inputs.memd.homeManagerModules.default
   ];

@@ -255,6 +255,23 @@
               deadnix --fail ${self}
               touch $out
             '';
+
+        # Shell inside Nix strings is invisible to the other gates; parse every
+        # fish file Home Manager generates.
+        fish-syntax =
+          let
+            fishFiles = nixpkgs.lib.filterAttrs (
+              n: _: nixpkgs.lib.hasPrefix "fish/" n && nixpkgs.lib.hasSuffix ".fish" n
+            ) self.nixosConfigurations.volnix.config.home-manager.users.${username}.xdg.configFile;
+          in
+          pkgs.runCommand "check-fish-syntax" { nativeBuildInputs = [ pkgs.fish ]; } ''
+            ${nixpkgs.lib.concatMapStrings (f: "fish --no-execute ${f.source}\n") (
+              builtins.attrValues fishFiles
+            )}
+            touch $out
+          '';
+
+        anon-jail = pkgs.testers.runNixOSTest (import ./nixos/tests/anon-jail.nix { inherit inputs; });
       };
     };
 }

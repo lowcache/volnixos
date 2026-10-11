@@ -57,12 +57,6 @@ in
         source = mkOutOfStoreSymlink "/persist${home}/.nix-config";
         force = true;
       };
-      # Imperative-profile compat link; it would vanish with the tmpfs root. Points
-      # at the persisted generations (".local/state/nix/profiles" below).
-      ".nix-profile" = {
-        source = mkOutOfStoreSymlink "${home}/.local/state/nix/profiles/profile";
-        force = true;
-      };
       # OmO extensions and MCP servers. force: these replaced hand-made copies.
       ".omo/agent/mcp.json" = {
         source = dot "omo/mcp.json";
@@ -124,7 +118,6 @@ in
             # Prefs + logged-in session (32K); the audio cache follows XDG_CACHE_HOME.
             ".config/spotify"
             ".config/mcp-gateway"
-            ".config/systemd/user"
             ".config/sops"
             ".config/memd"
             # rbw's imperative config and the desktop client's session.
@@ -164,8 +157,6 @@ in
             ".local/state/memd"
             # rbw's encrypted vault cache.
             ".local/share/rbw"
-            # nix-env generations (the canonical path; ~/.nix-profile is linked above).
-            ".local/state/nix/profiles"
           ];
           flatpak-var = [
             ".var/app"
