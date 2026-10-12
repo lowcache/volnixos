@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-07
+last_updated: 2026-10-12
 status: active
 ---
 
@@ -550,3 +550,26 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Verification:** Post-removal, run `nix flake check` and `make build --no-link` to confirm flake evaluates and system builds cleanly without volinit.
 
 * **Amendment (2026-10-07 — Re-integration Complete):** volinit revamp completed and successfully re-integrated via commit 49b9408. Flake input: `github:lowcache/volinit/rewrite/go-cockpit` (nixpkgs follows). Package added to `home/shell.nix` `home.packages` (volnix-only; phone unaffected). Runtime dependency: `ttfx-rs` from `~/.cargo/bin` (not packaged in Nix; without it volinit is silent no-op, skipping fastfetch). Verification: `make check` and `make build` both pass. Status: awaiting user `make switch` to activate.
+## 50. Cursor Management — vn1k/cursor Plugin Ownership (2026-10-12)
+
+* **Decision:** The vn1k/cursor Noctalia plugin (community v1.0.0) is the sole owner and manager of cursor theming. Nix prepares the cursor package ecosystem and symlinks themes into `~/.icons`, then delegates live cursor selection to the plugin.
+
+* **Why:** Home-Manager's declarative `home.pointerCursor.name` approach has two fatal flaws on NixOS: (1) theme name mismatch (bibata-cursors-translucent 1.1.2 ships only three variants, not the four that HM was configured to select), producing silent fallbacks; (2) the plugin's cursor scan ignores NixOS `XDG_DATA_DIRS` and `XCURSOR_PATH` entirely, seeing only `/usr/share/icons`, `~/.icons`, `~/.local/share/icons`. HM-declared cursor never loads. Delegating to the plugin (which is noctalia-aware) resolves both.
+
+* **Implementation:**
+  - Nix: Install `bibata-cursors` (all variants) + `vn1k-cursor-noctalia-plugin` (community); symlink into `~/.icons/`.
+  - HM: Disable `gtk.gtk3.settings`, `gtk.gtk4.settings` cursor overrides; keep dconf gtk-theme.
+  - Plugin: Owns `~/.icons/default/index.theme` (symlink target created once by Nix, then written by plugin on scheme change).
+  - Persistence: Plugin writes go to `~/.config/noctalia/cursor-cache` (impermanence bind-mount into `/persist`).
+
+* **Gotchas discovered:**
+  - `home.pointerCursor.name = "Bibata-Modern-Translucent"` was configured against a theme that never existed in the installed package version. Silent fallback: every layer rendered with the fallback cursor until the plugin took over.
+  - The plugin's `curmgr.py` hardcodes cursor search paths; `XDG_DATA_DIRS` and `XCURSOR_PATH` are ignored. On NixOS, theme discovery appears empty until the plugin's directory list is patched or Nix symlinks into the hardcoded paths.
+  - The plugin writes to `~/.icons/default/` (which was an HM-managed read-only store symlink). Raised uncaught `PermissionError` with no JSON response, after niri had already committed. Those targets must be writable (file on persisted storage, not tmpfs).
+  - `gsettings` (used by plugin for theme application) only works inside noctalia's process environment (wrapper adds `gsettings-desktop-schemas` to `XDG_DATA_DIRS`). Plain shell invocations print "No schemas installed".
+
+* **Upstream bugs (draft, pending user approval for submission):**
+  - Bug 1: vn1k/cursor plugin should honor `XCURSOR_PATH` / `XDG_DATA_DIRS` in cursor scan, not hardcode paths.
+  - Bug 2: Uncaught exception handling in `apply()` — PermissionError should emit JSON error reply, not raw traceback.
+
+* **Rationale:** Noctalia plugins are the correct abstraction for theme/appearance management on a Wayland compositor. HM's static declarative approach doesn't compose with dynamic plugin ecosystems.

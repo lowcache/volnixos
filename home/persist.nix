@@ -125,6 +125,9 @@ in
             ".config/Bitwarden"
             # Vault registry, window state, per-vault plugin trust.
             ".config/obsidian"
+            # settings.ini (vn1k/cursor plugin) + Noctalia's gtk.css.
+            ".config/gtk-3.0"
+            ".config/gtk-4.0"
           ];
           # Safety net for apps that hardcode ~/.cache and ignore XDG_CACHE_HOME.
           cache = [
@@ -157,6 +160,10 @@ in
             ".local/state/memd"
             # rbw's encrypted vault cache.
             ".local/share/rbw"
+            # Cursor themes the vn1k/cursor plugin imports/builds; its default
+            # theme pointer for X11 clients.
+            ".local/share/icons"
+            ".icons/default"
           ];
           flatpak-var = [
             ".var/app"
@@ -177,6 +184,8 @@ in
       # Claude Code config/state, outside ~/.claude.
       files = [
         ".claude.json"
+        # XCURSOR_* for the systemd --user session, written by vn1k/cursor.
+        ".config/environment.d/90-xcursor.conf"
       ];
     };
   };

@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-09
+last_updated: 2026-10-12
 status: active
 ---
 
@@ -110,6 +110,8 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist` (LU
 **Scratchpad plugin (2026-06-24, active):** Note-taking widget + launcher provider at `~/.local/share/noctalia/plugins/scratchpad/`, shares state via `noctalia.state` + `notes.json`.
 
 **Shell Prompt Theming — Starship M3 Roles (2026-09-05 — LIVE, Verified):** Starship prompt uses Noctalia M3 color role names (`primary`, `secondary`, `tertiary`, `on_primary`, `on_surface`, `surface_container`, `error`, `outline`) instead of terminal ANSI ramp (color0-color15). M3 supplies 36 role-based definitions; ANSI ramp covers only 16, discarding 20 role definitions and limiting prompt fidelity to terminal color capabilities. Implementation: community template at `~/.local/state/noctalia/community-templates/starship-m3/template.toml` (symlinked via `home.file` on activation). Template renders M3 palette to `$XDG_CACHE_HOME/noctalia/noctalia-palette.toml`, post-hook (`apply.sh`) injects it into `dots/starship/starship.toml` between `# >>> NOCTALIA M3 PALETTE >>>` markers. `dots/starship/starship.toml` uses `palette = "m3"` and M3 role names only; zero terminal indices remain. **Verified (2026-09-05):** Round-tripped scheme changes (Rosewater → Sapphire → Rosewater) confirms prompt accent matches M3 primary (RGB exact). Benefits: terminal-agnostic (works over SSH, restricted shells, any emulator). **Cleanup:** Deleted `dots/noctalia/palettes/volnix.json` (custom-palette layer redundant; Noctalia owns M3 emission). Corrected `home/shell.nix:137` comment. **Outstanding:** `dots/color-engine/apply_theme.py` is dormant; potentially destructive if run (line 145 greedy regex consumes M3 palette block). Decision pending (decisions.md #38, todo.md).
+
+**Cursor Management (2026-10-12):** vn1k/cursor Noctalia plugin (community v1.0.0) owns cursor selection and switching. Nix installs `bibata-cursors` (all variants) and symlinks into `~/.icons/`; plugin manages `~/.icons/default/index.theme` and updates cursor on scheme change. Home-Manager's declarative `home.pointerCursor.name` setting disabled (was silent-failing on NixOS due to theme name mismatch and plugin's hardcoded XDG search paths). Plugin write targets persisted via impermanence bind-mount to `/persist`. `gsettings` available only in noctalia process environment (wrapper adds `gsettings-desktop-schemas` to `XDG_DATA_DIRS`). See decisions.md #50 for gotchas and upstream bugs.
 
 ## 9. Application Status
 

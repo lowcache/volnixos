@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-07
+last_updated: 2026-10-12
 status: active
 ---
 
@@ -395,3 +395,14 @@ status: active
 - [ ] Document any edge cases or refinements needed
 
 **Design rationale:** Possession (USB) + knowledge (key-chord) factors eliminate passphrase fatigue while maintaining air-gap properties. Entropy in blob, not chord; chord not meant to resist brute-force if stick+disk taken together. Recovery key as fallback. TPM binding deliberately deferred (decisions.md #45).
+### Submit vn1k/cursor Upstream Bug Reports (2026-10-12 — Pending User Approval)
+
+**Context:** vn1k/cursor plugin (community v1.0.0) has two documented upstream issues discovered during integration (decisions.md #50).
+
+**Bugs ready for submission (drafts pending user approval):**
+1. **cursor scan ignores XDG_DATA_DIRS and XCURSOR_PATH:** Plugin hardcodes `/usr/share/icons`, `~/.icons`, `~/.local/share/icons`. On NixOS, theme discovery appears empty until symlinked into hardcoded paths. Should honor `XCURSOR_PATH` + `XDG_DATA_DIRS`.
+2. **uncaught PermissionError in apply():** Plugin write to read-only `~/.icons/default/` raises `PermissionError` with raw traceback, no JSON error reply. Should emit proper JSON error response.
+
+- [ ] User approves bug report submissions
+- [ ] Open issues on vn1k/cursor upstream (github.com/vn1k/cursor)
+- [ ] Reference decisions.md #50 for root-cause analysis and context

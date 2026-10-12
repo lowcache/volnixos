@@ -29,6 +29,14 @@ let
     # No NVIDIA render vars: the session renders on the AMD iGPU (use `nvrun`).
   };
 
+  # Cursor theme name -> package shipping share/icons/<name>.
+  cursorThemes = lib.genAttrs [
+    "Bibata_Ghost"
+    "Bibata_Spirit"
+    "Bibata_Tinted"
+  ] (_: pkgs.bibata-cursors-translucent);
+  defaultCursor = "Bibata_Ghost";
+
 in
 {
 
@@ -76,14 +84,35 @@ in
       run mkdir -p "$HOME/Storage/tmp/claude" "$HOME/Storage/.cache/pip" \
         "$HOME/Storage/tmp/krita-swap" "$HOME/Storage/thunderbird"
     '';
-    pointerCursor = {
-      enable = true;
-      package = pkgs.bibata-cursors-translucent;
-      name = "Bibata-Modern-Translucent";
-      size = 24;
-      gtk.enable = true;
-      x11.enable = true;
-    };
+    # The cursor belongs to the vn1k/cursor Noctalia plugin, which writes the niri
+    # include, gtk settings.ini, dconf, ~/.icons/default and environment.d itself
+    # (persisted in persist.nix). Nix only installs themes; the plugin scans just
+    # ~/.local/share/icons, ~/.icons and /usr/share/icons, hence the links.
+    file = lib.mapAttrs' (
+      name: pkg:
+      lib.nameValuePair ".icons/${name}" {
+        source = "${pkg}/share/icons/${name}";
+      }
+    ) cursorThemes;
+    packages = lib.unique (lib.attrValues cursorThemes);
+    # First-boot defaults for the plugin-owned settings.ini; never overwrites.
+    activation.seedGtkSettings = lib.hm.dag.entryAfter [ "linkGeneration" ] (
+      lib.concatStrings (
+        lib.mapAttrsToList
+          (v: extra: ''
+            f="$HOME/.config/gtk-${v}/settings.ini"
+            [ -e "$f" ] || run install -D -m644 ${pkgs.writeText "gtk-${v}-settings.ini" ''
+              [Settings]
+              ${extra}gtk-cursor-theme-name=${defaultCursor}
+              gtk-cursor-theme-size=24
+            ''} "$f"
+          '')
+          {
+            "3.0" = "gtk-theme-name=adw-gtk3-dark\n";
+            "4.0" = "";
+          }
+      )
+    );
   };
   manual.json.enable = true;
   gtk = {
@@ -92,10 +121,11 @@ in
       name = "adw-gtk3-dark";
       package = pkgs.adw-gtk3;
     };
-    gtk4 = {
-      theme = null;
-    };
+    # Off: both would own settings.ini and dconf cursor keys the plugin writes.
+    gtk3.enable = false;
+    gtk4.enable = false;
   };
+  dconf.settings."org/gnome/desktop/interface".gtk-theme = "adw-gtk3-dark";
 
   systemd = {
     user = {
