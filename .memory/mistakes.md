@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-10-03
+last_updated: 2026-10-12
 status: append-only
 ---
 
@@ -141,3 +141,10 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Fix:** Do not derive a kill target from `pgrep -f` on a pattern that a live harness process can also match. Track `$!` of the specific process you spawned (via `&` in subshell), and only group-kill a pgid you explicitly created with `setsid`.
 
 * **Prevention rule:** Explicit PID tracking via `$!` (from subshell or `$BASHPID`) is safer than pattern matching for kill targets. Never group-kill (`kill -- -$pgid`) unless you created the pgid yourself with `setsid` or have verified with `pgrep -p $pgid` that it contains only your target process.
+
+### 2026-10-12 — Noctalia xdg.stateFile Plugin Linking Failed Due to Materialization
+
+* **Symptom:** pwscope helper linked via xdg.stateFile into Visualizer+ plugin's bin/ directory disappeared when plugin was disabled/re-enabled or catalog updated.
+* **Root cause:** `noctalia msg plugins disable/enable` (and catalog operations) re-materialize ~/.local/state/noctalia/plugins/materialized/<source>/<plugin> from git, destroying any files added locally to the materialized copy. Materialization is the source-of-truth operation; local modifications to catalog copies do not persist.
+* **Fix:** Ship complete plugin as local directory (via xdg.dataFile linking to ~/.local/share/noctalia/plugins/) rather than patching helpers into materialized catalog copy. Local dirs outrank catalog sources in plugin_manager.cpp's search order; collect() visits local first, first match wins.
+* **Prevention rule:** Never patch helper files or modifications into Noctalia's materialized catalog copies. The catalog is the source of truth and is re-materialized on any plugin manager operation. Ship complete local plugin directories (via xdg.dataFile, symlink, or home.file) or submit patches upstream.

@@ -31,6 +31,22 @@ status: active
 
 ## IN PROGRESS / AWAITING ACTION
 
+## IN PROGRESS / AWAITING ACTION
+
+### Rollback Nixpkgs Lock Pin — Playwright libmanette (2026-09-18 — READY TO MERGE)
+
+**Status (2026-10-03):** The upstream fix ("playwright-webkit: add missing libmanette", commit 67bf9043) landed in nixos-unstable at c59305b (2026-10-01). Lock bump is now safe.
+
+**Changes already made (uncommitted):**
+- Bumped flake.lock (nixpkgs now points to c59305b)
+- Removed flake.nix input comment explaining the pin
+
+**Steps to complete:**
+- [ ] Run `nix build --no-link` to verify full system builds cleanly with the bumped lock
+- [ ] Run `make check` to verify all CI gates pass
+- [ ] Commit the flake.lock update with message mentioning 67bf9043 landed
+- [ ] No user-facing changes; playwright-mcp will simply work without the intermediate workaround
+
 ### Rollback Nixpkgs Lock Pin — Playwright libmanette (2026-09-18 — READY TO MERGE)
 
 **Status (2026-10-03):** The upstream fix ("playwright-webkit: add missing libmanette", commit 67bf9043) landed in nixos-unstable at c59305b (2026-10-01). Lock bump is now safe.
@@ -397,12 +413,9 @@ status: active
 **Design rationale:** Possession (USB) + knowledge (key-chord) factors eliminate passphrase fatigue while maintaining air-gap properties. Entropy in blob, not chord; chord not meant to resist brute-force if stick+disk taken together. Recovery key as fallback. TPM binding deliberately deferred (decisions.md #45).
 ### Submit vn1k/cursor Upstream Bug Reports (2026-10-12 — Pending User Approval)
 
-**Context:** vn1k/cursor plugin (community v1.0.0) has two documented upstream issues discovered during integration (decisions.md #50).
+### Submit vn1k/cursor Upstream Bug Reports (2026-10-12 — COMPLETED)
 
-**Bugs ready for submission (drafts pending user approval):**
-1. **cursor scan ignores XDG_DATA_DIRS and XCURSOR_PATH:** Plugin hardcodes `/usr/share/icons`, `~/.icons`, `~/.local/share/icons`. On NixOS, theme discovery appears empty until symlinked into hardcoded paths. Should honor `XCURSOR_PATH` + `XDG_DATA_DIRS`.
-2. **uncaught PermissionError in apply():** Plugin write to read-only `~/.icons/default/` raises `PermissionError` with raw traceback, no JSON error reply. Should emit proper JSON error response.
-
-- [ ] User approves bug report submissions
-- [ ] Open issues on vn1k/cursor upstream (github.com/vn1k/cursor)
-- [ ] Reference decisions.md #50 for root-cause analysis and context
+✓ Both bugs filed upstream (2026-10-12): https://github.com/noctalia-dev/community-plugins/issues/996
+  - Bug 1: cursor scan ignores `XCURSOR_PATH` / `XDG_DATA_DIRS`, hardcodes paths
+  - Bug 2: uncaught PermissionError in apply() gives raw traceback, no JSON error reply
+- [ ] Once upstream fixes released, remove `~/.icons` theme symlinks from `home/default.nix` (currently needed as workaround)

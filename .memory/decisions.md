@@ -527,7 +527,8 @@ This file catalogs the active, canonical design decisions and system configurati
 
 * **Status (2026-09-28):** Built and tested. `make check` and `make build` pass. Venv and model on disk are intact; plugin status now reports `{"modelReady":true,"ready":true,"runtimeReady":true}`. Not yet activated (awaiting `make switch`). Once live, Noctalia must be restarted (`kill $(pgrep -f noctalia-wrapped); niri msg action spawn -- noctalia`) or wait for next niri launch to pick up the new wrapper.
 
-* **Implementation details:** `home/shell.nix` provides `noctalia-session` via `pkgs.writeShellScriptBin`. Wrapper calls `lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib pkgs.zlib ]` and execs `lib.getExe config.programs.noctalia.package` with the env var set. No special handling needed in `dots/niri/config.kdl` (still spawns "noctalia" by name; the wrapper is on PATH).
+* **Amendment 1 (2026-10-12 — Wrapper Now Obsolete):** wallpaper_depth plugin was disabled as of 2026-10-12 (pruned from `~/.local/state/noctalia/settings.toml`; see state.md §7 Plugin Ecosystem Cleanup). The LD_LIBRARY_PATH wrapper in `home/shell.nix` is now dead weight — it exists only for wallpaper_depth's runtime dependency injection, but the plugin is not running. Decision pending: either remove the wrapper entirely (if wallpaper_depth will not be re-enabled) or document it as conditional-on-plugin-enabled pending future restoration. See todo.md for cleanup decision.
+
 ## 48. Flake Input Pruning — Single Nixpkgs Lineage Where Possible (2026-09-30)
 
 * **Decision:** Remove the unused NUR input and overlay. Make `nixos-hardware` and impermanence's `home-manager` input follow the primary `nixpkgs` via `follows`, reducing flake.lock from five nixpkgs nodes to four. `nix-cachyos-kernel` deliberately keeps its own independent nixpkgs (kernel build needs a pin the primary lockfile doesn't carry).
@@ -568,8 +569,6 @@ This file catalogs the active, canonical design decisions and system configurati
   - The plugin writes to `~/.icons/default/` (which was an HM-managed read-only store symlink). Raised uncaught `PermissionError` with no JSON response, after niri had already committed. Those targets must be writable (file on persisted storage, not tmpfs).
   - `gsettings` (used by plugin for theme application) only works inside noctalia's process environment (wrapper adds `gsettings-desktop-schemas` to `XDG_DATA_DIRS`). Plain shell invocations print "No schemas installed".
 
-* **Upstream bugs (draft, pending user approval for submission):**
-  - Bug 1: vn1k/cursor plugin should honor `XCURSOR_PATH` / `XDG_DATA_DIRS` in cursor scan, not hardcode paths.
-  - Bug 2: Uncaught exception handling in `apply()` — PermissionError should emit JSON error reply, not raw traceback.
+* **Upstream bugs (2026-10-12 — FILED):** Both issues filed upstream at https://github.com/noctalia-dev/community-plugins/issues/996. Bug 1: plugin should honor `XCURSOR_PATH` / `XDG_DATA_DIRS` in cursor scan, not hardcode paths. Bug 2: uncaught PermissionError in `apply()` should emit JSON error reply instead of raw traceback. Once fixed upstream, `~/.icons` theme symlinks in `home/default.nix` can be dropped.
 
 * **Rationale:** Noctalia plugins are the correct abstraction for theme/appearance management on a Wayland compositor. HM's static declarative approach doesn't compose with dynamic plugin ecosystems.

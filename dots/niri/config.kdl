@@ -335,3 +335,6 @@ binds {
 }
 
 include "noctalia.kdl"
+
+// Managed by the Noctalia cursor plugin - edits here are overwritten.
+include "cursor.kdl"
