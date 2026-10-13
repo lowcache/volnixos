@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-10-12
+last_updated: 2026-10-13
 status: append-only
 ---
 
@@ -114,14 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-02 — Impermanence Bind-Mount for ~/.omo Raced Home-Manager Link Placement, Hiding Links
-
-* **Symptom:** After `make switch` activated the new `~/.omo` persistence binding (home/persist.nix), the persisted MCP config file (`~/.omo/agent/mcp.json`) and three of five extension symlinks (memd.js, rtk.js, statusline.js) were missing from `~/.omo/agent/extensions/` even though Home Manager's generation clearly contained them (confirmed via inspecting the home-manager-generation store path directly).
-
-* **Root cause:** `~/.omo` was added to persistence (impermanence bind-mount from `/persist`) in the same switch that first wired the symlinks via `home.file`. At activation time, the bind-mount for `~/.omo` was not yet mounted when `home-manager-lowcache.service` ran `linkGeneration` and created the home file links — so the links landed on the pre-mount (tmpfs) view of `~/.omo`, then were hidden once the bind-mount from `/persist` came up on top.
-
-* **Prevention rule:** When a directory is *newly* added to impermanence persistence in the same activation that also populates it via `home.file`/`home.activation`, the first activation after the mount exists will not show the links — they're mounted-over. Fix is to re-run Home Manager's activation (`systemctl restart home-manager-<user>.service` or equivalent) once after the bind-mount is confirmed live, so `linkGeneration` runs against the now-mounted persisted directory. On subsequent boots this self-corrects because the bind-mount is already active before Home Manager runs. Verify with a one-time post-switch `ls` check whenever persistence is newly added for a path that's also populated by `home.file`.
-
 ### 2026-10-03 — Proximity Lock Bypass Fixed — PREV Ignores Unknown State
 
 * **Symptom:** Proximity lock failed to arm when IMU read failed (returned unknown state). Subsequent desk→walking transition was blocked because PREV (previous state) was unknown, and the state machine only transitioned on known→unknown or known→known deltas, never unknown→(anything).
@@ -148,3 +140,9 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Root cause:** `noctalia msg plugins disable/enable` (and catalog operations) re-materialize ~/.local/state/noctalia/plugins/materialized/<source>/<plugin> from git, destroying any files added locally to the materialized copy. Materialization is the source-of-truth operation; local modifications to catalog copies do not persist.
 * **Fix:** Ship complete plugin as local directory (via xdg.dataFile linking to ~/.local/share/noctalia/plugins/) rather than patching helpers into materialized catalog copy. Local dirs outrank catalog sources in plugin_manager.cpp's search order; collect() visits local first, first match wins.
 * **Prevention rule:** Never patch helper files or modifications into Noctalia's materialized catalog copies. The catalog is the source of truth and is re-materialized on any plugin manager operation. Ship complete local plugin directories (via xdg.dataFile, symlink, or home.file) or submit patches upstream.
+
+### 2026-10-13 — Kernel Input Lag & Attic Cache Eviction Caused CI Substitution Failure
+* **Symptom:** CI builds failed 2026-10-10 to 2026-10-12 at the "kernel is a cache hit" assertion. Dry-run listed `linux-cachyos-latest-7.2.3.drv` as source build despite no nix-cachyos-kernel input change.
+* **Root cause:** `nix-cachyos-kernel` input pinned at rev 5cfa9da (2026-09-04). Kernel derivation hash stable, but lantian attic evicts cache entries older than ~10 days (retention window). Narinfo 404 → substituter fallback → source build. Bumping only `nixpkgs` doesn't touch this input; it deliberately keeps independent nixpkgs (decisions.md #48).
+* **Fix:** `nix flake update nix-cachyos-kernel` → rev 873c5a2 (2026-10-12), kernel 7.2.9. Attic narinfo returned 200; CI passed.
+* **Prevention rule:** Inputs with independent nixpkgs must be updated separately and frequently (~weekly). Attic retention is ~10 days; stale inputs cause cache misses. Use `nix flake update nix-cachyos-kernel` explicitly, not just `nix flake update`. Diagnostic gotcha: `--override-input` during testing keeps old transitive nixpkgs node (misleading drvPath); use real update in a worktree to test actual behavior.
