@@ -30,11 +30,13 @@ let
   };
 
   # Cursor theme name -> package shipping share/icons/<name>.
-  cursorThemes = lib.genAttrs [
-    "Bibata_Ghost"
-    "Bibata_Spirit"
-    "Bibata_Tinted"
-  ] (_: pkgs.bibata-cursors-translucent);
+  cursorThemes =
+    lib.genAttrs [ "Bibata_Ghost" "Bibata_Spirit" "Bibata_Tinted" ] (_: pkgs.bibata-cursors-translucent)
+    // lib.genAttrs [ "Vimix-cursors" "Vimix-white-cursors" ] (_: pkgs.vimix-cursors)
+    // lib.genAttrs [ "volantes_cursors" "volantes_light_cursors" ] (_: pkgs.volantes-cursors)
+    // {
+      WhiteSur-cursors = pkgs.whitesur-cursors;
+    };
   defaultCursor = "Bibata_Ghost";
 
 in

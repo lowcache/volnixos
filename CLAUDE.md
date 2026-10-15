@@ -94,6 +94,14 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 
 Terminal banner, tracked from the `rewrite/go-cockpit` branch while it is overhauled into a cockpit-style TUI (local checkout: `/home/lowcache/CodeRepo/volinit`). Wired as the `volinit` flake input and `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/shell.nix`; the fish greeting guards on `command -v volinit`. If a WIP push breaks evaluation, drop both lines rather than pinning around it.
 
+## Claude Code + tweakcc
+
+`claude` is `claude-code-tweaked` (`pkgs/claude-code-tweaked/`): nixpkgs `claude-code` with tweakcc (`pkgs/tweakcc/`, pnpm build) applied in `postInstall`. tweakcc's LIEF parser segfaults on autoPatchelf'd ELFs, so the patch must stay before fixup. Both are added by the local overlay `pkgs/default.nix` (new names, nothing overridden) and exposed as `packages.x86_64-linux.{tweakcc,claude-code-tweaked}`.
+
+* Config: `pkgs/claude-code-tweaked/tweakcc/` (`config.json` + only the `system-prompts/*.md` you edited, force-added; the rest are ignored and regenerated). Edit with `make tweakcc`, which runs the UI against a scratch unpatched binary, then rebuild.
+* Prompt data comes from tweakcc's own source (`data/prompts/prompts-<cc version>.json`), so a `claude-code` bump that tweakcc doesn't cover yet fails the build: bump `pkgs/tweakcc` (`src` + `pnpmDeps` hashes) alongside it.
+* `droid/` still uses plain `claude-code`.
+
 ## Phone agent
 
 Host side of the Galaxy S26 Ultra MCP integration, `nixos/phone-agent/` (`phone-agent.*` options, set in `nixos/hosts/volnix.nix`). The MCP server itself runs in Termux on the phone and is reached over the tailnet through the `tailscale` guest (the host is not a tailnet node). Auth is the sops `phone_agent_token`.

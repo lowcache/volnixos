@@ -1,9 +1,9 @@
 // Managed by the Noctalia cursor plugin - edits here are overwritten.
 cursor {
-    xcursor-theme "Bibata_Ghost"
+    xcursor-theme "Bibata_Spirit"
     xcursor-size 24
 }
 environment {
-    XCURSOR_THEME "Bibata_Ghost"
+    XCURSOR_THEME "Bibata_Spirit"
     XCURSOR_SIZE "24"
 }

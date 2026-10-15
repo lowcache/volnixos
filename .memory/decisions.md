@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-12
+last_updated: 2026-10-13
 status: active
 ---
 
@@ -572,3 +572,9 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Upstream bugs (2026-10-12 — FILED):** Both issues filed upstream at https://github.com/noctalia-dev/community-plugins/issues/996. Bug 1: plugin should honor `XCURSOR_PATH` / `XDG_DATA_DIRS` in cursor scan, not hardcode paths. Bug 2: uncaught PermissionError in `apply()` should emit JSON error reply instead of raw traceback. Once fixed upstream, `~/.icons` theme symlinks in `home/default.nix` can be dropped.
 
 * **Rationale:** Noctalia plugins are the correct abstraction for theme/appearance management on a Wayland compositor. HM's static declarative approach doesn't compose with dynamic plugin ecosystems.
+## 51. Claude Code Customization — tweakcc Applied at Build Time (2026-10-13)
+
+* **Decision:** Claude Code customizations come from tweakcc, applied in `claude-code-tweaked`'s `postInstall` (`pkgs/claude-code-tweaked`), before fixupPhase. Not via `sudo npx tweakcc --apply` against the installed binary.
+* **Why:** The Nix store is read-only, and mutating a store path breaks its hash. tweakcc 4.4.0's node-lief (LIEF) segfaults (exit 139, "Can't read the number of buckets") when parsing an autoPatchelf/patchelf-rewritten ELF. The raw Bun binary parses fine, so tweakcc must run before fixupPhase.
+* **Rules out:** Running tweakcc (including the interactive UI) against the installed `claude`. `make tweakcc` points tweakcc at a scratch copy of the unpatched `claude-code.src`.
+* **Build constraints:** tweakcc fetches per-version prompt JSON from GitHub at runtime. The build instead seeds `prompt-data-cache/` from tweakcc's own source, so an uncovered claude-code version fails the build loudly. With an empty config, tweakcc enables its default-on patches (session memory, MCP non-blocking, thinking visibility, model list, etc.).

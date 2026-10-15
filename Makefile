@@ -48,7 +48,7 @@ SOPS_AGE_KEY_FILE ?= $(HOME)/.config/sops/age/keys.txt
         anon-logs anon-guest-logs \
         sops-edit sops-edit-vm sops-rekey sops-view sops-view-vm \
         backup backup-force backup-mount backup-umount \
-        check fmt update update-nixpkgs trash \
+        check fmt update update-nixpkgs trash tweakcc \
         git comm push \
         dots-log dots-split dots-remote dots-push dots-pull
 
@@ -370,6 +370,17 @@ trash:
 	sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations 7d
 	@echo "++ Running Nix store garbage collection..."
 	nix-store --gc
+
+## :tweakcc: ..........: Edit Claude Code's tweakcc config (applied by the next build)
+# The UI patches a scratch copy of the unpatched binary; the installed one comes from the build.
+tweakcc:
+	@raw=$(REBUILD_TMPDIR)/tweakcc-claude; \
+	src=$$(nix build --no-link --print-out-paths .#nixosConfigurations.volnix.pkgs.claude-code.src) || exit 1; \
+	zstd -dqf "$$src" -o "$$raw" && chmod u+w "$$raw" || exit 1; \
+	TWEAKCC_CONFIG_DIR=$(CURDIR)/pkgs/claude-code-tweaked/tweakcc TWEAKCC_CC_INSTALLATION_PATH="$$raw" \
+	  nix run .#tweakcc; \
+	rm -f "$$raw" pkgs/claude-code-tweaked/tweakcc/native-binary.backup; \
+	echo "++ Track edited prompts with: git add -f pkgs/claude-code-tweaked/tweakcc/system-prompts/<name>.md"
 
 # ==============================================================================
 # Git Operations

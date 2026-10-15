@@ -129,6 +129,7 @@
             nixpkgs.overlays = [
               inputs.nix-cachyos-kernel.overlays.pinned
               inputs.llm-agents.overlays.shared-nixpkgs
+              (import ./pkgs)
             ];
           }
           ./nixos
@@ -196,6 +197,7 @@
           self.nixosConfigurations.volnix.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
         tailscale-vm =
           self.nixosConfigurations.volnix.config.microvm.vms.tailscale.config.config.microvm.declaredRunner;
+        inherit (self.nixosConfigurations.volnix.pkgs) tweakcc claude-code-tweaked;
       };
 
       # Reusable project scaffolds: `nix flake init -t ~/.nix-config#ruby`.

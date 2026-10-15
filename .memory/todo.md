@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-12
+last_updated: 2026-10-13
 status: active
 ---
 
@@ -419,3 +419,6 @@ status: active
   - Bug 1: cursor scan ignores `XCURSOR_PATH` / `XDG_DATA_DIRS`, hardcodes paths
   - Bug 2: uncaught PermissionError in apply() gives raw traceback, no JSON error reply
 - [ ] Once upstream fixes released, remove `~/.icons` theme symlinks from `home/default.nix` (currently needed as workaround)
+### Claude Code tweakcc — Config Review (2026-10-13)
+
+- [ ] Review the empty tweakcc config's default-on patches (see decisions.md #51) and decide which to keep or disable explicitly.

@@ -140,6 +140,8 @@
           pandoc # backend for micro's `preview` plugin (see home/common/tools.nix)
           feh
           tor
+          win2xcur
+          zenity
           playerctl
           brightnessctl
           gawk
@@ -164,7 +166,7 @@
           mcp-server-fetch
           llmfit
           rtk
-          claude-code
+          claude-code-tweaked # tweakcc patches, pkgs/claude-code-tweaked
           pkgs.llm-agents.omo-ai
           pkgs.llm-agents.oh-my-opencode
           pkgs.llm-agents.claude-desktop
@@ -174,17 +176,7 @@
           pkgs.llm-agents.cc-switch-cli
           pkgs.llm-agents.opencode
           # Testrunners
-          pkgs.llm-agents.prime-agent
-          # t3code/t3code-desktop dropped 2026-09-18: their only real cost here
-          # was codex, which t3code depends on and which is NOT prebuilt for us.
-          # llm-agents pins nixpkgs 5545adf and flake.nix makes it follow ours,
-          # so every llm-agents derivation is rehashed and cache.numtide.com's
-          # binaries miss. codex is Rust: 223 min of rustc on the runner, and it
-          # is what timed out run 35299186456. Re-add together with dropping the
-          # `follows` if t3code is wanted back.
-          pkgs.llm-agents.happy-coder
           pkgs.llm-agents.freebuff
-          pkgs.llm-agents.bb-app
         ];
         andronix = with pkgs; [
           scrcpy

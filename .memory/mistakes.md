@@ -146,3 +146,8 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Root cause:** `nix-cachyos-kernel` input pinned at rev 5cfa9da (2026-09-04). Kernel derivation hash stable, but lantian attic evicts cache entries older than ~10 days (retention window). Narinfo 404 → substituter fallback → source build. Bumping only `nixpkgs` doesn't touch this input; it deliberately keeps independent nixpkgs (decisions.md #48).
 * **Fix:** `nix flake update nix-cachyos-kernel` → rev 873c5a2 (2026-10-12), kernel 7.2.9. Attic narinfo returned 200; CI passed.
 * **Prevention rule:** Inputs with independent nixpkgs must be updated separately and frequently (~weekly). Attic retention is ~10 days; stale inputs cause cache misses. Use `nix flake update nix-cachyos-kernel` explicitly, not just `nix flake update`. Diagnostic gotcha: `--override-input` during testing keeps old transitive nixpkgs node (misleading drvPath); use real update in a worktree to test actual behavior.
+
+### 2026-10-13 — tweakcc 4.4.0 LIEF Segfault on autoPatchelf'd claude-code Binary
+* **Symptom:** tweakcc exits 139 with "Can't read the number of buckets" when pointed at the installed claude-code.
+* **Root cause:** node-lief parses the ELF after autoPatchelf/patchelf has rewritten it; the raw Bun binary parses fine.
+* **Prevention rule:** Run tweakcc in claude-code-tweaked's postInstall, before fixupPhase. Never run it against the installed (patched) claude; `make tweakcc` targets a scratch copy of the unpatched claude-code.src. Do not mutate store paths (read-only store; mutation also breaks the hash). See decisions.md #51.
