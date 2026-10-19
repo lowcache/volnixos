@@ -73,9 +73,10 @@ nix.settings = {
 };
 ```
 
-The kernel itself comes from the [lantian attic](https://attic.xuyh0120.win/lantian), not from this
-cache; CI asserts it is a cache hit before building, because a source build of it does not fit in a
-GitHub Actions job. Details, including the `NIX_CONFIG` ordering trap that made the substituters
+The kernel used to come from the upstream lantian attic, which was taken down after a server
+compromise (xddxdd/nix-cachyos-kernel#110) and is no longer trusted; it now has to be built locally
+and pushed to this cache. CI asserts it is a cache hit before building, because a source build of it
+does not fit in a GitHub Actions job. Details, including the `NIX_CONFIG` ordering trap that made the substituters
 silently disappear, are in
 [Binary Cache & CI](https://wiki.infernalcode.com/tooling/ci-cache/).
 

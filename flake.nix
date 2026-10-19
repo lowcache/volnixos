@@ -11,8 +11,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # No nixpkgs follows on purpose: overlays.pinned builds the kernel against
-    # its own nixpkgs so the store path matches the lantian attic. Following
-    # ours would turn every kernel into a source build.
+    # its own nixpkgs, keeping its store path stable across our nixpkgs bumps
+    # (one kernel build per cachyos bump, cached in volnixos). The upstream
+    # lantian attic is gone (compromised, nix-cachyos-kernel#110).
     nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
     impermanence = {
       url = "github:nix-community/impermanence";

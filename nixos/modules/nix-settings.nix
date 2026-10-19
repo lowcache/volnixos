@@ -33,14 +33,15 @@
         # Nothing was being substituted from it. Re-add the URL and its key
         # together if it goes public again.
         "https://cache.numtide.com"
-        "https://attic.xuyh0120.win/lantian"
+        # attic.xuyh0120.win/lantian removed 2026-10-19 with its key: the server
+        # was compromised (xddxdd/nix-cachyos-kernel#110), so its signatures are
+        # no longer trustworthy. The CachyOS kernel now comes from volnixos only.
       ];
       trusted-public-keys = [
         "volnixos.cachix.org-1:GUKpgN2Tzh67uYZtUaEsFr1U7UVLrFG1iCoF860CY5Y="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "cache.lix.systems:aBnZU3F19808R5N0sczBmsWwI5YI+433R9M2iS2Hcy4="
         "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
-        "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
       ];
       min-free = 536870912; # 512MB
       max-free = 1073741824; # 1GB
