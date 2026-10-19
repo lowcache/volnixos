@@ -17,6 +17,7 @@
     ./secrets.nix
     ./services.nix
     ./systemd.nix
+    ./travel-bubble.nix
     ./users.nix
   ];
 }

@@ -21,6 +21,13 @@
   vol = {
     anon-mode.enable = true;
 
+    # Cabled to the Panhandler → the Wi-Fi radio serves the Roku/phones (RTL8852BE, AP-capable).
+    travel-bubble = {
+      enable = true;
+      apInterface = "wlp4s0";
+      uplinkInterface = "enp3s0";
+    };
+
     # Flipped to true by ~/Storage/luks-migration/05-post-boot.sh once the
     # partition was actually encrypted (migration done 2026-09).
     persistLuks = {

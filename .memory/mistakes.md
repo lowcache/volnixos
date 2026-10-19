@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-10-13
+last_updated: 2026-10-19
 status: append-only
 ---
 
@@ -114,26 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-03 — Proximity Lock Bypass Fixed — PREV Ignores Unknown State
-
-* **Symptom:** Proximity lock failed to arm when IMU read failed (returned unknown state). Subsequent desk→walking transition was blocked because PREV (previous state) was unknown, and the state machine only transitioned on known→unknown or known→known deltas, never unknown→(anything).
-
-* **Root cause:** `proximity.nix` `on_desk` state-change checked `prev != cur` but did not skip transitions *from* unknown. When IMU read fails (err/nil), fallback was `unknown` state; PREV stayed unknown, blocking the next real-world transition. Lock was effectively disarmed until a phone reboot reset PREV to nil.
-
-* **Fix:** Modified state machine logic to treat `unknown` PREV as "no prior state" — ignore unknown and treat the first real-world state transition (unknown→walking, unknown→ondesk) as initial state, not a delta. Added `prev == "unknown" -> prev := cur; return` (no lock action). Tested 2026-10-03: IMU read fail followed by actual motion now correctly triggers lock/unlock.
-
-* **Prevention rule:** In state machines, distinguish "no prior state" (first run, err) from "known states." Avoid treating error states (unknown/nil) as transitionable states. Always provide an "initial" branch that makes the first real observation the reference, not a delta from error.
-
-### 2026-10-03 — pgrep Kill Target Derivation Mistake — Group-Killed Claude Session
-
-* **Symptom:** Running `kill -- -$pgid` after deriving `$pgid` from `pgrep -f 'nix-shell -p uv --run uvx mcp-nixos'` killed the Claude Code session itself, not just the target process.
-
-* **Root cause:** The pgrep pattern matched Claude Code's own devenv-plugin MCP server (started via `nix-shell`). The derived pgid contained the target process AND the Claude session, so group-kill signaled both.
-
-* **Fix:** Do not derive a kill target from `pgrep -f` on a pattern that a live harness process can also match. Track `$!` of the specific process you spawned (via `&` in subshell), and only group-kill a pgid you explicitly created with `setsid`.
-
-* **Prevention rule:** Explicit PID tracking via `$!` (from subshell or `$BASHPID`) is safer than pattern matching for kill targets. Never group-kill (`kill -- -$pgid`) unless you created the pgid yourself with `setsid` or have verified with `pgrep -p $pgid` that it contains only your target process.
-
 ### 2026-10-12 — Noctalia xdg.stateFile Plugin Linking Failed Due to Materialization
 
 * **Symptom:** pwscope helper linked via xdg.stateFile into Visualizer+ plugin's bin/ directory disappeared when plugin was disabled/re-enabled or catalog updated.
@@ -151,3 +131,13 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** tweakcc exits 139 with "Can't read the number of buckets" when pointed at the installed claude-code.
 * **Root cause:** node-lief parses the ELF after autoPatchelf/patchelf has rewritten it; the raw Bun binary parses fine.
 * **Prevention rule:** Run tweakcc in claude-code-tweaked's postInstall, before fixupPhase. Never run it against the installed (patched) claude; `make tweakcc` targets a scratch copy of the unpatched claude-code.src. Do not mutate store paths (read-only store; mutation also breaks the hash). See decisions.md #51.
+
+### 2026-10-19 — Bubble AP Failed: cfg80211 Regdomain WORLD
+* **Symptom:** vol-bubble failed; NM 'Hotspot network creation took too long'; wpa_supplicant 'Failed to start AP functionality' right after 'CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD'.
+* **Root cause:** cfg80211 ieee80211_regdom = 00. The 'US' seen in `iw reg get` was learned from the associated AP's beacons. Leaving the STA link restored WORLD, where 5180 MHz is no_ir, so the AP cannot beacon. Same root cause as the Pi's brcmfmac scan failure.
+* **Prevention rule:** Set the kernel regdomain (`boot.extraModprobeConfig`, cfg80211 ieee80211_regdom). For a no-reboot effect, run `iw reg set <CC>` before AP start. Never verify the regdomain from `iw reg get` while associated; read `/sys/module/cfg80211/parameters/ieee80211_regdom`.
+
+### 2026-10-19 — Bubble AP Reports AP-ENABLED But Beacons Not On Air
+* **Symptom:** NM and wpa_supplicant report AP-ENABLED on ch36 (5 GHz) and ch6 (2.4 GHz), but the Pi 2.4 GHz scanner and the phone do not see the SSID. Standalone hostapd run 1: 'Failed to set beacon parameters' (START_AP rejected). Run 2: 'Register spurious class3 failed: ret=-22' then 'Could not configure driver mode' (likely wpa_supplicant still holding the interface; not verified).
+* **Root cause:** Not confirmed. Driver debug (debug_mask=0xffffffff) showed BCN_UPD accepted by firmware and mgmt frames transmitted, yet no beacons on air. Single observation: with Bluetooth powered off, the Pi saw the SSID at signal 100 on ch6 immediately and the phone saw it on 5 GHz; after BT power-on (idle) 5 GHz stayed visible. Suspected: Bluetooth coexistence (BTC) starving AP beacons during BT activity; A2DP streaming not yet tested. Ruled out: regdomain (US), power save, cloned MAC.
+* **Prevention rule:** Treat NM/wpa_supplicant AP-ENABLED as non-evidence of beaconing. Verify on-air with an independent receiver before declaring the AP up. Stop NM/wpa_supplicant on the interface before a standalone hostapd run. Record BT state alongside every AP verification.

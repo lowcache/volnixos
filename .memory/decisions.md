@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-13
+last_updated: 2026-10-19
 status: active
 ---
 
@@ -578,3 +578,17 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Why:** The Nix store is read-only, and mutating a store path breaks its hash. tweakcc 4.4.0's node-lief (LIEF) segfaults (exit 139, "Can't read the number of buckets") when parsing an autoPatchelf/patchelf-rewritten ELF. The raw Bun binary parses fine, so tweakcc must run before fixupPhase.
 * **Rules out:** Running tweakcc (including the interactive UI) against the installed `claude`. `make tweakcc` points tweakcc at a scratch copy of the unpatched `claude-code.src`.
 * **Build constraints:** tweakcc fetches per-version prompt JSON from GitHub at runtime. The build instead seeds `prompt-data-cache/` from tweakcc's own source, so an uncovered claude-code version fails the build loudly. With an empty config, tweakcc enables its default-on patches (session memory, MCP non-blocking, thinking visibility, model list, etc.).
+## 52. Travel Bubble — Fail-Closed Forwarding Policy (2026-10-19)
+
+* **Decision:** The laptop Wi-Fi AP (`vol-bubble`) forwards only bubble to Pi DNS and bubble to uplink (plus replies). All other bubble traffic is dropped. The bubble never reaches tethering, VMs, or Docker.
+* **Match scope:** FORWARD rules live in chain `vol-bubble-fwd` and match subnet 10.74.0.0/24, not the wlp4s0 interface. Interface-scoped rules would break VM egress whenever wlp4s0 is a client.
+* **Autostart:** The bubble starts only when enp3s0 leases from the Pi's DHCP server (10.73.0.1) and stops when enp3s0 goes down. autoconnect stays false.
+* **Rules out:** interface-scoped FORWARD rules on wlp4s0; bubble access to tether, VMs, or Docker; autoconnect on the `vol-bubble` profile.
+* **Why:** Fail-closed by default. The bubble exists to reach the Pi-routed uplink only.
+
+## 53. Kernel Pin — cachyos 7.2.9 Until 7.2.11 Is Cached (2026-10-19)
+
+* **Decision:** flake.lock stays at c157d99^ (cachyos-kernel 7.2.9). The 7.2.11 bump and its nixpkgs node bump are reverted until a binary cache serves them.
+* **Why:** cachyos-kernel 7.2.11 is in no cache and would compile locally. User chose 'Bubble on 7.2.9 first'.
+* **Rules out:** re-applying the bump, or building the 7.2.11 kernel locally, before a cache carries it.
+* **Re-apply:** the bumped lock is saved at `~/Storage/tmp/ph-build/volnix-flake.lock.7.2.11`.

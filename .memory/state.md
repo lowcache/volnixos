@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-16
+last_updated: 2026-10-19
 status: active
 ---
 
@@ -190,3 +190,14 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist` (LU
 - Adds qemu-user 11.1.1 + `qemu-aarch64-binfmt-P` to the closure (+126 MiB).
 - Purpose: build the Panhandler Pi image (aarch64) on this host; also makes Nix-on-Droid closures buildable here (see 03f3a02).
 - Status: gate and build pass; not yet activated via `make switch`.
+## 15. Travel Bubble — Laptop Wi-Fi AP (2026-10-19)
+
+- Module: `nixos/modules/travel-bubble.nix`, enabled as `vol.travel-bubble` in `nixos/hosts/volnix.nix`. wlp4s0 = AP, enp3s0 = uplink.
+- NM profile `vol-bubble`: AP, 5 GHz ch36, WPA2-CCMP, shared 10.74.0.1/24, autoconnect=false. SSID/PSK come from host-secrets.yaml keys `bubble_ssid`/`bubble_psk` via sops template `vol-bubble.env`.
+- Clients get DNS 10.73.0.1 (Pi blocky) via `/etc/NetworkManager/dnsmasq-shared.d`.
+- Lifecycle: NM dispatcher starts `vol-bubble.service` when enp3s0 leases with DHCP4_DHCP_SERVER_IDENTIFIER=10.73.0.1, and stops it when enp3s0 goes down. The service holds the AP up and a systemd-inhibit (lid/sleep/idle) for its lifetime.
+- Firewall: wlp4s0 input allows udp 53/67 and tcp 53 only. Chain `vol-bubble-fwd` in FORWARD matches 10.74.0.0/24, not wlp4s0. Bubble to Pi DNS only; bubble to enp3s0 plus replies; all other bubble traffic dropped (fail-closed; never tether, VMs, or Docker). See decisions.md #52.
+- Hardware: RTL8852BE (rtw89, firmware rtw8852b 0.29.29.18). Driver accepts AP mode; combos #channels<=1, so AP and STA cannot run off-channel concurrently. US regdomain; ch36 has no NO-IR flag. Kernel regdomain is not yet pinned in config (todo.md).
+- Status (2026-10-19): AP does NOT reach the air. NM and wpa_supplicant report AP-ENABLED on ch36 and ch6, but the Pi (2.4 GHz scanner) and the phone do not see the SSID. Ruled out: regdomain, power save, cloned MAC. Bluetooth coexistence is the suspected cause (unconfirmed; see mistakes.md 2026-10-19 and todo.md). Module logic (dispatcher, AP state, inhibit, DNS, firewall) reported correct up to the radio.
+- Kernel: flake.lock pinned to cachyos 7.2.9 (cachyos-kernel 7.2.11 and its nixpkgs node bump reverted to c157d99^). See decisions.md #53.
+- Known open: `nixos/modules/nix-settings.nix:36` still lists the `attic.xuyh0120.win/lantian` substituter (see todo.md SECURITY item).

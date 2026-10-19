@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-16
+last_updated: 2026-10-19
 status: active
 ---
 
@@ -428,3 +428,21 @@ status: active
 - Closure adds qemu-user 11.1.1 and qemu-aarch64-binfmt-P (+126 MiB). Gate and build pass.
 - [ ] Run `make switch` to activate.
 - [ ] After switch, update stale comments: `droid/README.md:56` and the `flake.nix:155` comment ("no aarch64 emulation on volnix").
+### SECURITY — Remove attic.xuyh0120.win Substituter (2026-10-19)
+
+- [ ] Remove `https://attic.xuyh0120.win/lantian` from `nixos/modules/nix-settings.nix:36` and its key from `trusted-public-keys`.
+- Reason: the substituter answers 503 'Binary cache unavailable due to server compromise' (xddxdd/nix-cachyos-kernel#110).
+- Status: user decision pending.
+
+### Travel Bubble — Regdomain and AP Verification (2026-10-19)
+
+- [ ] Set the kernel regdomain via `boot.extraModprobeConfig` (cfg80211 `ieee80211_regdom`). For a no-reboot effect before AP start: `iw reg set <CC>`.
+- [ ] Verify `vol-bubble` AP bring-up on ch36 after the regdomain fix.
+- [ ] Verify bubble forwarding: DNS to 10.73.0.1 only, uplink reachable, all other bubble traffic dropped.
+- [ ] Re-apply the saved lock (decisions.md #53) once a cache serves cachyos-kernel 7.2.11.
+### Travel Bubble — AP Not On Air (2026-10-19 — BLOCKER)
+
+- Blocker: `vol-bubble` reports AP-ENABLED but no beacons are seen by the Pi or the phone (see state.md §15, mistakes.md 2026-10-19).
+- [ ] Test on-air beacons with Bluetooth A2DP streaming active (earbuds). Confirms or rules out BT coexistence starvation (the one observation so far was BT off = visible, BT on idle = still visible on 5 GHz).
+- [ ] User decision on fix: (a) reset BT at bubble start; (b) coex override via debugfs `btc_manual`; (c) keep BT off while bubbling; (d) AP-capable USB adapter (mt76 family) as apInterface; (e) newer kernel/firmware for rtw8852b.
+- [ ] Implement the chosen fix, then verify on-air with an independent receiver (Pi scan or phone), not NM/wpa_supplicant state.
