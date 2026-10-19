@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
 
   home = {
     packages =
@@ -140,7 +140,14 @@
           pandoc # backend for micro's `preview` plugin (see home/common/tools.nix)
           feh
           tor
-          win2xcur
+          # The Noctalia cursor plugin imports win2xcur/wand from PATH's python3
+          # (Windows pack import, previews); hiPrio shadows common/'s bare python3.
+          (lib.hiPrio (
+            python3.withPackages (ps: [
+              ps.wand
+              (ps.toPythonModule win2xcur)
+            ])
+          ))
           zenity
           playerctl
           brightnessctl

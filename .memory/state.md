@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-12
+last_updated: 2026-10-16
 status: active
 ---
 
@@ -184,3 +184,9 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist` (LU
 ## 13. CI/Deployment Infrastructure
 
 **Cachix CI Token (2026-09-28 Rotated):** GitHub Actions credential for pushing to public `volnixos` cache. Prior token (cache-scoped, created 2026-08-26) carried Cachix default 30-day expiry and expired 2026-09-25T10:11Z, causing CI build failures 2026-09-25/26 (runs 36094076894, 36231008195 failed with auth error at cachix-action step; 1m45s in). Token was cache-scoped (correct, safer than account-scoped), but 30-day expiry was unnecessarily aggressive. Replaced with new cache-scoped read/write token, 1-year expiry (expires ~2027-09-28). Token stored via GitHub secret `CACHIX_AUTH_TOKEN` using interactive `gh secret set` prompt (avoids trailing newline gotcha from piped echo). Documentation in `.github/workflows/build.yml:8` corrected to reflect cache-scoped nature (commit 3f2e952). Also fixed in same commit: stray double blank line in flake.nix that failed formatting gate after 1h39m CI burn (cost of discovering lint error late in build cycle). Gotcha: `cachix-action` accepts only `authToken` and `signingKey` — no OIDC/tokenless auth path available. Public cache `volnixos` requires write token for CI push; read-only substituter access is unrestricted.
+## 14. Cross-Architecture Build — binfmt aarch64 (2026-10-16, NOT YET SWITCHED)
+
+- `boot.binfmt.emulatedSystems = [ "aarch64-linux" ]` in `nixos/modules/nix-settings.nix` (added 2026-10-16, uncommitted).
+- Adds qemu-user 11.1.1 + `qemu-aarch64-binfmt-P` to the closure (+126 MiB).
+- Purpose: build the Panhandler Pi image (aarch64) on this host; also makes Nix-on-Droid closures buildable here (see 03f3a02).
+- Status: gate and build pass; not yet activated via `make switch`.

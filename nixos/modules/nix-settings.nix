@@ -52,6 +52,9 @@
     channel.enable = false;
     optimise.automatic = true;
   };
+  # QEMU user-mode for aarch64 builds (Panhandler Pi image, Nix-on-Droid);
+  # also adds aarch64-linux to nix.settings.extra-platforms.
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   # Replaces nix.gc: --keep guarantees rollback targets regardless of age.
   programs.nh = {
     enable = true;

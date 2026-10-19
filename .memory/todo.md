@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-13
+last_updated: 2026-10-16
 status: active
 ---
 
@@ -422,3 +422,9 @@ status: active
 ### Claude Code tweakcc — Config Review (2026-10-13)
 
 - [ ] Review the empty tweakcc config's default-on patches (see decisions.md #51) and decide which to keep or disable explicitly.
+### Binfmt aarch64 Emulation — Added to Config, Not Switched (2026-10-16)
+
+- Config: `boot.binfmt.emulatedSystems = [ "aarch64-linux" ]` in `nixos/modules/nix-settings.nix`. Purpose: build the Panhandler Pi image (aarch64) on the laptop; also makes Nix-on-Droid closures buildable here (see 03f3a02).
+- Closure adds qemu-user 11.1.1 and qemu-aarch64-binfmt-P (+126 MiB). Gate and build pass.
+- [ ] Run `make switch` to activate.
+- [ ] After switch, update stale comments: `droid/README.md:56` and the `flake.nix:155` comment ("no aarch64 emulation on volnix").
