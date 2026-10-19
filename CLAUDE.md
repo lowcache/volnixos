@@ -113,7 +113,7 @@ Host side of the Galaxy S26 Ultra MCP integration, `nixos/phone-agent/` (`phone-
 
 ## Google Drive (`gd`)
 
-`gd` (`pkgs/gd/`, overlay name `gd`, in `termUi` in `home/pkgs.nix`) is a bash verb layer over rclone for Drive in the terminal: push/pull/pick/find/cat/put/mv/rm/link, guarded one-way `sync up|down`, `bisync`, FUSE `mount`. `gd help` lists it; `checks.gd` runs every verb but mount/setup against a local alias remote.
+`gd` (`pkgs/gd/`, overlay name `gd-drive` because `gd` is libgd in nixpkgs, in `termUi` in `home/pkgs.nix`) is a bash verb layer over rclone for Drive in the terminal: push/pull/pick/find/cat/put/mv/rm/link, guarded one-way `sync up|down`, `bisync`, FUSE `mount`. `gd help` lists it; `checks.gd` runs every verb but mount/setup against a local alias remote.
 
 * `gd setup` creates the rclone remote `gdrive` (OAuth). `~/.config/rclone` (refresh token) and `~/.config/gd` are persisted to `/persist`; rclone's cache (bisync listings, VFS cache) follows `XDG_CACHE_HOME` into Storage.
 * `GD_SYNC_LOCAL` (`~/Storage/Drive`) and `GD_BACKUP_DIR` (`~/Storage/gd-backup`) are session variables in `home/default.nix`.

@@ -2,5 +2,6 @@
 final: _prev: {
   tweakcc = final.callPackage ./tweakcc/package.nix { };
   claude-code-tweaked = final.callPackage ./claude-code-tweaked/package.nix { };
-  gd = final.callPackage ./gd/package.nix { };
+  # Not `gd`: that name is libgd in nixpkgs, and shadowing it rebuilds graphviz, texlive, perl GD, ...
+  gd-drive = final.callPackage ./gd/package.nix { };
 }

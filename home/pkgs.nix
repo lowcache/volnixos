@@ -155,7 +155,7 @@
           acpi
           ddcutil
           clinfo
-          gd # Google Drive CLI over rclone, pkgs/gd
+          gd-drive # `gd`: Google Drive CLI over rclone, pkgs/gd
         ];
         nixAi = with pkgs; [
           antigravity-cli
