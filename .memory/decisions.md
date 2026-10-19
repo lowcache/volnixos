@@ -592,3 +592,16 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Why:** cachyos-kernel 7.2.11 is in no cache and would compile locally. User chose 'Bubble on 7.2.9 first'.
 * **Rules out:** re-applying the bump, or building the 7.2.11 kernel locally, before a cache carries it.
 * **Re-apply:** the bumped lock is saved at `~/Storage/tmp/ph-build/volnix-flake.lock.7.2.11`.
+## 54. Lantian Attic Substituter Removed — Key Not Re-added (2026-10-19)
+
+* **Decision:** Remove `https://attic.xuyh0120.win/lantian` and its key `lantian:EeAU…` from `nixos/modules/nix-settings.nix` and the CI NIX_CONFIG.
+* **Why:** The attic answers 503 'Binary cache unavailable due to server compromise' (xddxdd/nix-cachyos-kernel#110, opened 2026-10-15).
+* **Rules out:** Re-adding the lantian key, even if the attic returns, unless upstream rotates the key and states the cache was rebuilt clean.
+* **Consequence:** volnixos cachix has evicted nearly all paths, so CI cannot pass until the kernel is built locally and pushed (todo.md).
+* **Amendment (2026-10-19):** The attic-sourced cachyos 7.2.9 kernel (`5d7r266…`), fetched 2026-10-13, is verified untampered. An independent from-scratch build in a chroot store (cache.nixos.org substituter only) produced narHashes identical to the running kernel for out, modules, and linux-config-7.2.9. The method is reproducible: a future cachyos bump can be built locally in a chroot store and pushed to volnixos with the same check.
+
+## 55. No Automatic Bluetooth Power-Cycle in vol-bubble (2026-10-19)
+
+* **Decision:** Do not add a BT power-cycle (bluetoothctl or rfkill) to `vol-bubble` ExecStartPre. Manual recovery: `bluetoothctl power off && bluetoothctl power on`, then `systemctl --user restart pipewire pipewire-pulse wireplumber`.
+* **Why:** User decision, 2026-10-19. Resolved bubble outage was a stuck BT state; a BT cycle also left user PipeWire unresponsive.
+* **Rules out:** Automatic BT reset at bubble start (former option a).

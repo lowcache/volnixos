@@ -58,7 +58,7 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist` (LU
 
 ### net-gate (Tor relay, rebuilt 2026-09-12, refined 2026-09-15, BOOT FAILURE 2026-09-16)
 
-**net-gate (Tor relay, rebuilt 2026-09-12, refined 2026-09-15, RECOVERY 2026-09-16):** Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Service was dead 2026-09-08 to 2026-09-12 (root cause: hand-rolled `settings.SOCKSPort` conflicted with auto-emitted `client.socksListenAddress` via list merge → tor died on second bind; netgate tap missing `IPMasquerade`, guest packets had no return route). Redesigned with fail-closed invariant and readiness ladder L0-L4 (decisions.md #42). Built and checked 2026-09-12 16:11; seven implementation refinements + rpfilter fix applied 2026-09-15. System rebooted 2026-09-15 14:26. **TRANSIENT BOOT FAILURE 2026-09-16 04:49 resolved by 2026-09-16 15:29.** anon-selftest L4 ladder passed: enforced path verified with Tor exit 185.100.85.25, loopback resolver unreachable, IPv6 egress blocked. **Status: RECOVERY VERIFIED.** Full L0-L4 ladder confirmed functional in live operation.
+Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS `5353`/SOCKS `9050`. Fail-closed with readiness ladder L0-L4; only L4 releases workloads (decisions.md #42). Reverse-path filter set to loose in `nixos/modules/anonymous-mode.nix` (decisions.md #42 Amendment 2). Status: live. L4 selftest passed 2026-09-16 15:29 UTC (exit 185.100.85.25, loopback resolver unreachable, IPv6 egress blocked).
 
 ### anon-box (Anonymity Workstation Microvm, Verified 2026-09-16)
 
@@ -196,8 +196,16 @@ Ephemeral root (`tmpfs`, ~4 GB, wiped on boot). Permanent data on `/persist` (LU
 - NM profile `vol-bubble`: AP, 5 GHz ch36, WPA2-CCMP, shared 10.74.0.1/24, autoconnect=false. SSID/PSK come from host-secrets.yaml keys `bubble_ssid`/`bubble_psk` via sops template `vol-bubble.env`.
 - Clients get DNS 10.73.0.1 (Pi blocky) via `/etc/NetworkManager/dnsmasq-shared.d`.
 - Lifecycle: NM dispatcher starts `vol-bubble.service` when enp3s0 leases with DHCP4_DHCP_SERVER_IDENTIFIER=10.73.0.1, and stops it when enp3s0 goes down. The service holds the AP up and a systemd-inhibit (lid/sleep/idle) for its lifetime.
-- Firewall: wlp4s0 input allows udp 53/67 and tcp 53 only. Chain `vol-bubble-fwd` in FORWARD matches 10.74.0.0/24, not wlp4s0. Bubble to Pi DNS only; bubble to enp3s0 plus replies; all other bubble traffic dropped (fail-closed; never tether, VMs, or Docker). See decisions.md #52.
+- Firewall: wlp4s0 input allows udp 53/67 and tcp 53 only. Chain `vol-bubble-fwd` in FORWARD matches 10.74.0.0/24, not wlp4s0. Bubble to Pi DNS only; bubble to enp3s0 plus replies; all other bubble traffic dropped (fail-closed). See decisions.md #52.
 - Hardware: RTL8852BE (rtw89, firmware rtw8852b 0.29.29.18). Driver accepts AP mode; combos #channels<=1, so AP and STA cannot run off-channel concurrently. US regdomain; ch36 has no NO-IR flag. Kernel regdomain is not yet pinned in config (todo.md).
-- Status (2026-10-19): AP does NOT reach the air. NM and wpa_supplicant report AP-ENABLED on ch36 and ch6, but the Pi (2.4 GHz scanner) and the phone do not see the SSID. Ruled out: regdomain, power save, cloned MAC. Bluetooth coexistence is the suspected cause (unconfirmed; see mistakes.md 2026-10-19 and todo.md). Module logic (dispatcher, AP state, inhibit, DNS, firewall) reported correct up to the radio.
+- Status (2026-10-19): AP on air and working. Phone associated on 5 GHz ch36 (lease 10.74.0.40, -25 dBm, ~1.5 MB traffic). AP visible at signal 100 on 2.4 GHz ch6 to the Pi scanner. DNS reaches Pi blocky (BLOCKED responses seen). Uplink reachability and drop of all other bubble traffic not yet verified.
+- Gotcha (2026-10-19): a stuck Bluetooth state (laptop held an A2DP link to earbuds sitting in their case) suppressed AP beacons. Clear with `bluetoothctl power off && bluetoothctl power on`; this left user PipeWire unresponsive, fix with `systemctl --user restart pipewire pipewire-pulse wireplumber`. No automatic BT power-cycle (decisions.md #55).
 - Kernel: flake.lock pinned to cachyos 7.2.9 (cachyos-kernel 7.2.11 and its nixpkgs node bump reverted to c157d99^). See decisions.md #53.
-- Known open: `nixos/modules/nix-settings.nix:36` still lists the `attic.xuyh0120.win/lantian` substituter (see todo.md SECURITY item).
+
+## 16. Google Drive CLI — gd (2026-10-19)
+
+- Package: `pkgs/gd/` (overlay attr `gd-drive`; installed binary is `gd`; `termUi` in `home/pkgs.nix`; `checks.gd`). The attr was renamed from `gd` because `pkgs.gd` is nixpkgs libgd (commit 1ca450b; see mistakes.md 2026-10-19). Built over rclone. Verbs: push/pull/pick/find/cat/put/mv/rm/link, sync up|down (dry-run + confirm), bisync, mount.
+- Persistence: `.config/rclone` (OAuth refresh token) and `.config/gd` → `/persist`.
+- Session vars: `GD_SYNC_LOCAL` = `~/Storage/Drive` (synced folder); `GD_BACKUP_DIR` = `~/Storage/gd-backup` (sync-down backups). rclone cache follows XDG_CACHE_HOME into Storage.
+- fuse deliberately not in runtimeInputs: a store `fusermount3` would shadow the setuid wrapper.
+- Not verified on volnix: `gd setup`, `gd mount`, full-system eval (built and tested standalone only, from a cloud session).

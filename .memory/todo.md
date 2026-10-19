@@ -428,21 +428,22 @@ status: active
 - Closure adds qemu-user 11.1.1 and qemu-aarch64-binfmt-P (+126 MiB). Gate and build pass.
 - [ ] Run `make switch` to activate.
 - [ ] After switch, update stale comments: `droid/README.md:56` and the `flake.nix:155` comment ("no aarch64 emulation on volnix").
-### SECURITY — Remove attic.xuyh0120.win Substituter (2026-10-19)
-
-- [ ] Remove `https://attic.xuyh0120.win/lantian` from `nixos/modules/nix-settings.nix:36` and its key from `trusted-public-keys`.
-- Reason: the substituter answers 503 'Binary cache unavailable due to server compromise' (xddxdd/nix-cachyos-kernel#110).
-- Status: user decision pending.
-
 ### Travel Bubble — Regdomain and AP Verification (2026-10-19)
 
 - [ ] Set the kernel regdomain via `boot.extraModprobeConfig` (cfg80211 `ieee80211_regdom`). For a no-reboot effect before AP start: `iw reg set <CC>`.
-- [ ] Verify `vol-bubble` AP bring-up on ch36 after the regdomain fix.
-- [ ] Verify bubble forwarding: DNS to 10.73.0.1 only, uplink reachable, all other bubble traffic dropped.
+- ✓ AP bring-up on ch36 verified (2026-10-19): phone associated on 5 GHz; AP visible on 2.4 GHz to the Pi scanner. On-air check done with BT streaming. Blocker closed; no BT auto-reset (decisions.md #55).
+- [ ] Verify remaining bubble forwarding: uplink reachable through the bubble, and all other bubble traffic dropped. DNS to 10.73.0.1 already seen working (2026-10-19).
 - [ ] Re-apply the saved lock (decisions.md #53) once a cache serves cachyos-kernel 7.2.11.
-### Travel Bubble — AP Not On Air (2026-10-19 — BLOCKER)
 
-- Blocker: `vol-bubble` reports AP-ENABLED but no beacons are seen by the Pi or the phone (see state.md §15, mistakes.md 2026-10-19).
-- [ ] Test on-air beacons with Bluetooth A2DP streaming active (earbuds). Confirms or rules out BT coexistence starvation (the one observation so far was BT off = visible, BT on idle = still visible on 5 GHz).
-- [ ] User decision on fix: (a) reset BT at bubble start; (b) coex override via debugfs `btc_manual`; (c) keep BT off while bubbling; (d) AP-capable USB adapter (mt76 family) as apInterface; (e) newer kernel/firmware for rtw8852b.
-- [ ] Implement the chosen fix, then verify on-air with an independent receiver (Pi scan or phone), not NM/wpa_supplicant state.
+### Kernel Provenance & CI Cache Recovery (2026-10-19 — BLOCKER FOR CI)
+
+- [ ] Build the kernel locally and push it to volnixos. Every CI run since 2026-10-19 fails at 'Assert the kernel is a cache hit' (2143 drvs planned); volnixos cachix has evicted the kernel. Method: chroot-store build, one compile (~56 min, 12 threads), substituters = cache.nixos.org only (inbox 2026-10-19).
+✓ Provenance of running kernel `5d7r266…-linux-cachyos-latest-7.2.9` verified (inbox 2026-10-19): independent from-scratch build produced identical narHashes for out, modules, and linux-config-7.2.9; `nix store verify --no-trust` passes on host copies. Attic-sourced kernel is untampered.
+- [ ] Re-verify lantian-signed local store paths not covered by the independent build: `55-nixos-aslr-entropy.conf` (content checked, benign sysctl) and `setup-module-compression`.
+
+### gd — Google Drive CLI: Verify on volnix (2026-10-19)
+
+- [ ] `gd setup` (rclone OAuth) on volnix.
+- [ ] `gd mount` (fuse path; store fusermount3 deliberately excluded so the setuid wrapper is used).
+- [ ] Full-system eval: only built and tested standalone from a cloud session so far.
+- [ ] Confirm session vars `GD_SYNC_LOCAL` (`~/Storage/Drive`) and `GD_BACKUP_DIR` (`~/Storage/gd-backup`), and persistence of `.config/rclone` and `.config/gd`.

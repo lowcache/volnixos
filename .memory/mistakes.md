@@ -114,19 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-12 — Noctalia xdg.stateFile Plugin Linking Failed Due to Materialization
-
-* **Symptom:** pwscope helper linked via xdg.stateFile into Visualizer+ plugin's bin/ directory disappeared when plugin was disabled/re-enabled or catalog updated.
-* **Root cause:** `noctalia msg plugins disable/enable` (and catalog operations) re-materialize ~/.local/state/noctalia/plugins/materialized/<source>/<plugin> from git, destroying any files added locally to the materialized copy. Materialization is the source-of-truth operation; local modifications to catalog copies do not persist.
-* **Fix:** Ship complete plugin as local directory (via xdg.dataFile linking to ~/.local/share/noctalia/plugins/) rather than patching helpers into materialized catalog copy. Local dirs outrank catalog sources in plugin_manager.cpp's search order; collect() visits local first, first match wins.
-* **Prevention rule:** Never patch helper files or modifications into Noctalia's materialized catalog copies. The catalog is the source of truth and is re-materialized on any plugin manager operation. Ship complete local plugin directories (via xdg.dataFile, symlink, or home.file) or submit patches upstream.
-
-### 2026-10-13 — Kernel Input Lag & Attic Cache Eviction Caused CI Substitution Failure
-* **Symptom:** CI builds failed 2026-10-10 to 2026-10-12 at the "kernel is a cache hit" assertion. Dry-run listed `linux-cachyos-latest-7.2.3.drv` as source build despite no nix-cachyos-kernel input change.
-* **Root cause:** `nix-cachyos-kernel` input pinned at rev 5cfa9da (2026-09-04). Kernel derivation hash stable, but lantian attic evicts cache entries older than ~10 days (retention window). Narinfo 404 → substituter fallback → source build. Bumping only `nixpkgs` doesn't touch this input; it deliberately keeps independent nixpkgs (decisions.md #48).
-* **Fix:** `nix flake update nix-cachyos-kernel` → rev 873c5a2 (2026-10-12), kernel 7.2.9. Attic narinfo returned 200; CI passed.
-* **Prevention rule:** Inputs with independent nixpkgs must be updated separately and frequently (~weekly). Attic retention is ~10 days; stale inputs cause cache misses. Use `nix flake update nix-cachyos-kernel` explicitly, not just `nix flake update`. Diagnostic gotcha: `--override-input` during testing keeps old transitive nixpkgs node (misleading drvPath); use real update in a worktree to test actual behavior.
-
 ### 2026-10-13 — tweakcc 4.4.0 LIEF Segfault on autoPatchelf'd claude-code Binary
 * **Symptom:** tweakcc exits 139 with "Can't read the number of buckets" when pointed at the installed claude-code.
 * **Root cause:** node-lief parses the ELF after autoPatchelf/patchelf has rewritten it; the raw Bun binary parses fine.
@@ -141,3 +128,19 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** NM and wpa_supplicant report AP-ENABLED on ch36 (5 GHz) and ch6 (2.4 GHz), but the Pi 2.4 GHz scanner and the phone do not see the SSID. Standalone hostapd run 1: 'Failed to set beacon parameters' (START_AP rejected). Run 2: 'Register spurious class3 failed: ret=-22' then 'Could not configure driver mode' (likely wpa_supplicant still holding the interface; not verified).
 * **Root cause:** Not confirmed. Driver debug (debug_mask=0xffffffff) showed BCN_UPD accepted by firmware and mgmt frames transmitted, yet no beacons on air. Single observation: with Bluetooth powered off, the Pi saw the SSID at signal 100 on ch6 immediately and the phone saw it on 5 GHz; after BT power-on (idle) 5 GHz stayed visible. Suspected: Bluetooth coexistence (BTC) starving AP beacons during BT activity; A2DP streaming not yet tested. Ruled out: regdomain (US), power save, cloned MAC.
 * **Prevention rule:** Treat NM/wpa_supplicant AP-ENABLED as non-evidence of beaconing. Verify on-air with an independent receiver before declaring the AP up. Stop NM/wpa_supplicant on the interface before a standalone hostapd run. Record BT state alongside every AP verification.
+
+### 2026-10-19 — Bubble AP Silent Due to Stuck Bluetooth State (Resolved)
+* **Symptom:** AP-ENABLED reported by NM/wpa_supplicant, but no beacons on air; Pi and phone did not see the AP.
+* **Root cause:** Laptop held a stuck A2DP link to earbuds sitting in their case; Bluetooth coexistence kept granting BT the airtime and AP beacons were starved. Supersedes the unconfirmed hypothesis in the 2026-10-19 entry above. Verified: BT power cycle cleared it; with earbuds streaming A2DP the AP stayed visible at signal 100 on 2.4 GHz ch6.
+* **Side effect:** The BT power cycle left user PipeWire unresponsive; logout did not restart it (user@ manager survived).
+* **Prevention rule:** After any BT power cycle on a bubble host, run `systemctl --user restart pipewire pipewire-pulse wireplumber`. Verify on-air with an independent receiver, as the prior entry requires.
+
+### 2026-10-19 — Third-Party Cache Kernel Re-pushed to volnixos Launders Provenance
+* **Symptom:** CI run 38455812732 copied the running kernel from the attic (later reported compromised) into the volnixos cache on 2026-10-13. The local signature shows volnixos only, so `nix path-info --sigs` hides the attic origin.
+* **Root cause:** CI copied store paths from a non-owned substituter into the trusted cache without recording origin or rebuilding them.
+* **Prevention rule:** Before pushing paths sourced from a non-owned cache into volnixos, record the origin and verify by local rebuild (`nix build --rebuild`). Remove a substituter's key from nix-settings and CI NIX_CONFIG as soon as its trust fails.
+
+### 2026-10-19 — Local Overlay `gd` Shadowed nixpkgs libgd
+* **Symptom:** Toplevel build planned ~3100 drvs (graphviz, texlive, android-studio, perl GD...) and failed in perl5.42.3-GD-2.86. CI/gate stayed green because `checks.gd` only builds the script.
+* **Root cause:** Adding `gd = final.callPackage ./gd/package.nix {}` to `pkgs/default.nix` overrode `pkgs.gd` (libgd), so every libgd consumer received the shell script.
+* **Prevention rule:** Before adding an overlay attr, `nix eval nixpkgs#<name>.name` must fail (`pkgs/default.nix` claims new names only). A gate that builds only the new package does not catch shadowing; build the toplevel and read the closure diff (`nixops.py build`).
