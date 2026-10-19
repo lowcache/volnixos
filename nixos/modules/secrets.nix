@@ -24,6 +24,11 @@ let
       secret = "gh_token";
       wrap = pkgs.gh;
     };
+    # Write token for volnixos.cachix.org (pushing locally built kernels).
+    CACHIX_AUTH_TOKEN = {
+      secret = "cachix_auth_token";
+      wrap = pkgs.cachix;
+    };
   };
 
   pathOf = s: config.sops.secrets.${s.secret}.path;
