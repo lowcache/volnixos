@@ -128,6 +128,9 @@ in
             # settings.ini (vn1k/cursor plugin) + Noctalia's gtk.css.
             ".config/gtk-3.0"
             ".config/gtk-4.0"
+            # rclone.conf holds the Google Drive OAuth refresh token (gd setup).
+            ".config/rclone"
+            ".config/gd"
           ];
           # Safety net for apps that hardcode ~/.cache and ignore XDG_CACHE_HOME.
           cache = [

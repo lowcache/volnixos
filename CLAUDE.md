@@ -111,6 +111,14 @@ Host side of the Galaxy S26 Ultra MCP integration, `nixos/phone-agent/` (`phone-
 * Push server (`enablePush`): read-only, token-gated, bound to the tailscale tap; the guest forwards tailnet `:pushPort` to it, so laptop→phone transfer stays phone-initiated.
 * adb TCP 5555 on the phone stays open deliberately (phone-agent + Automate/Shizuku); do not "clean it up".
 
+## Google Drive (`gd`)
+
+`gd` (`pkgs/gd/`, overlay name `gd`, in `termUi` in `home/pkgs.nix`) is a bash verb layer over rclone for Drive in the terminal: push/pull/pick/find/cat/put/mv/rm/link, guarded one-way `sync up|down`, `bisync`, FUSE `mount`. `gd help` lists it; `checks.gd` runs every verb but mount/setup against a local alias remote.
+
+* `gd setup` creates the rclone remote `gdrive` (OAuth). `~/.config/rclone` (refresh token) and `~/.config/gd` are persisted to `/persist`; rclone's cache (bisync listings, VFS cache) follows `XDG_CACHE_HOME` into Storage.
+* `GD_SYNC_LOCAL` (`~/Storage/Drive`) and `GD_BACKUP_DIR` (`~/Storage/gd-backup`) are session variables in `home/default.nix`.
+* fuse is not bundled: `gd mount` relies on NixOS's setuid `fusermount3` wrapper.
+
 ## Memory — memd
 
 `.memory/` is curated by `memd`.

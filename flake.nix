@@ -198,7 +198,7 @@
           self.nixosConfigurations.volnix.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
         tailscale-vm =
           self.nixosConfigurations.volnix.config.microvm.vms.tailscale.config.config.microvm.declaredRunner;
-        inherit (self.nixosConfigurations.volnix.pkgs) tweakcc claude-code-tweaked;
+        inherit (self.nixosConfigurations.volnix.pkgs) tweakcc claude-code-tweaked gd;
       };
 
       # Reusable project scaffolds: `nix flake init -t ~/.nix-config#ruby`.
@@ -273,6 +273,12 @@
             )}
             touch $out
           '';
+
+        # Every gd verb but mount/setup, against a local dir posing as Drive.
+        gd = import ./pkgs/gd/test.nix {
+          inherit pkgs;
+          inherit (self.packages.${system}) gd;
+        };
 
         anon-jail = pkgs.testers.runNixOSTest (import ./nixos/tests/anon-jail.nix { inherit inputs; });
       };

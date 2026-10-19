@@ -26,6 +26,9 @@ let
     TMPDIR = "${config.home.homeDirectory}/Storage/tmp";
     PIP_CACHE_DIR = "${config.home.homeDirectory}/Storage/.cache/pip";
     CLAUDE_CODE_TMPDIR = "${config.home.homeDirectory}/Storage/tmp/claude";
+    # gd's synced Drive folder and its sync-down backups are bulk data: Storage.
+    GD_SYNC_LOCAL = "${config.home.homeDirectory}/Storage/Drive";
+    GD_BACKUP_DIR = "${config.home.homeDirectory}/Storage/gd-backup";
     # No NVIDIA render vars: the session renders on the AMD iGPU (use `nvrun`).
   };
 

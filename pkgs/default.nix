@@ -2,4 +2,5 @@
 final: _prev: {
   tweakcc = final.callPackage ./tweakcc/package.nix { };
   claude-code-tweaked = final.callPackage ./claude-code-tweaked/package.nix { };
+  gd = final.callPackage ./gd/package.nix { };
 }
