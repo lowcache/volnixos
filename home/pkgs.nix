@@ -175,8 +175,9 @@
           llmfit
           rtk
           claude-code-tweaked # tweakcc patches, pkgs/claude-code-tweaked
-          pkgs.llm-agents.omo-ai
-          pkgs.llm-agents.oh-my-opencode
+          codex
+          codexbar
+          chatgpt
           pkgs.llm-agents.claude-desktop
           pkgs.llm-agents.ccstatusline
           claude-code-router

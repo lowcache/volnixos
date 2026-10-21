@@ -51,6 +51,14 @@ in
       default = "a";
       description = "5 GHz (a) keeps the AP off the Pi's 2.4 GHz uplink airtime.";
     };
+    webuiMacs = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = ''
+        Bubble client MACs allowed to the Pi's web UI (port 8080), e.g. the phone, so it can run
+        captive-portal recovery. Everything else on the bubble stays DNS-only to the Pi.
+      '';
+    };
     channel = lib.mkOption {
       type = lib.types.ints.positive;
       default = 36;
@@ -163,14 +171,18 @@ in
         };
         # Forwarding, matched on the bubble subnet so VM/tether traffic over wlp4s0 as a client is
         # untouched: bubble → Pi cable only, plus replies; never the tether, VMs or Docker, and
-        # fail-closed without the cable. To the Pi itself only DNS: its webui/SSH trust the cable
-        # subnet, and bubble clients arrive masqueraded as the laptop. Own chain in FORWARD, so it
-        # holds whether Docker (FORWARD policy DROP) starts before or after.
+        # fail-closed without the cable. To the Pi itself only DNS, plus the web UI for webuiMacs:
+        # its webui/SSH trust the cable subnet, and bubble clients arrive masqueraded as the laptop.
+        # Own chain in FORWARD, so it holds whether Docker (FORWARD policy DROP) starts before or after.
         extraCommands = ''
           iptables -N vol-bubble-fwd 2>/dev/null || iptables -F vol-bubble-fwd
           iptables -A vol-bubble-fwd -s ${subnet} -d ${cfg.piAddress} -p udp --dport 53 -j ACCEPT
           iptables -A vol-bubble-fwd -s ${subnet} -d ${cfg.piAddress} -p tcp --dport 53 -j ACCEPT
-          iptables -A vol-bubble-fwd -s ${subnet} -d ${cfg.piAddress} -j DROP
+          ${
+            lib.concatMapStrings (mac: ''
+              iptables -A vol-bubble-fwd -s ${subnet} -d ${cfg.piAddress} -p tcp --dport 8080 -m mac --mac-source ${mac} -j ACCEPT
+            '') cfg.webuiMacs
+          }iptables -A vol-bubble-fwd -s ${subnet} -d ${cfg.piAddress} -j DROP
           iptables -A vol-bubble-fwd -s ${subnet} -i ${cfg.apInterface} -o ${cfg.uplinkInterface} -j ACCEPT
           iptables -A vol-bubble-fwd -d ${subnet} -i ${cfg.uplinkInterface} -o ${cfg.apInterface} -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
           iptables -A vol-bubble-fwd -s ${subnet} -j DROP

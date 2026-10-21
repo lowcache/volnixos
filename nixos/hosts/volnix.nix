@@ -26,6 +26,8 @@
       enable = true;
       apInterface = "wlp4s0";
       uplinkInterface = "enp3s0";
+      # Galaxy ("InfernalDevice"), hardware MAC: "Phone MAC" set for the bubble SSID. Web UI for portal recovery.
+      webuiMacs = [ "78:33:c6:76:66:50" ];
     };
 
     # Flipped to true by ~/Storage/luks-migration/05-post-boot.sh once the
