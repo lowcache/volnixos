@@ -176,7 +176,6 @@
           rtk
           claude-code-tweaked # tweakcc patches, pkgs/claude-code-tweaked
           codex
-          codexbar
           chatgpt
           pkgs.llm-agents.claude-desktop
           pkgs.llm-agents.ccstatusline
