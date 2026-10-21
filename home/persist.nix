@@ -131,6 +131,8 @@ in
             # rclone.conf holds the Google Drive OAuth refresh token (gd setup).
             ".config/rclone"
             ".config/gd"
+            # Panhandler laptop agent: ph-unlock config and the quorum key share.
+            ".config/panhandler"
           ];
           # Safety net for apps that hardcode ~/.cache and ignore XDG_CACHE_HOME.
           cache = [
@@ -163,6 +165,7 @@ in
             ".local/state/memd"
             # rbw's encrypted vault cache.
             ".local/share/rbw"
+            ".local/share/panhandler"
             # Cursor themes the vn1k/cursor plugin imports/builds; its default
             # theme pointer for X11 clients.
             ".local/share/icons"
