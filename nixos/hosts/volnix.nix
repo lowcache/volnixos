@@ -66,6 +66,9 @@
       # under sustained writes. Force BOT.
       usbQuirks = [ "0bc2:ac19:u" ];
       passwordFile = config.sops.secrets.restic_password.path;
+      # Plugging in is deliberate and restic is incremental (~3 min); the cooldown only
+      # needs to absorb USB re-enumeration and replug loops, not half a day of work.
+      cooldownHours = 1;
 
       # Two sources, two devices. /persist carries the machine (including
       # ~/.nix-config); ~/Storage is the second NVMe. The mkOutOfStoreSymlinks
