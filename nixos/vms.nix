@@ -4,12 +4,17 @@
   config,
   inputs,
   lib,
+  pkgs,
+  username,
   ...
 }:
 let
   cfg = config.vol.tailscale-vm;
   guestBase = import ./vm-guest-base.nix inputs;
   prefix = lib.last (lib.splitString "/" cfg.subnet);
+  # Guest LocalAPI over vsock, surfaced on the host for the `tailscale` wrapper.
+  localApiPort = 1024;
+  localApiSock = "/run/tailscale-vm/tailscaled.sock";
 in
 {
   imports = [
@@ -97,6 +102,22 @@ in
           extraUpFlags = [ "--advertise-exit-node" ];
         };
 
+        # A non-root peer gets read-only LocalAPI access (ipnauth IsReadonlyConn),
+        # so the host can read status but up/down/set are refused.
+        systemd.services.tailscale-localapi-vsock = {
+          after = [ "tailscaled.service" ];
+          wantedBy = [ "multi-user.target" ];
+          serviceConfig = {
+            ExecStart = "${pkgs.socat}/bin/socat VSOCK-LISTEN:${toString localApiPort},fork,reuseaddr UNIX-CONNECT:/run/tailscale/tailscaled.sock";
+            DynamicUser = true;
+            RestrictAddressFamilies = [
+              "AF_UNIX"
+              "AF_VSOCK"
+            ];
+            Restart = "always";
+          };
+        };
+
         boot.kernel.sysctl = {
           "net.ipv4.ip_forward" = 1;
           "net.ipv6.conf.all.forwarding" = 1;
@@ -141,7 +162,28 @@ in
             Type = lib.mkForce "simple";
             TimeoutStopSec = "5s";
           };
-        });
+        })
+        // {
+          # Per-connection relay through cloud-hypervisor's hybrid-vsock handshake.
+          "tailscale-vm-localapi@".serviceConfig = {
+            ExecStart = "${lib.getExe pkgs.python3} ${./modules/anonymous-mode/anon-vsock.py} ${config.microvm.stateDir}/tailscale/notify.vsock ${toString localApiPort} plain";
+            StandardInput = "socket";
+            StandardOutput = "socket";
+            StandardError = "journal";
+            User = "microvm";
+            Group = "kvm";
+          };
+        };
+
+      sockets.tailscale-vm-localapi = {
+        wantedBy = [ "sockets.target" ];
+        listenStreams = [ localApiSock ];
+        socketConfig = {
+          Accept = true;
+          SocketUser = username;
+          SocketMode = "0600";
+        };
+      };
 
       # networkd handles only the VM taps; NetworkManager keeps the physical links.
       network = {
@@ -168,5 +210,12 @@ in
     };
 
     networking.networkmanager.unmanaged = [ "interface-name:${cfg.tapInterface}" ];
+
+    # Host `tailscale` CLI (noctalia tailscale plugin); no host tailscaled.
+    environment.systemPackages = [
+      (pkgs.writeShellScriptBin "tailscale" ''
+        exec ${pkgs.tailscale}/bin/tailscale --socket=${localApiSock} "$@"
+      '')
+    ];
   };
 }

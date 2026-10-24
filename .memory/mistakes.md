@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-10-19
+last_updated: 2026-10-23
 status: append-only
 ---
 
@@ -114,11 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-13 — tweakcc 4.4.0 LIEF Segfault on autoPatchelf'd claude-code Binary
-* **Symptom:** tweakcc exits 139 with "Can't read the number of buckets" when pointed at the installed claude-code.
-* **Root cause:** node-lief parses the ELF after autoPatchelf/patchelf has rewritten it; the raw Bun binary parses fine.
-* **Prevention rule:** Run tweakcc in claude-code-tweaked's postInstall, before fixupPhase. Never run it against the installed (patched) claude; `make tweakcc` targets a scratch copy of the unpatched claude-code.src. Do not mutate store paths (read-only store; mutation also breaks the hash). See decisions.md #51.
-
 ### 2026-10-19 — Bubble AP Failed: cfg80211 Regdomain WORLD
 * **Symptom:** vol-bubble failed; NM 'Hotspot network creation took too long'; wpa_supplicant 'Failed to start AP functionality' right after 'CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD'.
 * **Root cause:** cfg80211 ieee80211_regdom = 00. The 'US' seen in `iw reg get` was learned from the associated AP's beacons. Leaving the STA link restored WORLD, where 5180 MHz is no_ir, so the AP cannot beacon. Same root cause as the Pi's brcmfmac scan failure.
@@ -144,3 +139,13 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** Toplevel build planned ~3100 drvs (graphviz, texlive, android-studio, perl GD...) and failed in perl5.42.3-GD-2.86. CI/gate stayed green because `checks.gd` only builds the script.
 * **Root cause:** Adding `gd = final.callPackage ./gd/package.nix {}` to `pkgs/default.nix` overrode `pkgs.gd` (libgd), so every libgd consumer received the shell script.
 * **Prevention rule:** Before adding an overlay attr, `nix eval nixpkgs#<name>.name` must fail (`pkgs/default.nix` claims new names only). A gate that builds only the new package does not catch shadowing; build the toplevel and read the closure diff (`nixops.py build`).
+
+### 2026-10-23 — Passphrase Slot Killed While Stick Was Sole Second Factor
+* **Symptom:** At boot, /persist unlock accepted only the recovery key; the stick+chord path and the passphrase were both unavailable.
+* **Root cause:** `08-kill-slot.sh` removed the passphrase slot on purpose after the stick gate was built. The stick was later discarded, leaving no key factor except the recovery key.
+* **Prevention rule:** Before killing a LUKS keyslot, verify the remaining unlock path end-to-end with the factor that will remain. Do not dispose of a keyslot factor (stick) until a replacement unlock path is enrolled and tested.
+
+### 2026-10-23 — thunderbird-cli Packages Collide in buildEnv
+* **Symptom:** A buildEnv combining the three thunderbird-cli packages (tb, tb-bridge, tb-mcp) conflicts.
+* **Root cause:** All three ship `lib/node_modules/thunderbird-cli` with differing content.
+* **Prevention rule:** When combining packages that share a node_modules tree, build a bin-only buildEnv that links only `bin/`.

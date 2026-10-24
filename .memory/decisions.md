@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-19
+last_updated: 2026-10-23
 status: active
 ---
 
@@ -482,22 +482,17 @@ This file catalogs the active, canonical design decisions and system configurati
 
 ## 45. Persistent Storage Encryption — /persist LUKS2 (2026-09-23 — COMPLETE, Stick Gate Implemented 2026-10-04)
 
-* **Status (2026-10-03 — COMPLETE):** LUKS2 encryption of `/persist` successfully deployed and verified (all migration steps 00-06 executed). Mapper: `/dev/mapper/cryptpersist`. System boots into encrypted /persist; impermanence bind-mounts and application persistence work correctly.
+* **Status (2026-10-03 — COMPLETE; unlock superseded 2026-10-23):** LUKS2 encryption of `/persist` deployed and verified (migration steps 00-06). Mapper: `/dev/mapper/cryptpersist`. Impermanence bind-mounts work through the decrypted mount.
 
 * **Decision:** Encrypt the `/persist` partition (nvme0n1p3, PARTUUID f994fab7-…) using LUKS2. `/boot` and `/nix` remain plaintext.
 
-* **Why:** Protects persisted application state, home directories, and secrets from cold-boot attacks or disk theft. /nix store remains readable (needed for system boot); /boot plaintext (needed for SEC and TPM); /persist alone encrypted (highest sensitivity data).
+* **Why:** Protects persisted application state, home directories, and secrets from cold-boot attacks or disk theft. `/nix` must stay readable for boot; `/boot` must stay plaintext for SEC and TPM.
 
-* **Implementation (2026-09-23 – 2026-10-03):**
-  - LUKS UUID: `d3307480-8eb3-4305-b5d6-d8d67c679022` (nixos/hosts/volnix.nix).
-  - Module: `nixos/modules/persist-luks.nix` (declarative LUKS boot and mount).
-  - Procedure: 7-script sequence (`~/Storage/luks-migration/` steps 00-06, all executed successfully 2026-10-03). Rollback script (99) was prepared but not needed.
-  - Live medium: Ubuntu with Secure Boot + MS keys; passphrase is the only secret in initrd.
-  - Unlock method (current): Passphrase at first boot + systemd recovery key.
+* **Implementation:** LUKS UUID `d3307480-8eb3-4305-b5d6-d8d67c679022` (nixos/hosts/volnix.nix). Module `nixos/modules/persist-luks.nix`. Migration scripts in `~/Storage/luks-migration/` (steps 00-06 executed 2026-10-03). Header backup: `~/Storage/luks-migration/luks0.header.backup`.
 
-* **Design rationale:** Separation of concerns (sensitive data encrypted; boot and nix auditable) + staged migration (reversible at each step) + upgrade path to TPM.
+* **Unlock (current, 2026-10-23):** TPM2 + PIN. `persist-luks.nix` sets `crypttabExtraOpts = [ "tpm2-device=auto" ]`; `vol.persistLuks.stickGate` is no longer set in `nixos/hosts/volnix.nix` (option default `enable = false`). Gate and build passed; crypttab verified. TPM2 enrollment (PCR7 + PIN) is a user sudo step not yet run. Recovery key remains the fallback.
 
-* **Stick Gate Enhancement (2026-10-04 — IMPLEMENTED, TESTING PENDING):** Passphrase-only unlock replaced with USB-stick + key-chord dual factor (AND logic). Code: `nixos/modules/chordgate/{chordgate.c,test.c}` with unit tests. Options `vol.persistLuks.stickGate.{enable,device,offset,stickWait,timeout,package}` in `persist-luks.nix`, enabled in `nixos/hosts/volnix.nix`. Stick: `/dev/disk/by-id/usb-Generic_Flash_Disk_10089B92-0:0` (NixOS 25.11 live installer); blob 64 B at offset 16042164224. Key = blob ‖ chord bytes (3 B/step: modmask, keycode LE); auto-loaded by systemd-cryptsetup from `/run/cryptsetup-keys.d/cryptpersist.key`. Procedure: `make boot` → `~/Storage/luks-migration/07-stick-gate.sh` → 4-case reboot matrix → `07 --matrix` → `08-kill-slot.sh` (kills passphrase slot, writes final header backup). Spec in `docs/stick-gate-design.md` (gitignored). **Status:** Code built; testing matrix (cold boot × 4 scenarios: stick present/absent, chord entered correct/incorrect) awaiting execution. Failure path → recovery key. TPM binding deliberately deferred.
+* **Superseded:** USB stick + key-chord dual factor (2026-10-04) and the "TPM binding deliberately deferred" stance. The stick is discarded. `08-kill-slot.sh` removed the passphrase slot, so the recovery key is the only working unlock until TPM2 enrollment completes. `nixos/modules/chordgate/` is dead code (removal candidate).
 
 ## 46. Cachix CI Token — Cache-Scoped with Annual Rotation (2026-09-28)
 
@@ -605,3 +600,9 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Decision:** Do not add a BT power-cycle (bluetoothctl or rfkill) to `vol-bubble` ExecStartPre. Manual recovery: `bluetoothctl power off && bluetoothctl power on`, then `systemctl --user restart pipewire pipewire-pulse wireplumber`.
 * **Why:** User decision, 2026-10-19. Resolved bubble outage was a stuck BT state; a BT cycle also left user PipeWire unresponsive.
 * **Rules out:** Automatic BT reset at bubble start (former option a).
+## 56. Agent Email Access — thunderbird-cli with Mandatory Bridge Auth (2026-10-23)
+
+* **Decision:** Agent email access goes through nixpkgs `thunderbird-cli` (tb / tb-bridge / tb-mcp 1.1.0) with bridge auth required via sops `tb_auth_token`. Do not use the upstream no-auth bridge default.
+* **Why:** The bridge on 127.0.0.1:7700 can read and send mail for all 10 accounts. Loopback bypasses anon-jail's blackhole table, so without a token any local uid, including the anon-mode uid, could deanonymize via mail.
+* **Rules out:** Running the bridge without `TB_AUTH_TOKEN`. Not chosen: nixpkgs `thunderbird-mcp` 0.9.2 (no bridge, experiment API), because the installed skill targets thunderbird-cli.
+* **Note:** The 2026-10-23 sweep distill referenced a decision #56 for stick-gate abandonment; no such entry exists in this file. That abandonment is recorded in #45 (Superseded clause).

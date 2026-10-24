@@ -69,6 +69,8 @@ in
           # TRIM leaks which blocks are in use, not their contents.
           allowDiscards = true;
           bypassWorkqueues = true;
+          # TPM2+PIN token (systemd-cryptenroll, PCR 7); the recovery key is the fallback.
+          crypttabExtraOpts = [ "tpm2-device=auto" ];
         };
         # hardware-configuration.nix names the raw partition; mount the opened mapper.
         fileSystems."/persist".device = lib.mkForce "/dev/mapper/cryptpersist";

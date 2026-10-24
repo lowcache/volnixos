@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-19
+last_updated: 2026-10-23
 status: active
 ---
 
@@ -392,25 +392,6 @@ status: active
 
 - [ ] Refactor tether brief passing (file/stdin path)
 - [ ] Test with >200 KiB brief (volnixos full state) to verify
-### Stick Gate Design & Implementation — TPM + USB + Key-Chord Unlock (2026-10-03 — DESIGN PHASE)
-
-### Stick Gate Implementation & Testing — USB + Key-Chord Dual-Factor LUKS Unlock (2026-10-04 — IMPLEMENTATION COMPLETE, TESTING PENDING)
-
-**Status (2026-10-04):** Code and configuration complete. Module integrated, options wired, enabled in volnix.nix. Migration procedure (steps 07-08) staged in `~/Storage/luks-migration/`.
-
-✓ Code written: `nixos/modules/chordgate/{chordgate.c,test.c}` with unit tests
-✓ Options defined: `vol.persistLuks.stickGate.*` in persist-luks.nix
-✓ Enabled in nixos/hosts/volnix.nix
-✓ USB stick prepared: `/dev/disk/by-id/usb-Generic_Flash_Disk_10089B92-0:0`
-✓ Procedure scripts staged: `07-stick-gate.sh`, `08-kill-slot.sh`
-✓ Design spec: `docs/stick-gate-design.md` (gitignored)
-
-- [ ] Execute 4-case reboot matrix (cold boot with stick present/absent, chord correct/incorrect)
-- [ ] Verify all four cases behave as expected (unlock succeeds when both factors present, recovery key prompt otherwise)
-- [ ] Confirm passphrase slot killed and final header backed up (`persist-luks-header-<date>.img`)
-- [ ] Document any edge cases or refinements needed
-
-**Design rationale:** Possession (USB) + knowledge (key-chord) factors eliminate passphrase fatigue while maintaining air-gap properties. Entropy in blob, not chord; chord not meant to resist brute-force if stick+disk taken together. Recovery key as fallback. TPM binding deliberately deferred (decisions.md #45).
 ### Submit vn1k/cursor Upstream Bug Reports (2026-10-12 — Pending User Approval)
 
 ### Submit vn1k/cursor Upstream Bug Reports (2026-10-12 — COMPLETED)
@@ -447,3 +428,13 @@ status: active
 - [ ] `gd mount` (fuse path; store fusermount3 deliberately excluded so the setuid wrapper is used).
 - [ ] Full-system eval: only built and tested standalone from a cloud session so far.
 - [ ] Confirm session vars `GD_SYNC_LOCAL` (`~/Storage/Drive`) and `GD_BACKUP_DIR` (`~/Storage/gd-backup`), and persistence of `.config/rclone` and `.config/gd`.
+### /persist Unlock — TPM2 + PIN Enrollment (2026-10-23)
+
+Stick discarded; the passphrase slot was removed earlier by `08-kill-slot.sh`, so the recovery key is the only working unlock until enrollment.
+
+- [ ] User (sudo): enroll TPM2 with PCR7 + PIN on LUKS UUID `d3307480-8eb3-4305-b5d6-d8d67c679022`.
+- [ ] Wipe the stick keyslot.
+- [ ] Take a fresh LUKS header backup.
+- [ ] Delete `persist-luks-header-2026-10-04.img` (holds the stick slot; volume key unchanged).
+- [ ] `make boot`, reboot, verify unlock by TPM2 + PIN.
+- [ ] After verification, remove `nixos/modules/chordgate/` (dead code).

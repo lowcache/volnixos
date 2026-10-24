@@ -40,6 +40,17 @@
         # Vanilla Discord with the moonlight client mod injected (nixpkgs override).
         # Runs alongside GoofCord as a separate client/launcher.
         discord-moonlight = pkgs.discord.override { withMoonlight = true; };
+        # tb / tb-bridge / tb-mcp are npm workspaces of one monorepo; each ships
+        # lib/node_modules/thunderbird-cli with differing files, so link bin/ only.
+        thunderbird-cli-tools = pkgs.buildEnv {
+          name = "thunderbird-cli-tools";
+          paths = with pkgs; [
+            thunderbird-cli
+            thunderbird-cli-bridge
+            thunderbird-cli-mcp
+          ];
+          pathsToLink = [ "/bin" ];
+        };
         niriDesktop = with pkgs; [
           hyprpicker # wlroots screen color picker (niri Mod+Shift+C)
           # niri utils
@@ -172,6 +183,7 @@
           mcp-server-filesystem
           open-websearch
           mcp-server-fetch
+          thunderbird-cli-tools # tb, tb-bridge, tb-mcp (thunderbird-cli skill)
           llmfit
           rtk
           claude-code-tweaked # tweakcc patches, pkgs/claude-code-tweaked

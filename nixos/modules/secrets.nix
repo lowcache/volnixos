@@ -29,6 +29,12 @@ let
       secret = "cachix_auth_token";
       wrap = pkgs.cachix;
     };
+    # Bearer token for tb-bridge (home/thunderbird-bridge.nix); without it any
+    # local uid, the anon one included, could read and send mail via :7700.
+    TB_AUTH_TOKEN = {
+      secret = "tb_auth_token";
+      wrap = pkgs.thunderbird-cli;
+    };
   };
 
   pathOf = s: config.sops.secrets.${s.secret}.path;

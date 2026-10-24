@@ -119,6 +119,15 @@ Host side of the Galaxy S26 Ultra MCP integration, `nixos/phone-agent/` (`phone-
 * `GD_SYNC_LOCAL` (`~/Storage/Drive`) and `GD_BACKUP_DIR` (`~/Storage/gd-backup`) are session variables in `home/default.nix`.
 * fuse is not bundled: `gd mount` relies on NixOS's setuid `fusermount3` wrapper.
 
+## Thunderbird (`tb`, `tb-bridge`, `tb-mcp`)
+
+Agent access to Thunderbird mail through nixpkgs `thunderbird-cli` 1.1.0. The chain is `tb`/`tb-mcp` → `tb-bridge` (HTTP `127.0.0.1:7700`) → "Thunderbird AI Bridge" add-on (WebSocket `:7701`, installed from file, not ATN).
+
+* `home/pkgs.nix` `thunderbird-cli-tools`: links only `bin/` of the three packages, whose `lib/node_modules/thunderbird-cli` trees conflict.
+* `home/thunderbird-bridge.nix`: `tb-bridge.service`, bound to `graphical-session.target`.
+* Auth is required: the sops `tb_auth_token` is read by the bridge, by `mcp-gateway-start`, and by the `tb` wrapper (`envSecrets`). Never run the bridge without it; the anon uid can reach loopback.
+* MCP: `thunderbird` backend in `gateway.yaml`. The `thunderbird-cli` skill drives its `email_*` tools.
+
 ## Memory — memd
 
 `.memory/` is curated by `memd`.

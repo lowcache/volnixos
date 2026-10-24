@@ -1,6 +1,6 @@
 # mcp-gateway, the shared MCP aggregation layer. gateway.yaml (persisted
-# ~/.config/mcp-gateway) expands ${GITHUB_TOKEN}/${GITHUB_PERSONAL_ACCESS_TOKEN};
-# both come from the sops gh_token at start, so no token is ever in the store.
+# ~/.config/mcp-gateway) expands ${GITHUB_TOKEN}/${GITHUB_PERSONAL_ACCESS_TOKEN}
+# and ${TB_AUTH_TOKEN}; all are read from sops at start, never stored.
 {
   config,
   lib,
@@ -14,6 +14,8 @@ let
     text = ''
       GITHUB_TOKEN=$(< ${osConfig.sops.secrets.gh_token.path})
       export GITHUB_TOKEN GITHUB_PERSONAL_ACCESS_TOKEN="$GITHUB_TOKEN"
+      TB_AUTH_TOKEN=$(< ${osConfig.sops.secrets.tb_auth_token.path})
+      export TB_AUTH_TOKEN
       exec ${lib.getExe pkgs.mcp-gateway} serve -c "$HOME/.config/mcp-gateway/gateway.yaml"
     '';
   };

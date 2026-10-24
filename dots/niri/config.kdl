@@ -13,7 +13,7 @@ input {
         tap
         natural-scroll
         disabled-on-external-mouse
-        // off // @tptoggle@   -- toggled by F10 / touchpad_toggle.sh (uncommented = disabled)
+        off // @tptoggle@   -- toggled by F10 / touchpad_toggle.sh (uncommented = disabled)
     }
     mouse {
       // off

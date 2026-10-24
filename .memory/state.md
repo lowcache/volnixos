@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-19
+last_updated: 2026-10-23
 status: active
 ---
 
@@ -209,3 +209,16 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - Session vars: `GD_SYNC_LOCAL` = `~/Storage/Drive` (synced folder); `GD_BACKUP_DIR` = `~/Storage/gd-backup` (sync-down backups). rclone cache follows XDG_CACHE_HOME into Storage.
 - fuse deliberately not in runtimeInputs: a store `fusermount3` would shadow the setuid wrapper.
 - Not verified on volnix: `gd setup`, `gd mount`, full-system eval (built and tested standalone only, from a cloud session).
+## 17. /persist Unlock — TPM2 + PIN (2026-10-23)
+
+- Config: `persist-luks.nix` sets `crypttabExtraOpts = [ "tpm2-device=auto" ]`; stick gate disabled in `nixos/hosts/volnix.nix`. Gate and build passed; crypttab verified.
+- Not yet enrolled or booted: TPM2 + PIN enrollment, stick keyslot wipe, and header backup are user sudo steps (todo.md).
+- Until enrollment, the recovery key is the only working unlock (passphrase slot removed by `08-kill-slot.sh`).
+- Decision: decisions.md #45.
+## 18. Agent Email — Thunderbird Bridge (2026-10-23)
+
+- Access path: nixpkgs `thunderbird-cli` (`tb`, `tb-bridge`, `tb-mcp` 1.1.0) reaches the Thunderbird bridge on 127.0.0.1:7700 for all 10 configured accounts.
+- Bridge runs as a user service defined in `home/thunderbird-bridge.nix`. Auth is mandatory: requests without the matching token are rejected (AUTH_REQUIRED). Token is the sops secret `tb_auth_token`, exported as `TB_AUTH_TOKEN`.
+- `tb` is wrapped with `TB_AUTH_TOKEN` via envSecrets. `mcp-gateway-start` exports `TB_AUTH_TOKEN`. Gateway backend `thunderbird` is defined in `gateway.yaml`.
+- Packaging: bin-only buildEnv, because the three packages collide on `lib/node_modules/thunderbird-cli`. The release XPI is unsigned; Thunderbird accepts it (`signatures.required=false`).
+- Verified 2026-10-23: bridge rejects missing and wrong tokens; gateway `email_stats` returns data.
