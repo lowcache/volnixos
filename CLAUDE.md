@@ -90,6 +90,8 @@ when a switch may disrupt the current session.
 
 The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve that behavior for rebuilds that use the Makefile.
 
+`switch`/`build`/`test`/`boot` and `trash` run through `nh` (`nh os <verb> . -H $(HOST)`, `nh clean all`); `switch-detached` and `dry-activate` stay on `nixos-rebuild` (root unit; nh has no dry-activate).
+
 ## volinit
 
 Terminal banner, tracked from the `rewrite/go-cockpit` branch while it is overhauled into a cockpit-style TUI (local checkout: `/home/lowcache/CodeRepo/volinit`). Wired as the `volinit` flake input and `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/shell.nix`; the fish greeting guards on `command -v volinit`. If a WIP push breaks evaluation, drop both lines rather than pinning around it.

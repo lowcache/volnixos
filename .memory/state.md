@@ -222,3 +222,11 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - `tb` is wrapped with `TB_AUTH_TOKEN` via envSecrets. `mcp-gateway-start` exports `TB_AUTH_TOKEN`. Gateway backend `thunderbird` is defined in `gateway.yaml`.
 - Packaging: bin-only buildEnv, because the three packages collide on `lib/node_modules/thunderbird-cli`. The release XPI is unsigned; Thunderbird accepts it (`signatures.required=false`).
 - Verified 2026-10-23: bridge rejects missing and wrong tokens; gateway `email_stats` returns data.
+## 19. Tailscale Host LocalAPI Bridge — Read-Only (2026-10-23)
+
+- Host `tailscale` CLI reads the guest tailscaled over `/run/tailscale-vm/tailscaled.sock` (lowcache 0600), served by `tailscale-vm-localapi.socket` (Accept=yes, defined in `nixos/vms.nix`).
+- Each connection relays through `anon-vsock.py` hybrid-vsock handshake as microvm:kvm to guest `tailscale-localapi-vsock` (socat VSOCK-LISTEN:1024 -> tailscaled.sock, DynamicUser).
+- Access is read-only: tailscaled grants a non-root, non-operator unix peer read-only access (ipn/ipnauth IsReadonlyConn, tailscale 1.104.1). `tailscale` wrapper on PATH adds `--socket`.
+- Verified 2026-10-23: `tailscale status` lists peers; `tailscale set --shields-up=true` returns "Access denied: checkprefs access denied"; ShieldsUp stays false.
+- Built uncommitted (inbox 2026-10-23). Activated in generation 340 on the first switch, which exited 4 (see mistakes.md 2026-10-23).
+- Do not set `--operator` in the guest or run the guest relay as root; either makes the socket writable. See decisions.md #57.

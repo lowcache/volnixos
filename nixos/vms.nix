@@ -165,13 +165,18 @@ in
         })
         // {
           # Per-connection relay through cloud-hypervisor's hybrid-vsock handshake.
-          "tailscale-vm-localapi@".serviceConfig = {
-            ExecStart = "${lib.getExe pkgs.python3} ${./modules/anonymous-mode/anon-vsock.py} ${config.microvm.stateDir}/tailscale/notify.vsock ${toString localApiPort} plain";
-            StandardInput = "socket";
-            StandardOutput = "socket";
-            StandardError = "journal";
-            User = "microvm";
-            Group = "kvm";
+          "tailscale-vm-localapi@" = {
+            serviceConfig = {
+              ExecStart = "${lib.getExe pkgs.python3} ${./modules/anonymous-mode/anon-vsock.py} ${config.microvm.stateDir}/tailscale/notify.vsock ${toString localApiPort} plain";
+              StandardInput = "socket";
+              StandardOutput = "socket";
+              StandardError = "journal";
+              User = "microvm";
+              Group = "kvm";
+            };
+            # A poll while the guest is down fails one connection; unload it rather
+            # than leave a failed unit (they made switch exit 4 during the VM restart).
+            unitConfig.CollectMode = "inactive-or-failed";
           };
         };
 

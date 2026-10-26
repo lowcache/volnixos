@@ -65,9 +65,10 @@ help:
 # System Operations
 # ==============================================================================
 ## System Operations
+# nh builds as the user and elevates only for activation, so no leading sudo.
 ## :switch: ..........: Rebuild and switch system live (Default HOST- volnix)
 switch:
-	sudo TMPDIR=$(REBUILD_TMPDIR) nixos-rebuild switch --flake .#$(HOST) --option fallback true
+	TMPDIR=$(REBUILD_TMPDIR) nh os switch . -H $(HOST) --fallback
 
 ## :switch-detached: ..........: Switch as a detached system unit (survives session manager/greetd teardowns)
 switch-detached:
@@ -83,19 +84,20 @@ switch-detached:
 
 ## :build: ..........: Build system configuration without switching
 build:
-	TMPDIR=$(REBUILD_TMPDIR) nixos-rebuild build --flake .#$(HOST)
+	TMPDIR=$(REBUILD_TMPDIR) nh os build . -H $(HOST)
 
 ## :test: ..........: Temporarily switch to configuration (no boot entry)
 test:
-	sudo TMPDIR=$(REBUILD_TMPDIR) nixos-rebuild test --flake .#$(HOST)
+	TMPDIR=$(REBUILD_TMPDIR) nh os test . -H $(HOST)
 
 ## :dry-activate: ..........: See what service transitions will happen
+# nh has no dry-activate equivalent.
 dry-activate:
 	sudo TMPDIR=$(REBUILD_TMPDIR) nixos-rebuild dry-activate --flake .#$(HOST)
 
 ## :boot: ..........: Stage the rebuild for the next boot
 boot:
-	sudo TMPDIR=$(REBUILD_TMPDIR) nixos-rebuild boot --flake .#$(HOST)
+	TMPDIR=$(REBUILD_TMPDIR) nh os boot . -H $(HOST)
 
 # ==============================================================================
 # Nix-on-Droid (aarch64 phone target)
@@ -364,12 +366,10 @@ update:
 update-nixpkgs:
 	nix flake update nixpkgs
 
-## :trash: ..........: Delete system profile generations older than 7 days and clean store
+## :trash: ..........: Delete generations older than 7 days (keeping 3) and clean store
+# Mirrors programs.nh.clean.extraArgs in nixos/modules/nix-settings.nix; change both together.
 trash:
-	@echo "++ Deleting system profile generations older than 7 days..."
-	sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations 7d
-	@echo "++ Running Nix store garbage collection..."
-	nix-store --gc
+	nh clean all --keep-since 7d --keep 3
 
 ## :tweakcc: ..........: Edit Claude Code's tweakcc config (applied by the next build)
 # The UI patches a scratch copy of the unpatched binary; the installed one comes from the build.

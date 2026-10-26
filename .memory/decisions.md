@@ -606,3 +606,9 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Why:** The bridge on 127.0.0.1:7700 can read and send mail for all 10 accounts. Loopback bypasses anon-jail's blackhole table, so without a token any local uid, including the anon-mode uid, could deanonymize via mail.
 * **Rules out:** Running the bridge without `TB_AUTH_TOKEN`. Not chosen: nixpkgs `thunderbird-mcp` 0.9.2 (no bridge, experiment API), because the installed skill targets thunderbird-cli.
 * **Note:** The 2026-10-23 sweep distill referenced a decision #56 for stick-gate abandonment; no such entry exists in this file. That abandonment is recorded in #45 (Superseded clause).
+## 57. Host Tailscale CLI — Read-Only LocalAPI Socket (2026-10-23)
+
+* **Decision (user, 2026-10-23):** The tailscale LocalAPI socket exposed to the host is read-only. The noctalia tailscale plugin (uid 1001) may view tailnet state but may not change it.
+* **Mechanism:** Guest tailscaled read-only access for a non-root, non-operator unix peer (IsReadonlyConn, tailscale 1.104.1), relayed by a host socket unit. Details in state.md §19.
+* **Why:** Plugin `down`, `--shields-up`, or `--advertise-exit-node=false` would cut host-to-tailnet paths (phone-agent, ollama DNAT). `set` changes also persist in the share outside Nix; autoconnect re-applies flags only when the node is not Running.
+* **Rules out:** Setting `--operator` in the guest; running the guest relay as root; any writable host LocalAPI socket.

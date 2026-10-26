@@ -114,11 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-19 — Bubble AP Failed: cfg80211 Regdomain WORLD
-* **Symptom:** vol-bubble failed; NM 'Hotspot network creation took too long'; wpa_supplicant 'Failed to start AP functionality' right after 'CTRL-EVENT-REGDOM-CHANGE init=CORE type=WORLD'.
-* **Root cause:** cfg80211 ieee80211_regdom = 00. The 'US' seen in `iw reg get` was learned from the associated AP's beacons. Leaving the STA link restored WORLD, where 5180 MHz is no_ir, so the AP cannot beacon. Same root cause as the Pi's brcmfmac scan failure.
-* **Prevention rule:** Set the kernel regdomain (`boot.extraModprobeConfig`, cfg80211 ieee80211_regdom). For a no-reboot effect, run `iw reg set <CC>` before AP start. Never verify the regdomain from `iw reg get` while associated; read `/sys/module/cfg80211/parameters/ieee80211_regdom`.
-
 ### 2026-10-19 — Bubble AP Reports AP-ENABLED But Beacons Not On Air
 * **Symptom:** NM and wpa_supplicant report AP-ENABLED on ch36 (5 GHz) and ch6 (2.4 GHz), but the Pi 2.4 GHz scanner and the phone do not see the SSID. Standalone hostapd run 1: 'Failed to set beacon parameters' (START_AP rejected). Run 2: 'Register spurious class3 failed: ret=-22' then 'Could not configure driver mode' (likely wpa_supplicant still holding the interface; not verified).
 * **Root cause:** Not confirmed. Driver debug (debug_mask=0xffffffff) showed BCN_UPD accepted by firmware and mgmt frames transmitted, yet no beacons on air. Single observation: with Bluetooth powered off, the Pi saw the SSID at signal 100 on ch6 immediately and the phone saw it on 5 GHz; after BT power-on (idle) 5 GHz stayed visible. Suspected: Bluetooth coexistence (BTC) starving AP beacons during BT activity; A2DP streaming not yet tested. Ruled out: regdomain (US), power save, cloned MAC.
@@ -149,3 +144,8 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** A buildEnv combining the three thunderbird-cli packages (tb, tb-bridge, tb-mcp) conflicts.
 * **Root cause:** All three ship `lib/node_modules/thunderbird-cli` with differing content.
 * **Prevention rule:** When combining packages that share a node_modules tree, build a bin-only buildEnv that links only `bin/`.
+
+### 2026-10-23 — Failed Per-Connection LocalAPI Relay Instances Fail make switch (exit 4)
+* **Symptom:** `make switch` exited 4 after activation (generation 340). `systemctl --failed` listed `tailscale-vm-localapi@<n>-…-1001.service` instances.
+* **Root cause:** The switch restarted microvm@tailscale. The noctalia tailscale plugin polled during the outage. Each Accept=yes relay instance failed (notify.vsock missing, then no listener on port 1024) and stayed failed. switch-to-configuration counts failed units as failure.
+* **Prevention rule:** Set `unitConfig.CollectMode = "inactive-or-failed"` on socket-activated per-connection template units (`tailscale-vm-localapi@`) so failed instances unload. Errors remain in the journal.

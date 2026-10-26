@@ -438,3 +438,6 @@ Stick discarded; the passphrase slot was removed earlier by `08-kill-slot.sh`, s
 - [ ] Delete `persist-luks-header-2026-10-04.img` (holds the stick slot; volume key unchanged).
 - [ ] `make boot`, reboot, verify unlock by TPM2 + PIN.
 - [ ] After verification, remove `nixos/modules/chordgate/` (dead code).
+### Tailscale LocalAPI Bridge — Commit (2026-10-23)
+
+- [ ] Commit the uncommitted `nixos/vms.nix` changes (CollectMode fix on `tailscale-vm-localapi@` and read-only guest relay). See state.md §19 and decisions.md #57.
