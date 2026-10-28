@@ -11,10 +11,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # No nixpkgs follows on purpose: overlays.pinned builds the kernel against
-    # its own nixpkgs, keeping its store path stable across our nixpkgs bumps
-    # (one kernel build per cachyos bump, cached in volnixos). The upstream
-    # lantian attic is gone (compromised, nix-cachyos-kernel#110).
-    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel";
+    # its own nixpkgs, so its store path matches upstream's Hydra build and
+    # substitutes from cache.lantian.pub. `release` only advances once Hydra has
+    # built and cached the kernel; `master` can run ahead of the cache.
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
     impermanence = {
       url = "github:nix-community/impermanence";
       inputs = {

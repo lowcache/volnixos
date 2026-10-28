@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-23
+last_updated: 2026-10-28
 status: active
 ---
 
@@ -230,3 +230,10 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - Verified 2026-10-23: `tailscale status` lists peers; `tailscale set --shields-up=true` returns "Access denied: checkprefs access denied"; ShieldsUp stays false.
 - Built uncommitted (inbox 2026-10-23). Activated in generation 340 on the first switch, which exited 4 (see mistakes.md 2026-10-23).
 - Do not set `--operator` in the guest or run the guest relay as root; either makes the socket writable. See decisions.md #57.
+## 20. Kernel and Binary Caches (2026-10-28)
+
+* **Running kernel:** cachyos 7.2.9 (`5d7r266…`) until activation.
+* **Pending kernel:** cachyos 7.3.0, built and signature-verified, substitutes from lantian. Activation via `make boot` + reboot. Uncommitted.
+* **Substituters:** `https://cache.lantian.pub/lantian` active (key in `nixos/modules/nix-settings.nix`). `attic.xuyh0120.win` removed.
+* **NVIDIA:** userspace and module 595.104.02 -> 595.112.07 from the cachyos pinned nixpkgs. Requires reboot.
+* **ollama-cuda:** in no cache; builds once in CI.

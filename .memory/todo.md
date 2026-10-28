@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-23
+last_updated: 2026-10-28
 status: active
 ---
 
@@ -416,11 +416,14 @@ status: active
 - [ ] Verify remaining bubble forwarding: uplink reachable through the bubble, and all other bubble traffic dropped. DNS to 10.73.0.1 already seen working (2026-10-19).
 - [ ] Re-apply the saved lock (decisions.md #53) once a cache serves cachyos-kernel 7.2.11.
 
-### Kernel Provenance & CI Cache Recovery (2026-10-19 — BLOCKER FOR CI)
+### Kernel Cache Recovery — Commit, Activate, CI Verify (2026-10-28)
 
-- [ ] Build the kernel locally and push it to volnixos. Every CI run since 2026-10-19 fails at 'Assert the kernel is a cache hit' (2143 drvs planned); volnixos cachix has evicted the kernel. Method: chroot-store build, one compile (~56 min, 12 threads), substituters = cache.nixos.org only (inbox 2026-10-19).
-✓ Provenance of running kernel `5d7r266…-linux-cachyos-latest-7.2.9` verified (inbox 2026-10-19): independent from-scratch build produced identical narHashes for out, modules, and linux-config-7.2.9; `nix store verify --no-trust` passes on host copies. Attic-sourced kernel is untampered.
+- [ ] Commit uncommitted changes: lantian substituter in `nixos/modules/nix-settings.nix` and CI NIX_CONFIG; `nix-cachyos-kernel` following release branch (decisions.md #54).
+- [ ] Activate: `make boot`, then reboot (NVIDIA 595.112.07 requires reboot).
+- [ ] Verify CI 'Assert the kernel is a cache hit' passes after push. ollama-cuda is in no cache and builds once in CI.
 - [ ] Re-verify lantian-signed local store paths not covered by the independent build: `55-nixos-aslr-entropy.conf` (content checked, benign sysctl) and `setup-module-compression`.
+
+Done: local kernel build step superseded by lantian cache restore (2026-10-28). Running kernel 7.2.9 provenance verified 2026-10-19.
 
 ### gd — Google Drive CLI: Verify on volnix (2026-10-19)
 

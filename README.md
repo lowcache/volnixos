@@ -73,9 +73,9 @@ nix.settings = {
 };
 ```
 
-The kernel used to come from the upstream lantian attic, which was taken down after a server
-compromise (xddxdd/nix-cachyos-kernel#110) and is no longer trusted; it now has to be built locally
-and pushed to this cache. CI asserts it is a cache hit before building, because a source build of it
+The kernel comes from upstream's cache, `https://cache.lantian.pub/lantian`, which was rebuilt
+under a new URL and rotated key after the 2026-10 server compromise (xddxdd/nix-cachyos-kernel#110).
+The flake follows the `release` branch, which only advances once that cache has the kernel. CI asserts it is a cache hit before building, because a source build of it
 does not fit in a GitHub Actions job. Details, including the `NIX_CONFIG` ordering trap that made the substituters
 silently disappear, are in
 [Binary Cache & CI](https://wiki.infernalcode.com/tooling/ci-cache/).

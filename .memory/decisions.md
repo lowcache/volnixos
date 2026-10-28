@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-23
+last_updated: 2026-10-28
 status: active
 ---
 
@@ -581,19 +581,15 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Rules out:** interface-scoped FORWARD rules on wlp4s0; bubble access to tether, VMs, or Docker; autoconnect on the `vol-bubble` profile.
 * **Why:** Fail-closed by default. The bubble exists to reach the Pi-routed uplink only.
 
-## 53. Kernel Pin — cachyos 7.2.9 Until 7.2.11 Is Cached (2026-10-19)
+## 54. Lantian Substituter Restored with Rotated Key (2026-10-28 — amends 2026-10-19 removal)
 
-* **Decision:** flake.lock stays at c157d99^ (cachyos-kernel 7.2.9). The 7.2.11 bump and its nixpkgs node bump are reverted until a binary cache serves them.
-* **Why:** cachyos-kernel 7.2.11 is in no cache and would compile locally. User chose 'Bubble on 7.2.9 first'.
-* **Rules out:** re-applying the bump, or building the 7.2.11 kernel locally, before a cache carries it.
-* **Re-apply:** the bumped lock is saved at `~/Storage/tmp/ph-build/volnix-flake.lock.7.2.11`.
-## 54. Lantian Attic Substituter Removed — Key Not Re-added (2026-10-19)
-
-* **Decision:** Remove `https://attic.xuyh0120.win/lantian` and its key `lantian:EeAU…` from `nixos/modules/nix-settings.nix` and the CI NIX_CONFIG.
-* **Why:** The attic answers 503 'Binary cache unavailable due to server compromise' (xddxdd/nix-cachyos-kernel#110, opened 2026-10-15).
-* **Rules out:** Re-adding the lantian key, even if the attic returns, unless upstream rotates the key and states the cache was rebuilt clean.
-* **Consequence:** volnixos cachix has evicted nearly all paths, so CI cannot pass until the kernel is built locally and pushed (todo.md).
-* **Amendment (2026-10-19):** The attic-sourced cachyos 7.2.9 kernel (`5d7r266…`), fetched 2026-10-13, is verified untampered. An independent from-scratch build in a chroot store (cache.nixos.org substituter only) produced narHashes identical to the running kernel for out, modules, and linux-config-7.2.9. The method is reproducible: a future cachyos bump can be built locally in a chroot store and pushed to volnixos with the same check.
+* **Decision (2026-10-28):** Substituter `https://cache.lantian.pub/lantian` with key `lantian:WVGO7vsRMSEN+h7Lp7kv6SAmrkEXgUGbbXm7jMDjBuQ=` is in `nixos/modules/nix-settings.nix` and the CI NIX_CONFIG. The attic `https://attic.xuyh0120.win/lantian` URL and its old key stay removed.
+* **Why:** The 2026-10-19 re-add condition is met: upstream rotated the key and rebuilt the servers.
+* **Kernel input:** `nix-cachyos-kernel` now follows the release branch (Hydra-built, cached). Kernel 7.3.0 substitutes from lantian; signature checked 2026-10-28. This supersedes the 7.2.9 lock pin (see archived #53).
+* **Rules out:** Re-adding the attic URL or the old lantian key.
+* **Provenance method:** The 2026-10-19 independent chroot-store build check (narHash comparison, cache.nixos.org substituter only) remains the reproducible verification for future cachyos bumps.
+* **Activation:** `make boot` then reboot. NVIDIA userspace and module move 595.104.02 -> 595.112.07 (driver/library mismatch otherwise; see mistakes #6).
+* **Cost:** NVIDIA closure +151 paths / +425 MiB from duplicate base libs, because the cachyos pinned nixpkgs is newer than the system's.
 
 ## 55. No Automatic Bluetooth Power-Cycle in vol-bubble (2026-10-19)
 
