@@ -130,6 +130,14 @@ Agent access to Thunderbird mail through nixpkgs `thunderbird-cli` 1.1.0. The ch
 * Auth is required: the sops `tb_auth_token` is read by the bridge, by `mcp-gateway-start`, and by the `tb` wrapper (`envSecrets`). Never run the bridge without it; the anon uid can reach loopback.
 * MCP: `thunderbird` backend in `gateway.yaml`. The `thunderbird-cli` skill drives its `email_*` tools.
 
+## Monitoring (Netdata)
+
+`nixos/modules/monitoring.nix` runs Netdata as a real-time dashboard, reached from a travel-bubble client at `http://<bubble-ap-addr>:19999` or over `adb reverse tcp:19999` on the USB cable.
+
+* Firewall opens `:19999` only from the bubble subnet (derived from `vol.travel-bubble.address`), not the `wlp4s0` interface — so it stays closed when the radio is a Wi-Fi client on an untrusted network. Loopback stays open for the cable path.
+* The NVIDIA `go.d` collector is disabled via `configDir."go.d.conf"`: it polls `nvidia-smi` and would defeat RTD3 dGPU power-off. Everything else auto-detects.
+* `/var/lib/netdata` and `/var/cache/netdata` are persisted to `/persist` (dbengine off the tmpfs root; history survives reboots).
+
 ## Memory — memd
 
 `.memory/` is curated by `memd`.

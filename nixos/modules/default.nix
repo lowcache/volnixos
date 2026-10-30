@@ -9,6 +9,7 @@
     ./boot.nix
     ./containers.nix
     ./desktop.nix
+    ./monitoring.nix
     ./networking.nix
     ./nix-settings.nix
     ./packages.nix
