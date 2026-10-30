@@ -419,7 +419,7 @@ status: active
 ### Kernel Cache Recovery — Commit, Activate, CI Verify (2026-10-28)
 
 - [ ] Commit uncommitted changes: lantian substituter in `nixos/modules/nix-settings.nix` and CI NIX_CONFIG; `nix-cachyos-kernel` following release branch (decisions.md #54).
-- [ ] Activate: `make boot`, then reboot (NVIDIA 595.112.07 requires reboot).
+- [x] Activate: `make boot` and reboot done 2026-10-28; running 7.3.0-cachyos, NVIDIA 595.112.07 verified.
 - [ ] Verify CI 'Assert the kernel is a cache hit' passes after push. ollama-cuda is in no cache and builds once in CI.
 - [ ] Re-verify lantian-signed local store paths not covered by the independent build: `55-nixos-aslr-entropy.conf` (content checked, benign sysctl) and `setup-module-compression`.
 

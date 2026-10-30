@@ -24,6 +24,9 @@
           adwaita-icon-theme
           hicolor-icon-theme
           weylus
+          # system-level so polkitd sees its action (allow_gui keeps DISPLAY);
+          # run as user, not sudo: it self-elevates via pkexec
+          gparted
         ];
         nix-utils = with pkgs; [
           statix

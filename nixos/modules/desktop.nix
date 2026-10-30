@@ -23,4 +23,8 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
     config.common.default = "*";
   };
+
+  # Opt-in since 26.11. GUI tools that self-elevate (gparted) call pkexec,
+  # which only works through the setuid wrapper plus a polkit agent (Noctalia's).
+  security.polkit.enablePkexecWrapper = true;
 }

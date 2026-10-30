@@ -232,8 +232,8 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - Do not set `--operator` in the guest or run the guest relay as root; either makes the socket writable. See decisions.md #57.
 ## 20. Kernel and Binary Caches (2026-10-28)
 
-* **Running kernel:** cachyos 7.2.9 (`5d7r266…`) until activation.
-* **Pending kernel:** cachyos 7.3.0, built and signature-verified, substitutes from lantian. Activation via `make boot` + reboot. Uncommitted.
+* **Running kernel:** cachyos 7.3.0 (`uname -r` 7.3.0-cachyos, verified 2026-10-28 after reboot).
+* **NVIDIA:** userspace and module 595.112.07 active; `nvidia-smi` reports no driver/library mismatch.
 * **Substituters:** `https://cache.lantian.pub/lantian` active (key in `nixos/modules/nix-settings.nix`). `attic.xuyh0120.win` removed.
-* **NVIDIA:** userspace and module 595.104.02 -> 595.112.07 from the cachyos pinned nixpkgs. Requires reboot.
+* **Kernel input:** `nix-cachyos-kernel` follows the release branch; 7.3.0 substitutes from lantian. Lantian substituter, CI NIX_CONFIG, and kernel input changes are uncommitted.
 * **ollama-cuda:** in no cache; builds once in CI.

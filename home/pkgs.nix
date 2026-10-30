@@ -144,6 +144,7 @@
           ghdorker
           ghfetch
           ghgrab
+          glances
           tgpt
           hdrop
           gpg-tui

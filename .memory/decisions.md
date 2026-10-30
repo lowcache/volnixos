@@ -588,7 +588,7 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Kernel input:** `nix-cachyos-kernel` now follows the release branch (Hydra-built, cached). Kernel 7.3.0 substitutes from lantian; signature checked 2026-10-28. This supersedes the 7.2.9 lock pin (see archived #53).
 * **Rules out:** Re-adding the attic URL or the old lantian key.
 * **Provenance method:** The 2026-10-19 independent chroot-store build check (narHash comparison, cache.nixos.org substituter only) remains the reproducible verification for future cachyos bumps.
-* **Activation:** `make boot` then reboot. NVIDIA userspace and module move 595.104.02 -> 595.112.07 (driver/library mismatch otherwise; see mistakes #6).
+* **Activation:** Done 2026-10-28 (`make boot`, reboot). Running kernel 7.3.0-cachyos; NVIDIA userspace and module at 595.112.07 with no mismatch (see mistakes #6).
 * **Cost:** NVIDIA closure +151 paths / +425 MiB from duplicate base libs, because the cachyos pinned nixpkgs is newer than the system's.
 
 ## 55. No Automatic Bluetooth Power-Cycle in vol-bubble (2026-10-19)
