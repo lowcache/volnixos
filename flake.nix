@@ -152,6 +152,16 @@
         ];
       };
 
+      # TEMPORARY pool-migration target: volnix with the new pooled-LUKS UUID,
+      # ~/Storage as a bind, and smartctl. Built before the pool exists and set
+      # as the default boot entry ahead of the live-USB step, so first boot on
+      # the pool needs no rebuild. Dropped post-migration.
+      # BEGIN pool-migration
+      nixosConfigurations.volnix-pool = self.nixosConfigurations.volnix.extendModules {
+        modules = [ ./nixos/pool-migration.nix ];
+      };
+      # END pool-migration
+
       # Nix-on-Droid target. Built and switched ON THE PHONE
       # (`nix-on-droid switch --flake .`) — there is no aarch64 emulation on
       # volnix, so the laptop can only evaluate this, not build it
