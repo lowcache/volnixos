@@ -34,7 +34,7 @@
     # partition was actually encrypted (migration done 2026-09).
     persistLuks = {
       enable = true; # persistLuks-flag
-      uuid = "d3307480-8eb3-4305-b5d6-d8d67c679022";
+      uuid = "5ed6b5fc-331f-47cd-95a0-5f4ff9d613f2";
     };
 
     # NVIDIA (01:00.1) and AMD (66:00.1) HDMI audio sit on `pro-audio`, which

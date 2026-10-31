@@ -10,6 +10,7 @@
         base-utils = with pkgs; [
           sbctl
           cryptsetup
+          smartmontools
           wireguard-tools
           uwsm
           android-studio
