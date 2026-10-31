@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-28
+last_updated: 2026-10-30
 status: active
 ---
 
@@ -165,22 +165,19 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 * **Implementation constraint:** All template `.nix` files sit inside `${self}` and must pass this flake's nixfmt/statix/deadnix gates. Rules out lambda-based option lists (deadnix flags unused arguments); use attrset of strings instead.
 ## 12. Backup Hardware Status (External USB Drives)
 
-**Seagate 2TB Backup Drive (`sda`, VID 0bc2, PID ac19):**
-- **Capacity:** 2.00 TB (3907029167 × 512B)
-- **Partitions:** sda1, sda2 (ext4 0dc8bbe7-…), sda3 (ext4 965cca42-…)
-- **Mount point:** `/mnt/models/…` (restic repo + model mirrors)
-- **Status:** Unrecovered read error on sector 3574956888 logged 2026-09-24 during `vol-backup.service` run. `restic check` passed (all 516 packs verified). Error near end of device; not attributed to specific file.
-- **Diagnostics pending:** smartmontools not installed; SMART history unavailable.
-- **Device quirks:** USB Mass Storage with `usb-storage.quirks=0bc2:ac19:u` in kernel cmdline.
+**Seagate 2TB Backup Drive (`sda`, VID 0bc2, PID ac19; SN 00000000NAEA54PH):**
+- Capacity: 2.00 TB. Partitions: sda1, sda2 (ext4), sda3 VOLBAK (ext4, UUID 965cca42-99f0-4b1a-becf-5024d644ffc6, restic repo). Also labels MODELS, RESCUE.
+- Mount point: `/mnt/models/...` (restic repo + model mirrors). User reports the backup automount is not `/mnt/backup` (2026-10-31).
+- By-id alias differs by bus driver: `...NAEA54PH` under uas, `...ZDZSRV15` under usb-storage (2026-10-30). Key ops off ID_FS_UUID or label VOLBAK, not by-id.
+- Bus mode: forced BOT via kernel cmdline `usb-storage.quirks=0bc2:ac19:u`; built-in IGNORE_UAS quirk also matches. Do NOT force UAS: bridge drops under sustained write (`data cmplt err -71`), corruption risk on backup.
+- Throughput: ceiling ~10-15 MB/s (BOT, SMR 2.5"). Restore of ~122 GiB ~3 h. Sustained read ~7.7 MB/s measured (anomaly, open in todo).
+- Runtime power: usbcore autosuspend disabled (`echo -1 > /sys/module/usbcore/parameters/autosuspend`) and `power/control=on` pinned for 0bc2:ac19 via `~/Storage/tmp/seagate-catch.sh`. Idle-disconnect fixed. A 4K direct read every ~3 s keeps it awake through quiet phases.
+- Power-off: vol-backup teardown (`powerOffWhenDone=true`, `udisksctl power-off` in ExecStopPost) powers the drive off after each run. Path: udev -> vol-backup.service (12 h cooldown skip -> teardown). Mask vol-backup.service to inspect manually.
+- SMART (2026-10-30): PASSED. Current_Pending 0, Offline_Uncorrectable 0, CRC 0, Reallocated 8. One historical uncorrectable (old, stable). Unrecovered read at sector 3574956888 logged 2026-09-24 during vol-backup run; restic check passed then.
+- Health rule: trend pending/reallocated counts across backup runs. If climbing, replace drive and re-seed restic repo. Do NOT rely on `restic check` alone.
 
-**Health monitoring strategy:**
-1. Install smartmontools to enable `smartctl` diagnostics.
-2. On next device attach: `sudo smartctl -a -d sat /dev/sda` (read Reallocated_Sector_Ct, Current_Pending_Sector, Offline_Uncorrectable).
-3. Run long self-test and trend SMART history across backup runs.
-4. If pending/reallocated counts are non-zero and climbing, replace drive and re-seed restic repo.
-5. Do NOT rely on `restic check` alone as a health indicator — it passed while medium was failing.
+**Backup system (vol.backup):** `nixos/modules/backup.nix`, enabled at `nixos/hosts/volnix.nix:53`. Restic repo on VOLBAK backs up `/persist` and `~/Storage` (minus throwaway excludes). Restic password is sops `restic_password`. Latest snapshot 7f678a5e (2026-10-30 21:06); 10 snapshots since 2026-10-22; structural `restic check` clean.
 
-**Implications:** This is the backup target. Unreadable sectors on the medium holding the restic repo + model mirrors is a silent-restore-failure risk. One error is a candidate for reallocation, not necessarily dying drive, but must be monitored.
 ## 13. CI/Deployment Infrastructure
 
 **Cachix CI Token (2026-09-28 Rotated):** GitHub Actions credential for pushing to public `volnixos` cache. Prior token (cache-scoped, created 2026-08-26) carried Cachix default 30-day expiry and expired 2026-09-25T10:11Z, causing CI build failures 2026-09-25/26 (runs 36094076894, 36231008195 failed with auth error at cachix-action step; 1m45s in). Token was cache-scoped (correct, safer than account-scoped), but 30-day expiry was unnecessarily aggressive. Replaced with new cache-scoped read/write token, 1-year expiry (expires ~2027-09-28). Token stored via GitHub secret `CACHIX_AUTH_TOKEN` using interactive `gh secret set` prompt (avoids trailing newline gotcha from piped echo). Documentation in `.github/workflows/build.yml:8` corrected to reflect cache-scoped nature (commit 3f2e952). Also fixed in same commit: stray double blank line in flake.nix that failed formatting gate after 1h39m CI burn (cost of discovering lint error late in build cycle). Gotcha: `cachix-action` accepts only `authToken` and `signingKey` — no OIDC/tokenless auth path available. Public cache `volnixos` requires write token for CI push; read-only substituter access is unrestricted.

@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-28
+last_updated: 2026-10-30
 status: active
 ---
 
@@ -608,3 +608,10 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Mechanism:** Guest tailscaled read-only access for a non-root, non-operator unix peer (IsReadonlyConn, tailscale 1.104.1), relayed by a host socket unit. Details in state.md §19.
 * **Why:** Plugin `down`, `--shields-up`, or `--advertise-exit-node=false` would cut host-to-tailnet paths (phone-agent, ollama DNAT). `set` changes also persist in the share outside Nix; autoconnect re-applies flags only when the node is not Running.
 * **Rules out:** Setting `--operator` in the guest; running the guest relay as root; any writable host LocalAPI socket.
+## 58. Pre-Wipe Backup for /persist+Storage Migration — Existing Restic Repo, Not Plain Rsync Pre-Image (2026-10-30)
+
+* **Decision:** Use the vol.backup restic repo on VOLBAK (multi-snapshot, structural check clean) as the pre-wipe backup of `/persist` and `~/Storage`. No separate `rsync -aHAX` pre-image.
+* **Why:** The restic repo already holds a snapshot chain and restores with a short command. A second plain copy would take ~3 h on the slow Seagate (~12 MB/s) and adds no safety.
+* **Rules out:** Plain rsync pre-image of /persist to VOLBAK. Wiping nvme1 or nvme0p3 before the full `restic check --read-data` passes.
+* **Constraint:** The Seagate bridge stays in BOT mode (usb-storage quirk 0bc2:ac19:u). Do not force UAS (`data cmplt err -71` under sustained write).
+* **Restore dependency:** The restic repo password must be stored off-box (Bitwarden) because sops is unreadable from a live USB environment.

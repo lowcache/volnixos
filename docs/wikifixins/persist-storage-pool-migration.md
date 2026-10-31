@@ -55,20 +55,36 @@ rejected: shared free space + encrypt-everything beat keeping an unencrypted scr
 ## Pre-flight gates (all must pass before any wipe)
 
 0a. **SMART** — DONE, PASS: WD at 2% used, 100% spare, 0 media-integrity errors, 210 h.
-0b. **Backups fresh and complete:**
-   - Verify the restic repo on `VOLBAK` actually covers all of `/persist` (not a subset).
-   - Take a plain bit-faithful pre-image regardless (restore-under-pressure shouldn't
-     require restic fluency): `rsync -aHAX --info=progress2 /persist/ /mnt/backup/persist-preimg/`
-   - Decide the `~/Storage` keep-set (most is throwaway — my tmp/scratch). Back up anything
-     worth keeping (Windows-VM images, models, `Drive/`, `gd-backup/`) to `MODELS`/`VOLBAK`.
-0c. **Keys off-box:** confirm Bitwarden has the sbctl Secure Boot keys, **and** export the
-   sops host key `/persist/etc/ssh/ssh_host_ed25519_key` to Bitwarden. These two are the
-   only things not reproducible from the repo.
-0d. **Do not reuse/clear the 2 TB pre-image until the new system is verified booting.**
+    Seagate 2TB backup drive also SMART-PASSED 2026-10-30 (0 pending/offline/CRC; 8 old reallocated).
+0b. **Backup verified (restic, not a hand-rolled rsync)** — DONE 2026-10-30. The existing `vol.backup`
+   restic repo on `VOLBAK` already snapshots `[ /persist, /home/lowcache/Storage ]` minus throwaway
+   excludes. Latest snapshot `7f678a5e` (2026-10-30) holds both paths, ~122 GiB / 1.23M files,
+   10-snapshot chain. Structural `restic check` clean; **full `restic check --read-data` is the final
+   gate** (`~/Storage/tmp/verify-backup-full.sh`, ~3h). The separate plain-rsync pre-image is **dropped**:
+   the restic repo is multi-snapshot + check-clean and the restore is a 3-liner (step 6), which outweighs
+   a second ~3h copy on a ~12 MB/s drive.
+0c. **Keys off-box:** confirm Bitwarden has the sbctl Secure Boot keys, the sops host key
+   `/persist/etc/ssh/ssh_host_ed25519_key`, **and the restic repo password** (sops `restic_password`,
+   needed for the live-USB restore since sops is unavailable there — capture plaintext BEFORE the wipe).
+   These are the only things not reproducible from the repo.
+0d. **Do not reuse/clear the VOLBAK repo or prune it until the new system is verified booting.**
+
+### Seagate 2TB operating notes (this drive specifically)
+- BOT mode forced by `usb-storage.quirks=0bc2:ac19:u` (live) + kernel IGNORE_UAS; **never force UAS back**
+  (bridge corrupts under sustained UAS write). Ceiling ~10-15 MB/s.
+- Plug-in auto-triggers `vol-backup.service`, whose teardown powers the drive off. To work on the drive
+  manually (inspect/restore), `systemctl mask vol-backup.service` first, and keep a light I/O heartbeat
+  running so firmware standby doesn't drop it. Address it by **by-label/VOLBAK** or ID_FS_UUID
+  `965cca42-99f0-4b1a-becf-5024d644ffc6` — the serial/by-id changes with the driver.
 
 ## Offline procedure (NixOS live USB, by-id throughout)
 
-1. Boot live USB; attach the 2 TB; `mount /dev/disk/by-label/VOLBAK /mnt/backup`; confirm 0b.
+1. Boot the live USB **with `copytoram`** (append it to the boot entry's kernel cmdline, or write the
+   ISO so it's set). This copies the live system into RAM so the SD/USB boot medium can be removed —
+   necessary because the SD reader and the 2 TB backup cannot both occupy the fast USB port at once.
+   Once booted: eject the SD reader, plug in the 2 TB, then
+   `systemctl start mnt-backup.mount` (or `mount /dev/disk/by-label/VOLBAK /mnt/backup`). Confirm 0b.
+   Keep a light I/O heartbeat on the drive during long operations (BOT-mode idle-standby).
 2. Wipe only what changes (leaves KIOXIA p1/p2 intact):
    ```
    wipefs -a /dev/disk/by-id/nvme-KBG40ZNV512G_KIOXIA_Z0SPDF48Q9D2-part3
@@ -92,12 +108,30 @@ rejected: shared free space + encrypt-everything beat keeping an unencrypted scr
    cryptsetup open /dev/vgpersist/lvpersist cryptpersist
    mkfs.ext4 -L PERSIST /dev/mapper/cryptpersist
    ```
-6. Restore:
+6. Restore from the restic repo (NOT rsync — see 0b). In the live USB, bring up restic and point it
+   at the repo on the mounted drive; password comes from the Bitwarden-stashed `restic_password` (0c):
    ```
    mount /dev/mapper/cryptpersist /mnt/persist
-   rsync -aHAX --info=progress2 /mnt/backup/persist-preimg/ /mnt/persist/
-   mkdir -p /mnt/persist/storage          # restore ~/Storage keep-set here
+   nix-shell -p restic
+   export RESTIC_REPOSITORY=/mnt/backup/restic
+   export RESTIC_PASSWORD='<from Bitwarden>'     # do not echo; paste into the var
+   restic snapshots                              # sanity: newest covers /persist + Storage
    ```
+   The snapshot stores absolute paths (`/persist`, `/home/lowcache/Storage`). Map them to the new
+   single-pool layout (old /persist → pool root; old ~/Storage → /persist/storage):
+   ```
+   # /persist lands exactly at the pool root because target=/mnt and the pool is mounted at /mnt/persist:
+   restic restore latest --target /mnt --include /persist           # ~3h: reads ~X GiB from the slow USB
+   # ~/Storage keep-set → /persist/storage, via a small pool-local move (restic has no path-rewrite):
+   restic restore latest --target /mnt/persist/.restore-stage --include /home/lowcache/Storage
+   mkdir -p /mnt/persist/storage
+   ( shopt -s dotglob; mv /mnt/persist/.restore-stage/home/lowcache/Storage/* /mnt/persist/storage/ )
+   rm -rf /mnt/persist/.restore-stage
+   ```
+   Caveat — the restic excludes drop the big items (`Storage/libvirt`, `ollama`, `ai-generation/*/models`,
+   `.cache`, `tmp`, docker/waydroid state, swapfile). Model weights are separately mirrored to the MODELS
+   partition (restore those by plain copy if wanted). **Windows-VM images under `Storage/libvirt` are NOT
+   in either backup** — confirm that's an accepted loss before the wipe, or copy them to MODELS/VOLBAK first.
 7. Rebuild the installed system's initrd/bootloader with the new UUID (store on p2 is
    intact, so this is fast — no re-download). Edit the config changes below first, then:
    ```

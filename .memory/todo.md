@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-28
+last_updated: 2026-10-30
 status: active
 ---
 
@@ -221,36 +221,17 @@ status: active
 - [ ] Cross-check cited numbers against decisions.md #21, mistakes.md 2026-08-24, state.md §9 (Krita section)
 - [ ] Publish (remove `draft: true`, then `cd volnixos-blog && make build && make deploy`)
 
-### Persist LUKS2 Encryption Migration (2026-09-23 — Planning Phase)
-
-**Status (2026-10-03 — COMPLETE):** LUKS2 encryption of `/persist` successfully deployed and verified. All migration steps (00-06) executed without errors. System boots into encrypted /persist via systemd initrd unlock; mapper is `/dev/mapper/cryptpersist`. Impermanence and application state persistence work identically through the decrypted mount.
-
-✓ Step 00-setup: Completed
-✓ Step 01-format: Completed
-✓ Step 02-stage: Completed
-✓ Step 03-encrypt: Completed
-✓ Step 04-migrate: Completed
-✓ Step 05-post-boot: Completed
-✓ Step 06-finalize: Completed
-✓ Staging container and temp header backup removed by step 06
-
-**Backup:** LUKS header backup available at `~/Storage/luks-migration/luks0.header.backup` (for disaster recovery).
-
-**Next phase:** Stick gate design (TPM + USB + key-chord, see separate todo item below).
-
 ### Backup Hardware Monitoring — Install smartmontools & Monitor SMART (2026-09-24)
 
-**Context:** External Seagate 2TB USB backup drive reported unrecovered read error on 2026-09-24 during routine backup run. No SMART health monitoring had been configured on the host. Error was logged at block layer (sector 3574956888, near end of device); `restic check` passed despite the medium failure.
-
-**Status:** Diagnostic infrastructure not yet in place; device remains attached and untested post-error.
+**Context:** External Seagate 2TB USB backup drive reported unrecovered read error on 2026-09-24 (sector 3574956888) during a routine backup run. SMART readout 2026-10-30: PASSED, 0 pending, 0 offline-uncorrectable, 8 reallocated (state §12).
 
 **Actions:**
-- [ ] Install `pkgs.smartmontools` (smartctl, smartd) to system package set
-- [ ] On next device attach: run `sudo smartctl -a -d sat /dev/sda` to read full SMART status (esp. Reallocated_Sector_Ct, Current_Pending_Sector, Offline_Uncorrectable)
-- [ ] Run long self-test: `sudo smartctl -t long -d sat /dev/sda` (leave device attached for hours; check results post-completion)
-- [ ] If self-test reports uncorrectable errors or if pending/reallocated counts are non-zero, back up the restic repository to a new drive before the medium fails entirely
-- [ ] If counts are climbing across multiple backup runs, replace the Seagate drive and re-seed the restic repo (may be approaching end-of-life)
-- [ ] Document trend results in state.md §12 (SMART history) for future reference
+- [x] SMART readout run 2026-10-30 (PASSED).
+- [ ] Install `pkgs.smartmontools` (smartctl, smartd) to system package set.
+- [ ] Long self-test: `sudo smartctl -t long -d sat /dev/sda` (leave attached for hours; check results after).
+- [ ] Trend pending and reallocated counts across backup runs. If non-zero and climbing, replace the Seagate drive and re-seed the restic repo.
+- [ ] If self-test reports uncorrectable errors, copy the restic repo to a new drive before the medium fails.
+- [ ] Document trend results in state.md §12 (SMART history).
 
 ### Audit Fix Pass — Commit, Switch, and User-Only Follow-Ups (2026-09-30, Activated 2026-10-02)
 
@@ -444,3 +425,47 @@ Stick discarded; the passphrase slot was removed earlier by `08-kill-slot.sh`, s
 ### Tailscale LocalAPI Bridge — Commit (2026-10-23)
 
 - [ ] Commit the uncommitted `nixos/vms.nix` changes (CollectMode fix on `tailscale-vm-localapi@` and read-only guest relay). See state.md §19 and decisions.md #57.
+### /persist + Storage LVM-Pool Migration (2026-10-30 — IN PROGRESS, PRE-REBOOT)
+
+Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM-linear under ONE LUKS. `/boot` and `/nix` stay on KIOXIA untouched. All destructive ops key off by-id, never sdX/nvmeX (letters float).
+
+### Devices
+- KEEP (system + persist): `nvme-KBG40ZNV512G_KIOXIA_Z0SPDF48Q9D2` (nvme0; BOOT/NIX/CRYPTPERSIST). Persist LUKS UUID `d3307480-8eb3-4305-b5d6-d8d67c679022`.
+- WIPE and fold into pool: `nvme-WD_PC_SN5000S_SDEQNSJ-512G-1002_25210B804867` (nvme1; ext4 STORAGE at ~/Storage). SMART PASS (2% used, 100% spare, 0 media-integrity errors, 210 h).
+- LIVE-USB TARGET (128 GB SD reader): `usb-Generic_STORAGE_DEVICE_000000000819-0:0`.
+- BACKUP (2 TB Seagate, see state §12): VOLBAK restic repo. Use label VOLBAK or ID_FS_UUID; by-id alias varies by driver.
+
+### Pre-wipe backup gate
+- Pre-image is the vol.backup restic repo on VOLBAK (decisions.md #58). No separate rsync pre-image.
+- [ ] Full `restic check --read-data` on VOLBAK: running 2026-10-30 via `~/Storage/tmp/verify-backup-full.sh` (~2.5-3 h at ~12 MB/s). PASS = wipe-ready.
+- [ ] Restic repo password (sops `restic_password`) stored plaintext in Bitwarden. Capture before wipe.
+- HARD GATE: no wipe of nvme1 or nvme0p3 until read-data check passes and the password is in Bitwarden.
+- Gate 0d: do not retire or overwrite the backup until the new system is verified booting.
+
+### Drive stability gate
+- [ ] `sudo bash ~/Storage/tmp/seagate-fstest.sh` (1 GB write+read on VOLBAK). Pass = full 1 GB, reasonable MB/s, device stays attached, no kernel I/O errors. If it fails: drive faulty, STOP, select another backup target.
+- Script targets `/mnt/backup`, which the user reports is not the automount point (2026-10-31). Correct the path before running.
+- Open anomalies: sustained read ~7.7 MB/s; `dd count=3000` stopped at 90 MB with clean EOF (unexplained). Do not force UAS.
+
+### Restore path (live USB)
+- Boot option `copytoram`: boot SD, copy live system to RAM, eject SD, plug backup, restore. Solves the one-fast-port constraint.
+- `nix-shell -p restic`; `RESTIC_REPOSITORY=/mnt/backup/restic restic restore latest --target /mnt/persist` (~122 GiB, ~3 h).
+
+### Reboot and install
+- [ ] Disable Secure Boot in ASUS firmware (disable, do not clear keys); re-enable after.
+- [ ] Copy the runbook onto the 2 TB (or print) before rebooting. The runbook lives on the WD that gets wiped.
+- [ ] Live-USB dd (user, sudo, after ISO verify and unmounting -part1): `sudo dd if=~/Storage/tmp/nixos-minimal-26.05.iso of=/dev/disk/by-id/usb-Generic_STORAGE_DEVICE_000000000819-0:0 bs=4M status=progress conv=fsync; sync`.
+
+### Repo
+- [ ] `make push`: 3 local commits unpushed (Netdata, wiki-drift hook, migration doc).
+
+### Done
+- ✓ ISO: NixOS 26.05.13164 minimal at `~/Storage/tmp/nixos-minimal-26.05.iso`, sha256 `028681c3...413960` matches official sidecar (2026-10-30).
+- ✓ SMART on WD: PASS.
+- ✓ SMART on Seagate: PASSED 2026-10-30.
+- ✓ Secure Boot keys in Bitwarden.
+- ✓ sops host key (`/persist/etc/ssh/ssh_host_ed25519_key`, age `age1eweg3j5...763mk`) backed up to Bitwarden (rbw), verified byte-for-byte (2026-10-30). `keys.txt` age `age1hd3e46h...` is NOT a sops recipient.
+- ✓ Seagate idle-disconnect fixed at runtime (state §12).
+- ✓ Backup = vol.backup restic repo; latest snapshot 7f678a5e (2026-10-30 21:06), structural check clean.
+
+**Next action:** user reconnects the 2 TB and pins it awake; complete the `restic check --read-data` run; correct and run the stability test; dd the SD; copy the runbook to the 2 TB; reboot to the installer.
