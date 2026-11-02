@@ -6,12 +6,12 @@
     },
     "phone-agent": {
       "type": "http",
-      "url": "http://100.101.229.9:8462/mcp",
+      "url": "http://100.65.161.34:8462/mcp",
       "bearerTokenEnv": "PHONE_AGENT_TOKEN"
     },
     "noctalia": {
       "command": "python3",
-      "args": ["/home/lowcache/CodeRepo/noctalia-plugs/noctalia-claude-plugin/shim/noctalia-mcp.py"]
+      "args": ["/home/lowcache/Code/lowcache/noctalia-plugs/noctalia-claude-plugin/shim/noctalia-mcp.py"]
     }
   }
 }

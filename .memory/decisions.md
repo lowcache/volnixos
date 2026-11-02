@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-10-30
+last_updated: 2026-11-02
 status: active
 ---
 
@@ -615,3 +615,10 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Rules out:** Plain rsync pre-image of /persist to VOLBAK. Wiping nvme1 or nvme0p3 before the full `restic check --read-data` passes.
 * **Constraint:** The Seagate bridge stays in BOT mode (usb-storage quirk 0bc2:ac19:u). Do not force UAS (`data cmplt err -71` under sustained write).
 * **Restore dependency:** The restic repo password must be stored off-box (Bitwarden) because sops is unreadable from a live USB environment.
+## 59. Dev Tree Consolidation — Single Persisted ~/Code Root (2026-11-02)
+
+* **Decision (2026-11-02, user):** `~/CodeRepo`, `~/Projects`, and `~/unDevel` are retired. `home/persist.nix` persists only `~/Code`.
+* **Layout:** `Code/lowcache` (lowcache-owned repos and workspaces), `Code/infernalbits` (org repos), `Code/ORGs` (empty, for other orgs), `Code/stash` (former Projects/*, unDevel/*, third-party Dark-Moon), `Code/.pnpm-store`.
+* **Path rule for legacy memory:** `~/CodeRepo/<x>` → `~/Code/lowcache/<x>`; infernalbits repos → `~/Code/infernalbits/<x>`. Earlier entries (e.g. #18) referencing `~/CodeRepo` are read through this rule.
+* **Rules out:** new repos under `~/CodeRepo`, `~/Projects`, or `~/unDevel`; persisting any dev path other than `~/Code`.
+* **Migration:** one-shot script `~/Storage/tmp/code-migrate/migrate.sh apply|post`, run with Claude closed. Backup of Projects/unDevel retained at `~/Storage/org-stash` until user deletes it.

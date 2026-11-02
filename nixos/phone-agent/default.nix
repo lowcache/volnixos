@@ -38,7 +38,7 @@ in
 
     phoneTailscaleIP = lib.mkOption {
       type = lib.types.str;
-      default = "100.101.229.9";
+      default = "100.65.161.34";
       description = "Tailscale IP of the phone MCP server (from the Tailscale Android app).";
     };
     port = lib.mkOption {

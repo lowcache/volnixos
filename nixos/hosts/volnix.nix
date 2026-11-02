@@ -118,7 +118,7 @@
   # ~/.config/phone-agent/token). phoneTailscaleIP is stable per node key.
   phone-agent = {
     enable = true;
-    phoneTailscaleIP = "100.101.229.9";
+    phoneTailscaleIP = "100.65.161.34";
     tokenFile = config.sops.secrets.phone_agent_token.path;
     # Read-only, token-gated, bound to the MicroVM tap: the phone pulls from
     # ~/push, the laptop never pushes unsolicited. Needs the :8463 forwardPorts

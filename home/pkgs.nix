@@ -99,6 +99,9 @@
           caja-with-extensions
           ayugram-desktop
           vial
+          restic-browser
+          tor-browser
+          mullvad-browser
           nemo-with-extensions
           thunar
           thunar-archive-plugin

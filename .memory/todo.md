@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-10-30
+last_updated: 2026-11-02
 status: active
 ---
 
@@ -469,3 +469,10 @@ Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM
 - ✓ Backup = vol.backup restic repo; latest snapshot 7f678a5e (2026-10-30 21:06), structural check clean.
 
 **Next action:** user reconnects the 2 TB and pins it awake; complete the `restic check --read-data` run; correct and run the stability test; dd the SD; copy the runbook to the 2 TB; reboot to the installer.
+### Dev Tree Migration — ~/Code Consolidation (2026-11-02)
+
+- [ ] Run `~/Storage/tmp/code-migrate/migrate.sh apply` with Claude closed, then `post`.
+- [ ] Verify `~/Code/{lowcache,infernalbits,ORGs,stash,.pnpm-store}` layout after migration.
+- [ ] Update `home/persist.nix` to persist only `~/Code` (drop `~/CodeRepo`, `~/Projects`, `~/unDevel`).
+- [ ] User: delete `~/Storage/org-stash` backup when satisfied.
+- [ ] User: prune/archive lowcache GitHub repos with no local clone via web UI.

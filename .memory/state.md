@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-10-30
+last_updated: 2026-11-02
 status: active
 ---
 
@@ -234,3 +234,14 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 * **Substituters:** `https://cache.lantian.pub/lantian` active (key in `nixos/modules/nix-settings.nix`). `attic.xuyh0120.win` removed.
 * **Kernel input:** `nix-cachyos-kernel` follows the release branch; 7.3.0 substitutes from lantian. Lantian substituter, CI NIX_CONFIG, and kernel input changes are uncommitted.
 * **ollama-cuda:** in no cache; builds once in CI.
+## 21. Dev Tree Layout — ~/Code Consolidation (2026-11-02)
+
+- Persisted dev root: `~/Code` (only dev tree persisted by `home/persist.nix`). Retired as persisted roots: `~/CodeRepo`, `~/Projects`, `~/unDevel`.
+- `~/Code/lowcache/`: lowcache-owned repos and own workspaces. Profile repo `lowcache/lowcache` at `~/Code/lowcache/lowcache`.
+- `~/Code/infernalbits/`: org repos.
+- `~/Code/ORGs/`: empty, reserved for other orgs.
+- `~/Code/stash/`: former `Projects/*`, `unDevel/*`, and third-party Dark-Moon.
+- pnpm store: `~/Code/.pnpm-store`.
+- Backup of former Projects/unDevel: `~/Storage/org-stash` (kept until user deletes it).
+- Lowcache GitHub repos with no local clone are not cloned; user prunes/archives via web UI.
+- Path rule for legacy references: `~/CodeRepo/<x>` → `~/Code/lowcache/<x>`; infernalbits repos → `~/Code/infernalbits/<x>`.
