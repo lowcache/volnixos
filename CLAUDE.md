@@ -26,7 +26,7 @@ Wiki: `https://wiki.infernalcode.com`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-All Nix work goes through the `nixtastic` skill (`/nixtastic`; installed at `~/.claude/skills/nixtastic` and `~/.gemini/skills/nixtastic` from the source repo `~/CodeRepo/allnix-skills` via `nix run .#install`; edit the repo, never the installed copies). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper (`gate`, `build`, `drv`, `recall`, …). `/nixtastic review [path]` runs a maintainability review. It is the only Nix skill; option/package lookups go through the gateway's mcp-nixos backend, and Nix LSP diagnostics come from the `nix-lsp` plugin (nixd).
+All Nix work goes through the `nixtastic` skill (`/nixtastic`; installed at `~/.claude/skills/nixtastic` and `~/.gemini/skills/nixtastic` from the source repo `~/Code/lowcache/allnix-skills` via `nix run .#install`; edit the repo, never the installed copies). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper (`gate`, `build`, `drv`, `recall`, …). `/nixtastic review [path]` runs a maintainability review. It is the only Nix skill; option/package lookups go through the gateway's mcp-nixos backend, and Nix LSP diagnostics come from the `nix-lsp` plugin (nixd).
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 
@@ -48,6 +48,8 @@ Canonical repository checks:
 Home Manager dotfiles use out-of-store symlinks into the repository's `dots/` tree. Do not replace these with traditional generated files under `~/.config` unless explicitly required.
 
 Preserve the existing persistence layout and its separation between `/persist` and `~/Storage`.
+
+`~/Code` is the only persisted development tree: `lowcache/` (own repos and workspaces, e.g. `memd`, `tether`, `allnix-skills`, `noctalia-plugs`, `sites`), `infernalbits/` (org repos), `ORGs/` (other orgs), `stash/` (retired projects). pnpm's store sits at `~/Code/.pnpm-store` (mount root).
 
 ## MicroVMs
 
@@ -94,7 +96,7 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 
 ## volinit
 
-Terminal banner, tracked from the `rewrite/go-cockpit` branch while it is overhauled into a cockpit-style TUI (local checkout: `/home/lowcache/CodeRepo/volinit`). Wired as the `volinit` flake input and `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/shell.nix`; the fish greeting guards on `command -v volinit`. If a WIP push breaks evaluation, drop both lines rather than pinning around it.
+Terminal banner, tracked from the `rewrite/go-cockpit` branch while it is overhauled into a cockpit-style TUI (local checkout: `/home/lowcache/Code/lowcache/volinit`). Wired as the `volinit` flake input and `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/shell.nix`; the fish greeting guards on `command -v volinit`. If a WIP push breaks evaluation, drop both lines rather than pinning around it.
 
 ## Claude Code + tweakcc
 

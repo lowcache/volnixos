@@ -3,7 +3,7 @@
 Run these **in your project directory** -- this template is a mold you stamp
 copies from, never a place to work:
 
-    cd ~/CodeRepo/my-project
+    cd ~/Code/lowcache/my-project
     nix flake init -t ~/.nix-config#python
     direnv allow
 

@@ -11,7 +11,7 @@ import json
 import os
 import sys
 
-QUEUE = os.path.expanduser("~/CodeRepo/sites/blogs/wiki/.drift-pending")
+QUEUE = os.path.expanduser("~/Code/lowcache/sites/blogs/wiki/.drift-pending")
 
 
 def main():

@@ -25,7 +25,7 @@ Documentation: `https://volnixos-wiki.pgs.sh`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-All Nix work goes through the `nixtastic` skill (`~/.gemini/skills/nixtastic`; source and `nix run .#install` in `~/CodeRepo/allnix-skills`). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper.
+All Nix work goes through the `nixtastic` skill (`~/.gemini/skills/nixtastic`; source and `nix run .#install` in `~/Code/lowcache/allnix-skills`). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper.
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 
@@ -82,7 +82,7 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 ## volinit
 
 Removed from the flake inputs (2026-10-03) while it is overhauled into a cockpit-style menu/TUI;
-an in-progress push would otherwise break the whole flake. Local checkout: `/home/lowcache/CodeRepo/volinit`.
+an in-progress push would otherwise break the whole flake. Local checkout: `/home/lowcache/Code/lowcache/volinit`.
 
 To re-add when finished: restore the `volinit` input in `flake.nix` and
 `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/pkgs.nix`
@@ -177,4 +177,4 @@ Preserve the subtree structure rather than copying its contents into unrelated c
 
 ## Gemini Integration
 
-This project may participate in the Claude↔Gemini tether. When a `[TETHER]` delegation is active, follow `~/CodeRepo/tether/PROTOCOL.md` and the applicable Gemini worker-mode/reporting requirements while retaining all project constraints above.
+This project may participate in the Claude↔Gemini tether. When a `[TETHER]` delegation is active, follow `~/Code/lowcache/tether/PROTOCOL.md` and the applicable Gemini worker-mode/reporting requirements while retaining all project constraints above.

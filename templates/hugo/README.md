@@ -3,7 +3,7 @@
 Run these **in your project directory** -- this template is a mold you stamp
 copies from, never a place to work:
 
-    cd ~/CodeRepo/my-project
+    cd ~/Code/lowcache/my-project
     nix flake init -t ~/.nix-config#hugo
     direnv allow
 
@@ -12,7 +12,7 @@ directory. To try the template itself, stamp it into a scratch directory --
 running `direnv allow` inside `templates/hugo/` activates the mold in place
 and leaves a `.direnv/` and a `flake.lock` behind in `.nix-config`.
 
-Extracted from the four sites already in `~/CodeRepo/sites`, which had
+Extracted from the four sites already in `~/Code/lowcache/sites`, which had
 independently converged on the same shell:
 
 | site | shell |
