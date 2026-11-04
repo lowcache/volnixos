@@ -16,7 +16,7 @@ Vol NixOS is a flake-based, impermanent NixOS workstation configuration.
 * Home Manager: `home/`
 * Dotfiles: `dots/`
 * Agent/tooling scripts: `scripts/`
-* Wikifiles: any changes to the config that would affect the wiki get put into a markdown file in `docs/wikifixins`
+* Wikifiles: any changes to the config that would affect the wiki get put into a markdown file in `docs/wikifixins`; `wiki-sync` applies and deploys them automatically (see below)
 * Documentation: All documentation has been moved to the wiki repo. See Wikifiles for future docs. 
 * Operations interface: root `Makefile`
 * Templates: `templates/` 
@@ -139,6 +139,15 @@ Agent access to Thunderbird mail through nixpkgs `thunderbird-cli` 1.1.0. The ch
 * Firewall opens `:19999` only from the bubble subnet (derived from `vol.travel-bubble.address`), not the `wlp4s0` interface — so it stays closed when the radio is a Wi-Fi client on an untrusted network. Loopback stays open for the cable path.
 * The NVIDIA `go.d` collector is disabled via `configDir."go.d.conf"`: it polls `nvidia-smi` and would defeat RTD3 dGPU power-off. Everything else auto-detects.
 * `/var/lib/netdata` and `/var/cache/netdata` are persisted to `/persist` (dbengine off the tmpfs root; history survives reboots).
+
+## Wiki sync (`wiki-sync`)
+
+`home/wiki-sync.nix` + `home/wiki-sync.sh`. A user path unit watches `docs/wikifixins`; on change, `wiki-sync.service` waits for 90 s of quiet, then for each pending fixin: snapshots it, runs `claude -p --model sonnet` in a fresh worktree of the wiki (`~/Code/lowcache/hugo.web/wiki.infernalcode`, branch `wiki-sync/<ts>` under `~/Storage/tmp/wiki-sync`), gates on the wiki's `make build`, commits, `make deploy` (wrangler + sops `cloudflare_api_token` + verify), then fast-forwards the wiki's `main`. It never pushes; push the wiki yourself.
+
+* Pending = `"<sha256>  <name>"` not in the wiki's committed `.wikifixins-applied` ledger, so editing an applied fixin re-queues it. The folder's `CLAUDE.md` is skipped.
+* The agent may edit only `content/` (permission rules + a post-check) and reports `FIXIN <name> applied|already|deferred`; deferred notes (config not there yet) stay pending.
+* On failure the worktree and branch are kept, a desktop notification names them, and the wiki's `main` is not advanced (a failed build never deploys).
+* Manual: `wiki-sync status`, `wiki-sync --dry-run` (agent + build, no commit/deploy, keeps the worktree), `wiki-sync seed [fixin.md…]` (mark applied without running). Logs: `journalctl --user -u wiki-sync`.
 
 ## Memory — memd
 

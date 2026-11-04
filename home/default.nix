@@ -52,6 +52,7 @@ in
     ./ci-poll.nix
     ./mcp-gateway.nix
     ./thunderbird-bridge.nix
+    ./wiki-sync.nix
     ./shell.nix
     inputs.memd.homeManagerModules.default
   ];
