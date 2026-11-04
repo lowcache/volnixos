@@ -66,6 +66,21 @@ in
           "$@"
       '';
     })
+    # chrome-devtools-mcp (perf traces, network, console). Not in nixpkgs, so
+    # pinned npx like gsc/hn; same nix chromium as playwright-mcp-nix, since its
+    # puppeteer would otherwise download an unpatched Chrome. Google usage stats,
+    # CrUX lookups (sends URLs to Google) and update checks are off.
+    (pkgs.writeShellApplication {
+      name = "chrome-devtools-mcp-nix";
+      bashOptions = [ ];
+      text = ''
+        export CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS=1 CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS=1
+        exec npx -y chrome-devtools-mcp@1.12.0 \
+          --headless --isolated --no-usage-statistics --no-performance-crux \
+          --executable-path ${pkgs.playwright-driver.browsers}/chromium-*/chrome-linux64/chrome \
+          "$@"
+      '';
+    })
     (pkgs.writeShellApplication {
       name = "tor-brave";
       runtimeInputs = [

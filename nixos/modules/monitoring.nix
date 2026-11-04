@@ -1,4 +1,4 @@
-# Netdata: real-time system dashboard for the travel-bubble tablet.
+# Netdata: real-time system dashboard for bubble clients (the phone).
 # Reached at http://<bubble-ap-addr>:19999 from a bubble client, or over
 # `adb reverse tcp:19999 tcp:19999` on the USB cable (loopback path).
 #
@@ -23,6 +23,9 @@ in
 {
   services.netdata = {
     enable = true;
+    # nixpkgs builds without the web dashboard (withCloudUi defaults false: it is
+    # NCUL1, unfree), leaving only the API on :19999. Unfree, so built locally.
+    package = pkgs.netdata.override { withCloudUi = true; };
     # Everything else auto-detects; only the GPU poller is turned off.
     configDir."go.d.conf" = pkgs.writeText "netdata-go.d.conf" ''
       modules:

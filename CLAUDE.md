@@ -136,6 +136,9 @@ Agent access to Thunderbird mail through nixpkgs `thunderbird-cli` 1.1.0. The ch
 
 `nixos/modules/monitoring.nix` runs Netdata as a real-time dashboard, reached from a travel-bubble client at `http://<bubble-ap-addr>:19999` or over `adb reverse tcp:19999` on the USB cable.
 
+* The dashboard needs `package = pkgs.netdata.override { withCloudUi = true; }`: nixpkgs builds without it by default (unfree NCUL1), and then `:19999` serves only the API (every page 404s). Being unfree, it is built locally, not substituted.
+* The same port serves Netdata's MCP at `/mcp`, used by the gateway's `netdata` backend. Sensitive functions (`systemd-journal`, `processes`, …) refuse without Netdata's MCP API key, so bubble clients get metrics and alerts but not the journal.
+
 * Firewall opens `:19999` only from the bubble subnet (derived from `vol.travel-bubble.address`), not the `wlp4s0` interface — so it stays closed when the radio is a Wi-Fi client on an untrusted network. Loopback stays open for the cable path.
 * The NVIDIA `go.d` collector is disabled via `configDir."go.d.conf"`: it polls `nvidia-smi` and would defeat RTD3 dGPU power-off. Everything else auto-detects.
 * `/var/lib/netdata` and `/var/cache/netdata` are persisted to `/persist` (dbengine off the tmpfs root; history survives reboots).
@@ -172,7 +175,7 @@ Write new memory only through `.memory/inbox/` using dated notes. Do not manuall
 
 Prefer extending the gateway over creating standalone MCP servers when functionality belongs in the shared tool layer.
 
-Current gateway integrations include NixOS, GitHub, MarkItDown, Playwright, context7, web search/fetch, filesystem, and ripwire (code navigation for non-Nix repos; must run as `ripwire --mcp`). context-mode and codebase-memory-mcp were tried and dropped (2026-11-03): context-mode needs Claude Code hooks to be useful and its `ctx_execute` bypasses Bash permissions; codebase-memory duplicates ripwire, writes its index to tmpfs `~/.cache`, and serves a loopback UI.
+Current gateway integrations include NixOS, GitHub, MarkItDown, Playwright, context7, web search/fetch, filesystem, ripwire (code navigation for non-Nix repos; must run as `ripwire --mcp`), netdata (the agent's own `/mcp` on `:19999`), and chrome-devtools (`chrome-devtools-mcp-nix` in `home/scripts.nix`: pinned npx + the nix chromium playwright-mcp-nix uses, Google usage stats and CrUX off). context-mode and codebase-memory-mcp were tried and dropped (2026-11-03): context-mode needs Claude Code hooks to be useful and its `ctx_execute` bypasses Bash permissions; codebase-memory duplicates ripwire, writes its index to tmpfs `~/.cache`, and serves a loopback UI.
 
 The Noctalia Claude MCP configuration is an explicit exception.
 
