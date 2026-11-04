@@ -104,13 +104,6 @@ screenshot-path "~/Storage/screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // (idx 2). The Mod+1..9 binds therefore target indices 2..10 (see below).
 // Verify with: niri msg -j workspaces
 workspace "mopho"
-// Quake terminal: floating kitty (app-id "quake"), toggled by the niri-port script.
-// **C**This functionality is performed by kitty's kitten+quick-access-terminal syntax seen below
-// window-rule {
-//     match app-id="^quake$"
-//     open-floating true
-//     default-column-width { proportion 0.98; }
-// }
 
 binds {
     // ===== Shell / Noctalia (replaces quickshell IPC) =====
@@ -136,16 +129,13 @@ binds {
     Mod+Ctrl+B       { spawn-sh "noctalia msg theme-mode-toggle"; }          // Dark / light
 
     // ===== Apps =====
-    // **C** Quake terminal: niri only spawns a process; ALL window logic (show/hide,
-    // position, height, aspect) is done by kitty's quick-access-terminal kitten over
-    // wlr-layer-shell + kitty remote control, bypassing the compositor entirely.
-    // Config: ~/.config/kitty/quick-access-terminal.conf  Helper: scripts/quake.sh
-    // (app-id "quake" is set in the kitten conf, for debugging/matching only.)
-    // All controls are two-state, orientation-aware toggles hung off Mod+Return:
-    Mod+Return       { spawn-sh "~/.config/niri/scripts/quake.sh toggle"; }      // show / hide
-    Mod+Shift+Return { spawn-sh "~/.config/niri/scripts/quake.sh position"; }    // top/bottom (landscape) · left/right (portrait)
-    Mod+Alt+Return   { spawn-sh "~/.config/niri/scripts/quake.sh size"; }        // normal / full extent
-    Mod+Ctrl+Return  { spawn-sh "~/.config/niri/scripts/quake.sh orientation"; } // landscape (horizontal) / portrait (vertical)
+    // **C** Drop-down terminal: the dropkitty Noctalia plugin's helper (kitty quick-access-terminal
+    // over wlr-layer-shell). Called directly, not via noctalia msg, so it works while the shell reloads.
+    // Same instance as the bar widget. Settings: Noctalia > plugins > dropkitty.
+    Mod+Return       { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "toggle"; }      // show / hide
+    Mod+Shift+Return { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "position"; }    // top/bottom (landscape) · left/right (portrait)
+    Mod+Alt+Return   { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "size"; }        // normal / full extent
+    Mod+Ctrl+Return  { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "orientation"; } // landscape (horizontal) / portrait (vertical)
     Mod+T            { spawn "kitty"; }                                       // Terminal
     Mod+E           { spawn-sh "~/.config/niri/scripts/launch_first_available.sh dolphin nautilus nemo thunar 'kitty -1 fish -c yazi'"; } // Files
     Mod+W            { spawn-sh "~/.config/niri/scripts/launch_first_available.sh brave google-chrome-stable zen-browser firefox chromium"; } // Browser
