@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS — Dots
-last_updated: 2026-10-10
+last_updated: 2026-11-03
 status: active
 ---
 
@@ -95,49 +95,23 @@ colors from kitty's live configuration instead of hardcoded hex values.
   `kitty @ --to unix:@mykitty set-colors --all --configured`. `@mykitty` is abstract,
   bound by first kitty instance; applies only at kitty start.
 
-## Quake Drop-Down Terminal (niri/kitty)
+## Drop-Down Terminal (dropkitty, niri)
 
-Architecture: **niri spawns process only; kitty owns all window logic** via wlr-layer-shell
-(`quick-access-terminal` kitten) + kitty remote control. Compositor never manages the
-quake window. This supersedes the old workspace-shuffling approach (deleted 2026-06-18).
+### Ownership
+- Quake terminal replaced by the dropkitty Noctalia plugin (2026-11-03). The Mod+Return family in `dots/niri/config.kdl` spawns `~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty` (toggle / position / size / orientation). The Noctalia bar widget drives the same instance.
+- Removed 2026-11-03 via git rm: `dots/niri/scripts/quake.sh`, `dots/kitty/quick-access-terminal.conf`. Also removed the commented-out app-id "quake" window-rule from `config.kdl`.
+- dropkitty settings live in Noctalia's plugin settings, not in `dots/`.
 
-**Files (all live via existing out-of-store symlinks):**
-- `dots/kitty/quick-access-terminal.conf` — kitten config: `edge`, `lines`, `columns`,
-  opacity, `focus_policy exclusive`, `app_id quake`, `allow_remote_control yes`, `listen_on`.
-  Live at `~/.config/kitty/quick-access-terminal.conf`.
-- `dots/niri/scripts/quake.sh` — control helper; 4-field state in
-  `$XDG_RUNTIME_DIR/kitty-quake.state` (`orient`/`pos_h`/`pos_v`/`size`).
-  Tunables at top: `NORMAL_LINES=25`, `PORTRAIT_FRAC=50`.
-- `dots/niri/config.kdl` — keybinds in Apps section.
-- **Deleted:** `dots/niri/scripts/quake_toggle.sh` (git rm'd 2026-06-18).
+### Keybinds
+| Key | Action |
+|---|---|
+| `Mod+Return` | toggle show / hide |
+| `Mod+Shift+Return` | position |
+| `Mod+Alt+Return` | size |
+| `Mod+Ctrl+Return` | orientation |
 
-**Keybinds (orientation-aware, Hyprland parity):**
-
-| Key | Landscape | Portrait |
-|---|---|---|
-| `Mod+Return` | show / hide | show / hide |
-| `Mod+Shift+Return` | top ↔ bottom | left ↔ right |
-| `Mod+Alt+Return` | normal ↔ full height | normal ↔ full width |
-| `Mod+Ctrl+Return` | → switch to vertical | → switch to horizontal |
-
-Full size (`Mod+Alt+Return → full`) is fullscreen in any orientation/edge — all four
-full states measured pixel-identical: 266×62 cells on 1920×1200 (verified live 2026-06-18).
-Each axis remembers its own side independently (flipping orientation preserves both
-last top/bottom and last left/right).
-
-**kitty layer-shell axis rules (verified live, kitty 0.47.2):**
-- top/bottom panels: always full width, size HEIGHT via `lines`, `columns` silently ignored.
-- left/right panels: always full height, size WIDTH via `columns`, `lines` ignored.
-- Portrait = true vertical-edge panel (`edge=left`/`right`), NOT a margin-narrowed top strip.
-- Width on horizontal panels: `margin-left`/`margin-right` (dashes, not underscores).
-- Toggle visibility preserving geometry: `resize-os-window --action=toggle-visibility`.
-  Bare `kitten quick-access-terminal` re-invoke RESETS geometry to conf defaults.
-- Quake RC socket: `$XDG_RUNTIME_DIR/kitty-quake-<pid>` (pid-suffixed, a file).
-- Single-instance group socket: `@kitty-ipc-<uid>-panel-quick-access` (abstract, not a file).
-- **kitty config has NO inline comments** — everything after an option value on its line is
-  the value. Comments must be on their own lines. Silent exit = likely a comment-as-value.
-- `allow_remote_control` + `listen_on` must be in the kitten conf (via `kitty_override`).
-  kitty appends `-<pid>` to the listen socket path.
+### Kitty config gotcha
+- kitty config has NO inline comments: everything after an option value on its line is the value. Comments must be on their own lines. Silent exit = likely a comment-as-value.
 
 ## Niri Config (`dots/niri/`)
 

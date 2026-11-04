@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS — Dots
-last_updated: 2026-10-10
+last_updated: 2026-11-03
 status: active
 ---
 
@@ -62,26 +62,21 @@ theme name bypasses the configured active theme; passing a bare name (not a path
 `os.path.exists()` return False and silently no-ops. Both `switchwall.sh` call sites fixed
 2026-06-17. This convention is what makes wallpaper-change hooks theme-agnostic.
 
-## D8 — Quake terminal: niri spawns process only; kitty owns all window logic
-For the niri quake drop-down terminal, niri's only role is `spawn`. Every window
-operation — show, hide, position, size, orientation — is handled by kitty via
-`quick-access-terminal` (wlr-layer-shell kitten) and kitty remote control. The compositor
-never manages the quake window's lifecycle. This is the opposite of the Hyprland approach
-(scratchpad/special-workspace). Attempts to manage floating window visibility through niri
-(window-rules + move-window-to-workspace) spawned duplicates and were fragile. The old
-`quake_toggle.sh` implementing that approach was deleted 2026-06-18.
+## D8 — Drop-down terminal: dropkitty plugin owns window logic
 
-## D9 — Quake keybind scheme: Mod+Return family, orientation-aware position toggle
-Four orthogonal controls hung off `Mod+Return`; `Mod+Shift+Return` (position) is
-orientation-aware — adapts to landscape or portrait — rather than having separate
-keybind sets per orientation:
-- `Mod+Return` — show/hide (`toggle-visibility`, preserves geometry)
+The drop-down terminal is the dropkitty Noctalia plugin. niri binds spawn it and the Noctalia bar widget drives the same instance (2026-11-03). The dots tree carries no quake-specific scripts or kitty layer-shell config. Supersedes the kitty quick-access-terminal / quake.sh approach, removed 2026-11-03.
+
+**What it rules out:** reviving `quake.sh` or `quick-access-terminal.conf` as a parallel implementation.
+
+## D9 — Drop-down keybind scheme: Mod+Return family, orientation-aware position toggle
+
+Four orthogonal controls on `Mod+Return`, now bound to dropkitty:
+- `Mod+Return` — show/hide
 - `Mod+Shift+Return` — position: top↔bottom (landscape) or left↔right (portrait)
-- `Mod+Alt+Return` — size: normal↔full (fullscreen in any orientation, verified)
+- `Mod+Alt+Return` — size: normal↔full
 - `Mod+Ctrl+Return` — orientation: landscape↔portrait
-State persisted per-axis in `$XDG_RUNTIME_DIR/kitty-quake.state` (4 fields: `orient`,
-`pos_h`, `pos_v`, `size`). Each axis remembers its own side independently. A separate
-keybind set for portrait-only was rejected as insufficient benefit for the cognitive load.
+
+Position adapts to orientation rather than using a separate keybind set per orientation. A separate portrait-only keybind set was rejected as insufficient benefit for the cognitive load.
 
 ## D10 — Commit to full niri desktop; Hyprland to fallback or removal
 The dotfiles must transition from maintaining two half-finished desktop environments to

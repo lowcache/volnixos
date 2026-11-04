@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS — Dots
-last_updated: 2026-07-05
+last_updated: 2026-11-03
 status: active
 ---
 
@@ -71,9 +71,6 @@ Hyprland's fate (fallback or removal).
 * [x] Palette validation added to `apply_theme.py` (2026-06-09).
 * [x] Color engine relocated to `dots/color-engine/`; `switchwall.sh` and `config.json`
   references updated; `home/persist.nix` symlink added (2026-06-17).
-* [x] Quake drop-down terminal: Hyprland → niri port COMPLETE with orientation-aware
-  keybinds (2026-06-18). `quake_toggle.sh` deleted. All four Mod+Return controls verified
-  live against running panel on 1920×1200.
 * [x] `dots` registered as memd project; `memd.py transcript_files` patched for
   longest-prefix exclusion; dots sync pipeline verified (2026-06-18).
 * [x] tab_bar.py refactored to read colors dynamically from kitty options instead of
