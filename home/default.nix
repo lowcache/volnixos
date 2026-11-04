@@ -29,6 +29,10 @@ let
     # gd's synced Drive folder and its sync-down backups are bulk data: Storage.
     GD_SYNC_LOCAL = "${config.home.homeDirectory}/Storage/Drive";
     GD_BACKUP_DIR = "${config.home.homeDirectory}/Storage/gd-backup";
+    # Telemetry opt-outs: Claude Code and Superpowers honour DISABLE_TELEMETRY; DO_NOT_TRACK is the
+    # cross-tool convention. Not CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC: it also kills Artifacts, uploads, gh api.
+    DISABLE_TELEMETRY = "1";
+    DO_NOT_TRACK = "1";
     # No NVIDIA render vars: the session renders on the AMD iGPU (use `nvrun`).
   };
 

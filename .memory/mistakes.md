@@ -149,3 +149,8 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** gateway logged `Backend timeout: ripwire` after the ripwire backend was added.
 * **Root cause:** the gateway entry used bare `ripwire`, which is the CLI and exits instead of serving MCP.
 * **Prevention rule:** the gateway entry for ripwire must be `ripwire --mcp`. Never register a CLI binary as an MCP backend without confirming its MCP serve flag.
+
+### 2026-11-03 — Netdata Dashboard 404 — Default withCloudUi=false
+* **Symptom:** :19999 answered but every web page returned 404; only the API responded.
+* **Root cause:** nixpkgs `netdata` defaults `withCloudUi = false`, which disables the dashboard (cloud UI is NCUL1 unfree), so the build ships without pages.
+* **Prevention rule:** When enabling a web UI, set the package flag explicitly (`pkgs.netdata.override { withCloudUi = true; }`) and verify a UI page returns HTTP 200, not just that the port answers. The unfree override builds locally; expect no substitution.

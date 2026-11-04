@@ -632,3 +632,9 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Decision (2026-11-03, user-approved):** Of the three code-tool backends added to mcp-gateway on 2026-11-03, keep only ripwire (`ripwire --mcp`, for non-Nix repos).
 * **Rationale:** codebase-memory-mcp duplicates ripwire, ignores XDG_CACHE_HOME (index lands on tmpfs `~/.cache`; `CBM_CACHE_DIR` exists), and serves a loopback UI on 127.0.0.1:9749 by default (anon uid can reach loopback). context-mode needs Claude Code hooks to be useful (opt-in only behind the gateway), its `ctx_execute` runs arbitrary code past Bash permissions and RTK, and `ctx_upgrade` pushes npm upgrades over the nix package. nixpkgs `fastcrw` `crw mcp` downloads a nightly LightPanda binary from GitHub at start, so it is not usable as packaged (nixpkgs rev 7fd4004).
 * **Rules out:** re-adding codebase-memory-mcp or context-mode to gateway.yaml; running `fastcrw`'s `crw mcp` as packaged; bare `ripwire` as a gateway entry.
+## 62. MCP Server Sourcing — GitHub MCP Registry, Paywall Exclusion (2026-11-03)
+
+* **Decision (2026-11-03, user):** Source MCP servers from the GitHub MCP registry (`api.mcp.github.com/v0/servers`, backs github.com/mcp). `gh` has no command for this registry; `gh skill search` finds only SKILL.md files, not MCP servers.
+* **User rule:** Discard any MCP server that is paywalled; build our own equivalent instead.
+* **Applied 2026-11-03:** netdata (agent's own `/mcp`, `http_url`) and chrome-devtools (`chrome-devtools-mcp-nix` wrapper) added to the gateway.
+* **Rules out:** adding paywalled MCP servers to the gateway.

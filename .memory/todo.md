@@ -482,3 +482,8 @@ Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM
 - [ ] Confirm the three pending fixins (`2026-11-02-code-tree.md`, `persist-storage-pool-migration.md`, `2026-11-03-wiki-sync.md`) are processed into `wiki-sync/<ts>` commits.
 - [ ] Confirm `make deploy` succeeds and wiki main fast-forwards with no push.
 - [ ] Confirm already-seeded fixins (through 2026-10-28) are skipped by the ledger.
+### Netdata MCP and Gateway Restart — Verify New Backends (2026-11-03)
+
+- [ ] Restart gateway: `systemctl --user restart mcp-gateway`; confirm netdata and chrome-devtools connect (`gateway_list_servers`; tools_count 0 may be stale until tools are listed).
+- [ ] Netdata MCP: obtain Netdata MCP API key and wire it for sensitive `execute_function` calls (systemd-journal, processes).
+- [ ] Verify Netdata dashboard serves pages at :19999 after switch (see mistakes.md 2026-11-03 Netdata entry).

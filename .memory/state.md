@@ -133,30 +133,34 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 
 **Waydroid — Android container (2026-08-21, fully operational, GAPPS):** Session + container RUNNING, DHCP lease obtained, GAPPS images (system 2462.4M, vendor 535.5M). Persistence: `/var/lib/waydroid` and `~/.local/share/waydroid` both bind-mounted from `/persist`; `~/.Android`/`~/.android` symlinked to `~/Storage/`. tmpfs root stable at 3% (down from 100% before persistence — mistakes.md #13). Device registered for Play Store certification at google.com/android/uncertified; propagation in progress. Plain `waydroid` package in use, not `waydroid-nftables` (removed 2026-08-21 — was shadowing the system package on PATH, mistakes.md 2026-08-21 entry). **Structural ceiling:** hardware-backed (STRONG-tier) attestation apps (payment, banking, anti-cheat) cannot run under Waydroid — no TEE in a Linux container; not fixable (decisions.md #34). Full setup narrative archived (see archive_entries).
 
-## 10. MCP Gateway Backends and Remote Services (2026-08-24)
+### Status and Restart
 
-* **Status:** 11 backends live, 109 tools total, plus ripwire (added 2026-11-03). Gateway auto-loads backend configs from `~/.config/mcp-gateway/gateway.yaml` at startup; backends are read once per gateway launch.
-* **Backend list (2026-08-24):**
-  - **Cloudflare:** cloudflare-builds (6 tools, OAuth to your Builds dashboard), cloudflare-docs (2 tools, static)
-  - **External APIs:** gsc (Google Search Console, 8 tools, service-account auth verified 2026-08-24), github (44 tools, PAT auth), context7 (2 tools)
-  - **Content tools:** markitdown (1 tool, local), open-websearch (6 tools, free Brave API)
-  - **Utilities:** filesystem (14 tools, local), noctalia MCP shim (8 tools, stdio, not via gateway)
-  - **Playwright:** browser automation (23 tools via managed service, requires auth)
-  - **Code tools (2026-11-03):** ripwire (per-call `path` argument; no Nix grammar, for non-Nix repos such as memd, volinit, tweakcc). Gateway entry must be `ripwire --mcp`; bare `ripwire` is the CLI and exits, causing `Backend timeout: ripwire`.
-* **Code-tools gotcha (2026-11-03):** `gateway_list_servers` reports tools_count 0 for backends added by hot-reload until their tools are listed. This is a stale counter, not a failure.
-* **Gateway config backup (2026-11-03):** `~/.config/mcp-gateway/gateway.yaml.bak.pre-codetools-20261103`.
+- 14 backends configured in `~/.config/mcp-gateway/gateway.yaml`: 11 previously live, ripwire (2026-11-03), netdata and chrome-devtools (added 2026-11-03).
+- Gateway reads backend configs once per launch; no hot-reload (SIGHUP has no effect). Restart: `systemctl --user restart mcp-gateway`. netdata and chrome-devtools load on the next restart.
+- Backups: `~/.config/mcp-gateway/gateway.yaml.bak.pre-netdata-cdm-20261103` (pre-2026-11-03 edit); `gateway.yaml.bak.pre-codetools-20261103`.
+- Backend sourcing rule: decisions.md #62.
 
-* **GSC Integration (2026-08-24 — Live and Verified):**
-  - Service account: `cache-poor-blogs@dogwood-envoy-506516-e3.iam.gserviceaccount.com`
-  - Properties connected: `sc-domain:infernalcode.com` (siteFullUser), `sc-domain:hotelevangelism.blog` (siteFullUser)
-  - Tools available: `list_sites`, `search_analytics`, `index_inspect`, `list_sitemaps`, `get_sitemaps_report`, `list_crawl_issues`, `get_crawl_issue_report`, `detect_quick_wins`
-  - Verification complete: `list_sites` returns both properties, `search_analytics` queries return real data, `index_inspect` confirms pages indexed and crawled
-  - **Important:** Search analytics data in memory is NOT maintained — it stales rapidly. Use `gsc/search_analytics` at query time for fresh data. Refresh as needed; do not restate cached measurements. Benchmark: infernalcode.com 868 impressions / 5 clicks (2026-07-25 to 2026-08-21, all from wiki), hotelevangelism.blog 5 impressions / 0 clicks (indexed 2026-08-19, page 2 position 2).
-  - **Opportunity identified:** infernalcode.com `/desktop/noctalia/` has 701 impressions at position 9.29 with 0.43% CTR (should be ~1.5-2.5% at that position). Title/meta-description rewrite could yield 3-4× more clicks without ranking change.
+### Backend List (2026-08-24, updated 2026-11-03)
+- **Cloudflare:** cloudflare-builds (6 tools, OAuth to Builds dashboard), cloudflare-docs (2 tools, static)
+- **External APIs:** gsc (Google Search Console, 8 tools, service-account auth), github (44 tools, PAT auth), context7 (2 tools)
+- **Content tools:** markitdown (1 tool, local), open-websearch (6 tools, free Brave API)
+- **Utilities:** filesystem (14 tools, local), noctalia MCP shim (8 tools, stdio, not via gateway)
+- **Playwright:** browser automation (23 tools via managed service, requires auth)
+- **Code tools:** ripwire (per-call `path` argument; no Nix grammar, for non-Nix repos such as memd, volinit, tweakcc). Gateway entry must be `ripwire --mcp`; bare `ripwire` is the CLI and exits, causing `Backend timeout: ripwire`.
+- **Observability:** netdata (agent's own `/mcp` endpoint, `http_url`). Sensitive `execute_function` targets (systemd-journal, processes) need a Netdata MCP API key; not wired.
+- **Browser:** chrome-devtools (`chrome-devtools-mcp-nix` wrapper).
+- Code-tools gotcha: `gateway_list_servers` reports tools_count 0 for hot-reload-added backends until tools are listed. Stale counter, not failure.
 
-* **Hot-reload behavior:** Gateway does not hot-reload backend configs (SIGHUP has no effect; confirmed via prior Sentry dashboard offline during config test). Restart required: `systemctl --user restart mcp-gateway`.
+### GSC Integration (2026-08-24, Live and Verified)
+- Service account: `cache-poor-blogs@dogwood-envoy-506516-e3.iam.gserviceaccount.com`
+- Properties: `sc-domain:infernalcode.com` (siteFullUser), `sc-domain:hotelevangelism.blog` (siteFullUser)
+- Tools: `list_sites`, `search_analytics`, `index_inspect`, `list_sitemaps`, `get_sitemaps_report`, `list_crawl_issues`, `get_crawl_issue_report`, `detect_quick_wins`
+- Search analytics are NOT cached in memory (stale rapidly). Query `gsc/search_analytics` at query time.
+- Opportunity: infernalcode.com `/desktop/noctalia/` has high impressions at position ~9 with CTR well below expected for that position. Title/meta-description rewrite is the lever.
 
-* **Outstanding security item:** GitHub PAT in `~/.config/systemd/user/mcp-gateway.service` is plaintext (should move to sops secrets once gateway supports `sops-nix` credential injection — currently not implemented).
+### Hot-Reload and Security
+- Restart required for any backend config change (see Status).
+- Outstanding: GitHub PAT in `~/.config/systemd/user/mcp-gateway.service` is plaintext. Move to sops secrets once gateway supports `sops-nix` credential injection (not implemented).
 
 ## 11. Flake Templates — Five Language Scaffolds
 
@@ -259,3 +263,9 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - Ledger seeded 2026-11-03 with every fixin through 2026-10-28.
 - Removed: `scripts/wikifixin-drift.py`, its PostToolUse hook in `.claude/settings.local.json`, and the wiki's `.drift-pending` queue.
 - Not yet drained at 2026-11-03: `2026-11-02-code-tree.md`, `persist-storage-pool-migration.md`, `2026-11-03-wiki-sync.md`.
+## 23. Netdata Monitoring Dashboard — Web UI Build (2026-11-03)
+
+- `monitoring.nix` (2026-10-29) runs Netdata on :19999.
+- Web dashboard enabled via `package = pkgs.netdata.override { withCloudUi = true; }`. nixpkgs default `withCloudUi = false` disables the dashboard and serves API only (every page 404).
+- Cloud UI build is unfree (NCUL1): built locally, not substituted from cache.
+- Netdata MCP wiring: see §10 (netdata backend); API key for sensitive functions outstanding (todo.md).
