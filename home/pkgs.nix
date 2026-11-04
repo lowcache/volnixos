@@ -185,6 +185,7 @@
           # @modelcontextprotocol/servers monorepo and each ships dist/lib.js).
           # Dropping it lets filesystem in at normal priority, no lib.lowPrio needed.
           mcp-server-filesystem
+          ripwire
           open-websearch
           mcp-server-fetch
           thunderbird-cli-tools # tb, tb-bridge, tb-mcp (thunderbird-cli skill)

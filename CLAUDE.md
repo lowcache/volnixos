@@ -172,7 +172,7 @@ Write new memory only through `.memory/inbox/` using dated notes. Do not manuall
 
 Prefer extending the gateway over creating standalone MCP servers when functionality belongs in the shared tool layer.
 
-Current gateway integrations include NixOS, GitHub, MarkItDown, Playwright, context7, web search/fetch, and sequential thinking.
+Current gateway integrations include NixOS, GitHub, MarkItDown, Playwright, context7, web search/fetch, filesystem, and ripwire (code navigation for non-Nix repos; must run as `ripwire --mcp`). context-mode and codebase-memory-mcp were tried and dropped (2026-11-03): context-mode needs Claude Code hooks to be useful and its `ctx_execute` bypasses Bash permissions; codebase-memory duplicates ripwire, writes its index to tmpfs `~/.cache`, and serves a loopback UI.
 
 The Noctalia Claude MCP configuration is an explicit exception.
 
