@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-11-02
+last_updated: 2026-11-03
 status: active
 ---
 
@@ -622,3 +622,13 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Path rule for legacy memory:** `~/CodeRepo/<x>` → `~/Code/lowcache/<x>`; infernalbits repos → `~/Code/infernalbits/<x>`. Earlier entries (e.g. #18) referencing `~/CodeRepo` are read through this rule.
 * **Rules out:** new repos under `~/CodeRepo`, `~/Projects`, or `~/unDevel`; persisting any dev path other than `~/Code`.
 * **Migration:** one-shot script `~/Storage/tmp/code-migrate/migrate.sh apply|post`, run with Claude closed. Backup of Projects/unDevel retained at `~/Storage/org-stash` until user deletes it.
+## 60. Wiki Sync — Sonnet via claude -p, Local Commit + Wrangler Deploy, No Push (2026-11-03)
+
+* **Decision (2026-11-03, user):** `docs/wikifixins` is drained automatically by `wiki-sync` (see state.md §22). Model is Sonnet via `claude -p --model sonnet`.
+* **Rules out:** Gemini/agy and Opus as the wiki-sync model. Any automated `git push` from wiki-sync; the user owns pushes. The pipeline commits locally and deploys with wrangler.
+* **Gate:** Sandboxed agent may only edit `./content/**`. The script verifies only `content/` changed before committing.
+## 61. Gateway Code-Tool Backends — ripwire Only (2026-11-03)
+
+* **Decision (2026-11-03, user-approved):** Of the three code-tool backends added to mcp-gateway on 2026-11-03, keep only ripwire (`ripwire --mcp`, for non-Nix repos).
+* **Rationale:** codebase-memory-mcp duplicates ripwire, ignores XDG_CACHE_HOME (index lands on tmpfs `~/.cache`; `CBM_CACHE_DIR` exists), and serves a loopback UI on 127.0.0.1:9749 by default (anon uid can reach loopback). context-mode needs Claude Code hooks to be useful (opt-in only behind the gateway), its `ctx_execute` runs arbitrary code past Bash permissions and RTK, and `ctx_upgrade` pushes npm upgrades over the nix package. nixpkgs `fastcrw` `crw mcp` downloads a nightly LightPanda binary from GitHub at start, so it is not usable as packaged (nixpkgs rev 7fd4004).
+* **Rules out:** re-adding codebase-memory-mcp or context-mode to gateway.yaml; running `fastcrw`'s `crw mcp` as packaged; bare `ripwire` as a gateway entry.

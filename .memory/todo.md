@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-11-02
+last_updated: 2026-11-03
 status: active
 ---
 
@@ -476,3 +476,9 @@ Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM
 - [ ] Update `home/persist.nix` to persist only `~/Code` (drop `~/CodeRepo`, `~/Projects`, `~/unDevel`).
 - [ ] User: delete `~/Storage/org-stash` backup when satisfied.
 - [ ] User: prune/archive lowcache GitHub repos with no local clone via web UI.
+### wiki-sync — First Live Drain Verification (2026-11-03)
+
+- [ ] Confirm the path unit fires on a new file in `docs/wikifixins` and the 90 s quiet window is honored.
+- [ ] Confirm the three pending fixins (`2026-11-02-code-tree.md`, `persist-storage-pool-migration.md`, `2026-11-03-wiki-sync.md`) are processed into `wiki-sync/<ts>` commits.
+- [ ] Confirm `make deploy` succeeds and wiki main fast-forwards with no push.
+- [ ] Confirm already-seeded fixins (through 2026-10-28) are skipped by the ledger.

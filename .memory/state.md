@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-11-02
+last_updated: 2026-11-03
 status: active
 ---
 
@@ -135,14 +135,17 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 
 ## 10. MCP Gateway Backends and Remote Services (2026-08-24)
 
-* **Status:** 11 backends live, 109 tools total. Gateway auto-loads backend configs from `~/.config/mcp-gateway/gateway.yaml` at startup; backends are read once per gateway launch.
+* **Status:** 11 backends live, 109 tools total, plus ripwire (added 2026-11-03). Gateway auto-loads backend configs from `~/.config/mcp-gateway/gateway.yaml` at startup; backends are read once per gateway launch.
 * **Backend list (2026-08-24):**
   - **Cloudflare:** cloudflare-builds (6 tools, OAuth to your Builds dashboard), cloudflare-docs (2 tools, static)
   - **External APIs:** gsc (Google Search Console, 8 tools, service-account auth verified 2026-08-24), github (44 tools, PAT auth), context7 (2 tools)
   - **Content tools:** markitdown (1 tool, local), open-websearch (6 tools, free Brave API)
   - **Utilities:** filesystem (14 tools, local), noctalia MCP shim (8 tools, stdio, not via gateway)
   - **Playwright:** browser automation (23 tools via managed service, requires auth)
-  
+  - **Code tools (2026-11-03):** ripwire (per-call `path` argument; no Nix grammar, for non-Nix repos such as memd, volinit, tweakcc). Gateway entry must be `ripwire --mcp`; bare `ripwire` is the CLI and exits, causing `Backend timeout: ripwire`.
+* **Code-tools gotcha (2026-11-03):** `gateway_list_servers` reports tools_count 0 for backends added by hot-reload until their tools are listed. This is a stale counter, not a failure.
+* **Gateway config backup (2026-11-03):** `~/.config/mcp-gateway/gateway.yaml.bak.pre-codetools-20261103`.
+
 * **GSC Integration (2026-08-24 — Live and Verified):**
   - Service account: `cache-poor-blogs@dogwood-envoy-506516-e3.iam.gserviceaccount.com`
   - Properties connected: `sc-domain:infernalcode.com` (siteFullUser), `sc-domain:hotelevangelism.blog` (siteFullUser)
@@ -154,6 +157,7 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 * **Hot-reload behavior:** Gateway does not hot-reload backend configs (SIGHUP has no effect; confirmed via prior Sentry dashboard offline during config test). Restart required: `systemctl --user restart mcp-gateway`.
 
 * **Outstanding security item:** GitHub PAT in `~/.config/systemd/user/mcp-gateway.service` is plaintext (should move to sops secrets once gateway supports `sops-nix` credential injection — currently not implemented).
+
 ## 11. Flake Templates — Five Language Scaffolds
 
 * **Location:** `.nix-config/templates/{ruby,hugo,python,go,lua,luau}`. Each is a complete project mold.
@@ -245,3 +249,13 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - Backup of former Projects/unDevel: `~/Storage/org-stash` (kept until user deletes it).
 - Lowcache GitHub repos with no local clone are not cloned; user prunes/archives via web UI.
 - Path rule for legacy references: `~/CodeRepo/<x>` → `~/Code/lowcache/<x>`; infernalbits repos → `~/Code/infernalbits/<x>`.
+## 22. Wiki Sync Pipeline — docs/wikifixins Auto-Drain (2026-11-03)
+
+- Implemented in `home/wiki-sync.nix` + `home/wiki-sync.sh`. A user path unit (PathChanged on `docs/wikifixins`) starts a oneshot service that waits 90 s of quiet.
+- Pending = fixin files whose sha256+name is not in the wiki repo's committed `.wikifixins-applied` ledger.
+- Each pending batch runs `claude -p --model sonnet` in a wiki worktree on branch `wiki-sync/<ts>` (worktree root `~/Storage/tmp/wiki-sync`), then `make build`, local commit, `make deploy` (wrangler, sops `cloudflare_api_token`, verify), then fast-forward wiki main. Never pushes.
+- Wiki repo: `~/Code/lowcache/hugo.web/wiki.infernalcode`.
+- Agent sandbox: `--setting-sources project`, `--strict-mcp-config`, `dontAsk`, Edit/Write limited to `./content/**`, no Bash, Read denied on `/run`, `~/.ssh`, `~/.config`, `~/.claude`. The script re-checks that only `content/` changed.
+- Ledger seeded 2026-11-03 with every fixin through 2026-10-28.
+- Removed: `scripts/wikifixin-drift.py`, its PostToolUse hook in `.claude/settings.local.json`, and the wiki's `.drift-pending` queue.
+- Not yet drained at 2026-11-03: `2026-11-02-code-tree.md`, `persist-storage-pool-migration.md`, `2026-11-03-wiki-sync.md`.
