@@ -1,6 +1,6 @@
 # /persist + Storage → single LVM pool (migration plan)
 
-Status: **design, not executed.** Reinstall-class change. Nothing here touches disks until the pre-flight gates pass. Layout decided (2026-10-29): **single LV** — one encrypted `/persist`, `~/Storage` as a subdir. Two-LV variant was considered and rejected (wanted shared free space + encrypt-everything over an unencrypted-Storage split).
+Status: **executed 2026-10-31; this is volnix's current layout.** Verified live 2026-11-04: VG `vgpersist` / LV `lvpersist` (753.9G) → LUKS `cryptpersist` → ext4 `PERSIST` on `/persist`, `~/Storage` bound from `/persist/storage`. Kernel names: the whole-disk PV is `nvme0n1p1`; BOOT/NIX/PV p3 are on `nvme1n1` (enumeration order, not vendor). Document it as the current state; the pre-flight and procedure sections are history. Layout decided (2026-10-29): **single LV** — one encrypted `/persist`, `~/Storage` as a subdir. Two-LV variant was considered and rejected (wanted shared free space + encrypt-everything over an unencrypted-Storage split).
 
 ## Goal
 

@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-11-03
+last_updated: 2026-11-04
 status: active
 ---
 
@@ -638,3 +638,8 @@ This file catalogs the active, canonical design decisions and system configurati
 * **User rule:** Discard any MCP server that is paywalled; build our own equivalent instead.
 * **Applied 2026-11-03:** netdata (agent's own `/mcp`, `http_url`) and chrome-devtools (`chrome-devtools-mcp-nix` wrapper) added to the gateway.
 * **Rules out:** adding paywalled MCP servers to the gateway.
+## 63. Telemetry Opt-Out — DISABLE_TELEMETRY + DO_NOT_TRACK, Not NONESSENTIAL_TRAFFIC (2026-11-04)
+
+* **Decision (2026-11-04):** Telemetry is disabled via `DISABLE_TELEMETRY=1` and `DO_NOT_TRACK=1`, set in the shared `sessionVariables` in `home/default.nix` (applies to home and systemd user). Superpowers' visual-companion logo ping honours `DISABLE_TELEMETRY`.
+* **Rules out:** `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`. In claude-code 2.1.296 it also disables Artifact publishing, file uploads, claude.ai plugin archive downloads, Projects, DesignSync, built-in `gh api`, session tunnels, `/bug`, and `/feedback` (found by grepping the binary).
+* **Rationale:** Telemetry opt-out must not break user-facing features. The narrower pair suppresses telemetry only.

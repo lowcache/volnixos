@@ -140,8 +140,9 @@
         property — a client that picks fresh guards on every boot is more
         exposed to guard-discovery attacks, and also pays a full consensus
         download (tens of seconds) before it can carry traffic. Persisting buys
-        both back. The cost is that /persist is unencrypted, so the guard set and
-        its timestamps are recoverable from the disk: evidence of when this host
+        both back. The cost is that the guard set and its timestamps sit on
+        /persist: LUKS protects them at rest, but anyone who can unlock the disk
+        can recover them, which is evidence of when this host
         used Tor, though not of what it reached. No workload or application state
         is kept here — only Tor's own operational state.
       '';

@@ -67,7 +67,7 @@ Invariant: an anonymous workload either traverses net-gate in a verified-ready s
 
 * Host side (`anonymous-mode/default.nix`): `anon-jail` gives the anon uid a per-uid routing table with a blackhole default (armed at boot, never auto-released); `anon-routing` points it at net-gate; `anon-check` runs the L0–L4 readiness ladder and only L4 writes the stamp that releases workloads; `anon-watch` (timer) re-verifies and seals on loss. `anonymous.target` is the arm/disarm handle.
 * net-gate terminates Tor: nftables (`table ip anon-gateway`) redirects into TransPort/DNSPort per client source, forward policy drop, no forwarding. Two legs: host tap and `br-anon`.
-* anon-box: workstation guest on `br-anon` only. The host holds no address on that bridge; entry is over vsock (`anon-shell`). Started by `anonymous.target` after the ladder passes. `/in` is a host-side read-only bind, `/out` is `~/Storage/anon/out` (unencrypted volume).
+* anon-box: workstation guest on `br-anon` only. The host holds no address on that bridge; entry is over vsock (`anon-shell`). Started by `anonymous.target` after the ladder passes. `/in` is a host-side read-only bind, `/out` is `~/Storage/anon/out` (on the LUKS `/persist` pool since the 2026-10-31 merge).
 * Operate with `make anon-status | anon-arm | anon-selftest | anon-logs | anon-guest-logs | anon-box-rebuild`. User entry points: `anon-run`, `anon-shell`, `tor-curl`, `tor-brave`.
 
 ## NVIDIA / Ollama
