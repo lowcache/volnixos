@@ -57,6 +57,7 @@ in
     ./mcp-gateway.nix
     ./thunderbird-bridge.nix
     ./wiki-sync.nix
+    ./2nd-brain.nix
     ./shell.nix
     inputs.memd.homeManagerModules.default
   ];

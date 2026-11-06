@@ -1,5 +1,25 @@
 {
   "nodes": {
+    "brain": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793958767,
+        "narHash": "sha256-zz2+AXyROSPy85BUNeXnoh5VO/fnRTmBzVTVWf8gsGM=",
+        "owner": "lowcache",
+        "repo": "2nd-brain",
+        "rev": "eb9511a08e187e8d575698fe89919a3332be637a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lowcache",
+        "repo": "2nd-brain",
+        "type": "github"
+      }
+    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -486,6 +506,7 @@
     },
     "root": {
       "inputs": {
+        "brain": "brain",
         "home-manager": "home-manager",
         "home-manager-droid": "home-manager-droid",
         "impermanence": "impermanence",

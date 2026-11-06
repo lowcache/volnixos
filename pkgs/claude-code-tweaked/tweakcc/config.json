@@ -1,7 +1,7 @@
 {
   "ccVersion": "2.1.296",
   "ccInstallationPath": null,
-  "lastModified": "2026-10-15T12:43:47.525Z",
+  "lastModified": "2026-11-06T04:11:06.142Z",
   "changesApplied": false,
   "settings": {
     "themes": [
@@ -1006,21 +1006,20 @@
       ]
     },
     "thinkingStyle": {
-      "updateInterval": 125,
+      "updateInterval": 150,
       "phases": [
-        "∙∙∙",
-        "●∙∙",
-        "∙●∙",
-        "∙∙●",
-        "∙∙∙"
+        "╪",
+        "╫"
       ],
-      "reverseMirror": true
+      "reverseMirror": false
     },
     "userMessageDisplay": {
-      "format": " > {} ",
-      "styling": [],
+      "format": " ||: {}",
+      "styling": [
+        "bold"
+      ],
       "foregroundColor": "default",
-      "backgroundColor": null,
+      "backgroundColor": "default",
       "borderStyle": "none",
       "borderColor": "rgb(255,255,255)",
       "paddingX": 0,
@@ -1038,19 +1037,19 @@
       "expandThinkingBlocks": true,
       "enableConversationTitle": true,
       "hideStartupBanner": false,
-      "hideCtrlGToEdit": false,
+      "hideCtrlGToEdit": true,
       "hideStartupClawd": false,
       "increaseFileReadLimit": true,
       "suppressLineNumbers": false,
       "suppressRateLimitOptions": false,
       "suppressRateLimitWarning": false,
-      "mcpConnectionNonBlocking": false,
-      "mcpServerBatchSize": null,
+      "mcpConnectionNonBlocking": true,
+      "mcpServerBatchSize": 5,
       "statuslineThrottleMs": null,
       "statuslineUseFixedInterval": false,
       "tableFormat": "default",
       "enableSwarmMode": true,
-      "enableSessionMemory": false,
+      "enableSessionMemory": true,
       "enableRememberSkill": false,
       "tokenCountRounding": null,
       "autoAcceptPlanMode": false,
@@ -1065,13 +1064,13 @@
       "enableVoiceMode": false,
       "enableVoiceConciseOutput": true,
       "enableChannelsMode": false,
-      "disableCtrlZSuspend": false,
-      "skipSkillShellValidation": false,
+      "disableCtrlZSuspend": true,
+      "skipSkillShellValidation": true,
       "preventUpdateToUnsupportedVersions": false,
       "webFetchUserAgent": null,
       "shimmer": {
         "enabled": true,
-        "stepMs": null,
+        "stepMs": 225,
         "width": null
       }
     },

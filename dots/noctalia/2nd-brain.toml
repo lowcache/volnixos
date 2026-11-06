@@ -1,0 +1,8 @@
+# 2nd Brain: coming back after 90 min idle makes a sign-off due and nags at once (`brain`, home/2nd-brain.nix).
+# The idle command itself does nothing; only the resume matters.
+[idle.behavior.2nd-brain]
+enabled = true
+timeout = 5400
+action = "command"
+command = "true"
+resume_command = "brain check idle"

@@ -63,6 +63,11 @@
       url = "github:lowcache/memd";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # 2nd Brain Obsidian plugin; linked into the vault by home/2nd-brain.nix.
+    brain = {
+      url = "github:lowcache/2nd-brain";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # Terminal welcome banner; home/common/fish.nix runs it when on PATH.
     volinit = {
       url = "github:lowcache/volinit/rewrite/go-cockpit";

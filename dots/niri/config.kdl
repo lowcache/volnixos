@@ -142,6 +142,7 @@ binds {
     Mod+C            { spawn-sh "~/.config/niri/scripts/launch_first_available.sh antigravity code vscodium cursor zed kate gnome-text-editor emacs"; } // Code editor
     Mod+X            { spawn-sh "~/.config/niri/scripts/launch_first_available.sh kate gedit emacs"; } // Text editor
     Mod+I            { spawn-sh "noctalia msg settings-open"; } // Noctalia settings
+    Mod+B            { spawn "brain" "capture"; } // 2nd Brain: capture to Interesting/ (prefills a copied link; home/2nd-brain.nix)
     Mod+Ctrl+V       { spawn-sh "~/.config/niri/scripts/launch_first_available.sh pavucontrol-qt pavucontrol"; } // Volume mixer
     Ctrl+Shift+Escape { spawn-sh "~/.config/niri/scripts/launch_first_available.sh gnome-system-monitor 'kitty -1 fish -c btop'"; } // Task manager
 

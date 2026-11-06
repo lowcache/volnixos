@@ -152,6 +152,14 @@ Agent access to Thunderbird mail through nixpkgs `thunderbird-cli` 1.1.0. The ch
 * On failure the worktree and branch are kept, a desktop notification names them, and the wiki's `main` is not advanced (a failed build never deploys).
 * Manual: `wiki-sync status`, `wiki-sync --dry-run` (agent + build, no commit/deploy, keeps the worktree), `wiki-sync seed [fixin.md…]` (mark applied without running). Logs: `journalctl --user -u wiki-sync`.
 
+## 2nd Brain (`brain`)
+
+`home/2nd-brain.nix` + `home/2nd-brain.sh`. The Obsidian plugin is the `brain` flake input (`github:lowcache/2nd-brain`); its `main.js`, `manifest.json` and `styles.css` are linked one by one into the `programs.obsidian` vault's `.obsidian/plugins/2nd-brain/`, so `data.json` stays writable. Plugin changes ship as push → `nix flake update brain` → switch.
+
+* `brain capture` (niri `Mod+B`) focuses Obsidian and opens the capture box, passing a copied link only if it is a single http(s) URL. `brain open` reveals the home view.
+* `brain-check.timer` runs `brain check` every 5 min of uptime: a wall-clock gap over 30 min (login, resume) or 8 h since the last sign-off marks a sign-off due; while due and unsigned it nags every 20 min (detached `notify-send` with an Open action). Returning after 90 min idle runs `brain check idle` from `dots/noctalia/2nd-brain.toml`. State: `~/.local/state/2nd-brain` (deliberately not persisted; a reboot counts as login). Sign-off state comes from the vault's `.brain/gate.json`.
+* This repo is public: personal collector settings live only in the vault's plugin `data.json`, never here.
+
 ## Memory — memd
 
 `.memory/` is curated by `memd`.

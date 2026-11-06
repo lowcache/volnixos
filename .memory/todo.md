@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-11-03
+last_updated: 2026-11-06
 status: active
 ---
 
@@ -487,3 +487,7 @@ Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM
 - [ ] Restart gateway: `systemctl --user restart mcp-gateway`; confirm netdata and chrome-devtools connect (`gateway_list_servers`; tools_count 0 may be stale until tools are listed).
 - [ ] Netdata MCP: obtain Netdata MCP API key and wire it for sensitive `execute_function` calls (systemd-journal, processes).
 - [ ] Verify Netdata dashboard serves pages at :19999 after switch (see mistakes.md 2026-11-03 Netdata entry).
+### 2nd Brain Activation — First Switch (2026-11-06)
+
+- [ ] Remove hand-made symlinks in the vault's plugin folder (they point to the plugin checkout) before the first `make switch`; otherwise home-manager reports the files would be clobbered.
+- [ ] First `make switch` to activate the 2nd Brain modules (`home/2nd-brain.nix`, `brain-check.timer`, Mod+B capture bind).

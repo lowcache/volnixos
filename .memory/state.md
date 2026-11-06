@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-11-03
+last_updated: 2026-11-06
 status: active
 ---
 
@@ -269,3 +269,10 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - Web dashboard enabled via `package = pkgs.netdata.override { withCloudUi = true; }`. nixpkgs default `withCloudUi = false` disables the dashboard and serves API only (every page 404).
 - Cloud UI build is unfree (NCUL1): built locally, not substituted from cache.
 - Netdata MCP wiring: see §10 (netdata backend); API key for sensitive functions outstanding (todo.md).
+## 24. 2nd Brain — `brain` Command, Idle Capture, Niri Mod+B (2026-11-06)
+
+- Flake input `brain` = `github:lowcache/2nd-brain` (follows nixpkgs). Modules: `home/2nd-brain.nix`; script `home/2nd-brain.sh` provides the `brain` command; `brain-check.timer` runs the check.
+- Idle resume command: `dots/noctalia/2nd-brain.toml`.
+- niri `Mod+B` runs `brain capture`. The untracked `dots/niri/scripts/brain-capture.sh` was removed.
+- Gotcha: `.gitignore` pattern `[Ss]cripts` ignores all of `dots/niri/scripts/`; scripts there are never versioned.
+- Privacy: this repo is public. 2nd Brain personal settings live only in the vault's plugin `data.json`, never in this repo.
