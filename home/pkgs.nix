@@ -166,6 +166,8 @@
           zenity
           playerctl
           brightnessctl
+          gitlab
+          git-remote-gcrypt
           gawk
           acpi
           ddcutil

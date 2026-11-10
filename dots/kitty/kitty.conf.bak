@@ -52,13 +52,14 @@ active_tab_font_style   bold
 # inactive_tab_background #0f111a
 # tab_bar_background      #0f111a
 
-include current.conf
+# current.conf dropped: it was the dormant color-engine's output, and every key
+# it set (background/foreground/cursor/selection) is re-set by themes/noctalia.conf below.
 
 
 
 
 # BEGIN_KITTY_FONTS
-font_family      family="Borgen"
+font_family      family="Droid Sans Mono Slashed for Powerline"
 bold_font        auto
 italic_font      auto
 bold_italic_font auto

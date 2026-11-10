@@ -79,10 +79,16 @@ in
     vaults.brain.target = "Documents/Brain";
   };
 
-  services.memd = {
-    enable = true;
-    installClaudeHooks = true;
-    sweep.interval = "30min";
+  services = {
+    memd = {
+      enable = true;
+      installClaudeHooks = true;
+      sweep.interval = "30min";
+    };
+    gpg-agent = {
+      enable = true;
+      pinentry.package = pkgs.pinentry-qt;
+    };
   };
 
   home = {

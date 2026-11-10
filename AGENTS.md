@@ -25,7 +25,7 @@ Documentation: `https://volnixos-wiki.pgs.sh`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-All Nix work goes through the `nixtastic` skill (your agent's skills directory (Claude: `~/.claude/skills/nixtastic`, Gemini: `~/.gemini/skills/nixtastic`); source and `nix run .#install` in `~/Code/lowcache/allnix-skills`). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper.
+All Nix work goes through the `nixtastic` skill (your agent's skills directory (Claude: `~/.claude/skills/nixtastic`, Gemini: `~/.gemini/skills/nixtastic`); source and `nix run .#install` in `~/Code/ORGs/cacheflow/lowcache/allnix-skills`). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper.
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 
@@ -82,7 +82,7 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 ## volinit
 
 Removed from the flake inputs (2026-10-03) while it is overhauled into a cockpit-style menu/TUI;
-an in-progress push would otherwise break the whole flake. Local checkout: `/home/lowcache/Code/lowcache/volinit`.
+an in-progress push would otherwise break the whole flake. Local checkout: `/home/lowcache/Code/ORGs/cacheflow/lowcache/volinit`.
 
 To re-add when finished: restore the `volinit` input in `flake.nix` and
 `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/pkgs.nix`

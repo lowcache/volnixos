@@ -12,7 +12,7 @@
 let
   home = config.home.homeDirectory;
   fixinsDir = "${home}/.nix-config/docs/wikifixins";
-  wikiDir = "${home}/Code/lowcache/hugo.web/wiki.infernalcode";
+  wikiDir = "${home}/Code/ORGs/cacheflow/lowcache/hugo.web/wiki.infernalcode";
 
   wiki-sync = pkgs.writeShellApplication {
     name = "wiki-sync";

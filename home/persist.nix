@@ -76,7 +76,7 @@ in
       };
       # claude-companion pulse adapter; it finds pulse-emit beside its real path.
       ".omo/agent/extensions/pulse.js" = {
-        source = mkOutOfStoreSymlink "${home}/Code/lowcache/noctalia-plugs/noctalia-claude-plugin/hooks/omo-pulse.js";
+        source = mkOutOfStoreSymlink "${home}/Code/ORGs/cacheflow/lowcache/noctalia-plugs/noctalia-claude-plugin/hooks/omo-pulse.js";
         force = true;
       };
     };

@@ -24,6 +24,10 @@ let
       secret = "gh_token";
       wrap = pkgs.gh;
     };
+    GITLAB_TOKEN = {
+      secret = "gitlab_token";
+      wrap = pkgs.glab;
+    };
     # Write token for volnixos.cachix.org (pushing locally built kernels).
     CACHIX_AUTH_TOKEN = {
       secret = "cachix_auth_token";

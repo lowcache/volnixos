@@ -267,7 +267,7 @@ in
   # the user profile already on the service PATH below.
   home.file = {
     ".local/bin/tether" = {
-      source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/Code/lowcache/tether/bin/tether";
+      source = config.lib.file.mkOutOfStoreSymlink "/persist${config.home.homeDirectory}/Code/ORGs/cacheflow/lowcache/tether/bin/tether";
       force = true;
     };
   };

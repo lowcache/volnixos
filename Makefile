@@ -34,7 +34,7 @@ SOPS_VM_FILE      ?= nixos/vm-secrets.yaml
 SOPS_AGE_KEY_FILE ?= $(HOME)/.config/sops/age/keys.txt
 
 # --- Documentation site ---
-# The wiki is its own repo now (~/Code/lowcache/sites/blogs/wiki), alongside the other
+# The wiki is its own repo now (~/Code/ORGs/cacheflow/lowcache/hugo.web/wiki.infernalcode), alongside the other
 # sites. Its serve/build/deploy targets live in that repo's Makefile. The `docs`
 # and `site` entries here were symlinks into it and have been removed, along
 # with the duplicated mkdocs.yml and wrangler.toml.
@@ -501,8 +501,8 @@ dots-pull:
 # ==============================================================================
 # Documentation Wiki
 # ==============================================================================
-# Moved out. The wiki is a standalone repo at ~/Code/lowcache/sites/blogs/wiki with its own
+# Moved out. The wiki is a standalone repo at ~/Code/ORGs/cacheflow/lowcache/hugo.web/wiki.infernalcode with its own
 # Makefile:
-#   make -C ~/Code/lowcache/sites/blogs/wiki serve       # live preview
-#   make -C ~/Code/lowcache/sites/blogs/wiki build       # strict build to ./site
-#   make -C ~/Code/lowcache/sites/blogs/wiki deploy-cf   # publish to Cloudflare
+#   make -C ~/Code/ORGs/cacheflow/lowcache/hugo.web/wiki.infernalcode serve       # live preview
+#   make -C ~/Code/ORGs/cacheflow/lowcache/hugo.web/wiki.infernalcode build       # strict build to ./site
+#   make -C ~/Code/ORGs/cacheflow/lowcache/hugo.web/wiki.infernalcode deploy      # publish to Cloudflare

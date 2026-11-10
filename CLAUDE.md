@@ -26,7 +26,7 @@ Wiki: `https://wiki.infernalcode.com`
 
 Never invent Nix options, attributes, packages, or dependency schemas. Verify them with the available `mcp-nixos` tools before modifying configuration.
 
-All Nix work goes through the `nixtastic` skill (`/nixtastic`; installed at `~/.claude/skills/nixtastic` and `~/.gemini/skills/nixtastic` from the source repo `~/Code/lowcache/allnix-skills` via `nix run .#install`; edit the repo, never the installed copies). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper (`gate`, `build`, `drv`, `recall`, …). `/nixtastic review [path]` runs a maintainability review. It is the only Nix skill; option/package lookups go through the gateway's mcp-nixos backend, and Nix LSP diagnostics come from the `nix-lsp` plugin (nixd).
+All Nix work goes through the `nixtastic` skill (`/nixtastic`; installed at `~/.claude/skills/nixtastic` and `~/.gemini/skills/nixtastic` from the source repo `~/Code/ORGs/cacheflow/lowcache/allnix-skills` via `nix run .#install`; edit the repo, never the installed copies). It routes by task to domain references, carries the volnixos profile (`references/volnixos.md`), and ships the `scripts/nixops.py` helper (`gate`, `build`, `drv`, `recall`, …). `/nixtastic review [path]` runs a maintainability review. It is the only Nix skill; option/package lookups go through the gateway's mcp-nixos backend, and Nix LSP diagnostics come from the `nix-lsp` plugin (nixd).
 
 Preserve the existing modular architecture. Keep changes declarative, hermetic, and flake-based. Avoid `nix-env` unless explicitly required.
 
@@ -96,7 +96,7 @@ The repository's Makefile sets the rebuild `TMPDIR` to `~/Storage/tmp`; preserve
 
 ## volinit
 
-Terminal banner, tracked from the `rewrite/go-cockpit` branch while it is overhauled into a cockpit-style TUI (local checkout: `/home/lowcache/Code/lowcache/volinit`). Wired as the `volinit` flake input and `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/shell.nix`; the fish greeting guards on `command -v volinit`. If a WIP push breaks evaluation, drop both lines rather than pinning around it.
+Terminal banner, tracked from the `rewrite/go-cockpit` branch while it is overhauled into a cockpit-style TUI (local checkout: `/home/lowcache/Code/ORGs/cacheflow/lowcache/volinit`). Wired as the `volinit` flake input and `inputs.volinit.packages.${pkgs.stdenv.hostPlatform.system}.default` in `home/shell.nix`; the fish greeting guards on `command -v volinit`. If a WIP push breaks evaluation, drop both lines rather than pinning around it.
 
 ## Claude Code + tweakcc
 
@@ -145,7 +145,7 @@ Agent access to Thunderbird mail through nixpkgs `thunderbird-cli` 1.1.0. The ch
 
 ## Wiki sync (`wiki-sync`)
 
-`home/wiki-sync.nix` + `home/wiki-sync.sh`. A user path unit watches `docs/wikifixins`; on change, `wiki-sync.service` waits for 90 s of quiet, then for each pending fixin: snapshots it, runs `claude -p --model sonnet` in a fresh worktree of the wiki (`~/Code/lowcache/hugo.web/wiki.infernalcode`, branch `wiki-sync/<ts>` under `~/Storage/tmp/wiki-sync`), gates on the wiki's `make build`, commits, `make deploy` (wrangler + sops `cloudflare_api_token` + verify), then fast-forwards the wiki's `main`. It never pushes; push the wiki yourself.
+`home/wiki-sync.nix` + `home/wiki-sync.sh`. A user path unit watches `docs/wikifixins`; on change, `wiki-sync.service` waits for 90 s of quiet, then for each pending fixin: snapshots it, runs `claude -p --model sonnet` in a fresh worktree of the wiki (`~/Code/ORGs/cacheflow/lowcache/hugo.web/wiki.infernalcode`, branch `wiki-sync/<ts>` under `~/Storage/tmp/wiki-sync`), gates on the wiki's `make build`, commits, `make deploy` (wrangler + sops `cloudflare_api_token` + verify), then fast-forwards the wiki's `main`. It never pushes; push the wiki yourself.
 
 * Pending = `"<sha256>  <name>"` not in the wiki's committed `.wikifixins-applied` ledger, so editing an applied fixin re-queues it. The folder's `CLAUDE.md` is skipped.
 * The agent may edit only `content/` (permission rules + a post-check) and reports `FIXIN <name> applied|already|deferred`; deferred notes (config not there yet) stay pending.

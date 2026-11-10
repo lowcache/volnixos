@@ -11,7 +11,7 @@
     },
     "noctalia": {
       "command": "python3",
-      "args": ["/home/lowcache/Code/lowcache/noctalia-plugs/noctalia-claude-plugin/shim/noctalia-mcp.py"]
+      "args": ["/home/lowcache/Code/ORGs/cacheflow/lowcache/noctalia-plugs/noctalia-claude-plugin/shim/noctalia-mcp.py"]
     }
   }
 }

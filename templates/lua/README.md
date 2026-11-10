@@ -3,7 +3,7 @@
 Run these **in your project directory** -- this template is a mold you stamp
 copies from, never a place to work:
 
-    cd ~/Code/lowcache/my-project
+    cd ~/Code/ORGs/cacheflow/lowcache/my-project
     nix flake init -t ~/.nix-config#lua
     direnv allow
 
