@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-11-06
+last_updated: 2026-11-09
 status: active
 ---
 
@@ -20,14 +20,6 @@ status: active
 - [ ] Interactive on-canvas text tool (GUI, not engine) — human verification pending (~10 min)
 
 ### Audio Module — Implemented, Built, Awaiting Activation (2026-08-25)
-
-### Audio Module — Activated (2026-09-24, Partial)
-
-✓ Audio module built and activated via `make switch` (2026-09-24)
-✓ Speaker mute issue discovered and fixed (codec hardware mute bit was set)
-✓ Sound now emitting from onboard Realtek ALC256 speakers
-✓ Module live in current generation; parked-card rules applied
-- [ ] **Investigate headphone jack-sense detection failure:** jack-sense reports "not available" even when headphones are physically inserted. Possible causes: (1) missing `cctl set` command for jack-detect kcontrol, (2) BIOS ACPI DSDT issue, (3) kernel driver config mismatch. Test procedure: check ALSA jack kcontrols (`amixer -c 2 scontents | grep -i jack`), verify jack-detect enabled, check dmesg for jack events on insertion. Deferred, low priority.
 
 ## IN PROGRESS / AWAITING ACTION
 
@@ -63,22 +55,9 @@ status: active
 
 ### Backport Discovery Mechanism to claude-companion Plugin (2026-09-06 — Load-Bearing)
 
-**Context:** The luau template now uses runtime discovery of `*.luau` files via `builtins.readDir`. Controlled testing showed this prevents undeclared-reference bugs that hardcoded file lists miss (false negatives). The source plugin flake.nix still uses the old nine-file hardcoded list and is thus vulnerable.
+**Context:** The luau template uses runtime discovery of `*.luau` files via `builtins.readDir` (decisions.md #40). The plugin flake still used a hardcoded nine-file list, which allows undeclared-reference false negatives.
 
-**Implication:** Any new plugin functions added to the plugin could silently have missing declarations (gate passes, plugin breaks at runtime). This is the exact failure mode the plugin flake's own comments acknowledge.
-
-- [ ] Open `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/flake.nix` (path corrected 2026-10-02; `~/CodeRepo/claude-companion/` no longer exists on disk)
-- [ ] Replace hardcoded `luauFiles` string with discovery logic from `templates/luau/flake.nix`
-- [ ] Test: run `nix flake check` on the plugin repo; verify all gates pass
-- [ ] Commit to the noctalia-plugs repo
-
-### Audio Module Activation (2026-08-25 — LIVE, PARTIAL)
-
-✓ Audio module built and activated via `make switch` (2026-09-24)
-✓ Speaker mute issue discovered and fixed (codec hardware mute bit was set)
-✓ Sound now emitting from onboard Realtek ALC256 speakers
-✓ Module live in current generation; parked-card rules applied
-- [ ] **Investigate headphone jack-sense detection failure:** jack-sense reports "not available" even when headphones are physically inserted. Possible causes: (1) missing `cctl set` command for jack-detect kcontrol, (2) BIOS ACPI DSDT issue, (3) kernel driver config mismatch. Test procedure: check ALSA jack kcontrols (`amixer -c 2 scontents | grep -i jack`), verify jack-detect enabled, check dmesg for jack events on insertion. Deferred, low priority.
+- [ ] Replace hardcoded `luauFiles` string in `~/CodeRepo/noctalia-plugs/noctalia-claude-plugin/flake.nix` with discovery logic from `templates/luau/flake.nix`
 
 ### Plugin Attribution — Email Drafted, PR Staged (2026-08-25)
 

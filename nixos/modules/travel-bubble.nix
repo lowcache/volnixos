@@ -96,8 +96,13 @@ in
     systemd.services.vol-bubble = {
       description = "Travel bubble: Wi-Fi AP via the Panhandler";
       after = [ "NetworkManager.service" ];
+      # The cable can lease before NM has wlp4s0 ready at boot ("No suitable device"); retry, bounded.
+      startLimitIntervalSec = 120;
+      startLimitBurst = 10;
       serviceConfig = {
         Type = "simple";
+        Restart = "on-failure";
+        RestartSec = 5;
         ExecStartPre = [
           # User hint: survives cfg80211's restore-to-WORLD when the STA link drops.
           "${pkgs.iw}/bin/iw reg set ${cfg.country}"
