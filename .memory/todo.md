@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-11-09
+last_updated: 2026-11-12
 status: active
 ---
 
@@ -470,3 +470,23 @@ Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM
 
 - [ ] Remove hand-made symlinks in the vault's plugin folder (they point to the plugin checkout) before the first `make switch`; otherwise home-manager reports the files would be clobbered.
 - [ ] First `make switch` to activate the 2nd Brain modules (`home/2nd-brain.nix`, `brain-check.timer`, Mod+B capture bind).
+### Travel Bubble — Cold-Boot Start Verification (2026-11-11)
+
+- [ ] Commit the `travel-bubble.nix` Restart=on-failure change (uncommitted in `.nix-config`).
+- [ ] Cold-boot test: confirm `vol-bubble` comes up without manual start when enp3s0 leases before wlp4s0 is ready. Manual start after the failure succeeded, which confirms the race (2026-11-11).
+### HDMI-A-1 / dGPU — Verify cardwire-drm-replay (2026-11-12)
+
+- [ ] Confirm niri holds card1 with the monitor attached across AC→Hybrid without a manual trigger.
+- [ ] After unplug and cardwire re-block, verify `/sys/bus/pci/devices/0000:01:00.0/power/runtime_status` reaches suspended.
+- [ ] Identify the cause of the dGPU D0↔D3cold cycling (~22 s) seen before niri holds card1 (cardwire log).
+- [ ] Next step after the above: scrcpy `--new-display` phone-as-display on HDMI-A-1.
+
+### Shevery Phone Agent — adb TCP 5555 Re-establishment After Reboot (2026-11-12)
+
+- [ ] Determine what re-establishes `adb tcpip 5555` after a phone reboot now that the Automate Shizuku persistence script is retired (Shevery built-in re-init is assumed, unconfirmed).
+### Phone Desktop on HDMI-A-1 — Open Items (2026-11-12)
+
+- [ ] Decide Noctalia per-monitor `layer = "top"` override for bar/datetime on HDMI-A-1 (proposed, unanswered).
+- [ ] Assess HDMI scale 1.25 sharpness on HDMI-A-1.
+- [ ] Capture evidence for phone fingerprint prompt flicker before diagnosing (no fprintd on laptop; issue observed on phone).
+- [ ] Deferred: ATWM fork for the primary-display limit (clone at `~/Storage/tmp/atwm`); only if DeX + 4Zones proves insufficient.

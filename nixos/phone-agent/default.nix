@@ -23,6 +23,7 @@ in
     ./proximity.nix
     ./network-routing.nix
     ./push.nix
+    ./display.nix
   ];
 
   options.phone-agent = {

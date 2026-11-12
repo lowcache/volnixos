@@ -80,6 +80,8 @@ Preserve:
 
 Do not introduce persistent processes that continuously poll or hold `/dev/nvidia*`; GPU idle power behavior and battery consumption depend on this architecture.
 
+`HDMI-A-1` is wired to the dGPU (`card1`). `cardwired` blocks that card on battery, and niri only discovers cards at startup or on udev `add`, so `cardwire-drm-replay` (`nixos/modules/services.nix`) replays `add` whenever cardwired unblocks a GPU.
+
 ## Rebuild Safety
 
 Do not casually switch the live system from an interactive graphical session.
@@ -113,7 +115,8 @@ Host side of the Galaxy S26 Ultra MCP integration, `nixos/phone-agent/` (`phone-
 * `phone-agent` CLI (system package) calls phone tools; Claude Code reaches the server via `.claude/.mcp.json` (`${PHONE_AGENT_TOKEN}`).
 * User units, gated on `phone-agent.user`: ingest sync (timer) + watcher into `~/ingest`, proximity lock (lock only, no unlock), network-routing profile from modem state.
 * Push server (`enablePush`): read-only, token-gated, bound to the tailscale tap; the guest forwards tailnet `:pushPort` to it, so laptop→phone transfer stays phone-initiated.
-* adb TCP 5555 on the phone stays open deliberately (phone-agent + Automate/Shizuku); do not "clean it up".
+* Phone display (`enableDisplay`, `display.nix`): user unit `phone-display` runs `scrcpy --new-display` (DeX on One UI 8+) while the phone is on USB and `HDMI-A-1` is connected; the niri window rule (title `phone-display`) in `dots/niri/config.kdl` puts it fullscreen there. Unplug ends it. `displayArgs` swaps the window manager (`--no-vd-system-decorations --start-app=<pkg>`).
+* adb TCP 5555 on the phone stays open deliberately (phone-agent; Shizuku is the self-reinitialising Shevery fork, the Automate persistence script is retired); do not "clean it up".
 
 ## Google Drive (`gd`)
 

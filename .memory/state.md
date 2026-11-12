@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-11-06
+last_updated: 2026-11-12
 status: active
 ---
 
@@ -200,7 +200,7 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - Module: `nixos/modules/travel-bubble.nix`, enabled as `vol.travel-bubble` in `nixos/hosts/volnix.nix`. wlp4s0 = AP, enp3s0 = uplink.
 - NM profile `vol-bubble`: AP, 5 GHz ch36, WPA2-CCMP, shared 10.74.0.1/24, autoconnect=false. SSID/PSK come from host-secrets.yaml keys `bubble_ssid`/`bubble_psk` via sops template `vol-bubble.env`.
 - Clients get DNS 10.73.0.1 (Pi blocky) via `/etc/NetworkManager/dnsmasq-shared.d`.
-- Lifecycle: NM dispatcher starts `vol-bubble.service` when enp3s0 leases with DHCP4_DHCP_SERVER_IDENTIFIER=10.73.0.1, and stops it when enp3s0 goes down. The service holds the AP up and a systemd-inhibit (lid/sleep/idle) for its lifetime.
+- Lifecycle: NM dispatcher starts `vol-bubble.service` when enp3s0 leases with DHCP4_DHCP_SERVER_IDENTIFIER=10.73.0.1, and stops it when enp3s0 goes down. The service holds the AP up and a systemd-inhibit (lid/sleep/idle) for its lifetime. Unit has Restart=on-failure, RestartSec=5, startLimitIntervalSec=120, startLimitBurst=10 (uncommitted in `.nix-config` as of 2026-11-11). The dispatcher event is one-shot, so a unit that fails before wlp4s0 is ready otherwise stays down while NM autoconnects the hotel profile. Cold-boot effect not yet observed.
 - Firewall: wlp4s0 input allows udp 53/67 and tcp 53 only. Chain `vol-bubble-fwd` in FORWARD matches 10.74.0.0/24, not wlp4s0. Bubble to Pi DNS only; bubble to enp3s0 plus replies; all other bubble traffic dropped (fail-closed). See decisions.md #52.
 - Hardware: RTL8852BE (rtw89, firmware rtw8852b 0.29.29.18). Driver accepts AP mode; combos #channels<=1, so AP and STA cannot run off-channel concurrently. US regdomain; ch36 has no NO-IR flag. Kernel regdomain is not yet pinned in config (todo.md).
 - Status (2026-10-19): AP on air and working. Phone associated on 5 GHz ch36 (lease 10.74.0.40, -25 dBm, ~1.5 MB traffic). AP visible at signal 100 on 2.4 GHz ch6 to the Pi scanner. DNS reaches Pi blocky (BLOCKED responses seen). Uplink reachability and drop of all other bubble traffic not yet verified.
@@ -276,3 +276,23 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - niri `Mod+B` runs `brain capture`. The untracked `dots/niri/scripts/brain-capture.sh` was removed.
 - Gotcha: `.gitignore` pattern `[Ss]cripts` ignores all of `dots/niri/scripts/`; scripts there are never versioned.
 - Privacy: this repo is public. 2nd Brain personal settings live only in the vault's plugin `data.json`, never in this repo.
+## 25. HDMI-A-1 (NVIDIA card1) Hotplug — cardwire-drm-replay (2026-11-12)
+
+- HDMI-A-1 is wired to the NVIDIA dGPU (card1, PCI 0000:01:00.0).
+- cardwire 0.12.3 `battery_auto_switch` on battery sets Integrated and blocks card1 via eBPF/LSM. cardwire emits only a D-Bus `Block` PropertiesChanged on unblock and no DRM uevent. niri/smithay enumerate DRM cards at startup and on udev `add` only, so card1 is missed on AC→Hybrid.
+- System unit `cardwire-drm-replay` (nixos services.nix): `gdbus monitor` on cardwire; on `'Block': <false>` resolves PCI via Gpu.GetDevice and runs `udevadm trigger --action=add` on that card. Repeat adds are no-ops (smithay UdevBackend dedupes known devnums).
+- Manual equivalent: `sudo udevadm trigger --action=add --subsystem-match=drm --sysname-match=card1`.
+- dGPU cycles D0↔D3cold roughly every 22 s before niri holds it (cardwire log). Cause unknown.
+
+## 26. Phone Agent — Shevery (Shizuku fork), adb TCP 5555 (2026-11-12)
+
+- Phone runs Shevery (Shizuku fork) with built-in re-initialisation. The Automate-driven Shizuku persistence script is retired.
+- adb TCP 5555 remains open for phone-agent. The mechanism that re-establishes `adb tcpip 5555` after a phone reboot is unconfirmed.
+- CLAUDE.md Phone agent section reflects this.
+## 27. Phone Desktop on HDMI-A-1 — scrcpy Virtual Display (2026-11-12)
+
+- Module: `nixos/phone-agent/display.nix`, option `phone-agent.enableDisplay`. Built into config; built script live-tested (DeX on virtual display, window fullscreen on HDMI-A-1).
+- niri rule: window title `phone-display` → fullscreen on HDMI-A-1. Match on title because scrcpy app-id is `.scrcpy-wrapped` (Nix wrapper).
+- scrcpy `--new-display` on S26 Ultra (One UI, Android 17) starts DeX (`com.honeyspace.dexservice.SecondaryLauncher`). `--no-vd-system-decorations` suppresses DeX so another WM can own the display.
+- Phone has 4Zones installed via adb: `uk.mr_biz.fourzones` 0.9.1-beta (sha256 verified).
+- Unresolved: Noctalia per-monitor `layer = "top"` override for bar/datetime on HDMI-A-1 (proposed, unanswered); HDMI scale 1.25 sharpness; phone fingerprint prompt flicker (no evidence captured).

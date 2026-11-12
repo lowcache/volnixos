@@ -1,7 +1,35 @@
 # Small service toggles with no cross-module coupling. The heavier services
 # (Ollama, Open WebUI) live in ai-stack.nix; the graphical session in
 # desktop.nix.
+{ config, pkgs, ... }:
 {
+  # niri enumerates DRM cards only at startup and on udev "add". A dGPU that
+  # cardwired blocked at login (battery) stays invisible after unblocking, and
+  # with it every dGPU-wired output (HDMI-A-1). Replay "add" on each unblock;
+  # smithay ignores adds for cards it already holds.
+  systemd.services.cardwire-drm-replay = {
+    description = "Replay DRM add uevents when cardwired unblocks a GPU";
+    after = [ "cardwired.service" ];
+    bindsTo = [ "cardwired.service" ];
+    wantedBy = [ "cardwired.service" ];
+    path = [
+      pkgs.glib.bin
+      config.systemd.package
+    ];
+    script = ''
+      gdbus monitor --system --dest org.opengamingcollective.cardwire |
+        while read -r obj rest; do
+          [[ $rest == *"'Block': <false>"* ]] || continue
+          pci=$(busctl --system call org.opengamingcollective.cardwire "''${obj%:}" \
+            org.opengamingcollective.cardwire.Gpu GetDevice | cut -d'"' -f4)
+          for card in /sys/bus/pci/devices/"$pci"/drm/card*; do
+            [[ -e $card ]] && udevadm trigger --action=add "$card"
+          done
+        done
+    '';
+    serviceConfig.Restart = "on-failure";
+  };
+
   services = {
     # Vial keyboard configurator: unprivileged hidraw access for Vial-enabled
     # keyboards (matched by the vial:f64c2b3c magic in the USB serial).

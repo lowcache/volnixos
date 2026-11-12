@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-11-03
+last_updated: 2026-11-12
 status: append-only
 ---
 
@@ -114,17 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-19 — Bubble AP Silent Due to Stuck Bluetooth State (Resolved)
-* **Symptom:** AP-ENABLED reported by NM/wpa_supplicant, but no beacons on air; Pi and phone did not see the AP.
-* **Root cause:** Laptop held a stuck A2DP link to earbuds sitting in their case; Bluetooth coexistence kept granting BT the airtime and AP beacons were starved. Supersedes the unconfirmed hypothesis in the 2026-10-19 entry above. Verified: BT power cycle cleared it; with earbuds streaming A2DP the AP stayed visible at signal 100 on 2.4 GHz ch6.
-* **Side effect:** The BT power cycle left user PipeWire unresponsive; logout did not restart it (user@ manager survived).
-* **Prevention rule:** After any BT power cycle on a bubble host, run `systemctl --user restart pipewire pipewire-pulse wireplumber`. Verify on-air with an independent receiver, as the prior entry requires.
-
-### 2026-10-19 — Third-Party Cache Kernel Re-pushed to volnixos Launders Provenance
-* **Symptom:** CI run 38455812732 copied the running kernel from the attic (later reported compromised) into the volnixos cache on 2026-10-13. The local signature shows volnixos only, so `nix path-info --sigs` hides the attic origin.
-* **Root cause:** CI copied store paths from a non-owned substituter into the trusted cache without recording origin or rebuilding them.
-* **Prevention rule:** Before pushing paths sourced from a non-owned cache into volnixos, record the origin and verify by local rebuild (`nix build --rebuild`). Remove a substituter's key from nix-settings and CI NIX_CONFIG as soon as its trust fails.
-
 ### 2026-10-19 — Local Overlay `gd` Shadowed nixpkgs libgd
 * **Symptom:** Toplevel build planned ~3100 drvs (graphviz, texlive, android-studio, perl GD...) and failed in perl5.42.3-GD-2.86. CI/gate stayed green because `checks.gd` only builds the script.
 * **Root cause:** Adding `gd = final.callPackage ./gd/package.nix {}` to `pkgs/default.nix` overrode `pkgs.gd` (libgd), so every libgd consumer received the shell script.
@@ -154,3 +143,13 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** :19999 answered but every web page returned 404; only the API responded.
 * **Root cause:** nixpkgs `netdata` defaults `withCloudUi = false`, which disables the dashboard (cloud UI is NCUL1 unfree), so the build ships without pages.
 * **Prevention rule:** When enabling a web UI, set the package flag explicitly (`pkgs.netdata.override { withCloudUi = true; }`) and verify a UI page returns HTTP 200, not just that the port answers. The unfree override builds locally; expect no substitution.
+
+### 2026-11-11 — vol-bubble Boot Race: Dispatcher-Started Unit Failed Once, Not Retried
+* **Symptom:** After boot the laptop joined the hotel Wi-Fi ('Quality Suites') instead of broadcasting the bubble. `vol-bubble.service` failed 8 s after boot with 'nmcli connection up vol-bubble' returning 'No suitable device found'.
+* **Root cause:** enp3s0 leased from the Pi before wlp4s0 was ready, so the NM dispatcher started the unit too early. The unit had no Restart=, and the dispatcher fires only on enp3s0 up/dhcp4-change, so it stayed failed. NM then autoconnected wlp4s0 to the hotel profile.
+* **Prevention rule:** A unit started by an NM dispatcher event is one-shot. Give it its own retry policy (Restart=on-failure with a start-limit) and verify with a cold boot, not only a manual start.
+
+### 2026-11-12 — HDMI-A-1 Invisible to niri After Battery Login (cardwire Block)
+* **Symptom:** HDMI-A-1 shows `connected` in sysfs but is absent from `niri msg outputs`.
+* **Root cause:** HDMI-A-1 is on the NVIDIA card (card1). Logging in on battery, cardwire's `battery_auto_switch` set Integrated and its eBPF/LSM block denied niri access to card1 (`tried to access GPU 1 (blocked by cardwire)`). niri/smithay enumerate DRM only at startup and on udev `add`. cardwire 0.12.3 emits only a D-Bus `Block` change on unblock, so the AC→Hybrid switch never surfaced card1.
+* **Prevention rule:** Any cardwire unblock must be followed by an explicit udev `add` for the affected card (handled by `cardwire-drm-replay`). Verify display output after AC/battery transitions, not only after login.

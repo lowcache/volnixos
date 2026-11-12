@@ -124,5 +124,6 @@
     # ~/push, the laptop never pushes unsolicited. Needs the :8463 forwardPorts
     # entry in vms.nix to be reachable from the tailnet.
     enablePush = true;
+    enableDisplay = true;
   };
 }

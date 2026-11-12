@@ -20,6 +20,7 @@ let
     # Expanded by .claude/.mcp.json and OmO's mcp.json; claude is self-installed
     # in ~/.local/bin, ahead of anything a Nix wrapper could put on PATH.
     PHONE_AGENT_TOKEN.secret = "phone_agent_token";
+    CLAUDE_CODE_OAUTH_TOKEN.secret = "claude_code_oauth_token";
     GH_TOKEN = {
       secret = "gh_token";
       wrap = pkgs.gh;

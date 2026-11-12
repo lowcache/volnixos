@@ -325,6 +325,14 @@ binds {
     Mod+Shift+M      { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; } // == XF86AudioMute
 }
 
+// Phone desktop (DeX) from the phone-display user service; title and output
+// must match nixos/phone-agent/display.nix.
+window-rule {
+    match title="^phone-display$"
+    open-on-output "HDMI-A-1"
+    open-fullscreen true
+}
+
 include "noctalia.kdl"
 
 // Managed by the Noctalia cursor plugin - edits here are overwritten.

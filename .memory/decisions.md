@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-11-04
+last_updated: 2026-11-12
 status: active
 ---
 
@@ -643,3 +643,13 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Decision (2026-11-04):** Telemetry is disabled via `DISABLE_TELEMETRY=1` and `DO_NOT_TRACK=1`, set in the shared `sessionVariables` in `home/default.nix` (applies to home and systemd user). Superpowers' visual-companion logo ping honours `DISABLE_TELEMETRY`.
 * **Rules out:** `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC`. In claude-code 2.1.296 it also disables Artifact publishing, file uploads, claude.ai plugin archive downloads, Projects, DesignSync, built-in `gh api`, session tunnels, `/bug`, and `/feedback` (found by grepping the binary).
 * **Rationale:** Telemetry opt-out must not break user-facing features. The narrower pair suppresses telemetry only.
+## 64. HDMI-A-1 on dGPU — Replay DRM Add on cardwire Unblock (2026-11-12)
+
+* **Decision:** Keep cardwire as the GPU-block authority. Do not patch cardwire. A system unit `cardwire-drm-replay` watches cardwire's D-Bus `Block` property and replays a udev `add` for the card on `Block`→false.
+* **Rules out:** relying on the AC→Hybrid transition to surface card1 to niri; treating manual `udevadm trigger` as a recurring workaround.
+* **Rationale:** cardwire 0.12.3 does not emit the DRM uevent its code comment describes. smithay's UdevBackend dedupes known devnums, so replayed adds are harmless.
+## 65. Phone Desktop on HDMI — scrcpy Virtual Display with DeX + 4Zones (2026-11-12)
+
+* **Decision:** Show the phone desktop on HDMI-A-1 via scrcpy `--new-display` virtual display. Keep DeX as the display's launcher and tile windows with 4Zones (`uk.mr_biz.fourzones` 0.9.1-beta). niri fullscreens the scrcpy window by title `phone-display`.
+* **Rules out:** DroidOS (user dislikes its tiling). ATWM (i3-style, Apache-2.0) for now: v0.1.0 is hard-wired to the primary display (displayMetrics, unfiltered getTasks, overlays on default display). ATWM remains a fork candidate, not a dependency.
+* **Rationale:** DeX plus 4Zones works without forking a WM. `--no-vd-system-decorations` leaves the display free for another WM if DeX is later dropped.
