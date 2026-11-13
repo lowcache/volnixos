@@ -1,9 +1,9 @@
 // Managed by the Noctalia cursor plugin - edits here are overwritten.
 cursor {
-    xcursor-theme "dotclick"
+    xcursor-theme "Minimalist"
     xcursor-size 24
 }
 environment {
-    XCURSOR_THEME "dotclick"
+    XCURSOR_THEME "Minimalist"
     XCURSOR_SIZE "24"
 }

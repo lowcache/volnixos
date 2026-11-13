@@ -1,7 +1,19 @@
 # claude-code with tweakcc customizations baked in at build time.
 # Config: ./tweakcc (config.json + any system-prompts/*.md you edited); edit with `make tweakcc`.
-{ claude-code, tweakcc }:
-claude-code.overrideAttrs (old: {
+#
+# Pinned to claude-code 2.1.296: the newest version tweakcc 4.4.0 has
+# prompt data for (data/prompts/prompts-2.1.296.json). nixpkgs' claude-code
+# is currently 2.1.321, which tweakcc 4.4.0 does not support — postInstall
+# fails with `install: cannot stat .../prompts-2.1.321.json`.
+# Re-pin here (and update the manifest file) when tweakcc cuts a release
+# supporting a newer claude-code, or bump tweakcc to main.
+{ claude-code, tweakcc, lib }:
+let
+  pinnedClaudeCode = claude-code.override {
+    manifest = lib.importJSON ./manifest-2.1.296.zst.json;
+  };
+in
+pinnedClaudeCode.overrideAttrs (old: {
   pname = "claude-code-tweaked";
   nativeBuildInputs = old.nativeBuildInputs ++ [ tweakcc ];
 
