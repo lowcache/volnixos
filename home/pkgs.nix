@@ -206,7 +206,7 @@
           pkgs.llm-agents.freebuff
           pkgs.llm-agents.maki
           pkgs.llm-agents.nodecode
-          
+
         ];
         andronix = with pkgs; [
           scrcpy

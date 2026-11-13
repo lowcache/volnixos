@@ -57,28 +57,6 @@ in
         source = mkOutOfStoreSymlink "/persist${home}/.nix-config";
         force = true;
       };
-      # OmO extensions and MCP servers. force: these replaced hand-made copies.
-      ".omo/agent/mcp.json" = {
-        source = dot "omo/mcp.json";
-        force = true;
-      };
-      ".omo/agent/extensions/statusline.js" = {
-        source = dot "omo/statusline.js";
-        force = true;
-      };
-      ".omo/agent/extensions/memd.js" = {
-        source = dot "omo/memd.js";
-        force = true;
-      };
-      ".omo/agent/extensions/rtk.js" = {
-        source = dot "omo/rtk.js";
-        force = true;
-      };
-      # claude-companion pulse adapter; it finds pulse-emit beside its real path.
-      ".omo/agent/extensions/pulse.js" = {
-        source = mkOutOfStoreSymlink "${home}/Code/ORGs/cacheflow/lowcache/noctalia-plugs/noctalia-claude-plugin/hooks/omo-pulse.js";
-        force = true;
-      };
     };
     persistence."/persist" = {
       directories =
@@ -101,11 +79,13 @@ in
             ".foundry"
             ".ZAP"
             ".java"
+            # nodecode is a living organism in lisp one SBCL process with a gateway that
+            # stays runing in the background. it lives in ~/.nodecode thats its profile
+            # its generations  everything that it defines for itself
+            ".nodecode"
             # mcp-gateway runtime state (OAuth client ids + refresh tokens for remote
             # backends); unpersisted, every reboot forces re-authorization.
             ".mcp-gateway"
-            # OmO agent state: auth, sessions, memory repo, extensions.
-            ".omo"
           ];
           config = [
             ".config/dconf"
