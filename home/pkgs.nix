@@ -199,11 +199,14 @@
           pkgs.llm-agents.claude-desktop
           pkgs.llm-agents.ccstatusline
           claude-code-router
-          pkgs.llm-agents.claude-plugins
+          #pkgs.llm-agents.claude-plugins
           pkgs.llm-agents.cc-switch-cli
           pkgs.llm-agents.opencode
           # Testrunners
           pkgs.llm-agents.freebuff
+          pkgs.llm-agents.maki
+          pkgs.llm-agents.nodecode
+          
         ];
         andronix = with pkgs; [
           scrcpy

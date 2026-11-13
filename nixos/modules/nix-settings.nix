@@ -71,7 +71,8 @@
       allowUnfree = true;
       android_sdk.accept_license = true;
       permittedInsecurePackages = [
-        "pulsar-1.132.1"
+        "pulsar-1.133.1"
+        "python3.14-python-jose-3.5.0"
       ];
     };
   };

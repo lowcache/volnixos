@@ -6,7 +6,7 @@
 }:
 {
   boot = {
-    initrd.systemd.enable = true;
+    #iinitrd.systemd.enable = true;
     loader = {
       systemd-boot = {
         # lanzaboote replaces systemd-boot and needs it off.
