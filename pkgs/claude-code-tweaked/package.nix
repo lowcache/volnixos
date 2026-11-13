@@ -7,7 +7,11 @@
 # fails with `install: cannot stat .../prompts-2.1.321.json`.
 # Re-pin here (and update the manifest file) when tweakcc cuts a release
 # supporting a newer claude-code, or bump tweakcc to main.
-{ claude-code, tweakcc, lib }:
+{
+  claude-code,
+  tweakcc,
+  lib,
+}:
 let
   pinnedClaudeCode = claude-code.override {
     manifest = lib.importJSON ./manifest-2.1.296.zst.json;
