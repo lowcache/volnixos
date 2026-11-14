@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-11-12
+last_updated: 2026-11-13
 status: active
 ---
 
@@ -653,3 +653,9 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Decision:** Show the phone desktop on HDMI-A-1 via scrcpy `--new-display` virtual display. Keep DeX as the display's launcher and tile windows with 4Zones (`uk.mr_biz.fourzones` 0.9.1-beta). niri fullscreens the scrcpy window by title `phone-display`.
 * **Rules out:** DroidOS (user dislikes its tiling). ATWM (i3-style, Apache-2.0) for now: v0.1.0 is hard-wired to the primary display (displayMetrics, unfiltered getTasks, overlays on default display). ATWM remains a fork candidate, not a dependency.
 * **Rationale:** DeX plus 4Zones works without forking a WM. `--no-vd-system-decorations` leaves the display free for another WM if DeX is later dropped.
+## 66. nodecode — Local Release-Style Package Replaces llm-agents Overlay (2026-11-13)
+
+* **Decision (2026-11-13):** Package nodecode locally in `pkgs/nodecode/package.nix` (overlay `nodecode`, `home/pkgs.nix`) instead of using `pkgs.llm-agents.nodecode`.
+* **Why:** The llm-agents package (49704da, unchanged at 860075d) is broken. Its run-from-source wrapper never fetches the `nodecode-context` cell that `nodecode/bin` requires. It also passes argv to SBCL without `--end-toplevel-options`, so `nodecode --help` dies as a C runtime option. The recipe is vendored from upstream's own nix/package.nix, so upstream carries the same bugs.
+* **Rules out:** `pkgs.llm-agents.nodecode`. Wrapping the binary in a shell script, because the gateway systemd units bake the resolved path and bypass any wrapper. Shipping `src/fasl` in the store output (store mtimes are 1970, so ASDF treats shipped fasls as stale and tries to recompile into the read-only store).
+* **Constraints:** Keep `dontStrip`/`dontPatchELF`. Keep `resources/` beside `src/`. Keep the cells pin tied to bundle.json. Keep the build step that deletes `src/fasl` after the compile-cells gate.

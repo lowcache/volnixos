@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-11-12
+last_updated: 2026-11-13
 status: append-only
 ---
 
@@ -114,16 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-19 — Local Overlay `gd` Shadowed nixpkgs libgd
-* **Symptom:** Toplevel build planned ~3100 drvs (graphviz, texlive, android-studio, perl GD...) and failed in perl5.42.3-GD-2.86. CI/gate stayed green because `checks.gd` only builds the script.
-* **Root cause:** Adding `gd = final.callPackage ./gd/package.nix {}` to `pkgs/default.nix` overrode `pkgs.gd` (libgd), so every libgd consumer received the shell script.
-* **Prevention rule:** Before adding an overlay attr, `nix eval nixpkgs#<name>.name` must fail (`pkgs/default.nix` claims new names only). A gate that builds only the new package does not catch shadowing; build the toplevel and read the closure diff (`nixops.py build`).
-
-### 2026-10-23 — Passphrase Slot Killed While Stick Was Sole Second Factor
-* **Symptom:** At boot, /persist unlock accepted only the recovery key; the stick+chord path and the passphrase were both unavailable.
-* **Root cause:** `08-kill-slot.sh` removed the passphrase slot on purpose after the stick gate was built. The stick was later discarded, leaving no key factor except the recovery key.
-* **Prevention rule:** Before killing a LUKS keyslot, verify the remaining unlock path end-to-end with the factor that will remain. Do not dispose of a keyslot factor (stick) until a replacement unlock path is enrolled and tested.
-
 ### 2026-10-23 — thunderbird-cli Packages Collide in buildEnv
 * **Symptom:** A buildEnv combining the three thunderbird-cli packages (tb, tb-bridge, tb-mcp) conflicts.
 * **Root cause:** All three ship `lib/node_modules/thunderbird-cli` with differing content.
@@ -153,3 +143,13 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** HDMI-A-1 shows `connected` in sysfs but is absent from `niri msg outputs`.
 * **Root cause:** HDMI-A-1 is on the NVIDIA card (card1). Logging in on battery, cardwire's `battery_auto_switch` set Integrated and its eBPF/LSM block denied niri access to card1 (`tried to access GPU 1 (blocked by cardwire)`). niri/smithay enumerate DRM only at startup and on udev `add`. cardwire 0.12.3 emits only a D-Bus `Block` change on unblock, so the AC→Hybrid switch never surfaced card1.
 * **Prevention rule:** Any cardwire unblock must be followed by an explicit udev `add` for the affected card (handled by `cardwire-drm-replay`). Verify display output after AC/battery transitions, not only after login.
+
+### 2026-11-13 — llm-agents nodecode Wrapper Broken: Missing Cells and SBCL argv
+* **Symptom:** `nodecode --help` dies as a C runtime option. The gateway cannot load the `nodecode-context` cell.
+* **Root cause:** `pkgs.llm-agents.nodecode`'s run-from-source wrapper never fetches the `nodecode-context` cell (nodecode-ai/cells) that `nodecode/bin` requires. It passes argv to SBCL without `--end-toplevel-options`. The vendored recipe carries the same bugs as upstream.
+* **Prevention rule:** Do not use `pkgs.llm-agents.nodecode`. Use the local `pkgs/nodecode` package, and keep its cells rev aligned with bundle.json.
+
+### 2026-11-13 — nodecode Gateway Cells Fail Read-Only: Shipped Fasls Stale by Store mtime
+* **Symptom:** `cell nodecode-mcp: FAILED Error opening …/lib/nodecode/src/fasl/mcp/package-tmp….fasl: Read-only file system` in `nodecode-gateway.service`.
+* **Root cause:** Nix sets store mtimes to 1970, older than the ASDF action stamps the dumped image recorded at build time. Every shipped fasl looked stale, so ASDF recompiled into `src/fasl` (chosen because the directory exists), which lives in the read-only store.
+* **Prevention rule:** Do not ship `src/fasl` in the nodecode store output. Keep the build step that compiles cells as a gate (compile-cells.sh), then deletes `src/fasl`, so cells compile once at runtime into XDG_CACHE_HOME.

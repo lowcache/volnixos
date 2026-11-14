@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-11-12
+last_updated: 2026-11-13
 status: active
 ---
 
@@ -296,3 +296,14 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - scrcpy `--new-display` on S26 Ultra (One UI, Android 17) starts DeX (`com.honeyspace.dexservice.SecondaryLauncher`). `--no-vd-system-decorations` suppresses DeX so another WM can own the display.
 - Phone has 4Zones installed via adb: `uk.mr_biz.fourzones` 0.9.1-beta (sha256 verified).
 - Unresolved: Noctalia per-monitor `layer = "top"` override for bar/datetime on HDMI-A-1 (proposed, unanswered); HDMI scale 1.25 sharpness; phone fingerprint prompt flicker (no evidence captured).
+## 28. nodecode — Local Release-Style Package (2026-11-13)
+
+- Package: `pkgs/nodecode/package.nix`; overlay `nodecode`; flake output `packages.x86_64-linux.nodecode`; installed via `home/pkgs.nix`. Replaces `pkgs.llm-agents.nodecode` (broken; see mistakes.md 2026-11-13).
+- Mirrors upstream `just release` + pack.sh: `nodecode-context` cells fetched at the rev pinned in bundle.json (build fails if `cellsSrc.rev` drifts from bundle.json); dump via program-op into `$out/lib/nodecode/`.
+- Build runs upstream compile-cells.sh as a gate (its trial score gates the build), then deletes `$out/lib/nodecode/src/fasl`. No shipped fasls: Nix store mtimes are 1970, older than the ASDF action stamps in the dumped image, so every shipped fasl read as stale and recompiled into the read-only `src/fasl` (failed at runtime with "Read-only file system"). Cells compile at runtime into XDG_CACHE_HOME instead.
+- Fasl fix not yet activated (needs `make switch`; see todo.md).
+- Built with stock nixpkgs SBCL 2.6.9.
+- No wrapper. The binary locates `src/` beside its resolved path and bakes that path into `nodecode gateway on` systemd units. `resources/` must sit beside `src/` (theme.lisp reads it at compile time).
+- `dontStrip` and `dontPatchELF` are load-bearing (core is appended to the ELF). The build patchelfs a copy of the SBCL runtime with a RUNPATH and dumps on that copy, because the image reopens libssl/libsqlite3 by soname at start.
+- Runtime state: `~/.nodecode` (persisted). Warm image (~660 MB) under XDG_CACHE_HOME (`~/Storage/.cache`). Self-update auto-disables (no installer `current` link).
+- Bumping: update both revs and hashes, then rerun the build.

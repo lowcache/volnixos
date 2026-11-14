@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-11-12
+last_updated: 2026-11-13
 status: active
 ---
 
@@ -490,3 +490,10 @@ Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM
 - [ ] Assess HDMI scale 1.25 sharpness on HDMI-A-1.
 - [ ] Capture evidence for phone fingerprint prompt flicker before diagnosing (no fprintd on laptop; issue observed on phone).
 - [ ] Deferred: ATWM fork for the primary-display limit (clone at `~/Storage/tmp/atwm`); only if DeX + 4Zones proves insufficient.
+### nodecode Upstream Bug Report (2026-11-13)
+
+- [ ] File upstream issue for the llm-agents nodecode wrapper bugs (missing `nodecode-context` cell fetch; missing `--end-toplevel-options`). No issue filed yet as of 2026-11-13. Target: nodecode-ai/nodecode and llm-agents.nix.
+### nodecode Fasl Fix — Activate and Verify (2026-11-13)
+
+- [ ] `make switch` to activate the `pkgs/nodecode` build change that deletes `src/fasl` (fix verified with `nodecode trial` against a scratch home: old build score 0, new build score 1).
+- [ ] Verify `nodecode-gateway.service` cells load with no "Read-only file system" error after activation.
