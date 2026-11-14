@@ -205,7 +205,7 @@
           # Testrunners
           pkgs.llm-agents.freebuff
           pkgs.llm-agents.maki
-          pkgs.llm-agents.nodecode
+          nodecode # pkgs/nodecode: release-style build; llm-agents one is broken
 
         ];
         andronix = with pkgs; [

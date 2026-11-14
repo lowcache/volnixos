@@ -202,7 +202,12 @@
           self.nixosConfigurations.volnix.config.microvm.vms.net-gate.config.config.microvm.declaredRunner;
         tailscale-vm =
           self.nixosConfigurations.volnix.config.microvm.vms.tailscale.config.config.microvm.declaredRunner;
-        inherit (self.nixosConfigurations.volnix.pkgs) tweakcc claude-code-tweaked gd-drive;
+        inherit (self.nixosConfigurations.volnix.pkgs)
+          tweakcc
+          claude-code-tweaked
+          gd-drive
+          nodecode
+          ;
       };
 
       # Reusable project scaffolds: `nix flake init -t ~/.nix-config#ruby`.

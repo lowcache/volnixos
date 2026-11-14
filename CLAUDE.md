@@ -118,6 +118,15 @@ Host side of the Galaxy S26 Ultra MCP integration, `nixos/phone-agent/` (`phone-
 * Phone display (`enableDisplay`, `display.nix`): user unit `phone-display` runs `scrcpy --new-display` (DeX on One UI 8+) while the phone is on USB and `HDMI-A-1` is connected; the niri window rule (title `phone-display`) in `dots/niri/config.kdl` puts it fullscreen there. Unplug ends it. `displayArgs` swaps the window manager (`--no-vd-system-decorations --start-app=<pkg>`).
 * adb TCP 5555 on the phone stays open deliberately (phone-agent; Shizuku is the self-reinitialising Shevery fork, the Automate persistence script is retired); do not "clean it up".
 
+## nodecode
+
+`nodecode` is `pkgs/nodecode/` (overlay name `nodecode`), not `pkgs.llm-agents.nodecode`, whose run-from-source wrapper lacks the required `nodecode-context` cell. It reproduces upstream's `just release` layout under `$out/lib/nodecode/` (binary + `src/{src,cells,fasl}` + `resources/`); `bin/nodecode` is a symlink, not a wrapper, because the binary finds `src/` beside its resolved path and bakes that path into gateway units.
+
+* `cellsSrc.rev` must equal `src/cells/bundle.json`'s commit; the build checks it.
+* libssl/libsqlite3 are found through a RUNPATH patched onto the SBCL runtime before the dump. `dontStrip`/`dontPatchELF` must stay: the core is appended to the ELF.
+* No `src/fasl` ships: store mtimes make shipped fasls look stale to the image's ASDF, which then tries to recompile into the store. Cells compile into `XDG_CACHE_HOME` instead.
+* State: `~/.nodecode` (persisted), warm image under `XDG_CACHE_HOME`.
+
 ## Google Drive (`gd`)
 
 `gd` (`pkgs/gd/`, overlay name `gd-drive` because `gd` is libgd in nixpkgs, in `termUi` in `home/pkgs.nix`) is a bash verb layer over rclone for Drive in the terminal: push/pull/pick/find/cat/put/mv/rm/link, guarded one-way `sync up|down`, `bisync`, FUSE `mount`. `gd help` lists it; `checks.gd` runs every verb but mount/setup against a local alias remote.
