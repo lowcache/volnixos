@@ -1,7 +1,7 @@
 ---
 type: mistakes
 project: Vol NixOS
-last_updated: 2026-11-13
+last_updated: 2026-11-14
 status: append-only
 ---
 
@@ -114,11 +114,6 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Prevention Rule:** If GTK/Electron file pickers or portal Settings fail with `AccessDenied` / `Unable to open /proc/<pid>/root`, do NOT chase portal backends, icons, or `GTK_USE_PORTAL`. Reproduce with `gdbus call --session --dest org.freedesktop.portal.Desktop --object-path /org/freedesktop/portal/desktop --method org.freedesktop.portal.Settings.ReadAll '[]'`; if it errors, the app-id step is broken. Compare against `dbus-run-session -- <same call>`. If the daemon works and the live broker bus does not, set `services.dbus.implementation = "dbus"`.
 * **Rebuild caution:** Switching the dbus implementation restarts the message bus on `switch` and will tear down the running Wayland session (see Mistake #1). Apply via reboot, or run the rebuild detached (tmux / `systemd-run`).
 
-### 2026-10-23 — thunderbird-cli Packages Collide in buildEnv
-* **Symptom:** A buildEnv combining the three thunderbird-cli packages (tb, tb-bridge, tb-mcp) conflicts.
-* **Root cause:** All three ship `lib/node_modules/thunderbird-cli` with differing content.
-* **Prevention rule:** When combining packages that share a node_modules tree, build a bin-only buildEnv that links only `bin/`.
-
 ### 2026-10-23 — Failed Per-Connection LocalAPI Relay Instances Fail make switch (exit 4)
 * **Symptom:** `make switch` exited 4 after activation (generation 340). `systemctl --failed` listed `tailscale-vm-localapi@<n>-…-1001.service` instances.
 * **Root cause:** The switch restarted microvm@tailscale. The noctalia tailscale plugin polled during the outage. Each Accept=yes relay instance failed (notify.vsock missing, then no listener on port 1024) and stayed failed. switch-to-configuration counts failed units as failure.
@@ -153,3 +148,8 @@ This file catalogs past bugs, configuration issues, and operational pitfalls enc
 * **Symptom:** `cell nodecode-mcp: FAILED Error opening …/lib/nodecode/src/fasl/mcp/package-tmp….fasl: Read-only file system` in `nodecode-gateway.service`.
 * **Root cause:** Nix sets store mtimes to 1970, older than the ASDF action stamps the dumped image recorded at build time. Every shipped fasl looked stale, so ASDF recompiled into `src/fasl` (chosen because the directory exists), which lives in the read-only store.
 * **Prevention rule:** Do not ship `src/fasl` in the nodecode store output. Keep the build step that compiles cells as a gate (compile-cells.sh), then deletes `src/fasl`, so cells compile once at runtime into XDG_CACHE_HOME.
+
+### 2026-11-14 — CI Red From Unstaged-Commit Drift: Flake Eval Reads Index, Not HEAD
+* **Symptom:** CI failed with `Path 'pkgs/claude-code-tweaked/manifest-2.1.296.zst.json' does not exist in Git repository` from 0ab6a07 onward, while local `make check` passed.
+* **Root cause:** 0ab6a07 committed package.nix pinning the manifest, but the manifest file was only staged, not committed. Flakes read the git index, so local builds see the file and CI (clean checkout of HEAD) does not.
+* **Prevention rule:** When the index is ahead of HEAD, verify against the committed tree before pushing: `nix eval "git+file://$PWD?rev=$(git rev-parse HEAD)#<attr>.drvPath"`. Local `make check` alone is insufficient.

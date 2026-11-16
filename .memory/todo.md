@@ -1,7 +1,7 @@
 ---
 type: todo
 project: Vol NixOS
-last_updated: 2026-11-13
+last_updated: 2026-11-15
 status: active
 ---
 
@@ -492,8 +492,16 @@ Plan: `docs/wikifixins/persist-storage-pool-migration.md`. Single LV, ext4 + LVM
 - [ ] Deferred: ATWM fork for the primary-display limit (clone at `~/Storage/tmp/atwm`); only if DeX + 4Zones proves insufficient.
 ### nodecode Upstream Bug Report (2026-11-13)
 
-- [ ] File upstream issue for the llm-agents nodecode wrapper bugs (missing `nodecode-context` cell fetch; missing `--end-toplevel-options`). No issue filed yet as of 2026-11-13. Target: nodecode-ai/nodecode and llm-agents.nix.
+- [ ] File upstream issue for the llm-agents nodecode wrapper bugs (missing `nodecode-context` cell fetch; missing `--end-toplevel-options`). No issue filed yet as of 2026-11-14. Target: nodecode-ai/nodecode and llm-agents.nix.
+
 ### nodecode Fasl Fix — Activate and Verify (2026-11-13)
 
 - [ ] `make switch` to activate the `pkgs/nodecode` build change that deletes `src/fasl` (fix verified with `nodecode trial` against a scratch home: old build score 0, new build score 1).
 - [ ] Verify `nodecode-gateway.service` cells load with no "Read-only file system" error after activation.
+### CI Green Verification — f1fe1c7 (2026-11-14)
+
+- [ ] Confirm CI run 43619276991 on f1fe1c7 (manifest-drift fix; see mistakes.md 2026-11-14) is green. The background wait on 2026-11-14 18:34 UTC exited 1 with no result recorded. Check with `gh run view 43619276991`.
+### Travel Bubble — Client Report Activation (2026-11-16)
+
+- [ ] Run `make switch` to activate `vol-bubble-report.{service,timer}` (commit 3df1b3a).
+- [ ] Verify the timer fires while `vol-bubble` is up and the Pi receives client JSON at `http://100.81.123.86:8080/api/bubble`.

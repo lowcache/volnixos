@@ -1,7 +1,7 @@
 ---
 type: decisions
 project: Vol NixOS
-last_updated: 2026-11-13
+last_updated: 2026-11-15
 status: active
 ---
 
@@ -659,3 +659,8 @@ This file catalogs the active, canonical design decisions and system configurati
 * **Why:** The llm-agents package (49704da, unchanged at 860075d) is broken. Its run-from-source wrapper never fetches the `nodecode-context` cell that `nodecode/bin` requires. It also passes argv to SBCL without `--end-toplevel-options`, so `nodecode --help` dies as a C runtime option. The recipe is vendored from upstream's own nix/package.nix, so upstream carries the same bugs.
 * **Rules out:** `pkgs.llm-agents.nodecode`. Wrapping the binary in a shell script, because the gateway systemd units bake the resolved path and bypass any wrapper. Shipping `src/fasl` in the store output (store mtimes are 1970, so ASDF treats shipped fasls as stale and tries to recompile into the read-only store).
 * **Constraints:** Keep `dontStrip`/`dontPatchELF`. Keep `resources/` beside `src/`. Keep the cells pin tied to bundle.json. Keep the build step that deletes `src/fasl` after the compile-cells gate.
+## 67. Bubble Client Reporting — Host Push to Pi over Tailnet (2026-11-16)
+
+* **Decision:** volnix pushes bubble client inventory (dnsmasq leases + neighbor table) to the Pi every 30 s while `vol-bubble` runs. The Pi accepts reports only from volnix tailnet IPs.
+* **Why:** Bubble clients are masqueraded behind enp3s0, so the Pi cannot enumerate them from its side.
+* **Rules out:** Pi-side enumeration of bubble clients; accepting bubble reports from non-tailnet sources.

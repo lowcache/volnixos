@@ -132,10 +132,10 @@ binds {
     // **C** Drop-down terminal: the dropkitty Noctalia plugin's helper (kitty quick-access-terminal
     // over wlr-layer-shell). Called directly, not via noctalia msg, so it works while the shell reloads.
     // Same instance as the bar widget. Settings: Noctalia > plugins > dropkitty.
-    Mod+Return       { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "toggle"; }      // show / hide
-    Mod+Shift+Return { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "position"; }    // top/bottom (landscape) · left/right (portrait)
-    Mod+Alt+Return   { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "size"; }        // normal / full extent
-    Mod+Ctrl+Return  { spawn "~/.local/share/noctalia/plugins/dropkitty/bin/dropkitty" "orientation"; } // landscape (horizontal) / portrait (vertical)
+    Mod+Return       { spawn "~/.local/state/noctalia/plugins/materialized/community/dropkitty/bin/dropkitty" "toggle"; }      // show / hide
+    Mod+Shift+Return { spawn "~/.local/state/noctalia/plugins/materialized/community/dropkitty/bin/dropkitty" "position"; }    // top/bottom (landscape) · left/right (portrait)
+    Mod+Alt+Return   { spawn "~/.local/state/noctalia/plugins/materialized/community/dropkitty/bin/dropkitty" "size"; }        // normal / full extent
+    Mod+Ctrl+Return  { spawn "~/.local/state/noctalia/plugins/materialized/community/dropkitty/bin/dropkitty" "orientation"; } // landscape (horizontal) / portrait (vertical)
     Mod+T            { spawn "kitty"; }                                       // Terminal
     Mod+E           { spawn-sh "~/.config/niri/scripts/launch_first_available.sh dolphin nautilus nemo thunar 'kitty -1 fish -c yazi'"; } // Files
     Mod+W            { spawn-sh "~/.config/niri/scripts/launch_first_available.sh brave google-chrome-stable zen-browser firefox chromium"; } // Browser

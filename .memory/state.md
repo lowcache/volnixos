@@ -1,7 +1,7 @@
 ---
 type: state
 project: Vol NixOS
-last_updated: 2026-11-13
+last_updated: 2026-11-15
 status: active
 ---
 
@@ -307,3 +307,10 @@ Host `vm-netgate` → `192.168.100.1`; guest → `192.168.100.2`. Tor `9040`/DNS
 - `dontStrip` and `dontPatchELF` are load-bearing (core is appended to the ELF). The build patchelfs a copy of the SBCL runtime with a RUNPATH and dumps on that copy, because the image reopens libssl/libsqlite3 by soname at start.
 - Runtime state: `~/.nodecode` (persisted). Warm image (~660 MB) under XDG_CACHE_HOME (`~/Storage/.cache`). Self-update auto-disables (no installer `current` link).
 - Bumping: update both revs and hashes, then rerun the build.
+## 29. Travel Bubble Client Reporting — Panhandler Feed (2026-11-16)
+
+- Module: `nixos/modules/travel-bubble.nix`. Option `vol.travel-bubble.reportUrl` = `http://100.81.123.86:8080/api/bubble` (Pi, reached over tailnet).
+- Units `vol-bubble-report.service` and `vol-bubble-report.timer`: run every 30 s while `vol-bubble.service` is up (wantedBy/partOf `vol-bubble.service`).
+- Each run reads `/var/lib/NetworkManager/dnsmasq-wlp4s0.leases` and `ip -j neigh`, then POSTs JSON to the Pi. DynamicUser; IPAddressAllow restricted to tailnet.
+- Why: bubble clients are masqueraded behind enp3s0, so the Pi cannot enumerate them. The Pi accepts reports only from volnix tailnet IPs.
+- Commit 3df1b3a. Gate exit 0; build adds exactly 3 units. Not switched as of 2026-11-16 ~01:45 UTC (user runs `make switch`).
