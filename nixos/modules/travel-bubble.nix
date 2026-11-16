@@ -59,6 +59,15 @@ in
         captive-portal recovery. Everything else on the bubble stays DNS-only to the Pi.
       '';
     };
+    reportUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      example = "http://100.81.123.86:8080/api/bubble";
+      description = ''
+        The Pi's device-report endpoint, reached over the tailnet (the Pi refuses reports over the
+        cable, where bubble clients arrive masqueraded as the laptop). Empty = no reports.
+      '';
+    };
     channel = lib.mkOption {
       type = lib.types.ints.positive;
       default = 36;
@@ -92,24 +101,77 @@ in
       dhcp-option=option:dns-server,${cfg.piAddress}
     '';
 
-    # Holds the AP up and the lid/sleep inhibited for exactly as long as the bubble lives.
-    systemd.services.vol-bubble = {
-      description = "Travel bubble: Wi-Fi AP via the Panhandler";
-      after = [ "NetworkManager.service" ];
-      # The cable can lease before NM has wlp4s0 ready at boot ("No suitable device"); retry, bounded.
-      startLimitIntervalSec = 120;
-      startLimitBurst = 10;
-      serviceConfig = {
-        Type = "simple";
-        Restart = "on-failure";
-        RestartSec = 5;
-        ExecStartPre = [
-          # User hint: survives cfg80211's restore-to-WORLD when the STA link drops.
-          "${pkgs.iw}/bin/iw reg set ${cfg.country}"
-          "${nmcli} --wait 45 connection up ${profile}"
+    systemd = {
+      # Holds the AP up and the lid/sleep inhibited for exactly as long as the bubble lives.
+      services.vol-bubble = {
+        description = "Travel bubble: Wi-Fi AP via the Panhandler";
+        after = [ "NetworkManager.service" ];
+        # The cable can lease before NM has wlp4s0 ready at boot ("No suitable device"); retry, bounded.
+        startLimitIntervalSec = 120;
+        startLimitBurst = 10;
+        serviceConfig = {
+          Type = "simple";
+          Restart = "on-failure";
+          RestartSec = 5;
+          ExecStartPre = [
+            # User hint: survives cfg80211's restore-to-WORLD when the STA link drops.
+            "${pkgs.iw}/bin/iw reg set ${cfg.country}"
+            "${nmcli} --wait 45 connection up ${profile}"
+          ];
+          ExecStart = "${config.systemd.package}/bin/systemd-inhibit --what=handle-lid-switch:sleep:idle --who=vol-bubble --why='Travel bubble AP is serving devices' ${pkgs.coreutils}/bin/sleep infinity";
+          ExecStopPost = "-${nmcli} connection down ${profile}";
+        };
+      };
+
+      # Bubble clients sit behind this laptop's NAT, invisible to the Pi; tell it who they are.
+      services.vol-bubble-report = lib.mkIf (cfg.reportUrl != "") {
+        description = "Report travel bubble clients to the Panhandler";
+        path = with pkgs; [
+          curl
+          iproute2
+          jq
         ];
-        ExecStart = "${config.systemd.package}/bin/systemd-inhibit --what=handle-lid-switch:sleep:idle --who=vol-bubble --why='Travel bubble AP is serving devices' ${pkgs.coreutils}/bin/sleep infinity";
-        ExecStopPost = "-${nmcli} connection down ${profile}";
+        script = ''
+          leases=/var/lib/NetworkManager/dnsmasq-${cfg.apInterface}.leases
+          [ -r "$leases" ] || exit 0
+          neigh=$(ip -j neigh show dev ${cfg.apInterface})
+          # Lease lines: <expiry> <mac> <ip> <hostname|*> <client-id|*>. Online = a live neighbor entry.
+          jq -Rn --argjson n "$neigh" '{devices: [inputs | split(" ") | select(length >= 4) | {
+            mac: .[1], ip: .[2], hostname: (if .[3] == "*" then "" else .[3] end),
+            leaseExpires: (.[0] | tonumber),
+            online: (.[1] as $m | any($n[]; (.lladdr // "" | ascii_downcase) == ($m | ascii_downcase)
+              and ((.state // []) | any(. == "REACHABLE" or . == "STALE" or . == "DELAY" or . == "PROBE"))))
+          }]}' <"$leases" |
+            curl -fsS -m 10 -H 'Content-Type: application/json' --data @- ${lib.escapeShellArg cfg.reportUrl}
+        '';
+        serviceConfig = {
+          Type = "oneshot";
+          DynamicUser = true;
+          CapabilityBoundingSet = "";
+          NoNewPrivileges = true;
+          ProtectHome = true;
+          PrivateDevices = true;
+          RestrictAddressFamilies = [
+            "AF_INET"
+            "AF_INET6"
+            "AF_NETLINK"
+          ];
+          # The tailnet only (v4 CGNAT + v6 ULA).
+          IPAddressAllow = [
+            "100.64.0.0/10"
+            "fd7a:115c:a1e0::/48"
+          ];
+          IPAddressDeny = "any";
+        };
+      };
+      timers.vol-bubble-report = lib.mkIf (cfg.reportUrl != "") {
+        description = "Report travel bubble clients while the bubble is up";
+        wantedBy = [ "vol-bubble.service" ];
+        partOf = [ "vol-bubble.service" ];
+        timerConfig = {
+          OnActiveSec = "15s";
+          OnUnitActiveSec = "30s";
+        };
       };
     };
 

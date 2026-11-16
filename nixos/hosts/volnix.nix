@@ -28,6 +28,8 @@
       uplinkInterface = "enp3s0";
       # Galaxy ("InfernalDevice"), hardware MAC: "Phone MAC" set for the bubble SSID. Web UI for portal recovery.
       webuiMacs = [ "78:33:c6:76:66:50" ];
+      # The Pi's tailnet IP: the device list in its web UI.
+      reportUrl = "http://100.81.123.86:8080/api/bubble";
     };
 
     # Flipped to true by ~/Storage/luks-migration/05-post-boot.sh once the
